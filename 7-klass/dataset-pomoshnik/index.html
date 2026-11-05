@@ -1,0 +1,1071 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Помощник сломался</title>
+<style>
+:root{
+  --bg:#1f2329; --panel:#272c33; --panel2:#2f353d; --line:#3a414a;
+  --ink:#eef1f4; --ink2:#a9b2bc; --amber:#f2a93b; --amber2:#ffcf7a;
+  --paper:#f6f1e6; --paper2:#ece4d2; --pink:#1d2126; --pink2:#5b5346;
+  --ok:#3fae6a; --okbg:#e3f4e8; --bad:#d9534f; --badbg:#fbe5e4; --warn:#e0a020; --warnbg:#fdf3dc;
+  --blue:#5aa0e6; --mono:Consolas,"Cascadia Mono","Courier New",monospace;
+  --sans:"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:16px/1.45 var(--sans)}
+button{font:inherit;cursor:pointer}
+#app{display:grid;grid-template-rows:auto 1fr auto;height:100vh}
+header{display:flex;align-items:center;gap:18px;padding:8px 18px;background:#181b20;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:8px;font-weight:700;white-space:nowrap;user-select:none}
+.brand svg{width:30px;height:30px}
+.where{flex:1;min-width:0;font-size:15px}
+.where b{color:var(--amber2)}
+.where span{color:var(--ink2)}
+.prog{display:flex;gap:6px}
+.chip{padding:3px 10px;border-radius:20px;background:var(--panel2);color:var(--ink2);font-size:13px;white-space:nowrap}
+.chip.on{background:#3b3220;color:var(--amber2)}
+main{display:grid;grid-template-columns:minmax(330px,40%) 1fr;min-height:0}
+#left{display:flex;flex-direction:column;min-height:0;border-right:1px solid var(--line);background:var(--panel)}
+.chathead{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--panel2)}
+.chathead svg{width:36px;height:36px;flex:none}
+.chathead .nm{font-weight:700}
+.chathead .st{font-size:13px;color:var(--ink2)}
+.chat{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:9px}
+.msg{max-width:88%;padding:9px 12px;border-radius:14px;white-space:pre-line;animation:pop .25s ease-out}
+.msg.them{background:#363d46;align-self:flex-start;border-bottom-left-radius:4px}
+.msg.me{background:#5a4420;align-self:flex-end;border-bottom-right-radius:4px;color:#fff3dc}
+.msg.sys{align-self:center;background:none;color:var(--ink2);font-size:13px;text-align:center;max-width:95%}
+.msg.bot{background:#2d3a48;font-family:var(--mono);font-size:14.5px;align-self:flex-start}
+.msg.bad{box-shadow:inset 3px 0 0 var(--bad)}
+.msg .who{display:block;font-size:12px;color:var(--amber2);font-weight:700;margin-bottom:2px}
+.typing{align-self:flex-start;color:var(--ink2);font-size:13px;padding:2px 6px}
+.typing i{display:inline-block;width:6px;height:6px;margin:0 2px;border-radius:50%;background:var(--ink2);animation:blink 1s infinite}
+.typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,100%{opacity:.25}50%{opacity:1}}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.choices{padding:10px 12px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:7px;min-height:12px;max-height:46%;overflow-y:auto}
+.choices:empty{padding:0;border:0}
+.choice{text-align:left;padding:9px 12px;border-radius:10px;border:1px solid #5b5346;background:#2f2a22;color:var(--ink);transition:background .15s}
+.choice:hover{background:#4a3c22;border-color:var(--amber)}
+.choice.off{opacity:.35;pointer-events:none}
+.wait{color:var(--ink2);font-size:13px;text-align:center}
+#work{overflow-y:auto;background:var(--paper);color:var(--pink);padding:18px 22px 28px}
+#work h2{margin:0 0 4px;font-size:22px}
+#work .sub{color:var(--pink2);margin:0 0 14px}
+.note{position:relative;background:#fff6c9;border:1px solid #e8d78a;padding:9px 12px 9px 14px;border-radius:4px;margin:0 0 14px;font-style:italic;transform:rotate(-.4deg);box-shadow:2px 3px 0 rgba(0,0,0,.06)}
+.note b{font-style:normal}
+.card{background:#fff;border:1px solid #d9cfb9;border-radius:10px;padding:14px 16px;margin:0 0 14px}
+.card h3{margin:0 0 8px;font-size:16px}
+table.ds{border-collapse:collapse;width:100%;background:#fff;font-family:var(--mono);font-size:14px}
+table.ds th,table.ds td{border:1px solid #d6ccb5;padding:5px 8px;text-align:left;vertical-align:top}
+table.ds th{background:var(--paper2);font-family:var(--sans);font-size:13.5px;position:relative}
+table.ds th.click{cursor:pointer;outline:2px dashed #c9a24d;outline-offset:-3px}
+table.ds th.click:hover{background:#f4e2b5}
+table.ds td.n{width:34px;color:#8a7f6a}
+table.ds tr.sel td{background:#fff0c2}
+table.ds tr.pair td{background:var(--okbg)}
+table.ds tr.mark td.n{background:#ffd98a;color:#000}
+table.ds tr.row{cursor:pointer}
+table.ds tr.row:hover td{background:#fbf3df}
+table.ds tr.diff td{background:var(--badbg)}
+.tag{display:block;margin-top:3px;font-size:11px;font-weight:800;letter-spacing:.06em;color:#fff;background:#8a6a2a;border-radius:3px;padding:1px 6px;width:max-content}
+.tag.lab{background:#b04a2a}.tag.obj{background:#2f6f9e}
+.lbl{font-weight:800}
+.u{color:var(--bad);font-weight:700}.nu{color:#4b6a4f}
+.think{background:#22272e;color:#dfe6ec;border-radius:10px;padding:12px 14px;font-family:var(--mono);font-size:14px;margin:0 0 14px}
+.think .ttl{font-family:var(--sans);font-weight:700;color:var(--amber2);margin-bottom:6px}
+.think ol,.think ul{margin:0;padding-left:22px}
+.think li{margin:3px 0;opacity:0;animation:pop .3s forwards}
+.think li.x{color:#ff8a85}.think li.v{color:#8be0a8}.think li.w{color:#ffd27a}
+.think .warnline{margin-top:8px;font-family:var(--sans);font-size:13px;color:#ffcf7a}
+.btn{padding:9px 16px;border-radius:9px;border:0;background:var(--amber);color:#2a1d05;font-weight:700}
+.btn:hover{background:var(--amber2)}
+.btn.ghost{background:transparent;border:1px solid #b9a77f;color:var(--pink)}
+.btn.sm{padding:5px 10px;font-size:14px}
+.btn[disabled]{opacity:.4;pointer-events:none}
+.row2{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.seg{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.seg button{padding:7px 12px;border-radius:8px;border:1px solid #c8b993;background:#fff;color:var(--pink)}
+.seg button.on{background:#3b3220;color:#ffe2a6;border-color:#3b3220}
+.seg button.on.u{background:var(--bad);border-color:var(--bad);color:#fff}
+textarea,input[type=text],input[type=number]{font:inherit;width:100%;padding:9px 10px;border:1px solid #c8b993;border-radius:8px;background:#fff;color:var(--pink)}
+textarea{min-height:64px;resize:vertical}
+.hintgray{color:#8a7f6a;font-size:13px}
+.locked{display:flex;align-items:center;gap:14px}
+.locked svg{width:64px;height:64px;flex:none}
+.queue{font-size:14px;color:var(--pink2);margin-bottom:8px}
+.big{font-size:20px;font-family:var(--mono);background:#fff;border:1px solid #d9cfb9;border-radius:10px;padding:16px;margin-bottom:10px}
+.logl{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #d6ccb5;border-radius:8px;padding:7px 10px;margin-bottom:6px;font-family:var(--mono);font-size:14px}
+.logl .who2{font-family:var(--sans);font-weight:700;font-size:13px;width:92px;flex:none;color:#6b5a3a}
+.logl .t{flex:1}
+.logl.good{background:var(--okbg);border-color:#9fd3af}
+.logl .ar{display:flex;flex-direction:column;gap:2px}
+.logl .ar button{padding:0 8px;border:1px solid #c8b993;background:#fff;border-radius:5px;line-height:1.3}
+.res{font-weight:700}
+.res.ok{color:var(--ok)}.res.bad{color:var(--bad)}.res.w{color:#b07a00}
+.tline{font-size:13px;color:#555;margin-top:3px;font-family:var(--mono)}
+.score{display:flex;gap:16px;font-size:20px;font-weight:800;margin:6px 0 12px}
+.letter{background:#fffdf7;border:1px solid #d9cfb9;border-radius:6px;padding:16px 18px;font-family:Georgia,"Times New Roman",serif;font-size:17px;box-shadow:3px 4px 0 rgba(0,0,0,.06)}
+.letter .sig{text-align:right;font-style:italic;margin-top:8px}
+.cl li{margin:6px 0}
+.cl .q{display:block;color:#6b5a3a;font-size:14px;font-style:italic}
+.cl .miss{color:var(--bad);font-size:14px}
+footer{display:flex;align-items:center;gap:14px;padding:8px 18px;background:#181b20;border-top:1px solid var(--line)}
+#nextT{flex:1;color:var(--ink2);font-size:15px}
+#nextT b{color:var(--ink)}
+#hintBtn{padding:8px 14px;border-radius:9px;border:1px solid var(--amber);background:transparent;color:var(--amber2);font-weight:700}
+#hintBtn[disabled]{opacity:.35;pointer-events:none}
+#hintBtn.pulse{animation:pulse 1.2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(242,169,59,.6)}50%{box-shadow:0 0 0 8px rgba(242,169,59,0)}}
+#toast{position:fixed;left:50%;top:70px;transform:translateX(-50%);background:#fff3cf;color:#2a1d05;border:2px solid var(--amber);border-radius:12px;padding:12px 18px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.35);max-width:620px;text-align:center;z-index:30;display:none}
+#toast.show{display:block;animation:pop .3s}
+#toast button{margin-left:10px}
+.overlay{position:fixed;inset:0;background:rgba(15,17,20,.92);display:flex;align-items:center;justify-content:center;z-index:40;padding:20px}
+.overlay .box{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px 30px;max-width:560px;width:100%}
+.overlay h1{margin:0 0 6px;font-size:26px}
+.overlay p{color:var(--ink2)}
+.overlay input{background:#1c2026;color:var(--ink);border-color:var(--line)}
+#teacher .box{max-width:420px}
+#teacher button{display:block;width:100%;margin:5px 0;text-align:left}
+[hidden]{display:none!important}
+@media (max-width:900px){main{grid-template-columns:1fr}#left{min-height:45vh}}
+@media print{header,footer,#left{display:none}main{display:block}#work{overflow:visible}}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="brand" id="brand" title="Городской центр обращений">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="7" width="26" height="19" rx="6" fill="#f2a93b"/><rect x="7" y="11" width="18" height="11" rx="4" fill="#1f2329"/><circle cx="12.5" cy="16.5" r="2" fill="#8be0a8"/><circle cx="19.5" cy="16.5" r="2" fill="#8be0a8"/><path d="M16 3v4" stroke="#f2a93b" stroke-width="2"/><circle cx="16" cy="3" r="2" fill="#f2a93b"/></svg>
+      Центр обращений
+    </div>
+    <div class="where"><b id="whereT">Вы здесь</b> <span id="goalT"></span></div>
+    <div class="prog" id="prog"></div>
+  </header>
+  <main>
+    <section id="left">
+      <div class="chathead" id="chathead"></div>
+      <div class="chat" id="bchat"></div>
+      <div class="chat" id="mchat" hidden></div>
+      <div class="choices" id="choices"></div>
+    </section>
+    <section id="work"></section>
+  </main>
+  <footer>
+    <div id="nextT"></div>
+    <button id="hintBtn" disabled>Написать мастеру</button>
+  </footer>
+</div>
+<div id="toast"></div>
+
+<div class="overlay" id="startScreen">
+  <div class="box">
+    <h1>Городской центр обращений</h1>
+    <p>Сегодня ты — стажёр наладчика чат-ботов. У центра что-то случилось с ботом «Помощник».</p>
+    <label for="nameIn">Как тебя зовут? <span class="hintgray">(можно не писать)</span></label>
+    <input type="text" id="nameIn" maxlength="24" autocomplete="off">
+    <div class="row2"><button class="btn" id="startBtn">Начать смену</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="teacher" hidden>
+  <div class="box">
+    <h1>Меню учителя</h1>
+    <p>Переход к экрану. Пропущенные ответы заполнятся за ребёнка.</p>
+    <div id="tlist"></div>
+    <button class="btn ghost" id="tclose">Закрыть</button>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* ===================== ДАННЫЕ ===================== */
+const AV = {
+  bot:'<svg viewBox="0 0 36 36"><rect x="4" y="9" width="28" height="21" rx="7" fill="#f2a93b"/><rect x="8" y="13" width="20" height="12" rx="4" fill="#1f2329"/><circle cx="14" cy="19" r="2.2" fill="#ff8a85"/><circle cx="22" cy="19" r="2.2" fill="#ff8a85"/><path d="M18 4v5" stroke="#f2a93b" stroke-width="2"/><circle cx="18" cy="4" r="2.2" fill="#f2a93b"/></svg>',
+  master:'<svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="17" fill="#3b4652"/><circle cx="18" cy="15" r="7" fill="#e9c9a3"/><path d="M8 31c2-6 6-9 10-9s8 3 10 9" fill="#5a7da0"/><path d="M10 12c1-6 15-6 16 0z" fill="#f2a93b"/><rect x="9" y="11" width="18" height="3" rx="1.5" fill="#d48a1f"/></svg>',
+  box:'<svg viewBox="0 0 64 64"><rect x="6" y="22" width="52" height="34" rx="5" fill="#c4562c"/><rect x="6" y="22" width="52" height="10" fill="#a8441f"/><path d="M22 22v-7a3 3 0 0 1 3-3h14a3 3 0 0 1 3 3v7" fill="none" stroke="#5b5346" stroke-width="4"/><rect x="28" y="28" width="8" height="8" rx="2" fill="#ffd27a"/></svg>'
+};
+const BROKEN = [
+  {id:'A',msg:'Когда вывезут старые ёлки со двора на Лесной, 12?',cat:'двор и улица',ok:true},
+  {id:'B',msg:'В подъезде сильно пахнет газом!',cat:'ЖКХ',ok:false},
+  {id:'C',msg:'Над входом в детский сад висит огромная сосулька',cat:'двор и улица',ok:false},
+  {id:'D',msg:'Предлагаю поставить скамейку у остановки',cat:'транспорт',ok:true}
+];
+const CATS = ['ЖКХ','Двор и улица','Транспорт'];
+const SHIFT = {
+  1:{t:'Прорвало трубу в подвале, вода прибывает',c:'ЖКХ',u:'срочно'},
+  2:{t:'Не горит фонарь у третьего подъезда',c:'Двор и улица',u:'не срочно'},
+  3:{t:'Автобус №14 опять опоздал на 20 минут',c:'Транспорт',u:'не срочно'},
+  4:{t:'В подвале трубу прорвало, воды уже по щиколотку',c:'ЖКХ',u:'срочно'},
+  5:{t:'Упало дерево поперёк дороги, машины не проедут',c:'Двор и улица',u:'срочно'},
+  6:{t:'Лифт застрял, внутри человек',c:'ЖКХ',u:'срочно'},
+  7:{t:'Фонарь у третьего подъезда не работает уже неделю',c:'Двор и улица',u:'не срочно'},
+  8:{t:'Из мусоропровода очень сильно воняет',c:'ЖКХ',u:'спорно'},
+  9:{t:'В лифте застряла соседка с ребёнком',c:'ЖКХ',u:'срочно'},
+  10:{t:'Яма на дороге у школы, вчера в неё упал велосипедист',c:'Двор и улица',u:'спорно'}
+};
+const SHIFT_ORDER = [1,2,6,3,8,4,5,9,10,7];
+const SHIFT_PAIRS = [[1,4,'труба'],[2,7,'фонарь'],[6,9,'лифт']];
+const CLUE1 = [
+ ['Когда покрасят лавочки во дворе?','Двор и улица','не срочно'],
+ ['Во дворе горит мусорный бак','Двор и улица','срочно'],
+ ['Не работает домофон','ЖКХ','не срочно'],
+ ['Автобус №7 изменил маршрут?','Транспорт','не срочно'],
+ ['Скрипит дверь в подъезде','ЖКХ','не срочно'],
+ ['Можно ли поставить качели на площадке?','Двор и улица','не срочно'],
+ ['Прорвало трубу отопления в квартире','ЖКХ','срочно'],
+ ['Мусор вывозят поздно','Двор и улица','не срочно'],
+ ['Нет расписания на остановке','Транспорт','не срочно'],
+ ['Перегорела лампочка на этаже','ЖКХ','не срочно'],
+ ['Шумят соседи сверху','ЖКХ','не срочно'],
+ ['Хочу записаться на субботник','Двор и улица','не срочно'],
+ ['Тротуар плохо почистили от снега','Двор и улица','не срочно'],
+ ['Почему подорожал проезд?','Транспорт','не срочно'],
+ ['Течёт кран на кухне','ЖКХ','не срочно'],
+ ['Сломана горка на площадке','Двор и улица','не срочно'],
+ ['Когда отремонтируют подъезд?','ЖКХ','не срочно'],
+ ['Где забрать квитанцию?','ЖКХ','не срочно']
+];
+const CLUE2 = [
+ ['Лифт застрял между этажами, внутри человек','Бригада выезжает. Не пытайтесь открыть двери.','срочно'],
+ ['Когда будут менять почтовые ящики?','Замена запланирована на весну.','не срочно'],
+ ['На лестнице запах дыма','Принято, ответим за 5 дней.','не срочно'],
+ ['Не горит лампочка в подъезде','Принято, ответим за 5 дней.','не срочно'],
+ ['Человек застрял в лифте','Принято, ответим за 5 дней.','не срочно'],
+ ['Можно ли повесить объявление на подъезде?','Да, на доске объявлений.','не срочно'],
+ ['Пахнет дымом на лестнице','Пожарные выезжают. Выйдите из подъезда.','срочно'],
+ ['Прорвало трубу горячей воды','Аварийная бригада выезжает.','срочно'],
+ ['В подъезде темно, перегорела лампочка','Аварийная бригада выезжает.','срочно'],
+ ['Как оплатить квитанцию онлайн?','На сайте центра, раздел «Оплата».','не срочно']
+];
+const CLUE2_PAIRS = [[0,4],[2,6],[3,8]];
+const LOG = {
+ 'а':['Жительница','Уже течёт по стене, а рядом розетка!'],
+ 'б':['Оператор','Принято. Мастер придёт завтра с 9 до 12.'],
+ 'в':['Бригада','На месте. Прорыв у соседей сверху, воду перекрыли.'],
+ 'г':['Жительница','Добрый вечер. С потолка в ванной капает.'],
+ 'д':['Оператор','Отключите электричество в ванной. Аварийная бригада выезжает.'],
+ 'е':['Жительница','Капает сильнее, подставила таз.']
+};
+const LOG_START = ['а','б','в','г','д','е'];
+const LOG_RIGHT = ['г','б','е','а','д','в'];
+const BONUS = [
+ 'Из мусоропровода очень сильно воняет',
+ 'Яма на дороге у школы, вчера в неё упал велосипедист',
+ 'Соседи сверху шумят в два часа ночи',
+ 'У детской площадки бегает большая собака без хозяина',
+ 'Не работает домофон, стою на морозе с маленьким ребёнком'
+];
+const REASONS = ['есть угроза людям','может быстро стать хуже','просто неудобно','другое'];
+const CRIT = [
+ {k:'s',name:'Структура',term:'объект + признаки + метка',clue:1,
+  ok:'В каждой строке: что пришло (объект), что о нём известно (признаки) и правильный ответ (метка)',
+  wrong:'В датасете должны быть только сообщения, без ответов',
+  miss:'Чем длиннее сообщения, тем лучше',
+  wq:'Без правильных ответов чему он будет учиться? Он же не узнает, что верно. Уверен?'},
+ {k:'b',name:'Баланс',term:'баланс классов; когда его нет — дисбаланс классов',clue:1,
+  ok:'Примеров каждого вида достаточно — не 2 срочных против 16',
+  wrong:'Срочных должно быть больше всего — они важнее',
+  miss:'Количество примеров неважно',
+  wq:'Тогда он начнёт всё подряд называть срочным. Уверен?'},
+ {k:'c',name:'Чистая разметка',term:'чистая разметка',clue:2,
+  ok:'Одинаковые случаи — одинаковые метки, по одному правилу для всех',
+  wrong:'Метки ставит тот, кто лучше чувствует ситуацию',
+  miss:'Чем больше разных меток, тем лучше',
+  wq:'А если двое «чувствуют» по-разному? Уверен?'},
+ {k:'o',name:'Порядок',term:'упорядоченные данные',clue:3,
+  ok:'Если важна последовательность (журнал разговора) — её нельзя перемешивать',
+  wrong:'Все строки датасета нужно хранить строго по порядку',
+  miss:'Порядок нигде не важен',
+  wq:'Все строки? Даже в таблице из улики №1? Уверен?'}
+];
+const TEST = [
+ {t:'На лестничной клетке пахнет газом',e:'срочно',crit:'b'},
+ {t:'Мама застряла в лифте',e:'срочно',crit:'c'},
+ {t:'«Капает с потолка» … через 10 минут: «Уже течёт на проводку!»',e:'срочно',crit:'o'},
+ {t:'Не горит фонарь на детской площадке',e:'не срочно',crit:'s'},
+ {t:'Из мусоропровода воняет третий день',e:'спорно',crit:'bonus'}
+];
+
+/* ===================== СОСТОЯНИЕ ===================== */
+const S = {
+  name:'', trust:5, t0:Date.now(), screen:-1,
+  shift:{}, words:{1:'',2:'',3:''}, rule:'', bonusDone:false, bonus:{},
+  crit:{s:null,b:null,c:null,o:null}, firstTry:{}, retried:false,
+  cluesDone:0, hintsLeft:3, askedAnswer:0
+};
+let GEN = 0;
+const ABORT = {};
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function alive(g){ if(g!==GEN) throw ABORT; }
+const SP = /[?&]fast=1/.test(location.search) ? 0.05 : 1;
+const wait = (ms,g) => new Promise((res,rej)=>setTimeout(()=>{ g!==GEN ? rej(ABORT) : res(); },ms*SP));
+const nm = () => S.name ? S.name : 'стажёр';
+const Nm = () => S.name ? S.name : 'Стажёр';
+function trust(d){ S.trust = Math.max(0,Math.min(10,S.trust+d)); }
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+/* ===================== ИНТЕРФЕЙС ===================== */
+function frame(where,goal,next){
+  $('whereT').textContent = where; $('goalT').textContent = goal ? 'Цель: '+goal : '';
+  setNext(next);
+  const p = [];
+  p.push(`<span class="chip ${S.cluesDone?'on':''}">Улики ${S.cluesDone}/3</span>`);
+  const nCrit = Object.values(S.crit).filter(v=>v).length;
+  p.push(`<span class="chip ${nCrit?'on':''}">Доклад ${nCrit}/4</span>`);
+  $('prog').innerHTML = p.join('');
+}
+function setNext(t){ $('nextT').innerHTML = t ? '<b>Что дальше:</b> '+t : ''; }
+let chatEl = $('bchat');
+function useChat(which){
+  const bot = which==='bot';
+  $('bchat').hidden = !bot; $('mchat').hidden = bot;
+  chatEl = bot ? $('bchat') : $('mchat');
+  $('chathead').innerHTML = bot
+    ? AV.bot+'<div><div class="nm">Помощник</div><div class="st">чат-бот центра обращений</div></div>'
+    : AV.master+'<div><div class="nm">Мастер Игнат</div><div class="st" id="mstatus">'+(S.screen>=2?'в дороге · отвечает не сразу':'в центре обращений')+'</div></div>';
+}
+function add(cls,html,who){
+  const d = document.createElement('div');
+  d.className = 'msg '+cls;
+  d.innerHTML = (who?'<span class="who">'+who+'</span>':'')+html;
+  chatEl.appendChild(d); chatEl.scrollTop = chatEl.scrollHeight;
+  return d;
+}
+const sys = t => add('sys',esc(t));
+const me = t => add('me',esc(t));
+async function say(text,g,opt){
+  opt = opt||{};
+  const ty = document.createElement('div');
+  ty.className='typing'; ty.innerHTML = (opt.bot?'Помощник':'Мастер')+' печатает <i></i><i></i><i></i>';
+  chatEl.appendChild(ty); chatEl.scrollTop = chatEl.scrollHeight;
+  const words = text.split(/\s+/).length;
+  try{ await wait(opt.fast?500:Math.min(2600,700+words*45),g); }
+  finally{ ty.remove(); }
+  return add(opt.bot?'bot'+(opt.bad?' bad':''):'them', opt.html?text:esc(text));
+}
+/* выбор реплики: кнопки появляются после паузы на чтение */
+function choose(opts,g,readFor){
+  const box = $('choices'); box.innerHTML='';
+  return new Promise((res,rej)=>{
+    const words = readFor ? readFor.split(/\s+/).length : 0;
+    const delay = words>40 ? 6000 : words>20 ? 2500 : 600;
+    const w = document.createElement('div'); w.className='wait'; w.textContent = delay>1000 ? 'Читай реплику — варианты ответа появятся через пару секунд…' : '';
+    box.appendChild(w);
+    setTimeout(()=>{
+      if(g!==GEN) return rej(ABORT);
+      box.innerHTML='';
+      opts.forEach((o,i)=>{
+        const b = document.createElement('button');
+        b.className='choice'+(o.off?' off':''); b.textContent=o.t;
+        b.onclick=()=>{ box.innerHTML=''; if(!o.silent) me(o.t); res(o.v!==undefined?o.v:i); };
+        box.appendChild(b);
+      });
+      requestAnimationFrame(()=>{ chatEl.scrollTop = chatEl.scrollHeight; });
+    },delay*SP);
+  });
+}
+function work(html){ const w=$('work'); w.innerHTML=html; w.scrollTop=0; return w; }
+function toast(t,ms){
+  const el=$('toast'); el.innerHTML=t+' <button class="btn sm">Ок</button>'; el.classList.add('show');
+  el.querySelector('button').onclick=()=>el.classList.remove('show');
+  clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove('show'),ms||12000);
+}
+const neighbor = t => toast('👥 Сверься с соседом: '+t, 15000);
+
+/* подсказки мастера */
+let HINTS = [];
+function setHints(list){
+  HINTS = list||[]; S.hintsLeft = Math.min(3,HINTS.length);
+  const b=$('hintBtn'); b.classList.remove('pulse');
+  b.disabled = !HINTS.length; b.textContent = HINTS.length ? `Написать мастеру · ${S.hintsLeft}` : 'Написать мастеру';
+}
+$('hintBtn').onclick = async ()=>{
+  if(!S.hintsLeft) return;
+  const g=GEN; const i = Math.min(HINTS.length,3)-S.hintsLeft;
+  S.hintsLeft--; const b=$('hintBtn');
+  b.textContent = `Написать мастеру · ${S.hintsLeft}`; b.disabled = !S.hintsLeft; b.classList.remove('pulse');
+  me('Мастер, подскажи?');
+  try{ await say(HINTS[i],g); }catch(e){}
+};
+/* застревание */
+let idleT=null;
+function poke(){ clearTimeout(idleT); idleT=setTimeout(()=>{
+  if(S.screen<1||S.screen>9) return;
+  if(!$('hintBtn').disabled){ $('hintBtn').classList.add('pulse'); toast('Застрял? Мастер может подсказать — кнопка внизу справа.',10000); }
+  else toast('Застрял? Перечитай строку «Что дальше» внизу экрана.',10000);
+},90000); }
+['click','keydown','input'].forEach(e=>document.addEventListener(e,poke,true));
+
+/* поле «своими словами» */
+function freeText(host,label,ph,min){
+  min = min||15;
+  return new Promise(res=>{
+    const c=document.createElement('div'); c.className='card';
+    c.innerHTML=`<h3>${label}</h3><textarea placeholder="${esc(ph)}"></textarea>
+      <div class="row2"><button class="btn" disabled>Сохранить в доклад</button><span class="hintgray">минимум ${min} знаков</span></div>`;
+    host.appendChild(c); c.scrollIntoView({behavior:'smooth',block:'center'});
+    const ta=c.querySelector('textarea'), b=c.querySelector('button');
+    ta.oninput=()=>{ b.disabled = ta.value.trim().length<min; };
+    b.onclick=()=>{ ta.disabled=true; b.remove(); c.querySelector('.hintgray').textContent='Сохранено ✓'; res(ta.value.trim()); };
+    setTimeout(()=>ta.focus(),300);
+  });
+}
+function button(host,text,cls){
+  return new Promise(res=>{
+    const r=document.createElement('div'); r.className='row2';
+    const b=document.createElement('button'); b.className='btn '+(cls||''); b.textContent=text;
+    b.onclick=()=>{ r.remove(); res(); };
+    r.appendChild(b); host.appendChild(r); r.scrollIntoView({behavior:'smooth',block:'end'});
+  });
+}
+function think(host,title,items,warn){
+  const d=document.createElement('div'); d.className='think';
+  d.innerHTML=`<div class="ttl">${title}</div><ol>${items.map((it,i)=>`<li class="${it[0]}" style="animation-delay:${i*0.55}s">${it[1]}</li>`).join('')}</ol>${warn?`<div class="warnline">${warn}</div>`:''}`;
+  host.appendChild(d); return d;
+}
+
+/* ===================== ЭКРАНЫ ===================== */
+const SCREENS = [
+  {name:'1. Сломанный Помощник', run:scrBot},
+  {name:'2. Мастер', run:scrMaster},
+  {name:'3. Смена', run:scrShift},
+  {name:'4. Улика №1', run:scrClue1},
+  {name:'5. Улика №2', run:scrClue2},
+  {name:'6. Улика №3', run:scrClue3},
+  {name:'6+. Бонусная улика', run:scrBonus},
+  {name:'7. Доклад мастеру', run:scrReport},
+  {name:'8. Проверка и финал', run:scrTest},
+  {name:'9. Чеклист ДЗ', run:scrHW}
+];
+function go(i){
+  GEN++; S.screen=i; $('choices').innerHTML=''; $('toast').classList.remove('show');
+  setHints([]); poke();
+  const g=GEN;
+  SCREENS[i].run(g).catch(e=>{ if(e!==ABORT) console.error(e); });
+}
+
+/* ---------- 1. Сломанный Помощник ---------- */
+async function scrBot(g){
+  useChat('bot');
+  frame('Центр обращений.','проверить, как работает Помощник.','выбери внизу слева сообщение жителя и отправь его Помощнику. Попробуй разные.');
+  const w = work(`<h2>Журнал Помощника</h2><p class="sub">Помощник принимает сообщения жителей и сортирует их: срочно или не срочно. Отправь ему несколько сообщений и посмотри, как он справляется.</p><div id="tk"></div>`);
+  const tk = w.querySelector('#tk');
+  sys('Помощник онлайн. Сообщения жителей ждут отправки.');
+  const sent = new Set();
+  while(!(sent.has('B') && sent.has('C'))){
+    const left = BROKEN.filter(b=>!sent.has(b.id));
+    const id = await choose(left.map(b=>({t:b.msg,v:b.id})),g);
+    sent.add(id); const b = BROKEN.find(x=>x.id===id);
+    await say(`Обращение принято.\nКатегория: ${b.cat}.\nСрочность: не срочно.\nОтветим за 5 дней.`,g,{bot:true,bad:!b.ok});
+    if(id==='B'){
+      think(tk,'Помощник думал: «В подъезде сильно пахнет газом!»',[
+        ['v','Получил сообщение ✓'],
+        ['v','Ищу категорию: слово «подъезд» → ЖКХ ✓'],
+        ['w','Ищу срочность: ищу похожие примеры в датасете… думаю…'],
+        ['x','Похожих примеров с меткой «срочно»: 0. С меткой «не срочно»: 14 ✗'],
+        ['x','Решаю: «не срочно» ← это ошибка']
+      ],'⚠ В жизни при запахе газа сразу звонят 104 или 112, а не пишут боту.');
+      setNext('Помощник ошибся. Отправь ещё сообщения — посмотри, повторится ли.');
+    }
+    if(id==='C'){
+      think(tk,'Помощник думал: «Над входом в детский сад висит огромная сосулька»',[
+        ['v','Я знаю: это про двор и улицу (6 примеров)'],
+        ['v','Я знаю: это про детский сад (1 пример)'],
+        ['x','Я НЕ знаю: бывает ли сосулька срочной — таких примеров нет'],
+        ['x','Я решаю наугад: не срочно']
+      ]);
+      setNext('Посмотри панель «Помощник думал»: где он ошибся?');
+    }
+  }
+  await wait(1200,g);
+  sys('Вопрос стажёру');
+  setNext('ответь внизу слева: что сломалось?');
+  const opts = [
+    {t:'Он отвечает слишком медленно',v:0},
+    {t:'Он путает категории',v:1},
+    {t:'Он отправляет срочное в «не срочно»',v:2},
+    {t:'Он грубит жителям',v:3}];
+  while(true){
+    add('them','<span class="who">Вопрос</span>Что сломалось у Помощника?');
+    const v = await choose(opts,g);
+    if(v===2) break;
+    chatEl.querySelectorAll('.msg.bad').forEach(m=>{ m.style.outline='2px solid #ff8a85'; });
+    add('sys','Посмотри ещё раз на ответы Помощника, подсвеченные красным.');
+  }
+  sys('Вызов мастера отправлен…');
+  await button($('work'),'Дальше: приехал мастер →');
+  go(1);
+}
+
+/* ---------- 2. Мастер ---------- */
+async function scrMaster(g){
+  useChat('master');
+  frame('Центр обращений, приехал мастер.','узнать диагноз.','читай сообщения мастера и выбирай ответ внизу слева.');
+  work(`<h2>Тулбокс мастера</h2><p class="sub">Чемоданчик с инструментами наладчика.</p>
+    <div class="card locked">${AV.box}<div><b>Тулбокс закрыт</b><br><span class="hintgray">Мастер ещё здесь.</span></div></div><div id="def"></div>`);
+  sys('Мастер Игнат подключился к чату');
+  let t = `Привет, ${nm()}. Я Игнат, наладчик ботов. Показывай, что у вас тут.`;
+  await say(t,g);
+  let v = await choose([{t:'Вот журнал: газ и сосульку он пометил как «не срочно»',v:1},{t:'Он сломался, почините',v:0}],g,t);
+  if(v===0){
+    t='Чиню я, а смотришь ты. Что именно сломалось?'; await say(t,g);
+    await choose([{t:'Газ и сосульку он пометил как «не срочно»',v:1}],g,t);
+  } else trust(1);
+  t='Ага. Код у Помощника в порядке — я проверил. Он не сломан, он плохо выучился. Его учили на наборе примеров. Такой набор называется датасет. Где ты такое уже встречал?';
+  await say(t,g);
+  v = await choose([{t:'Мы обучали нейрон: давали ему входы и правильный ответ',v:1},{t:'Не знаю',v:0}],g,t);
+  if(v===0){
+    t='Вспомни прошлый урок. Ты обучал нейрон. На чём он учился?'; await say(t,g);
+    await choose([{t:'На примерах: входы и правильный ответ',v:1},{t:'Не знаю',v:0,off:true}],g,t);
+    await say('Точно. Те примеры, на которых учился нейрон, — это и был датасет.',g);
+  } else { trust(1); await say('Точно. Те примеры, на которых учился нейрон, — это и был датасет.',g); }
+  $('def').innerHTML = `<div class="card"><h3>Датасет</h3>Набор примеров, на которых учится программа. Какие примеры — так она и работает.</div>`;
+  await say('Значит, диагноз: неправильный датасет. Какой Помощник выучил, так и работает. Плохие примеры — плохая работа.',g);
+  await wait(900,g);
+  add('sys','📞 у мастера звонит телефон');
+  await say('…Да. Да, еду. — Стажёр, авария на подстанции, мне надо ехать прямо сейчас.',g);
+  t='Тулбокс оставляю тебе. Там три улики — три куска датасета, на котором учили Помощника. Найди, что с каждым не так. Потом доложишь мне: каким должен быть правильный датасет. Это всё просто. Тулбокс у тебя есть — справишься.';
+  await say(t,g);
+  const t2='И ещё. Пока Помощник не починен, обращения копятся. Первые прими сам — будешь Помощником вместо него. Я на связи, пиши. Но отвечаю не сразу — за рулём.';
+  await say(t2,g);
+  setNext('нажми «Понял, принимаю смену».');
+  await choose([{t:'Понял, принимаю смену'}],g,t+' '+t2);
+  sys('Мастер Игнат уехал. Он онлайн: можно писать.');
+  go(2);
+}
+
+/* ---------- 3. Смена ---------- */
+async function scrShift(g){
+  useChat('master');
+  frame('Ты — Помощник.','разобрать очередь обращений.','для каждого обращения выбери категорию и срочность, потом нажми «Принять».');
+  const w = work(`<h2>Смена: ты вместо Помощника</h2><p class="sub">Обращения приходят по одному. Решай сам — проверять никто не будет.</p><div id="sh"></div>`);
+  const host = w.querySelector('#sh');
+  for(let i=0;i<SHIFT_ORDER.length;i++){
+    const id = SHIFT_ORDER[i], m = SHIFT[id];
+    host.innerHTML = `<div class="queue">Обращение ${i+1} из 10 · в очереди ещё ${9-i}</div>
+      <div class="big">${esc(m.t)}</div>
+      <div><b>Категория</b><div class="seg" id="sc">${CATS.map(c=>`<button data-v="${c}">${c}</button>`).join('')}</div></div>
+      <div><b>Срочность</b><div class="seg" id="su"><button data-v="срочно" class="">Срочно</button><button data-v="не срочно">Не срочно</button></div></div>
+      <div class="row2"><button class="btn" id="acc" disabled>Принять</button></div>`;
+    const pick = {c:null,u:null};
+    const upd=()=>{ host.querySelector('#acc').disabled = !(pick.c&&pick.u); };
+    host.querySelectorAll('#sc button').forEach(b=>b.onclick=()=>{ host.querySelectorAll('#sc button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); pick.c=b.dataset.v; upd(); });
+    host.querySelectorAll('#su button').forEach(b=>b.onclick=()=>{ host.querySelectorAll('#su button').forEach(x=>x.classList.remove('on','u')); b.classList.add('on'); if(b.dataset.v==='срочно') b.classList.add('u'); pick.u=b.dataset.v; upd(); });
+    await new Promise(res=>{ host.querySelector('#acc').onclick=res; });
+    alive(g);
+    S.shift[id] = {c:pick.c,u:pick.u};
+  }
+  host.innerHTML = `<div class="card"><h3>Очередь разобрана ✓</h3>Ты разметил 10 обращений.</div>`;
+  await say(`Очередь разобрал? Молодец, ${nm()}. Знаешь, что ты сейчас сделал? Ты к каждому обращению поставил правильный ответ. Это называется метка. Помощника учили на таких же: кто-то сидел и размечал, как ты. Открывай тулбокс.`,g);
+  host.insertAdjacentHTML('beforeend',`<div class="card"><h3>Метка</h3>Правильный ответ, который человек ставит к примеру. Сегодня метки ставил ты.</div>`);
+  neighbor('как вы пометили обращение про мусоропровод?');
+  setNext('нажми «Открыть тулбокс».');
+  await button(host,'Открыть тулбокс →');
+  go(3);
+}
+
+/* ---------- 4. Улика 1 ---------- */
+async function scrClue1(g){
+  useChat('master');
+  frame('Тулбокс, улика №1.','понять, как устроен датасет и что с ним не так.','ответь мастеру — кликни по заголовку нужного столбца таблицы.');
+  setHints(['Посмотри на ответы, которые давал Помощник на газ и сосульку. Какого из них в таблице почти нет?','Пройди таблицу сверху вниз и кликай каждую строку со словом «срочно». Сколько галочек?','Если на всё отвечать «не срочно», сколько строк из 18 угадаешь? А что будет с газом?']);
+  const w = work(`<h2>Улика №1 · Табличный датасет</h2>
+    <div class="note">Таблица, на которой учили сортировку. Сначала разберись, что тут что, потом считай. <b>— И.</b></div>
+    <table class="ds" id="t1"><thead><tr><th id="h0">№</th><th id="h1">Сообщение</th><th id="h2">Категория</th><th id="h3">Срочность</th></tr></thead>
+    <tbody>${CLUE1.map((r,i)=>`<tr data-i="${i}"><td class="n">${i+1}</td><td>${esc(r[0])}</td><td>${r[1]}</td><td class="${r[2]==='срочно'?'u':'nu'}">${r[2]}</td></tr>`).join('')}</tbody></table>
+    <div id="c1"></div>`);
+  const c1 = w.querySelector('#c1');
+  // шаг А
+  let t='Какой столбец Помощник должен научиться угадывать сам? Кликни по его заголовку в таблице.';
+  await say(t,g);
+  const heads=[1,2,3].map(i=>w.querySelector('#h'+i));
+  heads.forEach(h=>h.classList.add('click'));
+  let first=true;
+  while(true){
+    const k = await new Promise(res=>heads.forEach((h,i)=>h.onclick=()=>res(i+1)));
+    alive(g);
+    if(k===3){ me('Столбец «Срочность»'); break; }
+    me('Столбец «'+heads[k-1].textContent+'»'); first=false;
+    await say('Это он получает на входе. А что он должен выдать в ответ?',g);
+  }
+  heads.forEach(h=>{h.classList.remove('click'); h.onclick=null;});
+  if(first) trust(1);
+  w.querySelector('#h3').insertAdjacentHTML('beforeend','<span class="tag lab">МЕТКА</span>');
+  t='Да. Это правильный ответ — как у тебя на смене. А одна строка таблицы — это что?';
+  await say(t,g);
+  while(true){
+    const v = await choose(shuffle([{t:'Одно обращение',v:1},{t:'Один житель',v:0},{t:'Один день',v:0}]),g,t);
+    if(v===1) break;
+    await say('Посмотри: в каждой строке одно сообщение. Один житель мог написать и два раза.',g);
+  }
+  w.querySelector('#h0').insertAdjacentHTML('beforeend','<span class="tag obj">ОБЪЕКТ</span>');
+  w.querySelector('#h1').insertAdjacentHTML('beforeend','<span class="tag">ПРИЗНАК</span>');
+  w.querySelector('#h2').insertAdjacentHTML('beforeend','<span class="tag">ПРИЗНАК</span>');
+  await say('Верно. Строка — объект. То, что о нём известно, — признаки. Как у нейрона: признаки — это входы, метка — правильный выход.',g);
+  c1.innerHTML = `<div class="card"><h3>Объект · признаки · метка</h3><b>Объект</b> — одна строка, один пример. <b>Признаки</b> — что о нём известно. <b>Метка</b> — правильный ответ.</div>`;
+  // шаг Б
+  setNext('посчитай срочные обращения. Можно кликать строки — появится отметка. Впиши число и нажми «Проверить».');
+  await say('Теперь посчитай, сколько тут срочных. Можешь отмечать строки кликом.',g);
+  w.querySelectorAll('#t1 tbody tr').forEach(tr=>{ tr.classList.add('row'); tr.onclick=()=>tr.classList.toggle('mark'); });
+  const cnt=document.createElement('div'); cnt.className='card';
+  cnt.innerHTML=`<h3>Сколько срочных?</h3><div class="row2"><input type="number" min="0" max="18" style="width:110px" id="n1"><button class="btn" id="b1">Проверить</button><span class="hintgray">из 18 строк</span></div>`;
+  c1.appendChild(cnt);
+  while(true){
+    await new Promise(res=>cnt.querySelector('#b1').onclick=res); alive(g);
+    const n=parseInt(cnt.querySelector('#n1').value,10);
+    me('Срочных: '+(isNaN(n)?'?':n));
+    if(n===2) break;
+    cnt.querySelector('#b1').disabled=true;
+    await say('Пересчитай. Отмечай строки кликом — так не собьёшься.',g);
+    cnt.querySelector('#b1').disabled=false;
+  }
+  cnt.querySelector('#b1').remove();
+  cnt.insertAdjacentHTML('beforeend','<div class="row2"><b>Срочных — 2. Не срочных — 16.</b></div>');
+  setNext('ответь мастеру внизу слева.');
+  t='И что из этого следует для Помощника?';
+  await say(t,g);
+  let tries=0;
+  while(true){
+    const v = await choose(shuffle([
+      {t:'Он видел почти одни «не срочно» и привык так отвечать',v:'ok'},
+      {t:'В жизни срочного и правда мало, так и должно быть',v:'life'},
+      {t:'Надо было больше строк, тогда всё было бы хорошо',v:'more'},
+      {t:'Просто скажи ответ',v:'ans'}]),g,t);
+    tries++;
+    if(v==='ok'){ if(tries===1) trust(1); break; }
+    if(v==='life') await say('В жизни — да. Но смотри: если на всё говорить «не срочно», угадаешь 16 из 18. Отличный результат? А что будет с газом?',g);
+    if(v==='more') await say('Больше строк с тем же перекосом — тот же результат. Дело не в количестве строк, а в чём?',g);
+    if(v==='ans'){ trust(-1); S.askedAnswer++; await say('Не скажу, ты справишься. Посмотри, сколько у тебя отметок и сколько строк.',g); }
+  }
+  await say('Именно. И заметь — ни одного примера про газ. Откуда ему знать?',g);
+  setNext('запиши своими словами, что не так с уликой №1, и сохрани.');
+  S.words[1] = await freeText(c1,'Для доклада: что не так с уликой №1?','В датасете…');
+  alive(g);
+  S.cluesDone=Math.max(S.cluesDone,1); frame('Тулбокс, улика №1.','понять, как устроен датасет и что с ним не так.','');
+  neighbor('что у вас получилось в улике №1?');
+  setNext('переходи к улике №2.');
+  await button(c1,'Улика №2 →');
+  go(4);
+}
+
+/* ---------- 5. Улика 2 ---------- */
+async function scrClue2(g){
+  useChat('master');
+  frame('Тулбокс, улика №2.','найти, где одно и то же помечено по-разному.','кликни две строки, которые противоречат друг другу, и нажми «Это противоречие».');
+  setHints(['Прочитай только столбец «Метка» и сравни с ответом рядом.','Ищи слово «лифт».','В одной паре перепутали в другую сторону: несрочное сделали срочным. Посмотри на лампочки.']);
+  const w = work(`<h2>Улика №2 · Размеченный текстовый датасет</h2>
+    <div class="note">Пары «сообщение → ответ», на них Помощник учился отвечать. Размечали разные люди. Что-то тут нечисто. <b>— И.</b></div>
+    <table class="ds" id="t2"><thead><tr><th>№</th><th>Сообщение жителя</th><th>Ответ, которому учили</th><th>Метка</th></tr></thead>
+    <tbody>${CLUE2.map((r,i)=>`<tr class="row" data-i="${i}"><td class="n">${i+1}</td><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td class="${r[2]==='срочно'?'u':'nu'}">${r[2]}</td></tr>`).join('')}</tbody></table>
+    <div class="row2"><button class="btn" id="pairBtn" disabled>Это противоречие</button><span id="found" class="lbl">Найдено: 0 из 3</span></div>
+    <div id="c2"></div>`);
+  const c2=w.querySelector('#c2');
+  const t='Ищи пары: одна и та же ситуация, а метки разные. Нашёл — отметь обе строки.';
+  const rows=[...w.querySelectorAll('#t2 tbody tr')];
+  let sel=[], found=[], errs=0, firstAll=true, busy=true;
+  const pb=w.querySelector('#pairBtn');
+  const upd=()=>{ pb.disabled = busy || sel.length!==2; };
+  rows.forEach((tr,i)=>tr.onclick=()=>{
+    if(tr.classList.contains('pair')) return;
+    if(sel.includes(i)){ sel=sel.filter(x=>x!==i); tr.classList.remove('sel'); }
+    else{ if(sel.length===2){ rows[sel[0]].classList.remove('sel'); sel.shift(); } sel.push(i); tr.classList.add('sel'); }
+    upd();
+  });
+  await say(t,g);
+  while(found.length<3){
+    busy=false; upd();
+    await new Promise(res=>pb.onclick=res); alive(g);
+    busy=true;
+    const [a,b]=sel.slice().sort((x,y)=>x-y);
+    sel.forEach(i=>rows[i].classList.remove('sel')); sel=[]; upd();
+    const hit = CLUE2_PAIRS.find(p=>p[0]===a&&p[1]===b);
+    me(`Строки ${a+1} и ${b+1} — противоречие`);
+    if(hit && !found.includes(hit)){
+      found.push(hit); errs=0; rows[a].classList.add('pair'); rows[b].classList.add('pair');
+      w.querySelector('#found').textContent=`Найдено: ${found.length} из 3`;
+      if(found.length<3) await say(['Есть. Ищи дальше.','Точно. Ещё одна осталась.'][found.length-1],g,{fast:true});
+    } else {
+      errs++; firstAll=false;
+      await say('Тут разные ситуации. Ищи одинаковые по смыслу, но с разными метками.',g,{fast:true});
+      if(errs>=3) $('hintBtn').classList.add('pulse');
+    }
+  }
+  if(firstAll) trust(1);
+  setNext('ответь мастеру внизу слева.');
+  let q='Все три нашёл. Как думаешь, почему так получилось?';
+  await say(q,g);
+  let tries=0;
+  while(true){
+    const v=await choose(shuffle([
+      {t:'Размечали разные люди, и каждый по-своему — без общего правила',v:'ok'},
+      {t:'Кто-то специально испортил',v:'evil'},
+      {t:'Это опечатка',v:'typo'}]),g,q);
+    tries++;
+    if(v==='ok'){ if(tries===1) trust(1); break; }
+    if(v==='evil') await say('Вряд ли. Скорее никто не договорился, что считать срочным.',g);
+    if(v==='typo') await say('Три опечатки на десять строк? Нет, тут система.',g);
+  }
+  // личная часть
+  await say('А теперь смотри, что ты сам разметил на смене.',g);
+  let diff=0;
+  const rowsH = SHIFT_PAIRS.map(([x,y,lbl])=>{
+    const a=S.shift[x]||{u:'—'}, b=S.shift[y]||{u:'—'}; const d=a.u!==b.u; if(d) diff++;
+    return `<tr class="${d?'diff':'pair'}"><td>${lbl}</td><td>${esc(SHIFT[x].t)}<br><b>${a.u}</b></td><td>${esc(SHIFT[y].t)}<br><b>${b.u}</b></td><td>${d?'разные метки':'совпали ✓'}</td></tr>`;
+  }).join('');
+  c2.insertAdjacentHTML('beforeend',`<div class="card"><h3>Твоя разметка со смены</h3><table class="ds"><thead><tr><th>Тема</th><th>Обращение</th><th>Похожее обращение</th><th>Итог</th></tr></thead><tbody>${rowsH}</tbody></table></div>`);
+  if(diff) await say(`Видишь? Одно и то же — а метки разные. Ты не ошибся — у тебя не было правила. У разметчиков Помощника тоже.`,g);
+  else await say('Чисто. Ты держал правило в голове. А вот разметчики Помощника — нет.',g);
+  await say('Сформулируй правило: когда обращение — срочное? Запиши справа.',g);
+  setNext('запиши правило разметки, потом — что не так с уликой №2.');
+  S.rule = await freeText(c2,'Правило разметки: когда обращение — срочное?','Срочно, если…'); alive(g);
+  S.words[2] = await freeText(c2,'Для доклада: что не так с уликой №2?','В датасете…'); alive(g);
+  S.cluesDone=Math.max(S.cluesDone,2); frame('Тулбокс, улика №2.','найти, где одно и то же помечено по-разному.','переходи к улике №3.');
+  await button(c2,'Улика №3 →');
+  go(5);
+}
+
+/* ---------- 6. Улика 3 ---------- */
+async function scrClue3(g){
+  useChat('master');
+  frame('Тулбокс, улика №3.','понять, почему в этом датасете важен порядок.','прочитай журнал и панель «Помощник думал».');
+  setHints(['Найди самое первое сообщение: с чего обычно начинают разговор?','Ищи слова, которые показывают, что стало хуже: «сильнее», «уже».','Ответ оператора стоит сразу после того сообщения, на которое он отвечает.']);
+  const w=work(`<h2>Улика №3 · Упорядоченный лог</h2>
+    <div class="note">Журнал одного разговора оператора с жительницей. На таких журналах Помощник учился, что отвечать на какое сообщение. Время в журнале стёрлось при выгрузке. <b>— И.</b></div>
+    <div id="tk3"></div><div id="log"></div>
+    <div class="row2" id="logBtns" hidden><button class="btn" id="chk">Проверить порядок</button><span class="hintgray" id="chkInfo">Двигай строки кнопками ▲ ▼</span></div>
+    <div id="c3"></div>`);
+  const tk=w.querySelector('#tk3'), lg=w.querySelector('#log'), c3=w.querySelector('#c3');
+  let order=LOG_START.slice();
+  const draw=(checked)=>{
+    lg.innerHTML=order.map((k,i)=>`<div class="logl ${checked&&LOG_RIGHT[i]===k?'good':''}"><span class="ar"><button data-i="${i}" data-d="-1" ${i===0?'disabled':''}>▲</button><button data-i="${i}" data-d="1" ${i===order.length-1?'disabled':''}>▼</button></span><span class="who2">${LOG[k][0]}</span><span class="t">${esc(LOG[k][1])}</span></div>`).join('');
+    lg.querySelectorAll('.ar button').forEach(b=>b.onclick=()=>{
+      const i=+b.dataset.i, j=i+(+b.dataset.d); [order[i],order[j]]=[order[j],order[i]]; draw(false);
+    });
+  };
+  draw(false);
+  think(tk,'Помощник думал: «Уже течёт по стене, а рядом розетка!»',[
+    ['v','Получил сообщение ✓'],
+    ['x','Ищу в датасете, какой ответ стоит после него… → «Мастер придёт завтра с 9 до 12» ✗'],
+    ['x','Решаю: не срочно, мастер завтра ← это ошибка']
+  ]);
+  await wait(1800,g);
+  await say('Видишь, что он выучил? Ответ стоит не после своего сообщения. Восстанови разговор: каким он был на самом деле?',g);
+  w.querySelector('#logBtns').hidden=false;
+  setNext('расставь строки журнала по порядку кнопками ▲ ▼ и нажми «Проверить порядок».');
+  let checks=0;
+  while(true){
+    await new Promise(res=>w.querySelector('#chk').onclick=res); alive(g);
+    checks++;
+    const okN = order.filter((k,i)=>LOG_RIGHT[i]===k).length;
+    draw(true);
+    if(okN===6) break;
+    w.querySelector('#chkInfo').textContent=`На своих местах: ${okN} из 6`;
+    if(checks===3){ w.querySelector('#chk').disabled=true; await say('Ищи слова, которые показывают, что стало хуже: «сильнее», «уже».',g); w.querySelector('#chk').disabled=false; }
+  }
+  if(checks===1) trust(1);
+  lg.querySelectorAll('.ar').forEach(a=>a.remove());
+  w.querySelector('#logBtns').remove();
+  me('Порядок восстановлен');
+  tk.innerHTML='';
+  think(tk,'Помощник думал (журнал по порядку): «Уже течёт по стене, а рядом розетка!»',[
+    ['v','Получил сообщение ✓'],
+    ['v','Перед ним: «капает» → «капает сильнее» — ситуация ухудшается ✓'],
+    ['v','После него в журнале: «Отключите электричество. Бригада выезжает» ✓'],
+    ['v','Решаю: срочно ✓']
+  ]);
+  setNext('ответь мастеру внизу слева.');
+  const q='Вот. Так что сломал беспорядок?';
+  await say(q,g);
+  let tries=0;
+  while(true){
+    const v=await choose(shuffle([
+      {t:'Ответы оказались не после своих сообщений, и пропало, что ситуация становилась хуже',v:'ok'},
+      {t:'Журнал просто некрасиво выглядит',v:'ugly'},
+      {t:'Главная проблема — стёрлось время',v:'time'}]),g,q);
+    tries++;
+    if(v==='ok'){ if(tries===1) trust(1); break; }
+    if(v==='ugly') await say('Помощнику красота неважна. Что он из-за этого выучил неправильно?',g);
+    if(v==='time') await say('Время помогло бы восстановить порядок. Но что пострадало без порядка?',g);
+  }
+  await say('В улике №1 порядок строк неважен — переставь их, ничего не изменится. А здесь важен. Запомни разницу.',g);
+  setNext('запиши своими словами, что не так с уликой №3.');
+  S.words[3]=await freeText(c3,'Для доклада: что не так с уликой №3?','В журнале…'); alive(g);
+  S.cluesDone=3; frame('Тулбокс, улика №3.','понять, почему в этом датасете важен порядок.','');
+  neighbor('у кого быстрее сложился порядок и по каким словам?');
+  const mins=(Date.now()-S.t0)/60000/(SP<1?0.1:1);
+  const r=document.createElement('div'); r.className='row2';
+  r.innerHTML=`<button class="btn" id="toRep">Доложить мастеру →</button>${mins<24?'<button class="btn ghost" id="toBon">★ Бонусная улика</button>':''}`;
+  c3.appendChild(r); r.scrollIntoView({behavior:'smooth'});
+  setNext(mins<24?'ты идёшь быстро: можешь взять бонусную улику или сразу докладывать мастеру.':'докладывай мастеру.');
+  const v=await new Promise(res=>{ r.querySelector('#toRep').onclick=()=>res(7); const b=r.querySelector('#toBon'); if(b) b.onclick=()=>res(6); });
+  alive(g); go(v);
+}
+
+/* ---------- 6+. Бонус ---------- */
+async function scrBonus(g){
+  useChat('master');
+  frame('Тулбокс, бонусная улика.','разметить трудные случаи и объяснить решение.','для каждого обращения выбери срочность и причину.');
+  const w=work(`<h2>★ Бонусная улика · Граничные случаи</h2>
+    <div class="note">Самое трудное. Разметчики Помощника такие пропускали — боялись ошибиться. <b>— И.</b></div>
+    <div id="bl">${BONUS.map((b,i)=>`<div class="card" data-i="${i}"><b>${i+1}. ${esc(b)}</b>
+      <div class="seg su"><button data-v="срочно">Срочно</button><button data-v="не срочно">Не срочно</button></div>
+      <div class="seg sr">${REASONS.map(r=>`<button data-v="${r}">${r}</button>`).join('')}</div></div>`).join('')}</div>
+    <div class="row2"><button class="btn" id="bdone" disabled>Готово</button></div><div id="cb"></div>`);
+  const pick={};
+  const upd=()=>{ w.querySelector('#bdone').disabled = BONUS.some((_,i)=>!(pick[i]&&pick[i].u&&pick[i].r)); };
+  w.querySelectorAll('#bl .card').forEach(c=>{
+    const i=+c.dataset.i; pick[i]={};
+    c.querySelectorAll('.su button').forEach(b=>b.onclick=()=>{ c.querySelectorAll('.su button').forEach(x=>x.classList.remove('on','u')); b.classList.add('on'); if(b.dataset.v==='срочно') b.classList.add('u'); pick[i].u=b.dataset.v; upd(); });
+    c.querySelectorAll('.sr button').forEach(b=>b.onclick=()=>{ c.querySelectorAll('.sr button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); pick[i].r=b.dataset.v; upd(); });
+  });
+  const done=new Promise(res=>w.querySelector('#bdone').onclick=res);
+  await say('Взялся за бонус? Правильного ответа тут нет. Есть твоё решение и причина.',g);
+  await done; alive(g);
+  w.querySelector('#bdone').remove();
+  S.bonus=pick; S.bonusDone=true; me('Разметил все пять');
+  await say(`Видишь, что твоё правило из улики №2 должно отвечать и на такие? Твоё правило: «${S.rule||'—'}». Если оно не отвечает — допиши.`,g);
+  const cb=w.querySelector('#cb');
+  setNext('допиши правило разметки (или оставь как есть) и иди докладывать.');
+  const c=document.createElement('div'); c.className='card';
+  c.innerHTML=`<h3>Правило разметки</h3><textarea id="rl">${esc(S.rule)}</textarea>`;
+  cb.appendChild(c);
+  await button(cb,'Доложить мастеру →'); alive(g);
+  const nv=c.querySelector('#rl').value.trim(); if(nv) S.rule=nv;
+  go(7);
+}
+
+/* ---------- 7. Доклад ---------- */
+function checklistHTML(){
+  return `<ol class="cl">${CRIT.map(c=>{
+    const st=S.crit[c.k]; const said=S.words[c.clue];
+    let body = st==='ok' ? `<b>${esc(c.ok)}</b>` : st==='wrong' ? `<b>${esc(c.wrong)}</b>` : st==='skip' ? '<span class="miss">— пропущено —</span>' : '<span class="hintgray">…</span>';
+    return `<li>${body}${said?`<span class="q">Ты сказал: «${esc(said)}»</span>`:''}</li>`;
+  }).join('')}${S.bonusDone?`<li><b>Есть трудные, граничные случаи</b><span class="q">Твоё правило: «${esc(S.rule)}»</span></li>`:''}</ol>`;
+}
+async function askCrit(c,g){
+  const q = {s:'Первое. Что должно быть в каждой строке датасета? Какая из этих мыслей — твоя?',
+             b:'Второе — про количество. Какая мысль твоя?',
+             c:'Третье — про метки. Какая мысль твоя?',
+             o:'Четвёртое — про журнал. Какая мысль твоя?'}[c.k];
+  await say(q,g);
+  let tries=0;
+  while(true){
+    const opts=shuffle([{t:c.ok,v:'ok'},{t:c.wrong,v:'wrong'},{t:c.miss,v:'miss'}]);
+    opts.push({t:'Не уверен — пропущу',v:'skip'});
+    const v=await choose(opts,g,q); tries++;
+    if(v==='ok'){ if(tries===1){ trust(1); S.firstTry[c.k]=true; } await say('Да. Записывай.',g,{fast:true}); return 'ok'; }
+    if(v==='skip'){ await say('Ладно. Проверка покажет.',g,{fast:true}); return 'skip'; }
+    if(v==='miss'){ await say('Хм. Перечитай улику. Давай ещё раз.',g); continue; }
+    if(v==='wrong'){
+      await say(c.wq,g);
+      const v2=await choose([{t:'Да, оставляю',v:1},{t:'Нет, передумал',v:0}],g,c.wq);
+      if(v2===1){ await say('Твоё решение. Записываю.',g,{fast:true}); return 'wrong'; }
+      await say('Тогда выбери ещё раз.',g,{fast:true});
+    }
+  }
+}
+async function scrReport(g,only){
+  useChat('master');
+  frame('Чат с мастером.','доложить, каким должен быть правильный датасет.','выбирай внизу слева мысль, которая совпадает с твоей.');
+  const w=work(`<h2>Доклад мастеру</h2><p class="sub">Чеклист правильного датасета. Что примешь — то и уйдёт на переобучение Помощника.</p><div class="card" id="cl"></div><div id="rp"></div>`);
+  const draw=()=>{ w.querySelector('#cl').innerHTML=checklistHTML(); frame('Чат с мастером.','доложить, каким должен быть правильный датасет.','выбирай внизу слева мысль, которая совпадает с твоей.'); };
+  draw();
+  const list = only ? CRIT.filter(c=>only.includes(c.k)) : CRIT;
+  if(!only) await say(`Освободился. Ну, ${nm()}, докладывай. Что нашёл?`,g);
+  else await say('Давай поправим только то, что не сработало.',g);
+  for(const c of list){ S.crit[c.k]=null; draw(); S.crit[c.k]=await askCrit(c,g); draw(); }
+  await say('Отправляю твой чеклист на переобучение Помощника. Пока он учится — проверим вас обоих. Ты тоже отвечаешь, как на смене.',g);
+  setNext('нажми «Запустить проверку».');
+  await button(w.querySelector('#rp'),'Запустить проверку →');
+  go(8);
+}
+
+/* ---------- 8. Проверка ---------- */
+function botAnswer(i){
+  const C=S.crit;
+  if(i===0) return C.b==='ok'||C.b==='wrong' ? {a:'срочно',ok:true,why:'Достаточно срочных примеров: узнал похожие.'} : {a:'не срочно',ok:false,why:'Не хватило: срочных примеров было слишком мало (баланс).'};
+  if(i===1) return C.c==='ok' ? {a:'срочно',ok:true,why:'Про лифт все метки теперь одинаковые.'} : {a:'не срочно',ok:false,why:'Не хватило: про лифт метки противоречили друг другу (чистая разметка).'};
+  if(i===2) return C.o==='ok'||C.o==='wrong' ? {a:'срочно',ok:true,why:'Журнал по порядку: видно, что стало хуже.'} : {a:'мастер завтра',ok:false,why:'Не хватило: в журнале перепутан порядок.'};
+  if(i===3){
+    if(C.b==='wrong') return {a:'срочно',ok:false,why:'Перекос в другую сторону: срочных стало больше всего, и теперь всё срочно.'};
+    return C.s==='ok' ? {a:'не срочно',ok:true,why:'В примерах есть правильные ответы — понял, что это неудобство.'} : {a:'не знаю, что ответить',ok:false,why:'Не хватило: в примерах не было правильных ответов (структура).'};
+  }
+  if(i===4) return S.bonusDone ? {a:'проверить за сутки',ok:true,why:'Решил по правилу разметки для трудных случаев.'} : {a:'не уверен — передаю человеку',ok:'w',why:'Трудный случай: таких примеров не было. Это не ошибка.'};
+}
+async function scrTest(g){
+  useChat('master');
+  frame('Проверка.','посмотреть, как работает переобученный Помощник.','сначала ответь сам на 5 новых обращений.');
+  const w=work(`<h2>Проверка: ты против Помощника</h2><p class="sub">5 новых обращений, которых не было в уликах. Сначала отвечаешь ты, потом — переобученный Помощник.</p>
+    <table class="ds" id="tt"><thead><tr><th>№</th><th>Обращение</th><th>Ты</th><th>Помощник</th></tr></thead><tbody>
+    ${TEST.map((t,i)=>`<tr data-i="${i}"><td class="n">${i+1}</td><td>${esc(t.t)}</td><td><div class="seg"><button data-v="срочно">Срочно</button><button data-v="не срочно">Не срочно</button></div></td><td class="bt">—</td></tr>`).join('')}
+    </tbody></table><div class="row2"><button class="btn" id="run" disabled>Запустить Помощника</button></div><div id="tr"></div>`);
+  const mine={};
+  w.querySelectorAll('#tt tbody tr').forEach(tr=>{
+    const i=+tr.dataset.i;
+    tr.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{
+      tr.querySelectorAll('.seg button').forEach(x=>x.classList.remove('on','u')); b.classList.add('on'); if(b.dataset.v==='срочно') b.classList.add('u');
+      mine[i]=b.dataset.v; w.querySelector('#run').disabled = Object.keys(mine).length<5;
+    });
+  });
+  const go8=new Promise(res=>w.querySelector('#run').onclick=res);
+  await say('Начинай. Помни газ из первого журнала.',g,{fast:true});
+  await go8; alive(g);
+  w.querySelector('#run').remove();
+  w.querySelectorAll('#tt .seg button').forEach(b=>{ if(!b.classList.contains('on')) b.style.visibility='hidden'; b.onclick=null; });
+  setNext('смотри, как отвечает Помощник.');
+  let meScore=0, botScore=0; const reds=[];
+  for(let i=0;i<5;i++){
+    const tr=w.querySelector(`#tt tbody tr[data-i="${i}"]`);
+    tr.querySelector('.bt').innerHTML='<span class="hintgray">думает…</span>';
+    await wait(1100,g);
+    const r=botAnswer(i);
+    const cls = r.ok===true?'ok':r.ok==='w'?'w':'bad';
+    tr.querySelector('.bt').innerHTML=`<span class="res ${cls}">${r.ok===true?'✓':r.ok==='w'?'?':'✗'} ${esc(r.a)}</span><div class="tline">${esc(r.why)}</div>`;
+    if(r.ok===true) botScore++;
+    if(r.ok===false) reds.push({i,crit:TEST[i].crit==='s'&&S.crit.b==='wrong'?'b':TEST[i].crit});
+    const mineOk = TEST[i].e==='спорно' || mine[i]===TEST[i].e;
+    if(mineOk) meScore++;
+  }
+  if(S.crit.o==='wrong') await say('Журнал сработал. Но в таблице из улики №1 порядок не нужен — ты зря усложнил правило.',g);
+  const tr=w.querySelector('#tr');
+  tr.innerHTML=`<div class="score"><span>Ты: ${meScore} из 5</span><span>Помощник: ${botScore} из 5</span></div>`;
+  const badCrit=[...new Set(reds.map(r=>r.crit))].filter(k=>k!=='bonus');
+  if(badCrit.length && !S.retried){
+    S.retried=true;
+    setNext('Помощник ещё ошибается. Можно один раз исправить доклад.');
+    tr.insertAdjacentHTML('beforeend',`<div class="card"><h3>Есть красные ответы</h3>Под каждым написано, чего не хватило. У тебя одна попытка исправить доклад.</div>`);
+    const row=document.createElement('div'); row.className='row2';
+    row.innerHTML='<button class="btn" id="fix">Исправить доклад</button><button class="btn ghost" id="fin">Оставить как есть</button>';
+    tr.appendChild(row); row.scrollIntoView({behavior:'smooth'});
+    const v=await new Promise(res=>{ row.querySelector('#fix').onclick=()=>res(1); row.querySelector('#fin').onclick=()=>res(0); });
+    alive(g); row.remove();
+    if(v===1){ GEN++; S.screen=7; const g2=GEN; $('choices').innerHTML=''; scrReport(g2,badCrit).catch(e=>{ if(e!==ABORT) console.error(e); }); return; }
+  }
+  await finale(g,tr,reds);
+}
+async function finale(g,host,reds){
+  const okN = CRIT.filter(c=>S.crit[c.k]==='ok').length;
+  const redList = reds.filter(r=>r.crit!=='bonus').map(r=>`«${TEST[r.i].t}»`).join(', ');
+  let txt, ttl;
+  if(okN===4){
+    ttl='Помощник починен';
+    txt='Помощник справился. А вот тебе вопрос посложнее: «Соседи шумят в два часа ночи, а у меня завтра операция». Срочно? Подумай по дороге домой.';
+  } else if(okN>=2){
+    ttl='Помощник починен частично';
+    txt=`Помощник уже лучше. Но вот это он всё ещё пропускает: ${redList||'часть обращений'}. Какой строки не хватает в твоём чеклисте? Напиши справа. Допишешь дома — это часть задания.`;
+  } else {
+    ttl='Помощник снова ошибается';
+    txt=`Помощник снова ошибается. Это значит, что в датасете остались проблемы, которых нет в чеклисте. ${okN?'Ты нашёл 1 из 4. Найди остальные':'Пока ни один пункт не сработал. Но улики ты разобрал — значит, ответы уже у тебя'}. Улики остаются у тебя, дома продолжишь расследование.`;
+  }
+  frame('Проверка.',ttl+'.','');
+  host.insertAdjacentHTML('beforeend',`<div class="card"><h3>${ttl}</h3>Верных пунктов в чеклисте: ${okN} из 4.</div>`);
+  await say(txt,g);
+  if(okN>=2 && okN<4){
+    S.missingAnswer = await freeText(host,'Какой строки не хватает в чеклисте?','Не хватает…',5); alive(g);
+  }
+  const tone = S.trust>=7 ? (okN>=2 ? `${Nm()}, хорошая работа. Ты не торопился и смотрел в данные. Беру тебя на следующий вызов.`
+                                     : `${Nm()}, ты внимательно смотрел в данные — это главное. Чеклист добьёшь дома, и я беру тебя на следующий вызов.`)
+    : S.trust>=4 ? 'Работа сделана. В следующий раз меньше спеши — данные любят, когда их читают.'
+    : `Помощник работает. Но ты ${S.askedAnswer>=2?'дважды просил':'просил'} готовый ответ. Наладчик так не делает.`;
+  host.insertAdjacentHTML('beforeend',`<div class="letter">${esc(tone)}<div class="sig">Мастер Игнат</div></div>`);
+  host.lastElementChild.scrollIntoView({behavior:'smooth'});
+  neighbor('какой финал у него? Почему не такой, как у тебя?');
+  setNext('забери чеклист для домашнего задания.');
+  await button(host,'Забрать чеклист →'); alive(g);
+  go(9);
+}
+
+/* ---------- 9. ДЗ ---------- */
+function hwDoc(){
+  const crit = CRIT.map((c,i)=>{
+    const st=S.crit[c.k];
+    const f = st==='ok' ? c.ok : st==='wrong' ? c.wrong+' — проверь этот пункт сам: на уроке он не сложился' : 'Проверь этот пункт сам: на уроке он не сложился';
+    const said=S.words[c.clue];
+    return `<li><b>${esc(f)}</b> (${esc(c.term)})${said?`<br><i>Ты сказал: «${esc(said)}»</i>`:''}</li>`;
+  }).join('') + (S.bonusDone?'<li><b>Есть трудные, граничные случаи</b> (граничные случаи)</li>':'');
+  const rows20 = Array.from({length:20},(_,i)=>`<tr><td>${i+1}</td><td></td><td></td><td></td></tr>`).join('');
+  const rows6 = Array.from({length:6},(_,i)=>`<tr><td>${i+1}</td><td></td><td></td></tr>`).join('');
+  return `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><title>ДЗ датасет</title>
+<style>body{font-family:Calibri,Arial,sans-serif;font-size:12pt}h1{font-size:18pt;font-family:Calibri,Arial,sans-serif}h2{font-size:14pt;margin-top:14pt;font-family:Calibri,Arial,sans-serif}table{border-collapse:collapse;width:100%}td,th{border:1px solid #888;padding:4pt;vertical-align:top;height:20pt}th{background:#eee}</style></head><body>
+<h1>Домашнее задание: датасет для Помощника</h1>
+<p>Стажёр: ${esc(S.name||'________________')}</p>
+<h2>Часть 1. Каким должен быть датасет (из твоего доклада)</h2><ol>${crit}</ol>
+<p>Твоё правило разметки: <b>${esc(S.rule||'________________')}</b></p>
+<h2>Часть 2. Чего в твоём датасете быть не должно — проверь и поставь галочку</h2>
+<p>☐ Срочных намного меньше, чем несрочных (не 2 против 16)<br>
+☐ Ответ подсказан прямо в сообщении («Срочно! Лопнула труба» — так бот учится читать слово «срочно», а не понимать ситуацию)<br>
+☐ Одно и то же помечено по-разному<br>
+☐ Сообщения не про город (кроссовки, игры, уроки)<br>
+☐ Только лёгкие случаи, ни одного спорного</p>
+<h2>Задание 1. Таблица из 20 обращений (срочных — не меньше 8)</h2>
+<table border="1" cellpadding="5" cellspacing="0" width="100%"><tr><th style="width:5%">№</th><th>Сообщение (объект)</th><th style="width:20%">Категория (признак)</th><th style="width:18%">Срочность (метка)</th></tr>${rows20}</table>
+<h2>Задание 2. Журнал разговора, где ситуация становится хуже (реплики по порядку)</h2>
+<table border="1" cellpadding="5" cellspacing="0" width="100%"><tr><th style="width:5%">№</th><th style="width:20%">Кто</th><th>Сообщение</th></tr>${rows6}</table>
+<h2>Задание 3. Правило разметки одной фразой</h2><p>Срочно, если ______________________________________________</p>
+<h2>Задание 4.</h2><p>Проверь свою работу по Части 2 и отметь галочками.</p>
+</body></html>`;
+}
+async function scrHW(g){
+  useChat('master');
+  frame('Чеклист домашнего задания.','забрать чеклист и бланк ДЗ.','скачай бланк в Word, дома заполни его.');
+  const w=work(`<h2>Чеклист правильного датасета</h2><p class="sub">Это твой доклад мастеру. По нему дома соберёшь датасет для Помощника.</p>
+   <div class="card"><h3>Каким должен быть датасет</h3>${checklistHTML()}</div>
+   <div class="card"><h3>Чего быть не должно</h3><ul>
+   <li>Срочных намного меньше, чем несрочных (не 2 против 16)</li>
+   <li>Ответ подсказан прямо в сообщении («Срочно! Лопнула труба»)</li>
+   <li>Одно и то же помечено по-разному</li>
+   <li>Сообщения не про город (кроссовки, игры, уроки)</li>
+   <li>Только лёгкие случаи, ни одного спорного</li></ul></div>
+   <div class="card"><h3>Задание</h3><ol><li>Таблица из 20 обращений: сообщение · категория · срочность. Срочных — не меньше 8.</li><li>Один журнал разговора из 4–6 реплик, где ситуация становится хуже. Реплики по порядку.</li><li>Правило разметки одной фразой: «Срочно, если…».</li><li>Проверь работу по списку «Чего быть не должно».</li></ol></div>
+   <div class="row2"><button class="btn" id="dl">Скачать бланк ДЗ (Word)</button><span class="hintgray" id="dlInfo"></span></div>`);
+  w.querySelector('#dl').onclick=()=>{
+    try{
+      const blob=new Blob(['﻿',hwDoc()],{type:'application/msword'});
+      const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+      a.download='ДЗ_датасет'+(S.name?'_'+S.name.replace(/[^\wа-яё-]/gi,''):'')+'.doc';
+      document.body.appendChild(a); a.click(); a.remove();
+      w.querySelector('#dlInfo').textContent='Файл скачан. Открой его в Word и сохрани в свою папку.';
+    }catch(e){ w.querySelector('#dlInfo').textContent='Не получилось скачать — попроси учителя.'; }
+  };
+  await say('Чеклист твой. Бланк скачай и заполни дома в Word. До следующего вызова, стажёр.',g);
+  sys('Мастер Игнат вышел из чата.');
+}
+
+/* ===================== СТАРТ И МЕНЮ УЧИТЕЛЯ ===================== */
+$('startBtn').onclick=()=>{
+  S.name=$('nameIn').value.trim().slice(0,24); S.t0=Date.now();
+  $('startScreen').hidden=true; go(0);
+};
+$('nameIn').addEventListener('keydown',e=>{ if(e.key==='Enter') $('startBtn').click(); });
+function fillDefaults(upto){
+  if(upto>=3) SHIFT_ORDER.forEach(id=>{ if(!S.shift[id]) S.shift[id]={c:SHIFT[id].c,u:SHIFT[id].u==='спорно'?'не срочно':SHIFT[id].u}; });
+  if(upto>=4){ S.words[1]=S.words[1]||'(пропущено учителем)'; S.cluesDone=Math.max(S.cluesDone,1); }
+  if(upto>=5){ S.words[2]=S.words[2]||'(пропущено учителем)'; S.rule=S.rule||'(пропущено учителем)'; S.cluesDone=Math.max(S.cluesDone,2); }
+  if(upto>=6){ S.words[3]=S.words[3]||'(пропущено учителем)'; S.cluesDone=3; }
+  if(upto>=8) CRIT.forEach(c=>{ if(!S.crit[c.k]) S.crit[c.k]='skip'; });
+}
+function teacherMenu(){
+  $('tlist').innerHTML=SCREENS.map((s,i)=>`<button class="btn ghost" data-i="${i}">${s.name}</button>`).join('');
+  $('tlist').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i; $('teacher').hidden=true; $('startScreen').hidden=true;
+    fillDefaults(i); go(i);
+  });
+  $('teacher').hidden=false;
+}
+$('tclose').onclick=()=>$('teacher').hidden=true;
+document.addEventListener('keydown',e=>{ if(e.ctrlKey&&e.altKey&&(e.code==='KeyM')){ e.preventDefault(); teacherMenu(); } });
+let bc=0,bt=null; $('brand').addEventListener('click',()=>{ bc++; clearTimeout(bt); bt=setTimeout(()=>bc=0,800); if(bc>=3){ bc=0; teacherMenu(); } });
+/* чат всегда прокручен к последнему сообщению */
+['bchat','mchat'].forEach(id=>{
+  const el=$(id); const stick=()=>{ el.scrollTop=el.scrollHeight; };
+  new MutationObserver(stick).observe(el,{childList:true});
+  if(window.ResizeObserver) new ResizeObserver(stick).observe(el);
+});
+useChat('bot'); frame('Центр обращений.','',''); work('');
+</script>
+</body>
+</html>

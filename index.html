@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Рабочий стол учителя</title>
+<style>
+:root{
+  --bg:#1f2329; --panel:#272c33; --line:#3a414a; --ink:#eef1f4; --ink2:#a9b2bc;
+  --amber:#f2a93b; --amber2:#ffcf7a; --paper:#f6f1e6; --paper2:#ece4d2; --pink:#1d2126; --pink2:#5b5346;
+  --sans:"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--pink);font:16px/1.5 var(--sans)}
+header{background:var(--bg);color:var(--ink);padding:22px 24px 18px;border-bottom:4px solid var(--amber)}
+.wrap{max-width:1040px;margin:0 auto}
+header h1{margin:0;font-size:26px;display:flex;align-items:center;gap:10px}
+header h1 svg{width:34px;height:34px;flex:none}
+header p{margin:6px 0 0;color:var(--ink2)}
+.tools{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.tools button{padding:6px 14px;border-radius:20px;border:1px solid var(--line);background:var(--panel);color:var(--ink2);font:inherit;font-size:14px;cursor:pointer}
+.tools button.on{background:#3b3220;color:var(--amber2);border-color:var(--amber)}
+main{padding:22px 16px 40px}
+h2{font-size:19px;margin:26px 0 10px;padding-bottom:4px;border-bottom:1px solid #d9cfb9}
+h2:first-child{margin-top:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.card{background:#fff;border:1px solid #d9cfb9;border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.card .meta{font-size:13px;color:var(--pink2);display:flex;flex-wrap:wrap;gap:6px}
+.card .meta span{background:var(--paper2);border-radius:10px;padding:1px 8px}
+.card h3{margin:0;font-size:18px;line-height:1.3}
+.card .topic{margin:0;color:var(--pink2);font-size:14px}
+.card p{margin:0;font-size:15px}
+.card .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:6px}
+.btn{display:inline-block;padding:8px 14px;border-radius:9px;background:var(--amber);color:#2a1d05;font-weight:700;text-decoration:none;font-size:15px}
+.btn:hover{background:var(--amber2)}
+.btn.ghost{background:transparent;border:1px solid #b9a77f;color:var(--pink);font-weight:600}
+details{font-size:14px;color:var(--pink2)}
+details summary{cursor:pointer;color:var(--pink)}
+details ul{margin:6px 0 0;padding-left:20px}
+.empty{color:var(--pink2);font-style:italic}
+footer{text-align:center;color:var(--pink2);font-size:13px;padding:0 16px 30px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="9" width="26" height="19" rx="4" fill="#f2a93b"/><rect x="3" y="9" width="26" height="6" fill="#d48a1f"/><path d="M11 9V6a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3" fill="none" stroke="#a9b2bc" stroke-width="2.5"/><rect x="14" y="13" width="4" height="4" rx="1" fill="#1f2329"/></svg>Рабочий стол учителя</h1>
+    <p>Приложения к урокам курса «ИИ и информационная безопасность». Каждое открывается в браузере и работает без интернета.</p>
+    <div class="tools" id="filters"></div>
+  </div>
+</header>
+<main><div class="wrap" id="list"></div></main>
+<footer>Чтобы быстро пройти урок перед занятием, нажмите «Быстрый прогон»: персонажи отвечают почти мгновенно.</footer>
+
+<script>
+/* ===== КАТАЛОГ =====
+   Новый урок = новый объект в этом списке.
+   path — папка с index.html внутри, относительно этой страницы. */
+const LESSONS = [
+  {
+    grade: 7,
+    title: 'Помощник сломался',
+    topic: 'Что такое данные. Датасет. Виды датасетов',
+    about: 'Стажёр мастера-наладчика разбирает три улики-датасета, находит, почему чат-бот отправляет срочные жалобы в «не срочно», и собирает чеклист правильного датасета.',
+    format: 'каждому свой ноутбук · 40 минут',
+    path: '7-klass/dataset-pomoshnik/',
+    fast: true,
+    notes: [
+      'Меню учителя: Ctrl+Alt+M или три быстрых клика по логотипу — переход к любому экрану.',
+      'Перезагрузка страницы начинает урок заново — предупредите детей.',
+      'В конце ребёнок скачивает бланк ДЗ в Word (.doc) — он попадает в «Загрузки».'
+    ]
+  }
+];
+
+const grades = [...new Set(LESSONS.map(l=>l.grade))].sort((a,b)=>a-b);
+let current = 'all';
+const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function drawFilters(){
+  const f = document.getElementById('filters');
+  const opts = [['all','Все классы']].concat(grades.map(g=>[String(g),g+' класс']));
+  f.innerHTML = opts.map(([v,t])=>`<button data-v="${v}" class="${v===current?'on':''}">${t}</button>`).join('');
+  f.querySelectorAll('button').forEach(b=>b.onclick=()=>{ current=b.dataset.v; try{localStorage.setItem('twp-grade',current);}catch(e){} drawFilters(); drawList(); });
+}
+function card(l){
+  const open = l.path + 'index.html';
+  return `<article class="card">
+    <div class="meta"><span>${l.grade} класс</span>${l.format?`<span>${esc(l.format)}</span>`:''}</div>
+    <h3>${esc(l.title)}</h3>
+    <p class="topic">Тема: ${esc(l.topic)}</p>
+    <p>${esc(l.about)}</p>
+    ${l.notes&&l.notes.length?`<details><summary>Для учителя</summary><ul>${l.notes.map(n=>`<li>${esc(n)}</li>`).join('')}</ul></details>`:''}
+    <div class="acts">
+      <a class="btn" href="${open}">Открыть урок</a>
+      ${l.fast?`<a class="btn ghost" href="${open}?fast=1">Быстрый прогон</a>`:''}
+    </div>
+  </article>`;
+}
+function drawList(){
+  const host = document.getElementById('list');
+  const show = current==='all' ? grades : grades.filter(g=>String(g)===current);
+  host.innerHTML = show.map(g=>{
+    const ls = LESSONS.filter(l=>l.grade===g);
+    return `<h2>${g} класс</h2><div class="grid">${ls.map(card).join('') || '<p class="empty">Пока пусто</p>'}</div>`;
+  }).join('') || '<p class="empty">Пока нет уроков</p>';
+}
+try{ const s=localStorage.getItem('twp-grade'); if(s && (s==='all'||grades.map(String).includes(s))) current=s; }catch(e){}
+drawFilters(); drawList();
+</script>
+</body>
+</html>
