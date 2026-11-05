@@ -34,9 +34,6 @@ h2:first-child{margin-top:0}
 .btn{display:inline-block;padding:8px 14px;border-radius:9px;background:var(--amber);color:#2a1d05;font-weight:700;text-decoration:none;font-size:15px}
 .btn:hover{background:var(--amber2)}
 .btn.ghost{background:transparent;border:1px solid #b9a77f;color:var(--pink);font-weight:600}
-details{font-size:14px;color:var(--pink2)}
-details summary{cursor:pointer;color:var(--pink)}
-details ul{margin:6px 0 0;padding-left:20px}
 .empty{color:var(--pink2);font-style:italic}
 footer{text-align:center;color:var(--pink2);font-size:13px;padding:0 16px 30px}
 </style>
@@ -50,7 +47,6 @@ footer{text-align:center;color:var(--pink2);font-size:13px;padding:0 16px 30px}
   </div>
 </header>
 <main><div class="wrap" id="list"></div></main>
-<footer>Чтобы быстро пройти урок перед занятием, нажмите «Быстрый прогон»: персонажи отвечают почти мгновенно.</footer>
 
 <script>
 /* ===== КАТАЛОГ =====
@@ -63,13 +59,7 @@ const LESSONS = [
     topic: 'Что такое данные. Датасет. Виды датасетов',
     about: 'Стажёр мастера-наладчика разбирает три улики-датасета, находит, почему чат-бот отправляет срочные жалобы в «не срочно», и собирает чеклист правильного датасета.',
     format: 'каждому свой ноутбук · 40 минут',
-    path: '7-klass/dataset-pomoshnik/',
-    fast: true,
-    notes: [
-      'Меню учителя: Ctrl+Alt+M или три быстрых клика по логотипу — переход к любому экрану.',
-      'Перезагрузка страницы начинает урок заново — предупредите детей.',
-      'В конце ребёнок скачивает бланк ДЗ в Word (.doc) — он попадает в «Загрузки».'
-    ]
+    path: '7-klass/dataset-pomoshnik/'
   }
 ];
 
@@ -90,11 +80,7 @@ function card(l){
     <h3>${esc(l.title)}</h3>
     <p class="topic">Тема: ${esc(l.topic)}</p>
     <p>${esc(l.about)}</p>
-    ${l.notes&&l.notes.length?`<details><summary>Для учителя</summary><ul>${l.notes.map(n=>`<li>${esc(n)}</li>`).join('')}</ul></details>`:''}
-    <div class="acts">
-      <a class="btn" href="${open}">Открыть урок</a>
-      ${l.fast?`<a class="btn ghost" href="${open}?fast=1">Быстрый прогон</a>`:''}
-    </div>
+    <div class="acts"><a class="btn" href="${open}">Открыть урок</a></div>
   </article>`;
 }
 function drawList(){

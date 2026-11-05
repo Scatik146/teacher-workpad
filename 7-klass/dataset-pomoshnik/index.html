@@ -1058,7 +1058,6 @@ function teacherMenu(){
 }
 $('tclose').onclick=()=>$('teacher').hidden=true;
 document.addEventListener('keydown',e=>{ if(e.ctrlKey&&e.altKey&&(e.code==='KeyM')){ e.preventDefault(); teacherMenu(); } });
-let bc=0,bt=null; $('brand').addEventListener('click',()=>{ bc++; clearTimeout(bt); bt=setTimeout(()=>bc=0,800); if(bc>=3){ bc=0; teacherMenu(); } });
 /* чат всегда прокручен к последнему сообщению */
 ['bchat','mchat'].forEach(id=>{
   const el=$(id); const stick=()=>{ el.scrollTop=el.scrollHeight; };
