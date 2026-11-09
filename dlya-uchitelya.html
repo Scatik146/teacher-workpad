@@ -26,17 +26,17 @@ const KIND = { slides:'слайды', print:'печать', guide:'конспе�
 TWP.mount({
   key: 'twp-t',
   emptyText: 'Материалы учителя пока не загружены',
-  pool: TWP.shown,
+  pool: TWP.teacherPool,
   card: (l, p) => {
     const ms = l.teacher || [];
-    const app = l.app === null ? '' :
+    const app = !TWP.hasApp(l) ? '' :
       `<li><a href="${l.path + (l.app || 'index.html')}">Приложение урока<span class="k">ученикам</span></a></li>`;
     return `<article class="card" style="--c:${TWP.subj(p.s).color}">
       ${TWP.meta(l, p)}
       <h3>${TWP.esc(l.title)}</h3>
       <p class="topic">Тема: ${TWP.esc(l.topic)}</p>
       <ul class="mats">${ms.map(m => `<li><a href="${l.path + m.href}">${TWP.esc(m.label)}${m.kind ? `<span class="k">${KIND[m.kind] || TWP.esc(m.kind)}</span>` : ''}</a></li>`).join('')}${app}</ul>
-      ${ms.length ? '' : '<p class="pending">Материалы ещё не добавлены</p>'}
+      ${ms.length ? '' : '<p class="pending">Материалы ещё не добавлены</p>'}${l.ready === false && l.app !== null ? '<p class="pending">Приложение ещё не загружено</p>' : ''}
     </article>`;
   }
 });

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Раздатка «Сначала обучи, потом объясни»</title>
+<style>
+:root{--ink:#1d2126;--ink2:#5b5346;--line:#d9cfb9;--paper:#f6f1e6;--accent:#f2a93b}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 "Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+.bar{position:sticky;top:0;z-index:5;display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 16px;background:#1f2329;color:#eef1f4;border-bottom:3px solid var(--accent)}
+.bar a,.bar button{font:inherit;font-size:14px;color:#eef1f4;background:#272c33;border:1px solid #3a414a;border-radius:18px;padding:5px 12px;text-decoration:none;cursor:pointer}
+.bar button{background:var(--accent);color:#2a1d05;border-color:var(--accent);font-weight:700}
+.bar .t{flex:1;min-width:0;color:#a9b2bc;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.doc{max-width:860px;margin:20px auto 48px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:28px 34px}
+h1{font-size:28px;line-height:1.25;margin:0 0 12px}
+h2{font-size:21px;margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--line)}
+h3{font-size:17px;margin:20px 0 8px}
+p{margin:8px 0}
+table{border-collapse:collapse;width:100%;margin:10px 0;font-size:14.5px}
+th,td{border:1px solid #cfc5ae;padding:6px 8px;vertical-align:top;text-align:left}
+th{background:#f3ecdd}
+td:empty::after{content:"\00a0"}
+blockquote{margin:10px 0;padding:8px 14px;border-left:4px solid var(--accent);background:#fbf6ea}
+pre{white-space:pre-wrap;background:#f3ecdd;border-radius:8px;padding:10px 12px;font-size:14.5px}
+code{font-family:Consolas,"Courier New",monospace}
+ul,ol{padding-left:24px}
+li[data-checked]{list-style:none;margin-left:-20px}
+hr{border:0;border-top:1px dashed #b9a77f;margin:18px 0}
+a{color:#1f5fa8}
+@media (max-width:600px){.doc{padding:18px 16px;margin:10px 8px}table{font-size:13px}}
+@media print{
+  html,body{background:#fff}
+  .bar{display:none}
+  .doc{border:0;border-radius:0;margin:0;padding:0;max-width:none}
+  h2{break-after:avoid}
+  tr,blockquote,pre{break-inside:avoid}
+  a{color:inherit;text-decoration:none}
+  @page{size:A4;margin:14mm 14mm 16mm}
+}
+</style>
+</head>
+<body>
+<div class="bar"><a href="../../dlya-uchitelya.html">← Для учителя</a><span class="t">Раздатка «Сначала обучи, потом объясни»</span><button type="button" onclick="window.print()">Печать</button></div>
+<main class="doc">
+<h1 id="раздатка-сначала-обучи-потом-объясни">Раздатка — «Сначала обучи, потом объясни»</h1>
+<h2 id="1-рабочий-лист-пары">1. Рабочий лист пары</h2>
+<p>Один лист на пару. Пишите прямо здесь.</p>
+<p>Имена: ______________________ и ______________________</p>
+<p><strong>Правила урока.</strong> Учитель сегодня молчит. Вы — нет: обсуждайте с напарником, спорьте, помогайте соседям (вполголоса). Застряли — положите на ноутбук <strong>красную карточку</strong>, учитель молча принесёт подсказку. Закончили этап — <strong>зелёную</strong>. Какой сейчас этап и сколько осталось времени, смотрите на слайде.</p>
+<h3 id="этап-0-гипотеза-до-работы-на-ноутбуке">Этап 0. Гипотеза (до работы на ноутбуке)</h3>
+<p>Сегодня вы научите компьютер отличать <strong>акварель</strong> от <strong>карандашного рисунка</strong>. Пока не начали, запишите прогноз:</p>
+<ul><li><p>Компьютер научится за ______ секунд.</p></li><li><p>Из 10 секретных картинок он угадает ______.</p></li></ul>
+<h3 id="этап-1-стенд">Этап 1. Стенд</h3>
+<ol><li><p>Откройте <strong>teachablemachine.withgoogle.com</strong> → Get Started → Image Project → Standard image model.</p></li><li><p>Щёлкните по названию «Class 1» и переименуйте в «Акварель». «Class 2» — в «Карандаш».</p></li><li><p>В карточке «Акварель» нажмите <strong>Upload</strong> → откройте сетевую папку <strong>Стенд/Акварель</strong> → выделите все файлы (Ctrl+A) → Открыть. То же для «Карандаш» из папки <strong>Стенд/Карандаш</strong>.</p></li><li><p>Нажмите <strong>Train Model</strong> и засеките время до конца обучения. Пока модель учится, не переключайте вкладку.</p></li><li><p>Справа, в окне <strong>Preview</strong>, переключите <strong>Input</strong> с Webcam на <strong>File</strong>. По одной загружайте картинки test_01 … test_10 из папки <strong>Секретный_тест</strong> и заполняйте таблицу.</p></li></ol>
+<p>Время обучения: ______ секунд.</p>
+<table><thead><tr><th>Картинка</th><th>Ответ модели</th><th>Уверенность, %</th><th>Ваше мнение: что это на самом деле?</th></tr></thead><tbody><tr><td>test_01</td><td></td><td></td><td></td></tr><tr><td>test_02</td><td></td><td></td><td></td></tr><tr><td>test_03</td><td></td><td></td><td></td></tr><tr><td>test_04</td><td></td><td></td><td></td></tr><tr><td>test_05</td><td></td><td></td><td></td></tr><tr><td>test_06</td><td></td><td></td><td></td></tr><tr><td>test_07</td><td></td><td></td><td></td></tr><tr><td>test_08</td><td></td><td></td><td></td></tr><tr><td>test_09</td><td></td><td></td><td></td></tr><tr><td>test_10</td><td></td><td></td><td></td></tr></tbody></table>
+<p>Модель уверенно ошиблась на картинках: ______________. Что общего у этих картинок?</p>
+<hr>
+<p><strong>Поймайте модель на жульничестве.</strong> По какому признаку она на самом деле отличает «акварель» от «карандаша»? Это то же самое, что техника рисования?</p>
+<hr>
+<h3 id="этап-2-под-капотом">Этап 2. Под капотом</h3>
+<ol><li><p>Под кнопкой Train Model раскройте <strong>Advanced</strong>. Найдите поле <strong>Epochs</strong>. Сейчас там стоит число ______.</p></li><li><p>Поставьте Epochs = <strong>1</strong> → Train Model → засеките время. Проверьте модель на трёх картинках, на которых она ошиблась в этапе 1. Повторите для <strong>10</strong> и <strong>50</strong>.</p></li></ol>
+<table><thead><tr><th>Epochs</th><th>Время обучения, с</th><th>Угадала из 3 трудных</th></tr></thead><tbody><tr><td>1</td><td></td><td></td></tr><tr><td>10</td><td></td><td></td></tr><tr><td>50</td><td></td><td></td></tr></tbody></table>
+<ol start="3"><li><p>В том же блоке Advanced нажмите <strong>Under the hood</strong>. Появятся графики. По горизонтальной оси — те самые Epochs. Одна линия растёт, другая падает.</p></li></ol>
+<ul><li><p>Растёт, по-нашему: ______________________________</p></li><li><p>Падает, по-нашему: ______________________________</p></li></ul>
+<ol start="4"><li><p>Придумайте свои названия, <strong>пока не открыли конверт</strong>:</p></li></ol>
+<table><thead><tr><th>Что</th><th>Наше название</th><th>Почему так</th></tr></thead><tbody><tr><td>Число в поле Epochs</td><td></td><td></td></tr><tr><td>Падающая линия на графике</td><td></td><td></td></tr><tr><td>Все картинки в папке «Стенд»</td><td></td><td></td></tr><tr><td>Картинки из «Секретного теста»</td><td></td><td></td></tr></tbody></table>
+<ol start="5"><li><p>Почему при Epochs = 50 обучение идёт дольше, чем при 1? Своими словами:</p></li></ol>
+<hr>
+<ol start="6"><li><p><strong>Теперь откройте конверт с терминами.</strong> Совпали ли ваши названия по смыслу? Где ближе всего? ______________</p></li></ol>
+<h3 id="этап-3-масштаб">Этап 3. Масштаб</h3>
+<p>Возьмите досье. Числа берите из первоисточника (английский столбец), русский — подстраховка.</p>
+<table><thead><tr><th>Что обучаем</th><th>Сколько картинок</th><th>Сколько времени учится</th><th>Откуда число</th></tr></thead><tbody><tr><td>Наш стенд</td><td></td><td>______ с</td><td>наш опыт</td></tr><tr><td>Модель-художник в одном стиле</td><td></td><td>______ мин</td><td>досье, карточка Б</td></tr><tr><td>Генератор картин с нуля</td><td></td><td>______ часов</td><td>досье, карточки В и Г</td></tr></tbody></table>
+<p>Посчитайте (калькулятор можно):</p>
+<ul><li><p>Генератор с нуля: ______ часов × 3600 = ______________ секунд.</p></li><li><p>Во сколько раз дольше, чем наш стенд? ______________ ÷ ______ = ______________ раз.</p></li><li><p>Во сколько раз больше картинок, чем у нас? ______________ раз.</p></li><li><p>Почему наш стенд учится секунды, хотя различает картинки? Подсказка — карточка А.</p></li></ul>
+<hr>
+<p><strong>Закончили раньше всех?</strong> Возьмите карточку-челлендж.</p>
+<h2 id="2-конверт-с-терминами">2. Конверт с терминами</h2>
+<p>Распечатать по одному на пару, вложить в конверт с надписью «Открыть только после пункта 5 этапа «Под капотом»».</p>
+<p><strong>Вы уже всё это видели своими руками. Вот как это называют специалисты.</strong></p>
+<table><thead><tr><th>Термин</th><th>Что это</th><th>Где вы это видели</th></tr></thead><tbody><tr><td><strong>Модель</strong></td><td>Программа, которая сама выводит правила из примеров. Правила ей никто не пишет — ей показывают примеры.</td><td>То, что вы обучили в Teachable Machine</td></tr><tr><td><strong>Обучающая выборка</strong></td><td>Все примеры, на которых учится модель. Какая выборка — такая и модель.</td><td>Папка «Стенд»</td></tr><tr><td><strong>Эпоха</strong></td><td>Один полный проход модели по всей обучающей выборке. 50 эпох — модель просмотрела все картинки 50 раз.</td><td>Поле Epochs</td></tr><tr><td><strong>Ошибка обучения (loss)</strong></td><td>«Штрафные очки» модели: число, которое показывает, насколько она сейчас ошибается. Во время обучения должно падать.</td><td>Падающая линия в Under the hood</td></tr><tr><td><strong>Дообучение</strong></td><td>Модель учат не с нуля: берут готовую, которую уже учили на миллионах картинок, и доучивают на своих примерах.</td><td>Почему стенд учится секунды</td></tr></tbody></table>
+<p><strong>Для тех, кто хочет больше:</strong></p>
+<table><thead><tr><th>Термин</th><th>Что это</th></tr></thead><tbody><tr><td><strong>Тестовые данные</strong></td><td>Примеры, которых модель не видела при обучении. Только на них видно, научилась она или просто запомнила. У вас — «Секретный тест».</td></tr><tr><td><strong>Точность (accuracy)</strong></td><td>Доля правильных ответов модели. Растущая линия в Under the hood.</td></tr><tr><td><strong>Переобучение</strong></td><td>Модель вызубрила обучающие примеры, а на новых ошибается. Как ученик, который выучил ответы, но не понял тему.</td></tr><tr><td><strong>Час работы видеокарты (GPU-час)</strong></td><td>Единица «стоимости» обучения: один час работы одной видеокарты. 10 видеокарт за 1 час = 10 GPU-часов.</td></tr></tbody></table>
+<p><strong>Главная мысль урока одной строкой:</strong> время обучения растёт вместе с числом картинок, числом эпох и размером модели — а мощное железо это время сокращает.</p>
+<h2 id="3-досье-откуда-берутся-большие-числа">3. Досье: откуда берутся большие числа</h2>
+<p>Одно досье на пару. В левом столбце — дословная строка из первоисточника (в кавычках) и пересказ остального по-английски. В правом — то же по-русски. Числа ищите в левом столбце, правый — подстраховка.</p>
+<h3 id="карточка-а-что-внутри-teachable-machine">Карточка А. Что внутри Teachable Machine</h3>
+<p>Источник: Google, учебный курс <a href="https://codelabs.developers.google.com/codelabs/tensorflowjs-teachablemachine-codelab">TensorFlow.js: Make your own «Teachable Machine» using transfer learning</a></p>
+<table><thead><tr><th>English</th><th>По-русски</th></tr></thead><tbody><tr><td>Original line: the base model «was trained on a huge dataset known as ImageNet that has millions of labelled images».</td><td>Готовую модель внутри заранее обучили на огромном наборе картинок ImageNet — в нём миллионы картинок с подписями.</td></tr><tr><td>Summary: the model already recognises 1000 kinds of objects. Teachable Machine reuses it and only teaches the last step on your examples. This is called transfer learning.</td><td>Эта модель уже различает 1000 видов предметов. Teachable Machine берёт её готовой и доучивает только последний шаг на ваших примерах. Это называется дообучением (transfer learning).</td></tr></tbody></table>
+<h3 id="карточка-б-модель-художник-в-одном-стиле">Карточка Б. Модель-художник в одном стиле</h3>
+<p>Источник: карточка модели <a href="https://huggingface.co/stephenbtl/marginalia-drolleries-klein-4b-lora">Medieval Marginalia — FLUX.2 [klein] LoRA</a> на сайте Hugging Face</p>
+<table><thead><tr><th>English</th><th>По-русски</th></tr></thead><tbody><tr><td>Original line: «GPU: RTX 4090, ~37 minutes».</td><td>Видеокарта: одна домашняя RTX 4090, около 37 минут.</td></tr><tr><td>Summary: a style add-on (LoRA) for a ready-made image generator. It learned to draw like medieval book margins from 30 public-domain images. The author kept a middle version, because later versions overfitted.</td><td>Это «насадка» к готовому генератору картинок: она научила его рисовать в стиле средневековых книжных полей. Обучающая выборка — 30 картинок из общественного достояния. Автор оставил версию из середины обучения: поздние версии переобучились.</td></tr></tbody></table>
+<h3 id="карточка-в-генератор-картин-с-нуля-время">Карточка В. Генератор картин с нуля: время</h3>
+<p>Источник: официальная карточка модели <a href="https://huggingface.co/CompVis/stable-diffusion-v1-4">Stable Diffusion v1-4</a> (авторы Robin Rombach, Patrick Esser)</p>
+<table><thead><tr><th>English</th><th>По-русски</th></tr></thead><tbody><tr><td>Original line: «Hardware Type: A100 PCIe 40GB; Hours used: 150000».</td><td>Тип видеокарты: A100 (серверная). Использовано часов: 150 000.</td></tr><tr><td>Summary: training ran on 32 × 8 A100 GPUs — 256 graphics cards at once. The model was trained on subsets of the LAION-2B(en) dataset.</td><td>Обучение шло на 32 × 8 = 256 видеокартах одновременно. Обучающая выборка — части набора LAION-2B(en). Что значит «2B» — смотрите карточку Г.</td></tr></tbody></table>
+<h3 id="карточка-г-генератор-картин-с-нуля-картинки">Карточка Г. Генератор картин с нуля: картинки</h3>
+<p>Источник: научная статья <a href="https://arxiv.org/abs/2210.08402">LAION-5B: An open large-scale dataset for training next generation image-text models</a> (2022)</p>
+<table><thead><tr><th>English</th><th>По-русски</th></tr></thead><tbody><tr><td>Summary of the abstract: LAION-5B has 5.85 billion image–text pairs. Of these, 2.32 billion have English text — this English part is called LAION-2B(en).</td><td>В наборе LAION-5B — 5,85 миллиарда пар «картинка + подпись». Из них 2,32 миллиарда с английскими подписями: эта часть и называется LAION-2B(en). «B» — billion, миллиард.</td></tr></tbody></table>
+<p><strong>Осторожно с выводами.</strong> 150 000 часов — это суммарная работа всех 256 видеокарт. Сам календарный срок был намного короче: 150 000 ÷ 256 ≈ 586 часов, примерно 24 дня.</p>
+<h2 id="4-карточка-челлендж">4. Карточка-челлендж</h2>
+<p>Для пар, которые закончили этап раньше других. Выберите любое испытание, результат запишите на обороте рабочего листа.</p>
+<table><thead><tr><th>Испытание</th><th>Что сделать</th><th>Что выяснить</th></tr></thead><tbody><tr><td><strong>Отравитель</strong></td><td>В класс «Карандаш» дополнительно загрузите 20 акварелей из папки «Стенд/Акварель». Обучите заново и прогоните «Секретный тест».</td><td>Насколько испортилась модель? Как злоумышленник мог бы так испортить чужую модель — и почему это проблема безопасности?</td></tr><tr><td><strong>Голодная модель</strong></td><td>Новый проект: по 5 картинок в каждом классе. Обучите, прогоните тест.</td><td>Во сколько раз хуже, чем на 50 картинках? Что важнее: число эпох или число картинок?</td></tr><tr><td><strong>Зубрила</strong></td><td>Поставьте Epochs = 200. Обучите, посмотрите Under the hood и тест.</td><td>После какой эпохи линия ошибки почти перестаёт падать? Стало ли лучше на тесте — или модель начала зубрить?</td></tr><tr><td><strong>Где мои данные?</strong></td><td>Найдите на сайте Teachable Machine раздел FAQ и вопрос о том, кто видит ваши картинки.</td><td>Куда уходят ваши картинки при обучении? Чем это отличается от загрузки своего фото в онлайн-генератор?</td></tr></tbody></table>
+<h2 id="5-смета-нейро-художника">5. Смета нейро-художника</h2>
+<p>Каждая пара получает <strong>одного</strong> заказчика (разрезать карточки) и бланк сметы. На смету — 5 минут. Итог впишите одной строкой в общую таблицу на доске.</p>
+<h3 id="карточки-заказчиков">Карточки заказчиков</h3>
+<p><strong>Заказчик 1. Художница Алина.</strong> «У меня 40 моих акварелей. Хочу, чтобы ИИ помогал делать эскизы в моём стиле — для меня самой».</p>
+<p><strong>Заказчик 2. Музей.</strong> «Для интерактивной выставки нужен генератор картин в стиле передвижников — русских художников XIX века. Посетитель вводит тему, ИИ рисует».</p>
+<p><strong>Заказчик 3. Блогер Макс.</strong> «Хочу картинки как у одного популярного современного иллюстратора. Скачаю 30 его работ из соцсетей — и готово».</p>
+<p><strong>Заказчик 4. Стартап.</strong> «Хотим свой генератор картин, как у больших компаний, полностью с нуля. Бюджет — 1 миллион рублей». Условие задачи (не точная цена): допустим, час работы одной серверной видеокарты стоит 150 рублей.</p>
+<h3 id="бланк-сметы">Бланк сметы</h3>
+<p>Заказчик № ______</p>
+<table><thead><tr><th>Вопрос</th><th>Наш ответ</th></tr></thead><tbody><tr><td>Как учить: дообучить готовый генератор или с нуля? Почему?</td><td></td></tr><tr><td>Сколько картинок понадобится (примерно)?</td><td></td></tr><tr><td>Сколько времени будет учиться и на каком железе?</td><td></td></tr><tr><td>Откуда взять картинки — и можно ли их брать?</td><td></td></tr><tr><td>Красный флаг: главный риск этого заказа</td><td></td></tr><tr><td><strong>Вердикт: берёмся / берёмся с условием / отказываемся</strong></td><td></td></tr></tbody></table>
+<h2 id="6-карточки-подсказки">6. Карточки-подсказки</h2>
+<p>Для учителя: разрезать, держать у себя. Пара подняла красную карточку — подойти, посмотреть на экран, молча положить нужную подсказку.</p>
+<table><thead><tr><th>№</th><th>Затык</th><th>Подсказка</th></tr></thead><tbody><tr><td>П1</td><td>Не нажимается Train Model</td><td>В каждом классе должны быть картинки — под названием класса видны миниатюры. Классов должно быть два.</td></tr><tr><td>П2</td><td>Не можем найти папку с картинками</td><td>Путь к сетевой папке: ______________________________ (учитель вписывает заранее).</td></tr><tr><td>П3</td><td>Модель на всё отвечает одно и то же</td><td>Проверьте, не загрузили ли вы одну и ту же папку в оба класса. Исправьте и обучите заново.</td></tr><tr><td>П4</td><td>Обучение зависло</td><td>Не переключайте вкладку, пока модель учится. Висит дольше 2 минут — обновите страницу и начните заново.</td></tr><tr><td>П5</td><td>Где Advanced и Under the hood?</td><td>Под кнопкой Train Model есть строка Advanced со стрелкой. Under the hood — внизу раскрывшегося блока.</td></tr><tr><td>П6</td><td>Не нашли число в досье</td><td>Б: строка «GPU». В: «Hours used». Г: слово billion — это миллиард.</td></tr><tr><td>П7</td><td>Не понимаем, что считать</td><td>Пример: 2 часа = 2 × 3600 = 7200 секунд. Большое время в секундах делим на время вашего стенда.</td></tr><tr><td>П8</td><td>Модель угадала все 10 — ловушки не сработали</td><td>Найдите тест, где уверенность модели ниже всего. Почему именно он? Потом — карточка-челлендж.</td></tr></tbody></table>
+<h2 id="7-выходной-билет">7. Выходной билет</h2>
+<p>Каждому ученику свой, заполняется молча и сдаётся на выходе. Это проверка цели урока.</p>
+<p>Имя: ______________________</p>
+<ol><li><p>Обучение нейросети становится дольше и дороже, когда растёт ______________________, ______________________ и ______________________.</p></li><li><p>Наш стенд учился ______ секунд. Генератор картин с нуля учился ______________ часов работы видеокарт. Это примерно в ______________ раз дольше.</p></li><li><p>Генератор картин учить намного сложнее, потому что ______________________________________________.</p></li><li><p>Одно, что меня сегодня удивило: ______________________________________________.</p></li></ol>
+
+</main>
+</body>
+</html>

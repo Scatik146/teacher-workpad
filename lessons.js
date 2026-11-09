@@ -11,7 +11,8 @@
      teacher — материалы учителя: [{label, href, kind}], href относительно папки урока;
                kind: 'slides' (слайды), 'print' (листы для печати), 'guide' (конспект), 'tool' (инструмент)
      note    — короткое замечание на плашке
-     ready:false — урок готовится, на сайте не показывается
+     ready:false — приложение ещё не загружено: плашки на главной нет;
+               в разделе учителя урок виден, если у него уже есть материалы
 */
 const SUBJECTS = [
   { id:'iiib', name:'ИИ и информационная безопасность', short:'ИИИБ', color:'#3f7fd6' },
@@ -39,12 +40,13 @@ const LESSONS = [
     path: '1-klass/raskraska/'
   },
   {
-    ready:false, where:[{s:'iiib', g:2}],
+    where:[{s:'iiib', g:2}],
     title: 'Я автор',
     topic: 'Этапы работы над коллажем',
     about: 'Дети собирают «лесенку автора» из пяти шагов — от «я придумываю» до «я проверяю и подписываю» — и проверяют её, командуя однокласснику-роботу.',
-    format: '40 минут',
-    path: '2-klass/ya-avtor/'
+    format: 'на интерактивной доске · 40 минут',
+    path: '2-klass/ya-avtor/',
+    teacher: [{label:'Канва урока', href:'kanva.html', kind:'guide'}]
   },
   {
     ready:false, where:[{s:'iiib', g:2}],
@@ -55,20 +57,22 @@ const LESSONS = [
     path: '2-klass/kollazh-istoriya/'
   },
   {
-    ready:false, where:[{s:'iiib', g:4}],
+    where:[{s:'iiib', g:4}],
     title: 'Экспедиция Мити',
     topic: 'Практикум в Word: письмо о финно-угорских названиях Подмосковья',
     about: 'Письмо участника экспедиции о том, откуда взялись названия Яхрома, Нерская, Москва. Дети оформляют его в Word с помощью сочетаний клавиш.',
     format: 'ноутбуки с Word, лист задания',
-    path: '4-klass/ekspediciya/', app: null
+    path: '4-klass/ekspediciya/', app: null,
+    teacher: [{label:'Письмо, задание и чек-лист', href:'pismo.html', kind:'print'}]
   },
   {
-    ready:false, where:[{s:'iiib', g:5}],
+    where:[{s:'iiib', g:5}],
     title: 'Где ИИ ошибается',
     topic: 'Счёт объектов, «лево-право», надписи и наклейки, которые обманывают распознавание',
     about: 'Дети проверяют ИИ на известных слабых местах и формулируют, в чём проблема и как её обойти.',
     format: '45 минут',
-    path: '5-klass/gde-ii-oshibaetsya/', app: null
+    path: '5-klass/gde-ii-oshibaetsya/', app: null,
+    teacher: [{label:'Ход урока, бланки и ключ', href:'materialy.html', kind:'print'}]
   },
   {
     ready:false, where:[{s:'iiib', g:6}],
@@ -84,7 +88,8 @@ const LESSONS = [
     topic: 'Что такое данные. Датасет. Виды датасетов',
     about: 'Стажёр мастера-наладчика разбирает три улики-датасета, находит, почему чат-бот отправляет срочные жалобы в «не срочно», и собирает чеклист правильного датасета.',
     format: 'каждому свой ноутбук · 40 минут',
-    path: '7-klass/dataset-pomoshnik/'
+    path: '7-klass/dataset-pomoshnik/',
+    teacher: [{label:'Сценарий урока', href:'scenariy.html', kind:'guide'}]
   },
   {
     where:[{s:'iiib', g:8}],
@@ -95,12 +100,15 @@ const LESSONS = [
     path: '8-klass/tekst-birzha/'
   },
   {
-    ready:false, where:[{s:'iiib', g:8}],
+    where:[{s:'iiib', g:8}],
     title: 'Сначала обучи, потом объясни',
     topic: 'Teachable Machine: акварель или карандаш — и как учатся большие модели',
     about: 'Пары обучают классификатор рисунков, проверяют его секретным тестом и выясняют, что он различает на самом деле. Потом — карточки заказчиков о правах на данные.',
     format: 'каждому свой ноутбук, модель на пару · 40 минут',
-    path: '8-klass/snachala-obuchi/', app: null
+    path: '8-klass/snachala-obuchi/', app: null,
+    teacher: [{label:'Слайды', href:'slajdy.html', kind:'slides'},
+              {label:'Раздатка', href:'razdatka.html', kind:'print'},
+              {label:'Памятка учителю', href:'pamyatka.html', kind:'guide'}]
   },
   {
     where:[{s:'iiib', g:9}],
@@ -108,15 +116,17 @@ const LESSONS = [
     topic: 'Как нейросеть генерирует музыкальные последовательности',
     about: 'Пары проходят урок по листу в приложении: слепой тест «программа или человек», опыт «Продолжи» на пианино и окно внутрь программы, которая выбирает аккорды и ноты по таблицам частот.',
     format: 'в парах, на ноутбуках · 45 минут',
-    path: '9-klass/sleduyushchaya-nota/'
+    path: '9-klass/sleduyushchaya-nota/',
+    teacher: [{label:'Печатный пакет', href:'pechatnyj-paket.html', kind:'print'}]
   },
   {
-    ready:false, where:[{s:'iiib', g:9}],
+    where:[{s:'iiib', g:9}],
     title: 'Гран-при Студии',
     topic: 'Редактирование изображений нейросетью: дорисовка, стиль, смешивание, фон',
-    about: '«Тихий урок»-гонка: пилоты проходят пит-стопы по досье, темп задают пейс-кар и табло зачётов на доске.',
-    format: 'досье на парте · 40 минут',
-    path: '9-klass/gran-pri/', app: null
+    about: '«Тихий урок»-гонка: пилоты проходят пит-стопы по досье, темп задают окна заезда и табло зачётов на доске.',
+    format: 'табло на доске, досье на парте · 40 минут',
+    path: '9-klass/gran-pri/',
+    teacher: [{label:'Досье пилота', href:'dosye-pilota.html', kind:'print'}]
   },
 
   /* --- Информатика и математика --- */
@@ -136,7 +146,8 @@ const LESSONS = [
     topic: 'Основы рационального питания — вводный урок модуля',
     about: 'Пары становятся диетологами: собирают меню на день для клиента, сверяются с нормами и защищают своё решение.',
     format: 'в парах · 40 минут',
-    path: '6-klass/dietologi/'
+    path: '6-klass/dietologi/',
+    teacher: [{label:'Канва урока', href:'kanva.html', kind:'guide'}]
   },
   {
     ready:false, where:[{s:'trud', g:6}],
@@ -200,5 +211,8 @@ const TWP = (() => {
     return `<div class="meta"><span class="gr" style="background:${s.color}">${gradeName(p.g)}</span>${l.format?`<span>${esc(l.format)}</span>`:''}${others.length?`<span>ещё: ${esc(others.join('; '))}</span>`:''}</div>`;
   }
 
-  return { esc, subj, meta, mount, shown: LESSONS.filter(l => l.ready !== false) };
+  const hasApp = l => l.ready !== false && l.app !== null;
+  return { esc, subj, meta, mount, hasApp,
+           apps: LESSONS.filter(hasApp),
+           teacherPool: LESSONS.filter(l => hasApp(l) || (l.teacher && l.teacher.length)) };
 })();

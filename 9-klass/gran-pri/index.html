@@ -1,0 +1,373 @@
+<!doctype html><html lang="ru"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Табло Гран-при Студии</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;800&family=Barlow:wght@400;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: timing tower of a pit lane. Strip of race windows on top; left = current window (name, countdown, prompt, criterion); right = 9-car tower pilots tap. Single dark world on purpose. */
+:root{
+  --asphalt:#121417;
+  --panel:#1A1D22;
+  --panel-2:#22262D;
+  --line:#2E333C;
+  --chalk:#F1F0EA;
+  --muted:#8E95A2;
+  --pit:#FFC72C;
+  --pit-ink:#16130A;
+  --flag:#E5322D;
+  --ok:#5FD08A;
+  --f-display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --f-body:"Barlow","Segoe UI",Arial,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{background:var(--asphalt);color:var(--chalk);font-family:var(--f-body);font-size:16px;line-height:1.35}
+*{box-sizing:border-box}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--pit);outline-offset:2px}
+.app{min-height:100%;display:flex;flex-direction:column;gap:14px;padding-block:14px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* strip */
+.strip{display:grid;grid-template-columns:3fr 4fr 5fr 5fr 2fr 6fr 5fr 3fr 7fr;gap:4px}
+.seg{position:relative;background:var(--panel);border-top:4px solid var(--line);padding:6px 8px 7px;min-width:0;overflow:hidden}
+.seg b{display:block;font-family:var(--f-display);font-weight:700;font-size:clamp(12px,1.2vw,18px);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.seg span{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.seg.done{border-top-color:var(--muted);opacity:.55}
+.seg.now{border-top-color:var(--pit);background:var(--panel-2)}
+.seg .fill{position:absolute;left:0;bottom:0;height:3px;background:var(--pit)}
+@media (max-width:700px){.strip{grid-template-columns:repeat(3,1fr)}.seg.done{display:none}}
+
+/* main */
+.main{flex:1;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:14px}
+@media (max-width:980px){.main{grid-template-columns:minmax(0,1fr)}}
+
+.stage{background:var(--panel);padding:clamp(16px,2.2vw,32px);display:flex;flex-direction:column;gap:16px;min-width:0}
+.eyebrow{font-family:var(--f-display);font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--pit);font-size:clamp(16px,1.6vw,24px)}
+.head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 24px}
+.name{font-family:var(--f-display);font-weight:800;text-transform:uppercase;font-size:clamp(44px,6.4vw,112px);line-height:.9;letter-spacing:.01em;text-wrap:balance;margin:0}
+.clock{font-family:var(--f-mono);font-weight:600;font-size:clamp(44px,5.6vw,96px);line-height:.9;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.clock.warn{color:var(--flag)}
+.window{font-family:var(--f-mono);font-size:13px;color:var(--muted);text-align:right}
+.lead{font-size:clamp(18px,1.7vw,26px);line-height:1.3;max-width:42ch;margin:0}
+.prompt{background:var(--pit);color:var(--pit-ink);padding:14px 18px 16px}
+.prompt small{display:block;font-family:var(--f-display);font-weight:800;letter-spacing:.14em;font-size:14px;margin-bottom:6px}
+.prompt p{margin:0;font-family:var(--f-mono);font-weight:600;font-size:clamp(17px,1.65vw,26px);line-height:1.3}
+.crit{display:flex;gap:12px;align-items:baseline;border:2px solid var(--chalk);padding:10px 14px}
+.crit small{font-family:var(--f-display);font-weight:800;letter-spacing:.14em;font-size:14px;white-space:nowrap}
+.crit p{margin:0;font-size:clamp(18px,1.7vw,26px);font-weight:600}
+.callout{background:var(--chalk);color:var(--asphalt);font-family:var(--f-display);font-weight:800;text-transform:uppercase;letter-spacing:.06em;font-size:clamp(18px,1.9vw,30px);padding:10px 14px}
+.startbtn{align-self:flex-start;background:var(--pit);color:var(--pit-ink);border:0;font-family:var(--f-display);font-weight:800;font-size:clamp(32px,4vw,64px);letter-spacing:.08em;padding:14px 40px 16px;text-transform:uppercase}
+.vote{display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+.vote .big{font-family:var(--f-display);font-weight:800;font-size:clamp(90px,14vw,220px);line-height:.85;color:var(--pit)}
+.dots{display:flex;gap:6px}
+.dots i{width:22px;height:6px;background:var(--line)}
+.dots i.on{background:var(--pit)}
+.pick{display:flex;flex-wrap:wrap;gap:8px}
+.pick button{background:var(--panel-2);border:2px solid var(--line);font-family:var(--f-display);font-weight:800;font-size:28px;width:64px;height:56px}
+.pick button[aria-pressed="true"]{background:var(--pit);color:var(--pit-ink);border-color:var(--pit)}
+
+/* tower */
+.tower{background:var(--panel);display:flex;flex-direction:column;min-width:0}
+.tower-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:14px 16px 8px}
+.tower-head h2{margin:0;font-family:var(--f-display);font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-size:20px}
+.tower-head p{margin:0;color:var(--muted);font-size:14px;text-align:right}
+.cols,.row{display:grid;grid-template-columns:clamp(48px,4.6vw,72px) repeat(4,minmax(0,1fr)) minmax(34px,.7fr) minmax(40px,.8fr) minmax(48px,.9fr);align-items:center;gap:4px}
+.cols{padding:4px 12px;font-family:var(--f-display);font-weight:700;letter-spacing:.08em;font-size:13px;color:var(--muted);text-transform:uppercase}
+.cols span{text-align:center}
+.rows{display:flex;flex-direction:column;gap:4px;padding:0 12px 12px;flex:1}
+.row{background:var(--panel-2);border:0;border-left:4px solid transparent;padding:6px 0;text-align:center;min-height:clamp(48px,6.2vh,72px);transition:background .15s}
+.row:hover{background:#2A2F37}
+.row.flash{background:#3A3420}
+.row.lead1{border-left-color:var(--pit)}
+.num{font-family:var(--f-display);font-weight:800;font-size:clamp(28px,2.8vw,44px);line-height:1}
+.cell{font-family:var(--f-display);font-weight:800;font-size:clamp(20px,2vw,30px);color:var(--line)}
+.cell.m{color:var(--muted)}
+.cell.z{color:var(--chalk)}
+.cell.p{color:var(--pit)}
+.stars,.spd{font-family:var(--f-mono);font-weight:600;font-size:clamp(14px,1.3vw,18px);color:var(--muted)}
+.spd.on{color:var(--pit)}
+.tot{font-family:var(--f-mono);font-weight:600;font-size:clamp(20px,2vw,30px);font-variant-numeric:tabular-nums}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;padding:0 16px 14px;color:var(--muted);font-size:13px}
+
+/* footer */
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:center;color:var(--muted);font-size:13px}
+.foot .ctl{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.foot button{background:transparent;border:1px solid var(--line);padding:6px 10px;font-size:13px;color:var(--muted)}
+.foot button:hover{color:var(--chalk);border-color:var(--muted)}
+.foot button.danger{color:var(--flag);border-color:var(--flag)}
+
+/* panel */
+.modal{position:fixed;inset:0;background:rgba(8,9,11,.82);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20}
+.sheet{background:var(--panel);width:min(760px,100%);max-height:100%;overflow:auto;padding:clamp(16px,2.4vw,28px);display:flex;flex-direction:column;gap:14px;border-top:6px solid var(--pit)}
+.sheet h3{margin:0;font-family:var(--f-display);font-weight:800;font-size:clamp(36px,4vw,56px);text-transform:uppercase;line-height:.95}
+.sheet .sub{margin:0;color:var(--muted);font-size:17px}
+.grow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 16px;align-items:center;background:var(--panel-2);padding:12px 14px}
+.grow b{font-family:var(--f-display);font-weight:800;font-size:24px;letter-spacing:.04em;text-transform:uppercase;display:block}
+.grow span{color:var(--muted);font-size:15px}
+.seg3{display:flex;gap:6px}
+.seg3 button{width:clamp(56px,7vw,84px);height:clamp(56px,7vw,72px);background:var(--asphalt);border:2px solid var(--line);font-family:var(--f-display);font-weight:800;font-size:32px}
+.seg3 button[aria-pressed="true"]{background:var(--chalk);color:var(--asphalt);border-color:var(--chalk)}
+.seg3 button.plus[aria-pressed="true"]{background:var(--pit);border-color:var(--pit);color:var(--pit-ink)}
+.seg3 small{display:block;font-family:var(--f-body);font-weight:600;font-size:11px;letter-spacing:0}
+.starrow{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--panel-2);padding:12px 14px}
+.starrow b{font-family:var(--f-display);font-weight:800;font-size:24px;text-transform:uppercase}
+.stepper{display:flex;align-items:center;gap:10px}
+.stepper button{width:56px;height:56px;background:var(--asphalt);border:2px solid var(--line);font-size:28px;font-weight:700}
+.stepper output{font-family:var(--f-mono);font-weight:600;font-size:30px;min-width:2ch;text-align:center}
+.linkbtn{align-self:flex-start;background:none;border:0;color:var(--muted);text-decoration:underline;padding:0;font-size:15px}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.actions .go{flex:1;background:var(--pit);color:var(--pit-ink);border:0;font-family:var(--f-display);font-weight:800;font-size:30px;letter-spacing:.08em;padding:14px;text-transform:uppercase}
+.actions .go:disabled{opacity:.35;cursor:not-allowed}
+.actions .no{background:transparent;border:2px solid var(--line);font-family:var(--f-display);font-weight:700;font-size:22px;padding:14px 22px;text-transform:uppercase}
+.busy{font-family:var(--f-display);font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-size:14px}
+@media (prefers-reduced-motion:no-preference){.clock.warn{animation:blink 1s steps(2,start) infinite}@keyframes blink{to{opacity:.35}}}
+</style>
+
+<div class="app">
+  <nav class="strip" id="strip" aria-label="Окна заезда"></nav>
+  <main class="main">
+    <section class="stage" id="stage" aria-live="polite"></section>
+    <section class="tower" aria-label="Табло пилотов">
+      <div class="tower-head">
+        <h2>Табло пилотов</h2>
+        <p id="towerHint">К доске — после ПС-2 и после ПС-4. Тапни свой номер.</p>
+      </div>
+      <div class="cols" aria-hidden="true"><span>№</span><span>ПС-1</span><span>ПС-2</span><span>ПС-3</span><span>ПС-4</span><span>★</span><span>Скор.</span><span>Итог</span></div>
+      <div class="rows" id="rows"></div>
+      <div class="legend"><span>− = 1 · З = 2 · + = 3</span><span>Скорость: P1 = 3, P2 = 2, P3 = 1</span><span>CB = comeback, 1 очко</span><span>★ решает при равенстве</span></div>
+    </section>
+  </main>
+  <footer class="foot">
+    <span id="footInfo">Табло учителя: один раз нажать «Старт» — дальше заезд идёт сам.</span>
+    <div class="ctl">
+      <button id="btnPause" type="button">Пауза</button>
+      <button id="btnFull" type="button">На весь экран</button>
+      <button id="btnReset" type="button">Новый заезд</button>
+      <span id="resetAsk" hidden>Стереть все отметки?
+        <button id="resetYes" type="button" class="danger">Да, стереть</button>
+        <button id="resetNo" type="button">Нет</button></span>
+    </div>
+  </footer>
+</div>
+
+<div class="modal" id="modal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="pTitle">
+    <span class="busy">Терминал занят · остальные ждут в боксе</span>
+    <h3 id="pTitle">Болид 1</h3>
+    <p class="sub" id="pSub"></p>
+    <div id="pRows" style="display:flex;flex-direction:column;gap:8px"></div>
+    <button class="linkbtn" id="pAll" type="button">Исправить другие пит-стопы</button>
+    <div class="starrow"><b>★ Доп. круги и бонус</b>
+      <div class="stepper"><button type="button" id="sMinus" aria-label="Убрать звезду">−</button><output id="sOut">0</output><button type="button" id="sPlus" aria-label="Добавить звезду">+</button></div>
+    </div>
+    <div class="actions">
+      <button class="no" id="pCancel" type="button">Отмена</button>
+      <button class="go" id="pOk" type="button">Отметиться</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STAGES=[
+ {id:'brief',seg:'brief',from:0,to:3,tag:'Регистрация',name:'Брифинг',lead:'Заполни обложку досье. Прочитай правила на стр. 2.'},
+ {id:'s0',seg:'s0',from:3,to:7,tag:'Этап 0',name:'Старт',lead:'Стр. 3. Алиса → «Студия». Введи промт №0 точно и сохрани картинку: это Б-0.',prompt:'Красный гоночный болид стоит на пустом асфальте пит-лейна, вид сбоку, ясный день, справа свободное место, реалистичное фото',crit:'Болид целиком в кадре, справа пусто'},
+ {id:'p1',seg:'p1',from:7,to:12,tag:'Пит-стоп 1',name:'Дорисовка',lead:'Стр. 4. Вкладка «Изменить» → загрузи Б-0.',prompt:'Добавь в правой части кадра стопку из четырёх гоночных шин на асфальте, тень как у болида',crit:'Стык невидим'},
+ {id:'p2',seg:'p2',from:12,to:17,tag:'Пит-стоп 2',name:'Стиль',lead:'Стр. 5. «Изменить» → загрузи Б-1. Стили: акварели · комикса · пластилина · пиксель-арта.',prompt:'Сделай в стиле [стиль], болид и шины остаются на своих местах',crit:'Объект остался собой',call:'Сделал ПС-2 — к доске, отметь ПС-1 и ПС-2'},
+ {id:'insp',seg:'insp',from:17,to:19,tag:'Экипаж',name:'Техосмотр',lead:'Стр. 6. Покажи соседу Б-1 и Б-2. Сосед пишет одну фразу-вердикт и ставит подпись.',crit:'Стык невидим? Болид узнаётся?'},
+ {id:'p3',seg:'p3',from:19,to:25,tag:'Пит-стоп 3',name:'Смешивание',lead:'Стр. 6. «Объединить»: картинка 1 — твой Б-2, картинка 2 — Б-2 соседа. Нет соседа — R1, R2 или R3.',prompt:'Поставь болид с первой картинки рядом с болидом со второй на одной трассе. Стиль и фон — от первой. Свет единый: солнце слева',crit:'Видны обе картинки, свет единый'},
+ {id:'p4',seg:'p4',from:25,to:30,tag:'Пит-стоп 4',name:'Фон',lead:'Стр. 7. «Изменить» → загрузи Б-3 (не вышел ПС-3 — Б-2).',prompt:'Замени фон на ночную трассу с огнями трибун, болиды не трогай',crit:'Объект на месте, фон сменился',call:'Сделал ПС-4 — к доске, отметь ПС-3 и ПС-4'},
+ {id:'buf',seg:'buf',from:30,to:33,tag:'Резерв',name:'Буфер',lead:'Доделай хвосты и отметься. Всё готово — бонус на стр. 8, звёзды отметь на доске.'},
+ {id:'fin1',seg:'fin',from:33,to:35,tag:'Финиш',name:'Итоги',lead:'Найди свой номер в табло и перепиши итог на обложку досье.'},
+ {id:'parade',seg:'fin',from:35,to:37,tag:'Финиш',name:'Парад',lead:'Открой лучший кадр на весь экран, разверни экран к проходу. Обойди класс и выбери лучший кадр — не свой.'},
+ {id:'vote',seg:'fin',from:37,to:39,tag:'Финиш',name:'Голосование',lead:'Подними руку, когда на доске номер болида, который ты выбрал.'},
+ {id:'hand',seg:'fin',from:39,to:40,tag:'Финиш',name:'Сдача досье',lead:'Досье — на стол учителя. Учитель отмечает лучший кадр урока.'}
+];
+const END={id:'end',seg:'end',from:40,to:40,tag:'Финиш',name:'Заезд окончен',lead:'Спасибо, пилоты. Досье — на стол учителя.'};
+const SEGS=[['brief','Брифинг',0,3],['s0','Старт',3,7],['p1','ПС-1',7,12],['p2','ПС-2',12,17],['insp','Осмотр',17,19],['p3','ПС-3',19,25],['p4','ПС-4',25,30],['buf','Буфер',30,33],['fin','Финиш',33,40]];
+const PS=[['ПС-1','Дорисовка','стык невидим'],['ПС-2','Стиль','объект остался собой'],['ПС-3','Смешивание','видны обе, свет единый'],['ПС-4','Фон','объект на месте, фон сменился']];
+const VAL={m:1,z:2,p:3}, SYM={m:'−',z:'З',p:'+'};
+const KEY='granprix-tablo-v1';
+const VOTE_STEP=13;
+
+function fresh(){return{start:null,pausedAt:null,pausedTotal:0,cars:Array.from({length:9},()=>({g:[null,null,null,null],stars:0,t1:null,t2:null})),winner:null}}
+function load(){try{const r=localStorage.getItem(KEY);if(!r)return null;const s=JSON.parse(r);return s&&Array.isArray(s.cars)&&s.cars.length===9?s:null}catch(e){return null}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+let S=load()||fresh();
+
+function elapsed(){if(!S.start)return 0;const now=S.pausedAt??Date.now();return Math.max(0,(now-S.start-S.pausedTotal)/1000)}
+function stageAt(sec){const m=sec/60;for(const st of STAGES)if(m<st.to)return st;return END}
+function mmss(s){s=Math.max(0,Math.ceil(s));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
+
+function compute(){
+  const fin=S.cars.map((c,i)=>({i,t:c.t2})).filter(x=>x.t!=null).sort((a,b)=>a.t-b.t);
+  const rank={};fin.forEach((x,k)=>rank[x.i]=k+1);
+  return S.cars.map((c,i)=>{
+    const q=c.g.reduce((a,g)=>a+(g?VAL[g]:0),0);
+    const r=rank[i]||null;
+    const rp=r&&r<=3?4-r:0;
+    const cb=c.t1!=null&&c.t2!=null&&c.t1>17*60&&c.t2<=30*60;
+    const sp=Math.max(rp,cb?1:0);
+    return{i,q,r,rp,cb,sp,total:q+sp,stars:c.stars};
+  });
+}
+
+const $=id=>document.getElementById(id);
+let lastKey='';
+
+function renderStrip(sec){
+  const m=sec/60;
+  $('strip').innerHTML=SEGS.map(([k,l,a,b])=>{
+    const started=!!S.start;
+    const cls=!started?'':(m>=b?'done':(m>=a?'now':''));
+    const pct=cls==='now'?Math.min(100,(m-a)/(b-a)*100):0;
+    return `<div class="seg ${cls}"><b>${l}</b><span>${a}–${b} мин</span>${cls==='now'?`<i class="fill" style="width:${pct}%"></i>`:''}</div>`;
+  }).join('');
+}
+
+function renderStage(sec){
+  const st=S.start?stageAt(sec):null;
+  const voteIdx=st&&st.id==='vote'?Math.min(8,Math.floor((sec-37*60)/VOTE_STEP)):-1;
+  const key=(st?st.id:'pre')+'|'+voteIdx+'|'+S.winner+'|'+(S.pausedAt?'p':'');
+  if(key===lastKey)return;
+  lastKey=key;
+  const el=$('stage');
+  if(!st){
+    el.innerHTML=`<div class="eyebrow">Гран-при Студии · 9 пилотов · 40 минут</div>
+      <h1 class="name">Пилоты, к болидам</h1>
+      <p class="lead">Досье на парте. Заполни обложку и прочитай правила на стр. 2, пока стоит этот экран.</p>
+      <button class="startbtn" id="btnStart" type="button">Старт заезда</button>
+      <p class="lead" style="color:var(--muted);font-size:16px">Учитель нажимает один раз со звонком. Дальше окна переключаются сами.</p>`;
+    $('btnStart').onclick=startRace;
+    return;
+  }
+  let html=`<div class="eyebrow">${st.tag}${S.pausedAt?' · пауза':''}</div>
+    <div class="head"><h1 class="name">${st.name}</h1>
+    ${st.id!=='end'?`<div><div class="clock" id="clock">0:00</div><div class="window">окно ${st.from}–${st.to} мин</div></div>`:''}</div>
+    <p class="lead">${st.lead}</p>`;
+  if(st.prompt)html+=`<div class="prompt"><small>Вводи точно</small><p>${st.prompt}</p></div>`;
+  if(st.crit)html+=`<div class="crit"><small>Техосмотр</small><p>${st.crit}</p></div>`;
+  if(st.call)html+=`<div class="callout">${st.call}</div>`;
+  if(st.id==='vote'){
+    html+=`<div class="vote"><div class="big">№${voteIdx+1}</div><div class="dots">${Array.from({length:9},(_,k)=>`<i class="${k<=voteIdx?'on':''}"></i>`).join('')}</div></div>`;
+  }
+  if(st.id==='hand'||st.id==='end'){
+    html+=`<div class="crit"><small>Лучший кадр урока</small><p>${S.winner?'Болид №'+S.winner:'Учитель, тапни номер победителя'}</p></div>
+      <div class="pick">${Array.from({length:9},(_,k)=>`<button type="button" data-w="${k+1}" aria-pressed="${S.winner===k+1}">${k+1}</button>`).join('')}</div>`;
+  }
+  el.innerHTML=html;
+  el.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{const w=+b.dataset.w;S.winner=S.winner===w?null:w;save();lastKey='';tick()});
+  lastSort='';renderRows();
+}
+
+let lastSort='';
+function renderRows(flashI){
+  const res=compute();
+  const sec=elapsed();
+  const st=S.start?stageAt(sec):null;
+  const sorted=st&&['fin1','parade','vote','hand','end'].includes(st.id);
+  const order=sorted?[...res].sort((a,b)=>b.total-a.total||b.stars-a.stars||a.i-b.i):res;
+  const top=sorted&&order[0].total>0?order[0].i:-1;
+  $('rows').innerHTML=order.map(r=>{
+    const c=S.cars[r.i];
+    const cells=c.g.map(g=>`<span class="cell ${g||''}">${g?SYM[g]:'·'}</span>`).join('');
+    const spd=r.rp?('P'+r.r):(r.cb?'CB':'');
+    return `<button type="button" class="row ${r.i===top?'lead1':''} ${r.i===flashI?'flash':''}" data-i="${r.i}" aria-label="Болид ${r.i+1}, итог ${r.total}">
+      <span class="num">${r.i+1}</span>${cells}
+      <span class="stars">${c.stars?'★'+c.stars:''}</span>
+      <span class="spd ${spd?'on':''}">${spd}</span>
+      <span class="tot">${r.total||''}</span></button>`;
+  }).join('');
+  $('rows').querySelectorAll('.row').forEach(b=>b.onclick=()=>openPanel(+b.dataset.i));
+  $('towerHint').textContent=sorted?'Таблица отсортирована по итогу. Перепиши свой итог на обложку.':'К доске — после ПС-2 и после ПС-4. Тапни свой номер.';
+}
+
+/* panel */
+let cur=null,draft=null,showAll=false,idleT=null;
+function openPanel(i){
+  if(!S.start){flashHint('Заезд ещё не начался');return}
+  cur=i;const c=S.cars[i];
+  draft={g:[...c.g],stars:c.stars};
+  showAll=false;
+  $('pTitle').textContent='Болид '+(i+1);
+  drawPanel();
+  $('modal').hidden=false;
+  resetIdle();
+  setTimeout(()=>{const b=$('pRows').querySelector('button');b&&b.focus()},30);
+}
+function visible(){
+  const c=S.cars[cur];const sec=elapsed();
+  if(showAll)return[0,1,2,3];
+  if(c.t1==null)return sec>=19*60?[0,1,2,3]:[0,1];
+  return[2,3];
+}
+function drawPanel(){
+  const c=S.cars[cur];const vis=visible();
+  $('pSub').textContent=c.t1==null?(vis.length===4?'Отметь все пит-стопы, которые сделал.':'Отметка 1 из 2: после ПС-2.'):'Отметка 2 из 2: после ПС-4.';
+  $('pRows').innerHTML=vis.map(k=>`<div class="grow"><div><b>${PS[k][0]} · ${PS[k][1]}</b><span>Техосмотр: ${PS[k][2]}</span></div>
+    <div class="seg3" role="group" aria-label="${PS[k][0]}">
+      ${['m','z','p'].map(v=>`<button type="button" class="${v==='p'?'plus':''}" data-k="${k}" data-v="${v}" aria-pressed="${draft.g[k]===v}">${SYM[v]}<small>${v==='m'?'сделал':v==='z'?'критерий':'+ нюанс'}</small></button>`).join('')}
+    </div></div>`).join('');
+  $('pRows').querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{const k=+b.dataset.k,v=b.dataset.v;draft.g[k]=draft.g[k]===v?null:v;drawPanel();resetIdle()});
+  $('pAll').hidden=vis.length===4;
+  $('sOut').textContent=draft.stars;
+  const changed=JSON.stringify(draft.g)!==JSON.stringify(c.g)||draft.stars!==c.stars;
+  $('pOk').disabled=!changed;
+}
+function closePanel(){$('modal').hidden=true;cur=null;clearTimeout(idleT)}
+function resetIdle(){clearTimeout(idleT);idleT=setTimeout(closePanel,45000)}
+$('pAll').onclick=()=>{showAll=true;drawPanel();resetIdle()};
+$('sMinus').onclick=()=>{draft.stars=Math.max(0,draft.stars-1);drawPanel();resetIdle()};
+$('sPlus').onclick=()=>{draft.stars=Math.min(9,draft.stars+1);drawPanel();resetIdle()};
+$('pCancel').onclick=closePanel;
+$('modal').addEventListener('click',e=>{if(e.target.id==='modal')closePanel()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('modal').hidden)closePanel()});
+$('pOk').onclick=()=>{
+  const c=S.cars[cur],sec=elapsed(),i=cur;
+  c.g=[...draft.g];c.stars=draft.stars;
+  if(c.t1==null&&c.g.some(Boolean))c.t1=sec;
+  if(c.t2==null&&c.g[3])c.t2=sec;
+  if(!c.g[3])c.t2=null;
+  save();closePanel();renderRows(i);
+  setTimeout(()=>renderRows(),900);
+};
+
+/* controls */
+let wake=null;
+function startRace(){
+  S=fresh();S.start=Date.now();save();lastKey='';
+  try{navigator.wakeLock&&navigator.wakeLock.request('screen').then(w=>wake=w).catch(()=>{})}catch(e){}
+  tick();
+}
+$('btnPause').onclick=()=>{
+  if(!S.start)return;
+  if(S.pausedAt){S.pausedTotal+=Date.now()-S.pausedAt;S.pausedAt=null}else{S.pausedAt=Date.now()}
+  save();lastKey='';tick();
+};
+$('btnFull').onclick=()=>{try{const d=document.documentElement;(document.fullscreenElement?document.exitFullscreen():d.requestFullscreen()).catch(()=>{})}catch(e){}};
+$('btnReset').onclick=()=>{$('resetAsk').hidden=false;$('btnReset').hidden=true};
+$('resetNo').onclick=()=>{$('resetAsk').hidden=true;$('btnReset').hidden=false};
+$('resetYes').onclick=()=>{S=fresh();save();$('resetAsk').hidden=true;$('btnReset').hidden=false;lastKey='';tick()};
+let hintT=null;
+function flashHint(t){$('footInfo').textContent=t;clearTimeout(hintT);hintT=setTimeout(()=>$('footInfo').textContent='Табло учителя: один раз нажать «Старт» — дальше заезд идёт сам.',2500)}
+
+let lastStageId='';
+function tick(){
+  const sec=elapsed();
+  renderStrip(sec);
+  renderStage(sec);
+  const st=S.start?stageAt(sec):null;
+  if(st&&st.id!==lastStageId){lastStageId=st.id;renderRows()}
+  if(!st&&lastStageId!=='pre'){lastStageId='pre';renderRows()}
+  const ck=$('clock');
+  if(ck&&st){const rem=st.to*60-sec;ck.textContent=mmss(rem);ck.classList.toggle('warn',rem<=60&&!S.pausedAt)}
+  $('btnPause').textContent=S.pausedAt?'Продолжить':'Пауза';
+}
+renderRows();
+tick();
+setInterval(tick,250);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&S.start&&!wake){try{navigator.wakeLock&&navigator.wakeLock.request('screen').then(w=>wake=w).catch(()=>{})}catch(e){}}});
+</script>
+
+</body></html>

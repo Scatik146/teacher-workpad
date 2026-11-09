@@ -25,7 +25,7 @@
 TWP.mount({
   key: 'twp',
   emptyText: 'Под этот фильтр пока нет уроков',
-  pool: TWP.shown.filter(l => l.app !== null),
+  pool: TWP.apps,
   card: (l, p) => `<article class="card" style="--c:${TWP.subj(p.s).color}">
     ${TWP.meta(l, p)}
     <h3>${TWP.esc(l.title)}</h3>
