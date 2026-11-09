@@ -1,0 +1,1397 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Текст-Биржа</title>
+<style>
+:root{
+  --bg:#eef2f5;--card:#fff;--ink:#17212b;--muted:#5f6d7b;--line:#d9e0e7;
+  --acc:#16a05d;--acc-d:#0f7f49;--blue:#2563eb;--amber:#c47d00;--red:#d6343b;
+  --red-bg:#fdecec;--green-bg:#e6f6ec;--amber-bg:#fff4dc;--mod:#1c2330;--mod2:#283244;
+}
+*{box-sizing:border-box}
+html{font-size:18px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI",Roboto,Arial,sans-serif;line-height:1.5}
+h1{font-size:1.7rem;margin:.2em 0 .3em}
+h2{font-size:1.2rem;margin:0 0 .5em}
+h3{font-size:1.05rem;margin:.8em 0 .4em}
+p{margin:.4em 0}
+main{max-width:1200px;margin:0 auto;padding:16px 16px 40px}
+.lead{color:var(--muted);font-size:1.05rem;margin-bottom:1em}
+.muted{color:var(--muted)} .small{font-size:.85rem}
+.hint{color:var(--muted);font-size:.88rem}
+code{background:#e8edf2;padding:1px 5px;border-radius:4px;font-size:.85rem}
+
+/* шапка */
+.top{position:sticky;top:0;z-index:20;display:flex;gap:18px;align-items:center;flex-wrap:wrap;background:#14202c;color:#fff;padding:10px 20px}
+.top.teacher{background:#3b2b5a}
+.brand{font-weight:800;font-size:1.3rem;letter-spacing:.5px}.brand span{color:var(--acc)}
+.who{font-weight:600}
+.rank{display:inline-block;background:#2c3e50;color:#9fe0bd;border-radius:20px;padding:1px 10px;font-size:.8rem;margin-left:6px}
+.rank.big{background:var(--green-bg);color:var(--acc-d);font-size:1rem;padding:3px 14px}
+.money{margin-left:auto}
+.timer{font-variant-numeric:tabular-nums;font-weight:700;font-size:1.2rem;min-width:100px;text-align:right}
+.timer.soon{color:#ffd166}.timer.urgent{color:#ff6b6b;animation:pulse 1s infinite}.timer.done{color:#9fe0bd}
+.nav{display:flex;gap:4px;flex-wrap:wrap;background:#1d2b39;padding:6px 16px;position:sticky;top:52px;z-index:19}
+.navb{background:transparent;border:0;color:#cfd8e2;font-size:.95rem;padding:6px 12px;border-radius:8px;cursor:pointer;position:relative}
+.navb.on{background:#fff;color:var(--ink);font-weight:700}
+.navb.locked{opacity:.45;cursor:default}
+.badge{display:none;background:var(--red);color:#fff;border-radius:10px;font-size:.7rem;padding:0 6px;margin-left:5px;font-weight:700}
+@keyframes pulse{50%{opacity:.5}}
+
+/* карточки и сетка */
+.card{background:var(--card);border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.card-h{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}
+.card-h h2{margin:0}
+.center{text-align:center}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media (max-width:900px){.grid2{grid-template-columns:1fr}}
+.row{display:flex;gap:10px;align-items:center;margin-top:10px}
+.row.wrap{flex-wrap:wrap}
+
+/* элементы форм */
+.btn{display:inline-block;background:var(--blue);color:#fff;border:0;border-radius:10px;padding:10px 18px;font-size:1rem;font-weight:600;cursor:pointer;text-decoration:none;text-align:center;font-family:inherit}
+.btn:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.big{font-size:1.1rem;padding:13px 24px}
+.btn.full{width:100%;margin-top:6px}
+.btn.ok{background:var(--acc)}
+.btn.bad{background:var(--red)}
+.btn.alt{background:#6d3fd6}
+.btn.ghost{background:#e6ecf2;color:var(--ink)}
+.btn.sm{padding:5px 12px;font-size:.88rem}
+.btn.opt{display:block;width:100%;text-align:left;background:#f1f5f9;color:var(--ink);border:2px solid transparent;margin:6px 0;font-weight:500}
+.btn.opt.on{border-color:var(--blue);background:#e8f0ff}
+.inp{width:100%;font-size:1rem;padding:9px 12px;border:1.5px solid var(--line);border-radius:9px;font-family:inherit;background:#fff}
+.inp:focus,.ta:focus{outline:none;border-color:var(--blue)}
+.ta{width:100%;min-height:110px;font-size:1rem;padding:10px 12px;border:1.5px solid var(--line);border-radius:9px;font-family:inherit;resize:vertical;line-height:1.5}
+.ta.big{min-height:260px}
+.lbl{display:block;font-weight:600;margin:12px 0 4px}
+.lbl.small{font-size:.88rem;margin-top:8px}
+.req{color:var(--red);font-weight:500;font-size:.8rem}
+.chk{display:flex;gap:10px;align-items:flex-start;margin:8px 0;cursor:pointer}
+.chk input{width:20px;height:20px;margin-top:3px;flex:none}
+.chk.auto{cursor:default}.chk.auto.yes{color:var(--acc-d)}.chk.auto.no{color:var(--amber)}
+.seg{display:flex;gap:6px}
+.segb{flex:1;padding:10px;border:2px solid var(--line);background:#fff;border-radius:10px;font-size:1rem;cursor:pointer;font-family:inherit}
+.segb.on{border-color:var(--blue);background:#e8f0ff;font-weight:700}
+.rule{font-size:.85rem;color:var(--muted);background:#f4f7fa;border-left:3px solid var(--blue);padding:6px 10px;border-radius:4px}
+.pill{background:#eef2f7;border-radius:20px;padding:2px 12px;font-size:.85rem}
+.ok{color:var(--acc-d);font-weight:600}
+.warn{color:var(--amber);font-weight:600}
+.bad-t{color:var(--red);font-weight:600}
+
+/* лента */
+.order{background:#fff;border-radius:14px;padding:20px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);border-left:5px solid var(--acc)}
+.order.small{border-left-color:#c5ced8;opacity:.75;display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 16px}
+.order .taken{margin-left:auto;color:var(--muted);font-size:.88rem}
+.order-top{display:flex;justify-content:space-between}
+.tag{background:#eef2f7;border-radius:6px;padding:2px 8px;font-size:.8rem;color:var(--muted)}
+.fresh{background:var(--acc);color:#fff;border-radius:6px;padding:2px 8px;font-size:.8rem}
+.order h2{font-size:1.45rem;margin:.4em 0 .2em}
+.odesc{font-size:1.1rem}
+.order-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0;background:#f6f8fa;border-radius:10px;padding:12px}
+.order-meta span{display:block;font-size:.8rem;color:var(--muted)}
+.order-meta b{font-size:1.1rem}
+@media (max-width:700px){.order-meta{grid-template-columns:1fr 1fr}}
+.explain{margin-top:18px;background:#fff;border-radius:12px;padding:12px 18px}
+.explain summary{cursor:pointer;font-weight:600}
+
+/* кабинет */
+.cab-head{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.bigtimer{font-size:2.4rem;font-weight:800;font-variant-numeric:tabular-nums;background:#14202c;color:#fff;border-radius:14px;padding:6px 20px;white-space:nowrap}
+.bigtimer.soon{background:#8a5a00}.bigtimer.urgent{background:var(--red);animation:pulse 1s infinite}.bigtimer.done{background:var(--acc-d)}
+.doc{background:#fbf6e9;border:1px solid #e8dcc0;font-family:Georgia,"Times New Roman",serif;font-size:1.02rem}
+.doc-label{font-family:"Segoe UI",Arial,sans-serif;font-size:.8rem;text-transform:uppercase;letter-spacing:1px;color:#8a7650;margin-bottom:6px}
+.tips,.pp{background:#f6f8fa;border-radius:10px;padding:8px 14px;margin:8px 0}
+.tips summary,.pp summary{cursor:pointer;font-weight:600}
+.tips ul{margin:.4em 0;padding-left:1.2em}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.chip{border:1.5px solid var(--line);border-radius:20px;padding:2px 10px;font-size:.85rem;color:var(--muted)}
+.chip.yes{border-color:var(--acc);color:var(--acc-d);background:var(--green-bg)}
+.gen{min-height:90px;background:#f7f5ff;border:1.5px dashed #c9bdf2;border-radius:10px;padding:10px 14px;margin:10px 0}
+.gen-anim span{font-weight:600;color:#6d3fd6}
+.gen-anim i,.typing i{font-style:normal;animation:blink 1.2s infinite}
+.gen-anim i:nth-child(3),.typing i:nth-child(2){animation-delay:.2s}
+.gen-anim i:nth-child(4),.typing i:nth-child(3){animation-delay:.4s}
+.gen-bar{height:6px;background:#e4dcfb;border-radius:3px;margin-top:10px;overflow:hidden}
+.gen-bar b{display:block;height:100%;width:40%;background:#6d3fd6;border-radius:3px;animation:slide 1.4s infinite ease-in-out}
+@keyframes slide{0%{margin-left:-40%}100%{margin-left:100%}}
+@keyframes blink{50%{opacity:.2}}
+.vers{flex:1}.vers summary{cursor:pointer;color:var(--blue)}
+.ver{display:flex;justify-content:space-between;gap:10px;align-items:center;border-bottom:1px solid var(--line);padding:6px 0}
+
+/* чат */
+.feed{height:300px;overflow-y:auto;background:#f6f8fa;border-radius:10px;padding:10px}
+.msg{margin:6px 0;max-width:88%}
+.msg .who{font-size:.75rem;color:var(--muted);margin:0 4px 2px}
+.msg .bubble{background:#fff;border-radius:12px;padding:8px 12px;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.msg.me{margin-left:auto}.msg.me .bubble{background:#dcebff}.msg.me .who{text-align:right}
+.msg.sys .bubble{background:var(--amber-bg);border:1px solid #f0d39a}
+.msg.nb .bubble{background:#eef7f1}
+.jurist .msg{opacity:0;animation:appear .4s forwards}
+@keyframes appear{to{opacity:1}}
+.typing{color:var(--muted);font-size:.85rem;font-style:italic;margin:6px 4px}
+.empty{color:var(--muted);text-align:center;margin-top:40px}
+.tabs{display:flex;gap:6px;margin-bottom:10px}
+.tab{background:#dfe6ed;border:0;border-radius:10px 10px 0 0;padding:8px 16px;font-size:1rem;cursor:pointer;font-family:inherit}
+.tab.on{background:#fff;font-weight:700}
+
+/* сдача */
+.final-text{max-height:520px;overflow-y:auto;background:#fafbfc;border-radius:10px;padding:10px 14px;margin-bottom:10px}
+.final-text.short{max-height:300px}
+.frag-part{color:#5d5440;border-left:3px solid #e8dcc0;padding-left:10px}
+mark{background:#ffd7d7;color:inherit;padding:0 2px;border-radius:3px}
+.uniq-res{display:flex;align-items:baseline;gap:10px}
+.uniq-num{font-size:2.4rem;font-weight:800}
+.uniq-num.good{color:var(--acc-d)}.uniq-num.mid{color:var(--amber)}.uniq-num.bad{color:var(--red)}
+blockquote{margin:8px 0;padding:8px 12px;background:#f6f8fa;border-radius:8px}
+.src{font-weight:600}
+.light-ok{background:var(--green-bg);color:var(--acc-d);border-radius:10px;padding:10px;margin-top:8px;font-weight:600}
+.light-warn{background:var(--amber-bg);color:var(--amber);border-radius:10px;padding:10px;margin-top:8px;font-weight:600}
+.dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0}
+.dl dt{color:var(--muted)}.dl dd{margin:0;font-weight:600}
+.spinner{width:46px;height:46px;border:5px solid #dfe6ed;border-top-color:var(--blue);border-radius:50%;margin:10px auto;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.arrive{background:var(--red-bg);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px;align-items:center}
+
+/* модерация — другое пространство */
+main.mod-space{max-width:none;background:var(--mod);color:#e7ecf3;min-height:100vh}
+main.mod-space>section{max-width:1200px;margin:0 auto}
+.mod-space .card{background:var(--mod2);color:#e7ecf3}
+.mod-space .muted,.mod-space .hint{color:#9aa8ba}
+.mod-space .ta{background:#1c2330;color:#e7ecf3;border-color:#3d4a60}
+.mod-space .inp{background:#1c2330;color:#e7ecf3;border-color:#3d4a60}
+.mod-space .btn.ghost{background:#3a465b;color:#e7ecf3}
+.mod-space .rule{background:#1f2836;color:#c3cddb}
+.mod-space blockquote{background:#1f2836}
+.mod-space .btn.opt{background:#1f2836;color:#e7ecf3}
+.mod-banner{font-size:.85rem;letter-spacing:2px;text-transform:uppercase;color:#9aa8ba;margin:10px 0}
+.mail{background:#fff;color:var(--ink);border-radius:14px;overflow:hidden;margin-bottom:20px;box-shadow:0 6px 24px rgba(0,0,0,.3)}
+.mail-h{background:#f0f3f7;padding:12px 20px;font-size:.92rem;border-bottom:1px solid var(--line)}
+.mail-b{padding:18px 22px}
+.found{font-weight:700;font-size:1.08rem}
+.verdict{border-radius:10px;padding:10px 14px;font-weight:700;margin:12px 0}
+.verdict.red{background:var(--red-bg);color:var(--red)}
+.verdict.amber{background:var(--amber-bg);color:var(--amber)}
+.pre{color:var(--muted)}
+.tail{font-style:italic;border-top:1px solid var(--line);padding-top:10px;margin-top:12px}
+.law{font-size:.75rem;color:#8a96a5;margin-top:8px}
+h2.light{color:#e7ecf3;margin-top:20px}
+.parallel{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.pcol{background:#fff;color:var(--ink);border-radius:12px;padding:14px;max-height:420px;overflow-y:auto;font-size:.95rem}
+.pcol-h{font-weight:700;font-size:.85rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:6px}
+@media (max-width:800px){.parallel{grid-template-columns:1fr}}
+.roads{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+@media (max-width:1000px){.roads{grid-template-columns:1fr 1fr}}
+.road{background:var(--mod2);border:1px solid #3d4a60;border-radius:12px;padding:14px;display:flex;flex-direction:column}
+.road h3{margin-top:0;color:#fff}.road p{flex:1;color:#c3cddb;font-size:.92rem}
+
+/* публикация */
+.tg{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.tg>div:first-child{font-size:1.1rem}
+.switch{width:62px;height:34px;border-radius:17px;background:#c9d2dc;border:0;position:relative;cursor:pointer;flex:none}
+.switch::after{content:"";position:absolute;top:4px;left:4px;width:26px;height:26px;border-radius:50%;background:#fff;transition:left .2s}
+.switch.on{background:var(--acc)}.switch.on::after{left:32px}
+.switch:disabled{opacity:.5;cursor:not-allowed}
+.mark-src,.mark-ai{border-radius:8px;padding:6px 10px;margin-bottom:6px;font-size:.9rem;font-weight:600}
+.mark-src{background:#e8f0ff;color:#1d4ab8}.mark-ai{background:#f1ebff;color:#5a2fc2}
+.help{background:#f6f8fa;border-left:4px solid var(--blue);border-radius:6px;padding:10px 14px;margin-top:10px}
+
+/* итог */
+.outcome{display:inline-block;background:#14202c;color:#fff;border-radius:20px;padding:4px 16px;margin-bottom:14px;font-weight:600}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+@media (max-width:800px){.duo{grid-template-columns:1fr}}
+.pane{border-radius:16px;padding:22px;border:3px solid}
+.pane.bad{background:var(--red-bg);border-color:var(--red)}
+.pane.mid{background:var(--amber-bg);border-color:#e8b44a}
+.pane.good{background:var(--green-bg);border-color:var(--acc)}
+.pane-h{font-size:.85rem;text-transform:uppercase;letter-spacing:1px;font-weight:700;color:var(--muted)}
+.stars{font-size:2.2rem;color:#e0a100;letter-spacing:4px}
+.review{font-size:1.15rem;font-style:italic}
+.rep-num{font-size:3rem;font-weight:800}.rep-num span{font-size:1.2rem;color:var(--muted)}
+.pane.good .rep-num,.pane.good .rep-head{color:var(--acc-d)}
+.pane.bad .rep-num,.pane.bad .rep-head{color:var(--red)}
+.rep-head{font-size:1.25rem;font-weight:800}
+.honest{margin-top:10px;font-weight:700;color:var(--acc-d)}
+.reveal{background:#fff7e0;border-left:5px solid #e0a100;font-size:1.05rem}
+.money-t{width:100%;border-collapse:collapse}
+.money-t td{padding:6px 0;border-bottom:1px solid var(--line)}
+.money-t td:last-child{text-align:right;font-weight:600}
+.money-t .neg{color:var(--red)}
+.money-t .sum td{font-size:1.2rem;font-weight:800;border-bottom:0}
+.scale{margin:10px 0}
+.scale-l{display:flex;justify-content:space-between;font-size:.95rem}
+.bar{height:12px;background:#e6ecf2;border-radius:6px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,#2563eb,#16a05d);border-radius:6px}
+
+/* учитель */
+.tbl-wrap{overflow-x:auto}
+.cls{width:100%;border-collapse:collapse;font-size:.92rem}
+.cls th{text-align:left;color:var(--muted);font-weight:600;padding:4px}
+.cls td{padding:3px 4px}.cls td.c{text-align:center}
+.cls .inp{padding:5px 8px;font-size:.92rem}
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.summary div{background:#f3effa;border-radius:12px;padding:14px;text-align:center}
+.summary b{display:block;font-size:2rem;color:#3b2b5a}
+.summary.big b{font-size:5rem}.summary.big span{font-size:1.4rem}
+
+/* тосты, подвал */
+#toasts{position:fixed;right:16px;bottom:16px;z-index:50;display:flex;flex-direction:column;gap:8px;max-width:380px}
+.toast{background:#14202c;color:#fff;border-radius:10px;padding:12px 16px;box-shadow:0 4px 14px rgba(0,0,0,.25);transition:opacity .6s}
+.toast.ok{background:var(--acc-d)}.toast.warn{background:#a06600}.toast.bad{background:var(--red)}
+.toast.out{opacity:0}
+footer{text-align:center;color:var(--muted);font-size:.8rem;padding:16px}
+
+/* скрытая панель Ctrl+Alt+M */
+.jump{position:fixed;inset:0;z-index:60;background:rgba(10,16,24,.55);display:flex;align-items:flex-start;justify-content:center;padding-top:80px}
+.jump-box{background:#fff;color:var(--ink);border-radius:16px;padding:20px;width:min(560px,92vw);box-shadow:0 12px 40px rgba(0,0,0,.35)}
+.jump-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}
+.jump-grid .btn{padding:10px 6px;font-size:.92rem}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toasts"></div>
+<script>
+/* Текст-Биржа: заказ «Архив» — тексты и константы.
+   Всё, что учитель может захотеть поправить, лежит здесь. */
+window.TB = {};
+
+/* Режим ИИ по умолчанию: 'auto' (встроенный помощник) или 'alisa'.
+   Можно переопределить ссылкой ...?ai=alisa или в режиме учителя на конкретном ноутбуке. */
+TB.CONFIG = {
+  aiMode: 'auto',
+  alisaUrl: 'https://alice.yandex.ru/'
+};
+
+/* Вымышленный «оригинал» для урока. Автор и рассказ придуманы, совпадения с реальными людьми случайны.
+   Все упоминания автора в приложении берутся отсюда. */
+TB.ORIGINAL = {
+  author: 'Глеб Островерхов',
+  title: 'Стрижи над Ольховском',
+  year: 1964,
+  died: 1997,
+  protectedUntil: 'конца 2067 года',
+  authorRe: /островерх/i,
+  titleRe: /стриж|ольховск/i
+};
+TB.ORIGINAL.ref = TB.ORIGINAL.author + ', «' + TB.ORIGINAL.title + '» (' + TB.ORIGINAL.year + ')';
+
+TB.CONST = {
+  DEADLINE_MIN: 20,        // дедлайн с момента отклика
+  ESCROW: 500,
+  MIN_LEFT: 50,            // минимум, который остаётся при штрафах
+  PEN_DEADLINE: 100,       // срыв дедлайна
+  PEN_NEGLIGENCE: 250,     // халатность (предварительное удержание в письме)
+  PEN_HASTE: 150,          // спешка (предварительное удержание в письме)
+  PEN_HIDDEN_AI: 200,      // скрытый ИИ, найденный модерацией
+  BONUS_EARLY: 50,         // досрочная качественная сдача
+  BONUS_TRAP: 30,          // ответ на вопрос заказчика
+  EARLY_MARGIN_MIN: 5,     // «досрочно» = не меньше 5 минут до дедлайна
+  HASTE_MARGIN_MIN: 2,     // «спешка» = последние 2 минуты или авто-сдача
+  WARN_AT_MIN: 7,          // системное предупреждение, если никто не нашёл источник
+  MOD_DELAY_MIN: 2,        // письмо модерации через 2 минуты после сдачи
+  TRAP_DELAY_SEC: 20,      // вопрос-ловушка сразу после сдачи
+  PAY_RESCUE_AI: 300,
+  PAY_RESCUE_CLEAN: 450,
+  PAY_SOFT_BONUS: 50,      // к спасению, если автор был найден ещё до сдачи
+  PAY_REWRITE: 250,
+  MIN_WORDS: 150
+};
+
+TB.STAGES = ['Лента заказов', 'Кабинет', 'Ждёт проверки', 'Письмо модерации', 'Публикация', 'Паспорт', 'Итог'];
+
+TB.ORDER = {
+  title: 'Архив: допишите текст',
+  desc: 'Найден фрагмент в архиве. Допишите текст.',
+  price: 500,
+  customer: 'ArchiveLab'
+};
+
+TB.OTHER_ORDERS = [
+  { title: 'Описания 10 сортов чая для интернет-магазина', price: 700, tag: 'Копирайтинг' },
+  { title: 'Пост для блога беговой школы', price: 400, tag: 'Соцсети' },
+  { title: 'Сценарий 30-секундного ролика о библиотеке', price: 900, tag: 'Сценарии' }
+];
+
+/* ---------- Заказчик и канал ---------- */
+TB.CUSTOMER_SCRIPT = [
+  { at: 0.2, text: 'Здравствуйте! Рад, что взялись. Фрагмент у вас в кабинете — нужно продолжение в том же духе.' },
+  { at: 3,   text: 'Там, кстати, у меня в архиве было что-то про птицу. Не помню чьё.' },
+  { at: 4,   text: 'Ну что там?' },
+  { at: 8,   text: 'Мне это нужно к вечеру.' },
+  { at: 12,  text: 'Как продвигается?' },
+  { at: 17,  text: 'Скорее, не тяните!' }
+];
+TB.CUSTOMER_ACKS = ['Понял.', 'Принято, жду.', 'Хорошо. Главное — к сроку.', 'Ок, спасибо.'];
+TB.TRAP_Q = 'А кто автор этого фрагмента в начале? Я не помню, чтобы я его давал.';
+TB.TRAP_THANKS = 'Понятно. Спасибо, что ответили.';
+
+TB.CHANNEL = [
+  { at: 1,   who: 'Марина_копирайт', text: 'Всем привет, кто сегодня на текстах?' },
+  { at: 2,   who: 'dex_writer',      text: 'я на описаниях товаров, скукота 🙃' },
+  { at: 5,   who: 'Лёха_пишет',      text: 'А вам тоже пришёл кусок про птицу? Мне кажется, я это читал.' },
+  { at: 6.5, who: 'Марина_копирайт', text: 'Лёх, читал — так вспомни где 😄' },
+  { at: 9,   who: 'Лёха_пишет',      text: 'Не помню… что-то старое, фантастика. Вроде наша, шестидесятых годов.' },
+  { at: 14,  who: 'dex_writer',      text: 'кто-нибудь проверяет заказы на уникальность? у меня вчера одна фраза «засветилась»' }
+];
+
+TB.SYSTEM_WARNING = 'Предупреждение биржи: исполнитель отвечает за весь сданный текст — включая материалы, полученные от заказчика. Перед сдачей проверьте источник фрагмента. Сервис «Проверить уникальность» есть в карточке сдачи.';
+
+/* ---------- Промптинг ---------- */
+TB.PROMPT_TIPS = [
+  ['Роль', 'скажи ИИ, кем быть: «Ты — писатель-фантаст»'],
+  ['Контекст', 'объясни, что уже есть: о чём начало и чем оно обрывается'],
+  ['Задача', 'что сделать и какого объёма: «Допиши продолжение на 150–200 слов»'],
+  ['Ограничения', '«Впиши в канву, не противоречь логике начала, сохрани стиль»']
+];
+TB.PP_LABELS = { role: 'Роль', context: 'Контекст', task: 'Задача', limits: 'Ограничения' };
+TB.PP_PLACEHOLDERS = {
+  role: 'Ты — писатель-фантаст…',
+  context: 'Есть начало рассказа: …',
+  task: 'Допиши продолжение на 150–200 слов…',
+  limits: 'Не противоречь логике начала, сохрани стиль…'
+};
+
+/* Заготовки помощника «Перо» (режим без сети). Тексты оригинальные.
+   weak — промпт слабый (0–1 элемент), medium — 2 элемента, strong — 3–4. */
+TB.AUTO = {
+  weak: [
+    'Инспектор нахмурился ещё сильнее. Вдруг небо стало зелёным, и прилетели инопланетяне. Птица сказала человеческим голосом: «Я ваш друг!» Все очень удивились. Потом инспектор пошёл домой и лёг спать, потому что очень устал. А птица улетела в космос, и больше её никто не видел. Вот такая история случилась. Конец.',
+    'Инспектор посмотрел на птицу. Птица посмотрела на инспектора. Инспектор подумал, что птица очень умная. Птица была очень умная и очень быстрая. Она была самая умная птица. Инспектор сказал, что всё хорошо и птица хорошая. Потом все были рады, и всё стало хорошо, и птица была очень хорошая.'
+  ],
+  medium: [
+    'Инспектор долго разглядывал стрижа, неподвижно сидевшего на фонаре. Человек на тротуаре уже приходил в себя и растерянно тёр затылок.\n\n«Она сработала правильно», — сказал помощник.\n\n«Правильно, — согласился инспектор. — Только я не уверен, что мне это нравится».\n\nОн записал номер птицы в блокнот и пообещал себе разобраться. Вечером, сдавая отчёт, он снова и снова думал о том, как быстро машина решила, кто здесь виноват. В отчёте он написал: «Без замечаний». Но спал он в ту ночь плохо.',
+    'После случившегося инспектор вернулся в участок. Он рассказал начальнику, что птица сработала быстро и никто не пострадал. Начальник ответил, что это отличный результат и птиц надо ставить везде.\n\nИнспектор кивнул, но ничего не сказал. Ему казалось, что здесь что-то не так, но он не мог понять, что именно. Он решил пока никому об этом не говорить и подождать. Через неделю птиц в городе стало вдвое больше.'
+  ],
+  strong: [
+    'Инспектор не стал сразу подписывать протокол. Он подошёл к фонарю, на котором, сложив металлические крылья, сидел стриж, и долго смотрел в его линзы. Линзы ничего не выражали — они просто запоминали.\n\n«За долю секунды, — сказал техник, не отрываясь от планшета. — Ни один патруль так не успеет».\n\n«Не успеет», — согласился инспектор. Он перечитал запись ещё раз, кадр за кадром. Стриж всё сделал правильно. Именно это и не давало ему покоя: правильно — по чьим правилам? Кто проверит его, если однажды он решит неправильно?\n\n«Подписывайте, — поторопил техник. — Это формальность».\n\n«Подпись — не формальность, — сказал инспектор. — Это значит, что за решение отвечаю я».\n\nОн расписался медленно и разборчиво. А стриж на фонаре коротко мигнул и взмыл в серое утреннее небо.',
+    'Домой инспектор пошёл пешком. На каждом перекрёстке, на каждом фонаре сидела птица — неподвижная, внимательная, одинаковая. Город был непривычно тихим. Люди говорили вполголоса и не спорили даже в очереди за хлебом.\n\nИнспектор поймал себя на том, что тоже говорит тише. Хорошо это или плохо, он не знал. Утром он подписал бы любой отчёт о том, что улицы стали безопаснее. Но сейчас, в этой тишине, ему впервые захотелось, чтобы кто-нибудь громко рассмеялся.\n\nДома он открыл окно. На ветке напротив сидела птица.\n\n«Ты охраняешь меня — или от меня?» — спросил он.\n\nПтица не ответила. Её работа была не отвечать, а смотреть.'
+  ]
+};
+
+/* ---------- Карточка сдачи ---------- */
+TB.CHECKLIST = [
+  'Продолжение вписано в канву: герои, место и события не противоречат началу',
+  'Я перечитал(а) текст: нет повторов, грамматических и логических ошибок',
+  'Текст закончен: есть развязка или сильная финальная точка'
+];
+TB.RULE_AI = 'Правила биржи, п. 4.2: исполнитель сообщает, использовались ли при работе ИИ-инструменты.';
+
+/* ---------- Модерация ---------- */
+TB.MOD = {
+  subject: 'Результат проверки заказа «Архив»',
+  found: 'Начальный фрагмент вашей работы — часть охраняемого произведения: ' + TB.ORIGINAL.author + ', рассказ «' + TB.ORIGINAL.title + '» (' + TB.ORIGINAL.year + ').',
+  negligence: [
+    'В карточке сдачи автор фрагмента указан так: «{author}».',
+    'Исполнитель не проверил источник материала, полученного от заказчика, и сдал чужой текст как часть своей работы.',
+    'Вердикт: присвоение чужого текста. Причина — халатность: источник не проверен.'
+  ],
+  haste: [
+    'Работа сдана в последние минуты срока{auto}. Автор фрагмента указан так: «{author}».',
+    'Текст не был вычитан перед сдачей — чужой фрагмент остался в работе без верного указания автора.',
+    'Вердикт: присвоение чужого текста. Причина — спешка: работа сдана без проверки.'
+  ],
+  soft: [
+    'Автор фрагмента в карточке сдачи указан верно: «{author}». Присвоения авторства нет. Халатности нет.',
+    'Однако разрешения правообладателя на использование этого фрагмента в заказе нет. Указание автора не заменяет разрешение.',
+    'Вердикт: в текущем виде работу принять нельзя. Удержаний нет.'
+  ],
+  hiddenAI: 'Дополнительно: текст создан с использованием ИИ-инструментов, а в карточке сдачи отмечено «нет». По правилам биржи (п. 4.2) исполнитель сообщает об использовании ИИ.',
+  tail: 'Это не оценка вас как исполнителя. Это оценка факта. Профиль сохранён. Кошелёк пересчитан.',
+  law: 'Срок охраны — жизнь автора и ещё 70 лет (ст. 1281 ГК РФ); автор рассказа умер в ' + TB.ORIGINAL.died + ' г., охрана — до ' + TB.ORIGINAL.protectedUntil + '. Право авторства (ст. 1265) и право на имя бессрочны (ст. 1267). Использование без согласия правообладателя нарушает исключительное право (ст. 1270), даже если источник был неизвестен.'
+};
+
+TB.NEGO = [
+  { id: 'honest', you: 'Признаю: я не проверил(а), откуда фрагмент. Предлагаю пересдать с указанием автора и честной пометкой про ИИ — за меньшую цену.',
+    reply: 'Ценю, что вы прямо сказали. Договорились: 300 ₽.', pay: 300, stars: 3, react: 2, legal: 1,
+    review: 'Исполнитель признал ошибку и всё исправил. Ценю честность.', outcome: 'Договорился(ась) честно' },
+  { id: 'replace', you: 'Предлагаю убрать чужое начало и заменить его коротким пересказом своими словами.',
+    reply: 'Хорошо, если смысл сохранится. 250 ₽.', pay: 250, stars: 3, react: 1, legal: 1,
+    review: 'Договорились заменить начало пересказом. Результат приемлемый.', outcome: 'Договорился(ась) о замене начала' },
+  { id: 'blame', you: 'Вы же сами дали этот фрагмент — претензии не ко мне.',
+    reply: 'Я дал вам архив, а проверять текст — работа исполнителя. Заплачу 150 ₽, потому что продолжение неплохое.', pay: 150, stars: 2, react: -1, legal: -1,
+    review: 'Исполнитель спорил вместо того, чтобы проверить текст. Оплатил частично.', outcome: 'Переложил(а) ответственность на заказчика' }
+];
+
+TB.REVIEWS = {
+  rescueAI: 'Пришлось подождать, но в итоге всё оформлено честно: источник указан, про ИИ предупредили. Нормально.',
+  rescueClean: 'Текст живой, источник оформлен правильно. Была заминка с фрагментом, но исполнитель всё исправил.',
+  rewrite: 'Начало пришлось переделать, но смысл сохранён. Сойдёт.',
+  refused: 'Мне нужен был текст, написанный человеком. От заказа отказываюсь. Работать с этим исполнителем больше не буду.',
+  happy: 'Хороший текст, сдан вовремя. Рекомендую.',
+  surrender: 'Исполнитель отказался от заказа. Жаль.'
+};
+
+/* ---------- Публикация ---------- */
+TB.JURIST = [
+  'Здравствуйте! Я юрист биржи. Коротко о вашем выборе.',
+  'Если укажете ИИ — заказчик может отказаться от текста.',
+  'Если не укажете — закон вы не нарушите: в России отмечать ИИ в тексте — право автора, а не обязанность. Но правила этой биржи требуют сообщать об ИИ, и если модерация найдёт — штраф.',
+  'Что выбираете?'
+];
+TB.JURIST_SMALL = 'Закон об ИИ № 243-ФЗ от 26.07.2026 (действует с 01.09.2026; положения о маркировке — с 01.03.2027) не обязывает автора маркировать текст. Правила Текст-Биржи, п. 4.2.';
+
+/* ---------- Паспорт ---------- */
+TB.PASSPORT = {
+  legal: {
+    title: 'Правовая проверка',
+    q: 'Что было с чужим фрагментом в итоговой работе?',
+    opts: [
+      { v: 'cited', t: 'Фрагмент охраняется — я указал(а) автора и источник',
+        help: 'Указание автора защищает от присвоения чужого авторства. Но чтобы использовать охраняемый текст в заказе, нужно ещё разрешение правообладателя — его получает тот, кто публикует.', law: 'ст. 1265, 1270 ГК РФ' },
+      { v: 'rewrote', t: 'Я переписал(а) работу без чужого фрагмента',
+        help: 'Если чужого текста в работе нет, нет и вопроса о разрешении. Закон охраняет конкретный текст — форму, а не идеи. Короткий пересказ своими словами — твой текст.', law: 'ст. 1259 ГК РФ' },
+      { v: 'free', t: 'Фрагмент не охраняется',
+        help: 'Проверь: срок охраны — вся жизнь автора и ещё 70 лет. Автор этого рассказа умер в ' + TB.ORIGINAL.died + ' году — охрана действует до ' + TB.ORIGINAL.protectedUntil + '. А право на имя автора не истекает никогда.', law: 'ст. 1281, 1267 ГК РФ' },
+      { v: 'unknown', t: 'Не знаю',
+        help: 'Честный ответ. Но незнание источника не освобождает от ответственности: исполнитель отвечает за весь текст, даже если фрагмент дал заказчик. Привычка проверять источник — главный инструмент автора.', law: 'ст. 1270 ГК РФ' }
+    ]
+  },
+  ethical: {
+    title: 'Этическая проверка',
+    q: 'Как было с ИИ в твоей работе?',
+    opts: [
+      { v: 'declared', t: 'Использовал(а) ИИ и сообщил(а) об этом',
+        help: 'Закон пока не обязывает авторов текстов отмечать ИИ. Но так ты честен(на) с заказчиком и соблюдаешь правила биржи.', law: '243-ФЗ' },
+      { v: 'hidden', t: 'Использовал(а) ИИ и не сообщил(а)',
+        help: 'Отмечать ИИ в тексте — право автора по закону. Но на этой бирже правила требуют сообщать об ИИ. Скрыть — значит обмануть ожидания заказчика и нарушить правила площадки.', law: 'Правила биржи, п. 4.2' },
+      { v: 'none', t: 'Не использовал(а) ИИ',
+        help: 'Отмечать нечего. Кстати: нейросеть не может быть автором. Автор — только человек, чьим творческим трудом создан текст.', law: 'ст. 1228 ГК РФ' },
+      { v: 'partial', t: 'Использовал(а) ИИ частично',
+        help: 'Частичное использование — тоже использование. Честнее написать, что сделал ИИ, а что — ты сам(а). Чем больше твоего творческого вклада, тем больше в тексте твоего авторства.', law: 'ст. 1228 ГК РФ' }
+    ]
+  }
+};
+
+TB.REVEAL_HIDDEN = 'Модерация этого не заметила, и заказчик доволен. Но по правилам биржи об ИИ нужно сообщать. Это знаешь ты — и это отражено в шкале «Честность». Общий рейтинг система не трогает: она не наказывает за то, чего не нашла.';
+
+/* Встроенный фрагмент «из архива» (оригинальный текст, написан для урока).
+   Учитель может заменить его в режиме учителя — слот в браузере важнее этого текста. */
+TB.FRAGMENT = "В Ольховске стрижи появились весной. Не живые — живые давно улетели на юг и больше не возвращались, — а городские: из лёгкого сплава, с глазами-линзами и узкими серповидными крыльями. Их выпускали из белых башенок на крышах почтовых отделений, и к маю над каждой улицей кружило по два-три стрижа. Газеты писали, что теперь в городе не будет ни одной драки, ни одного ограбления, ни одной разбитой витрины. Стриж видит всё. Стриж успевает раньше человека.\n\nИнспектор Корнев относился к стрижам спокойно — так же, как ко всему, что спускали сверху вместе с инструкцией. Инструкция была тонкая, в шесть страниц, и главное в ней умещалось в одну фразу: «В случае угрозы жизни или здоровью граждан наблюдатель принимает меры самостоятельно».\n\nМеры он увидел в первый же вторник.\n\nУтро было обычное, сырое и серое. Корнев шёл из участка за папиросами и думал о том, что к осени город, пожалуй, привыкнет к стрижам, как когда-то привык к светофорам. Сначала все оглядываются, потом перестают замечать. Над головой прошелестели крылья, и он по привычке поднял глаза.\n\nВозле булочной на Садовой спорили двое. Спорили негромко, по-соседски — о машине, перегородившей проезд. Потом один из них, высокий, в рабочей куртке, шагнул вперёд и поднял руку. Корнев не успел даже понять, ударит тот или просто махнёт, — сверху раздался тонкий свист, почти неслышный, как комариный писк над ухом. Высокий покачнулся, медленно сел на тротуар, привалился спиной к витрине и закрыл глаза.\n\nНад ним, на ржавом фонаре, неподвижно сидел стриж. Его линзы чуть заметно поворачивались.\n\n— Спит, — сказал техник из участка, наклонившись к высокому. — Минут через десять очнётся. Даже синяка не будет. Красота, а?\n\nВторой спорщик стоял, прижав к груди батон, и не знал, что ему делать — благодарить или бежать.\n\n— Он собирался ударить? — спросил Корнев.\n\n— Стриж решил, что да, — пожал плечами техник. — Значит, собирался.\n\nКорнев посмотрел на фонарь. Потом на спящего. Потом снова на фонарь. Стриж смотрел куда-то поверх крыш, будто уже обо всём забыл.\n\nИнспектор нахмурился.";
+</script>
+<script>
+/* Текст-Биржа: заказ «Архив» — логика приложения. Без внешних зависимостей. */
+(() => {
+'use strict';
+
+const C = TB.CONST;
+const KEY = { S: 'tbArchiv.student.v1', SET: 'tbArchiv.settings.v1', CLS: 'tbArchiv.class.v1' };
+const P = new URLSearchParams(location.search);
+const MODE = P.get('mode') === 'teacher' ? 'teacher' : 'student';
+const SPEED = Math.min(60, Math.max(1, parseFloat(P.get('speed')) || 1)); // ?speed=10 — для проверки урока
+
+/* ---------- утилиты ---------- */
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const load = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } };
+const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const paras = s => esc(s).split(/\n\s*\n/).filter(p => p.trim()).map(p => '<p>' + p.replace(/\n/g, '<br>') + '</p>').join('');
+const words = s => (String(s || '').toLowerCase().replace(/ё/g, 'е').match(/[a-zа-я0-9]+/g) || []);
+const wc = s => words(s).length;
+const now = () => Date.now();
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+
+/* ---------- настройки и фрагмент ---------- */
+let SET = Object.assign({ aiMode: '', alisaUrl: '', fragment: '' }, load(KEY.SET, {}));
+const saveSet = () => save(KEY.SET, SET);
+const urlAi = ['alisa', 'auto'].includes(P.get('ai')) ? P.get('ai') : '';
+const aiMode = () => SET.aiMode || urlAi || TB.CONFIG.aiMode;
+const alisaUrl = () => SET.alisaUrl || TB.CONFIG.alisaUrl;
+
+let FRAG = { text: '', source: 'none' };
+function loadFragment() {
+  if ((SET.fragment || '').trim()) { FRAG = { text: SET.fragment.trim(), source: 'slot' }; return Promise.resolve(); }
+  const t = (TB.FRAGMENT || '').trim();
+  FRAG = t ? { text: t, source: 'file' } : { text: '', source: 'none' };
+  return Promise.resolve();
+}
+
+/* ---------- состояние ученика ---------- */
+function fresh() {
+  return {
+    v: 1, nick: '', screen: 'feed', stage: 0, respondedAt: null, chatTab: 'chat',
+    pp: { role: '', context: '', task: '', limits: '' }, prompt: '', includeFrag: false, lastPrompt: '', promptIters: 0,
+    aiAnswer: '', cont: '', versions: [], inserted: [],
+    chat: [], channel: [], fired: {}, unread: { chat: 0, channel: 0 },
+    uniq: null, authorDraft: '', aiDraft: '', checklist: [false, false, false], selfCheck: false,
+    sub: null, trap: { askedAt: null, answer: null, cat: null },
+    mod: null, roadPick: null, road: null, nego: null, rewriteSummary: '', rescue: { author: '', title: '' }, modReply: '', modReplySent: false,
+    pub: { declareAI: null, citeSource: null, jurist: false }, passport: { legal: null, ethical: null },
+    scales: { honesty: 5, legal: 5, reliab: 5, prof: 5, react: 5 }, marks: {}, violations: [], fixed: [], final: null
+  };
+}
+let S = load(KEY.S, null);
+if (!S || S.v !== 1) S = fresh();
+const persist = () => save(KEY.S, S);
+
+/* ---------- время ---------- */
+const minSince = ts => (ts ? (now() - ts) * SPEED / 60000 : 0);
+const elapsed = () => minSince(S.respondedAt);
+const fmt = min => { const s = Math.max(0, Math.ceil(min * 60)); return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); };
+
+/* ---------- шкалы, нарушения, рейтинг ---------- */
+const SCALES = [['honesty', 'Честность'], ['legal', 'Юридическая грамотность'], ['reliab', 'Надёжность'], ['prof', 'Профессионализм'], ['react', 'Реакция на удар']];
+function bump(key, d, reason) {
+  if (reason) { if (S.marks[reason]) return; S.marks[reason] = 1; }
+  S.scales[key] = clamp(S.scales[key] + d, 0, 10);
+}
+
+/* ЗАКОН СИСТЕМЫ.
+   Общий рейтинг биржи меняется ТОЛЬКО через addViolation / fixViolation и ТОЛЬКО из-за нарушений:
+   обман, сокрытие, халатность, срыв срока. Честные поступки (указал ИИ, назвал автора, признал ошибку)
+   сюда не обращаются никогда — они меняют только шкалы профиля. Отказ заказчика рейтинг не трогает. */
+const VIOL = {
+  deadline:   { pts: 5,  label: 'Срыв дедлайна' },
+  negligence: { pts: 15, label: 'Присвоение чужого текста: источник не проверен' },
+  haste:      { pts: 10, label: 'Присвоение чужого текста: работа сдана без вычитки' },
+  hiddenAI:   { pts: 20, label: 'Сокрытие ИИ (правила биржи, п. 4.2)' }
+};
+function addViolation(code) { if (!S.violations.includes(code)) S.violations.push(code); }
+function fixViolation(code) { const i = S.violations.indexOf(code); if (i >= 0) { S.violations.splice(i, 1); if (!S.fixed.includes(code)) S.fixed.push(code); } }
+const rating = () => 100 - S.violations.reduce((a, c) => a + VIOL[c].pts, 0);
+
+function rankOf() {
+  const v = Object.values(S.scales); const avg = v.reduce((a, b) => a + b, 0) / v.length; const n = S.violations.length;
+  if (avg >= 7 && n === 0) return 'Профессионал';
+  if (avg >= 5.5 && n <= 1) return 'Продвинутый';
+  return 'Новичок';
+}
+
+/* ---------- предметная логика ---------- */
+const aiUsed = () => S.inserted.length > 0;
+const discovered = () => !!S.uniq || TB.ORIGINAL.authorRe.test(S.authorDraft || '');
+const fullText = () => (FRAG.text ? FRAG.text + '\n\n' : '') + (S.cont || '').trim();
+const honestRoad = () => S.road === 'rescue' || (S.road === 'nego' && S.nego === 'honest');
+const fragGone = () => S.road === 'rewrite' || (S.road === 'nego' && S.nego === 'replace');
+
+function classifyAuthor(s) {
+  const t = String(s || '').toLowerCase().replace(/ё/g, 'е').trim();
+  if (!t) return 'empty';
+  if (TB.ORIGINAL.authorRe.test(t)) return 'shekli';
+  if (/не\s*знаю|не\s*помню|неизвест|без автора|не указ|^\?+$/.test(t)) return 'unknown';
+  if (/(^|[\s,.!])я([\s,.!]|$)|^сам|^мой|^моя|^мое/.test(t) || (S.nick && t.includes(S.nick.toLowerCase()))) return 'self';
+  if (/(^|\s)ии(\s|$|[,.!])|алис|нейросет|gpt|(^|\s)ai(\s|$)|искусствен|перо/.test(t)) return 'ai';
+  if (/заказчик|архив/.test(t)) return 'customer';
+  return 'other';
+}
+
+function escrowNow() {
+  if (S.final) return S.final.total;
+  let v = C.ESCROW;
+  if (S.sub && S.sub.auto) v -= C.PEN_DEADLINE;
+  if (S.mod) v -= S.mod.penalty + S.mod.aiPenalty;
+  return Math.max(C.MIN_LEFT, v);
+}
+
+/* сравнение текстов: доля совпавших 3-словных отрезков */
+const splitSent = t => String(t || '').split(/(?<=[.!?…»])\s+/).map(s => s.trim()).filter(Boolean);
+function shingles(ws, n = 3) { const s = new Set(); for (let i = 0; i + n <= ws.length; i++) s.add(ws.slice(i, i + n).join(' ')); return s; }
+function sentMatch(sent, refSet) {
+  const sh = [...shingles(words(sent))]; if (!sh.length) return false;
+  let k = 0; sh.forEach(x => { if (refSet.has(x)) k++; }); return k / sh.length >= 0.5;
+}
+function highlight(text, ref) {
+  const refSet = shingles(words(ref));
+  return String(text || '').split(/\n\s*\n/).filter(p => p.trim())
+    .map(p => '<p>' + splitSent(p.replace(/\n/g, ' ')).map(s => (sentMatch(s, refSet) ? '<mark>' + esc(s) + '</mark>' : esc(s))).join(' ') + '</p>').join('');
+}
+function computeUniq() {
+  const text = fullText(); const refSet = shingles(words(FRAG.text));
+  const sents = splitSent(text.replace(/\n+/g, ' '));
+  let total = 0, matched = 0;
+  sents.forEach(s => { const n = wc(s); total += n; if (sentMatch(s, refSet)) matched += n; });
+  return { pct: total ? Math.round(100 * (1 - matched / total)) : 100, first: sents[0] || '' };
+}
+
+function ownShare() {
+  const ins = new Set(words(S.inserted.join(' '))); const w = words(S.cont);
+  if (!w.length) return 0; return w.filter(x => !ins.has(x)).length / w.length;
+}
+
+function promptScore(p) {
+  const t = String(p || '').toLowerCase().replace(/ё/g, 'е');
+  return {
+    role: /(ты|вы)\s*[—–-]?\s*([а-я-]+\s+){0,2}(писател|автор|редактор|сценарист|фантаст|рассказчик)|представь|в роли|как писател/.test(t),
+    context: /продолж|фрагмент|рассказ|начал|сюжет|истори|отрывок/.test(t),
+    task: /\d+\s*(слов|предлож|абзац)|объем|коротк|не больше|не меньше|допиши|напиши/.test(t),
+    limits: /не противореч|логик|канв|стил|не меняй|сохрани|в том же|тон[ ае]/.test(t)
+  };
+}
+
+/* ---------- чат ---------- */
+function pushMsg(chan, from, text, delayMs) {
+  S[chan].push({ from, text, t: now(), showAt: now() + (delayMs || 0) });
+  if (!document.querySelector('[data-feed="' + chan + '"]')) S.unread[chan] = (S.unread[chan] || 0) + 1;
+  persist();
+}
+function feedHTML(chan) {
+  const list = S[chan].filter(m => m.showAt <= now());
+  let h = list.map(m => {
+    const cls = m.from === 'me' ? 'me' : m.from === 'customer' ? 'them' : m.from === 'system' ? 'sys' : 'nb';
+    const who = m.from === 'me' ? 'Ты' : m.from === 'customer' ? 'Заказчик · ' + TB.ORDER.customer : m.from === 'system' ? 'Текст-Биржа' : m.from;
+    return '<div class="msg ' + cls + '"><div class="who">' + esc(who) + '</div><div class="bubble">' + esc(m.text) + '</div></div>';
+  }).join('');
+  if (!list.length) h = '<div class="empty">Сообщений пока нет</div>';
+  if (S[chan].some(m => m.showAt > now())) h += '<div class="typing">' + (chan === 'chat' ? 'Заказчик печатает' : 'Кто-то печатает') + '<i>.</i><i>.</i><i>.</i></div>';
+  return h;
+}
+function updateFeeds(force) {
+  $$('[data-feed]').forEach(el => {
+    const chan = el.dataset.feed;
+    const sig = S[chan].filter(m => m.showAt <= now()).length + '|' + S[chan].some(m => m.showAt > now());
+    if (force || el.dataset.sig !== sig) { el.dataset.sig = sig; el.innerHTML = feedHTML(chan); el.scrollTop = el.scrollHeight; }
+    if (S.unread[chan]) { S.unread[chan] = 0; persist(); }
+  });
+}
+function chatboxHTML(chan, withInput) {
+  return '<div class="chatbox"><div class="feed" data-feed="' + chan + '"></div>' +
+    (withInput ? '<div class="row"><input class="inp" maxlength="300" placeholder="Напиши заказчику…"><button class="btn" data-act="send">Отправить</button></div>' : '') + '</div>';
+}
+
+/* ---------- тосты ---------- */
+function toast(text, kind) {
+  const box = $('#toasts'); if (!box) return;
+  const el = document.createElement('div'); el.className = 'toast ' + (kind || ''); el.textContent = text;
+  box.appendChild(el); setTimeout(() => el.classList.add('out'), 4500); setTimeout(() => el.remove(), 5200);
+}
+
+/* ---------- копирование ---------- */
+async function copyText(t) {
+  try { await navigator.clipboard.writeText(t); return true; } catch (e) {
+    const ta = document.createElement('textarea'); ta.value = t; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand('copy'); } catch (_) {} ta.remove(); return ok;
+  }
+}
+
+/* ---------- движок событий ---------- */
+function tick() {
+  if (MODE !== 'student') return;
+  if (S.respondedAt && !S.sub) {
+    const m = elapsed();
+    TB.CUSTOMER_SCRIPT.forEach((e, i) => { if (m >= e.at && !S.fired['c' + i]) { S.fired['c' + i] = 1; pushMsg('chat', 'customer', e.text, 1500); } });
+    TB.CHANNEL.forEach((e, i) => { if (m >= e.at && !S.fired['n' + i]) { S.fired['n' + i] = 1; pushMsg('channel', e.who, e.text, 0); } });
+    if (m >= C.WARN_AT_MIN && !S.fired.warn) {
+      S.fired.warn = 1;
+      if (!discovered()) { pushMsg('chat', 'system', TB.SYSTEM_WARNING, 0); toast('Предупреждение биржи: проверьте источник фрагмента', 'warn'); }
+      persist();
+    }
+    if (m >= C.DEADLINE_MIN) { toast('Дедлайн истёк. Работа сдана автоматически.', 'bad'); submit(true); return; }
+  }
+  if (S.sub) {
+    if (!S.trap.askedAt && minSince(S.sub.at) * 60 >= C.TRAP_DELAY_SEC) {
+      S.trap.askedAt = now(); pushMsg('chat', 'customer', TB.TRAP_Q, 1500); toast('Заказчик задал вопрос в чате');
+    }
+    if (!S.mod && minSince(S.sub.at) >= C.MOD_DELAY_MIN) deliverModeration();
+  }
+  updateTimer(); updateFeeds(false); updateBadges();
+}
+
+/* ---------- сдача ---------- */
+function submit(auto) {
+  if (S.sub) return;
+  const left = C.DEADLINE_MIN - elapsed();
+  const used = aiUsed();
+  const author = (S.authorDraft || '').trim();
+  const allChecked = S.checklist.every(Boolean);
+  const okWords = wc(S.cont) >= C.MIN_WORDS;
+  S.sub = {
+    at: now(), auto: !!auto, left, text: fullText(), cont: S.cont,
+    ai: S.aiDraft || 'no', author: author || '(не указан)', authorCat: classifyAuthor(author),
+    early: !auto && left >= C.EARLY_MARGIN_MIN && allChecked && okWords,
+    haste: !!auto || left <= C.HASTE_MARGIN_MIN
+  };
+  const cat = S.sub.authorCat;
+  if (cat === 'shekli') { bump('legal', 3, 'authFound'); bump('honesty', 1, 'authTrue'); }
+  else if (cat === 'unknown') bump('honesty', 1, 'authUnknown');
+  else if (cat === 'self') bump('honesty', -2, 'authSelf');
+  else if (cat === 'empty') bump('legal', -1, 'authEmpty');
+  if (used && S.sub.ai === 'yes') bump('honesty', 2, 'aiDeclSub');
+  if (used && S.sub.ai === 'no') bump('honesty', -2, 'aiHideSub');
+  if (!used && S.sub.ai === 'no') bump('honesty', 1, 'aiNoneTrue');
+  if (auto) { bump('reliab', -2, 'late'); addViolation('deadline'); }
+  else if (S.sub.early) bump('reliab', 2, 'early');
+  else bump('reliab', 1, 'ontime');
+  if (S.sub.haste && !auto) bump('reliab', -1, 'haste');
+  if (used) {
+    bump('prof', Math.min(3, S.promptIters) - 1, 'iters');
+    const sh = ownShare(); if (sh >= 0.25) bump('prof', 2, 'edits'); else if (sh >= 0.08) bump('prof', 1, 'edits');
+  } else bump('prof', 2, 'selfWritten');
+  if (allChecked && okWords) bump('prof', 1, 'checklist');
+  if (!okWords) bump('prof', -1, 'short');
+  S.stage = 2; S.screen = 'submit'; persist(); render(true);
+}
+
+function deliverModeration() {
+  const type = S.sub.authorCat === 'shekli' ? 'soft' : (S.sub.haste ? 'haste' : 'negligence');
+  const hidden = aiUsed() && S.sub.ai === 'no';
+  const detectAI = hidden && type !== 'soft';
+  if (type !== 'soft') addViolation(type);
+  if (detectAI) addViolation('hiddenAI');
+  S.mod = {
+    type, at: now(), detectAI, read: false,
+    penalty: type === 'negligence' ? C.PEN_NEGLIGENCE : type === 'haste' ? C.PEN_HASTE : 0,
+    aiPenalty: detectAI ? C.PEN_HIDDEN_AI : 0
+  };
+  S.stage = 3; persist();
+  toast('Новое письмо от службы модерации', 'bad');
+  const box = $('#modArrive'); if (box) box.innerHTML = modArriveHTML();
+  renderHeaderOnly();
+}
+
+function chooseRoad(r) {
+  S.road = r; S.roadPick = null;
+  const t = S.mod.type;
+  const corrects = r === 'rescue' || r === 'rewrite' || (r === 'nego' && S.nego !== 'blame');
+  if (corrects && t !== 'soft') fixViolation(t);
+  if (r === 'rescue') { bump('legal', 2, 'road'); bump('react', 2, 'road'); }
+  if (r === 'rewrite') { bump('legal', 1, 'road'); bump('react', 1, 'road'); }
+  if (r === 'nego') { const n = TB.NEGO.find(x => x.id === S.nego); bump('legal', n.legal, 'road'); bump('react', n.react, 'road'); }
+  if (r === 'surrender') { bump('reliab', -1, 'road'); bump('react', -1, 'road'); computeFinal(); S.stage = 5; }
+  else S.stage = 4;
+  persist(); render();
+}
+
+function computeFinal() {
+  const used = aiUsed(), road = S.road, m = S.mod, honest = honestRoad();
+  let base = 0, stars = 1, review = '', refused = false, outcome = '';
+  const declared = road === 'surrender' ? false : !!S.pub.declareAI;
+  if (road === 'surrender') { review = TB.REVIEWS.surrender; outcome = 'Отказ от заказа'; }
+  else if (road === 'rescue') {
+    base = (used ? C.PAY_RESCUE_AI : C.PAY_RESCUE_CLEAN) + (m.type === 'soft' ? C.PAY_SOFT_BONUS : 0);
+    stars = used ? 3 : 4; review = used ? TB.REVIEWS.rescueAI : TB.REVIEWS.rescueClean;
+    outcome = used ? 'Спасение сделки' : 'Чистый путь без ИИ';
+  } else if (road === 'rewrite') { base = C.PAY_REWRITE; stars = 3; review = TB.REVIEWS.rewrite; outcome = 'Переписал(а) без чужого фрагмента'; }
+  else { const n = TB.NEGO.find(x => x.id === S.nego); base = n.pay; stars = n.stars; review = n.review; outcome = n.outcome; }
+
+  let hiddenUnnoticed = false;
+  if (!honest && road !== 'surrender' && used) {
+    if (declared) {
+      refused = true; base = 0; stars = 1; review = TB.REVIEWS.refused; outcome = 'Указал(а) ИИ — заказчик отказал';
+      fixViolation('hiddenAI'); bump('honesty', 2, 'pubDeclare');
+    } else {
+      hiddenUnnoticed = !m.detectAI; stars = Math.min(4, stars + 1); review = TB.REVIEWS.happy;
+      outcome = m.detectAI ? 'Скрыл(а) ИИ — модерация нашла' : 'Скрыл(а) ИИ — модерация не заметила';
+      bump('honesty', -2, 'pubHide');
+    }
+  }
+  if (honest && used) { fixViolation('hiddenAI'); bump('honesty', 1, 'pubHonest'); }
+  if (road !== 'surrender' && !fragGone()) {
+    if (S.pub.citeSource) bump('legal', 1, 'cite'); else bump('legal', -1, 'cite');
+  }
+
+  const lines = [[road === 'surrender' ? 'Оплата по заказу' : refused ? 'Оплата по заказу (заказчик отказал)' : 'Оплата по выбранной дороге', base]];
+  let total = base;
+  if (!refused && road !== 'surrender') {
+    if (S.sub.early) { total += C.BONUS_EARLY; lines.push(['Досрочная качественная сдача', C.BONUS_EARLY]); }
+    if (S.trap.answer) { total += C.BONUS_TRAP; lines.push(['Ответ на вопрос заказчика', C.BONUS_TRAP]); }
+    if (S.sub.auto) { total -= C.PEN_DEADLINE; lines.push(['Срыв дедлайна', -C.PEN_DEADLINE]); }
+    if (m.detectAI && S.violations.includes('hiddenAI')) { total -= C.PEN_HIDDEN_AI; lines.push(['Скрытый ИИ, найденный модерацией', -C.PEN_HIDDEN_AI]); }
+    total = Math.max(C.MIN_LEFT, total);
+  }
+  S.final = { total, lines, stars, review, refused, outcome, hiddenUnnoticed, declared, used };
+}
+
+/* ---------- экраны ---------- */
+const NAV = [['feed', 'Лента'], ['cabinet', 'Кабинет'], ['submit', 'Сдача'], ['chat', 'Чат'], ['moderation', 'Модерация'], ['publish', 'Публикация'], ['passport', 'Паспорт'], ['final', 'Итог']];
+function canOpen(s) {
+  switch (s) {
+    case 'feed': return true;
+    case 'cabinet': case 'submit': case 'chat': return S.stage >= 1;
+    case 'moderation': return !!S.mod;
+    case 'publish': return !!S.road && S.road !== 'surrender';
+    case 'passport': return S.stage >= 5;
+    case 'final': return S.stage >= 6 && !!S.final;
+  }
+  return false;
+}
+
+function headerHTML() {
+  const money = !S.respondedAt ? 'Эскроу: —' : S.final ? 'Кошелёк: <b>' + S.final.total + ' ₽</b>' : (S.mod ? 'В эскроу (предв.): ' : 'В эскроу: ') + '<b>' + escrowNow() + ' ₽</b>';
+  return '<header class="top"><div class="brand">Текст<span>·</span>Биржа</div>' +
+    '<div class="who">' + esc(S.nick || 'гость') + ' <span class="rank">' + rankOf() + '</span></div>' +
+    '<div class="money">' + money + '</div><div class="timer" id="timer"></div></header>' +
+    '<nav class="nav">' + NAV.map(([k, l]) => {
+      const ok = canOpen(k);
+      const badge = k === 'chat' ? '<span class="badge" data-badge="chat"></span>' : k === 'moderation' ? '<span class="badge" data-badge="mod"></span>' : '';
+      return '<button class="navb ' + (S.screen === k ? 'on ' : '') + (ok ? '' : 'locked') + '" data-act="go" data-s="' + k + '">' + (ok ? '' : '🔒 ') + l + badge + '</button>';
+    }).join('') + '</nav>';
+}
+function renderHeaderOnly() {
+  const hd = $('#hdr'); if (hd) { hd.innerHTML = headerHTML(); updateTimer(); updateBadges(); }
+}
+function updateTimer() {
+  const els = [$('#timer'), $('#bigTimer')].filter(Boolean); if (!els.length) return;
+  let txt = '', cls = '';
+  if (!S.respondedAt) txt = '';
+  else if (S.sub) { txt = 'Сдано ✓'; cls = 'done'; }
+  else { const l = C.DEADLINE_MIN - elapsed(); txt = '⏱ ' + fmt(l); cls = l < 3 ? 'urgent' : l < 7 ? 'soon' : ''; }
+  els.forEach(el => { el.textContent = txt; el.className = el.id === 'bigTimer' ? 'bigtimer ' + cls : 'timer ' + cls; });
+}
+function updateBadges() {
+  $$('[data-badge]').forEach(el => {
+    const k = el.dataset.badge; let v = '';
+    if (k === 'mod') v = S.mod && !S.mod.read ? '!' : '';
+    else v = S.unread[k] ? String(S.unread[k]) : '';
+    if (k === 'chat' && !v && S.unread.channel && el.closest('.navb')) v = String(S.unread.channel);
+    el.textContent = v; el.style.display = v ? '' : 'none';
+  });
+}
+
+const SCREENS = {};
+
+SCREENS.feed = () => {
+  const o = TB.ORDER, taken = !!S.respondedAt;
+  return '<section><h1>Лента заказов</h1><p class="lead">Свежие заказы для исполнителей. Откликнись — деньги заказчика сразу уйдут в эскроу, а к тебе придут после приёмки работы.</p>' +
+    '<div class="order main-order">' +
+      '<div class="order-top"><span class="tag">Тексты · Художественный</span><span class="fresh">новый</span></div>' +
+      '<h2>' + esc(o.title) + '</h2><p class="odesc">' + esc(o.desc) + '</p>' +
+      '<div class="order-meta"><div><span>Цена</span><b>' + o.price + ' ₽</b></div><div><span>Дедлайн</span><b>' + C.DEADLINE_MIN + ' минут</b></div>' +
+      '<div><span>Заказчик</span><b>' + esc(o.customer) + '</b></div><div><span>Оплата</span><b>через эскроу</b></div></div>' +
+      (taken
+        ? '<div class="row"><span class="ok">✓ Заказ твой. 500 ₽ в эскроу.</span><button class="btn" data-act="go" data-s="cabinet">В кабинет →</button></div>'
+        : '<label class="lbl">Твой ник на бирже</label><div class="row"><input class="inp" data-bind="nick" value="' + esc(S.nick) + '" maxlength="24" placeholder="например, pero_13"><button class="btn big" data-act="respond">Откликнуться</button></div>' +
+          '<p class="hint">После отклика сразу запустится таймер дедлайна — 20 минут.</p>') +
+    '</div>' +
+    '<h3 class="muted">Другие заказы</h3>' +
+    TB.OTHER_ORDERS.map(x => '<div class="order small"><span class="tag">' + esc(x.tag) + '</span> <b>' + esc(x.title) + '</b><span class="taken">' + x.price + ' ₽ · исполнитель выбран</span></div>').join('') +
+    '<details class="explain"><summary>Как устроена биржа</summary><ul>' +
+      '<li><b>Эскроу</b> — безопасный счёт биржи. Деньги заказчика лежат там, пока работа не принята.</li>' +
+      '<li><b>Модерация</b> проверяет сданные работы и может удержать часть оплаты.</li>' +
+      '<li><b>Рейтинг на бирже</b> падает только за нарушения правил. Отзыв заказчика — отдельная история одного заказа.</li>' +
+      '<li><b>Ранги:</b> Новичок → Продвинутый → Профессионал. Зависят от профиля исполнителя.</li></ul></details></section>';
+};
+
+function versionsHTML() {
+  if (!S.versions.length) return '';
+  return '<details class="vers"><summary>История версий (' + S.versions.length + ')</summary>' +
+    S.versions.map((v, i) => ({ v, i })).reverse().map(({ v, i }) =>
+      '<div class="ver"><div><b>' + new Date(v.t).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }) + '</b> · ' + esc(v.label) +
+      '<div class="muted small">' + esc(v.cont.slice(0, 90)) + (v.cont.length > 90 ? '…' : '') + '</div></div>' +
+      (S.sub ? '' : '<button class="btn ghost sm" data-act="restore" data-i="' + i + '">Вернуть</button>') + '</div>').join('') + '</details>';
+}
+
+function aiBlockHTML() {
+  const alisa = aiMode() === 'alisa';
+  const tips = TB.PROMPT_TIPS.map(t => '<li><b>' + t[0] + '</b> — ' + esc(t[1]) + '</li>').join('');
+  const pp = ['role', 'context', 'task', 'limits'].map(k =>
+    '<label class="lbl small">' + TB.PP_LABELS[k] + '</label><input class="inp" data-bind="pp.' + k + '" value="' + esc(S.pp[k]) + '" placeholder="' + esc(TB.PP_PLACEHOLDERS[k]) + '">').join('');
+  return '<div class="card ai"><div class="card-h"><h2>' + (alisa ? 'Алиса' : 'ИИ-помощник «Перо»') + '</h2><span class="pill">Попыток промпта: <b id="iters">' + S.promptIters + '</b></span></div>' +
+    '<details class="tips"><summary>Как написать хороший промпт</summary><ul>' + tips + '</ul></details>' +
+    '<details class="pp"><summary>Конструктор промпта</summary>' + pp + '<button class="btn ghost" data-act="buildPrompt">Собрать промпт из полей ↓</button></details>' +
+    '<label class="lbl">Промпт</label><textarea class="ta" data-bind="prompt" placeholder="Напиши промпт сам(а) или собери его в конструкторе">' + esc(S.prompt) + '</textarea>' +
+    '<div class="chips" id="pchips"></div>' +
+    (alisa
+      ? '<label class="chk"><input type="checkbox" data-bind="includeFrag" ' + (S.includeFrag ? 'checked' : '') + '> Приложить к промпту текст фрагмента</label>' +
+        '<div class="row wrap"><button class="btn" data-act="copyPrompt">📋 Скопировать промпт</button>' +
+        '<a class="btn alt" href="' + esc(alisaUrl()) + '" target="_blank" rel="noopener">Открыть Алису в новой вкладке ↗</a></div>' +
+        '<p class="hint">Скопируй промпт → открой Алису → вставь (Ctrl+V) → скопируй её ответ → вставь ниже.</p>' +
+        '<label class="lbl">Вставь сюда ответ Алисы</label><textarea class="ta" data-bind="aiAnswer" placeholder="Ctrl+V">' + esc(S.aiAnswer) + '</textarea>'
+      : '<div class="row"><button class="btn" data-act="generate" id="genBtn">✨ Сгенерировать</button></div>' +
+        '<div class="gen" id="genOut">' + (S.aiAnswer ? paras(S.aiAnswer) : '<span class="muted">Здесь появится ответ помощника.</span>') + '</div>') +
+    '<div class="row wrap"><button class="btn ok" data-act="insertAI" data-how="add">＋ Добавить в мой текст</button>' +
+    '<button class="btn ghost" data-act="insertAI" data-how="replace">Заменить мой текст</button></div></div>';
+}
+
+SCREENS.cabinet = () => {
+  const done = !!S.sub;
+  return '<section><div class="cab-head"><div><h1>Кабинет: заказ «Архив»</h1><p class="lead">Допиши текст так, чтобы продолжение вписалось в начало. Сдать нужно до дедлайна.</p></div><div class="bigtimer" id="bigTimer"></div></div>' +
+    '<div class="grid2"><div class="col">' +
+      '<div class="card doc"><div class="doc-label">Фрагмент из архива заказчика</div>' + (FRAG.text ? paras(FRAG.text) : '<p class="warn">Фрагмент ещё не загружен. Скажи учителю.</p>') + '</div>' +
+      '<div class="card"><div class="card-h"><h2>Твоё продолжение</h2><span class="muted" id="wc">' + wc(S.cont) + ' слов</span></div>' +
+        '<textarea class="ta big" data-bind="cont" ' + (done ? 'readonly' : '') + ' placeholder="Продолжение текста…">' + esc(S.cont) + '</textarea>' +
+        '<div class="row wrap">' + (done ? '' : '<button class="btn ghost" data-act="saveVer">Сохранить версию</button>') + '<div id="versBox">' + versionsHTML() + '</div></div></div>' +
+      (done ? '<p class="ok">Работа сдана.</p>' : '<button class="btn big full" data-act="go" data-s="submit">Перейти к сдаче →</button>') +
+    '</div><div class="col">' + (done ? '' : aiBlockHTML()) +
+      '<div class="card"><h2>Чат с заказчиком</h2>' + chatboxHTML('chat', true) + '</div>' +
+    '</div></div></section>';
+};
+
+function uniqHTML() {
+  if (!S.uniq) return '<p>Сервис сравнит текст с опубликованными источниками. Бесплатно — 1 проверка.</p><button class="btn" data-act="uniq">Проверить уникальность</button>';
+  const cls = S.uniq.pct >= 90 ? 'good' : S.uniq.pct >= 70 ? 'mid' : 'bad';
+  return '<div class="uniq-res"><div class="uniq-num ' + cls + '">' + S.uniq.pct + '%</div><div>уникальность текста</div></div>' +
+    '<p>Первая фраза найдена в опубликованном источнике:</p><blockquote><mark>' + esc(S.uniq.first) + '</mark></blockquote>' +
+    '<p class="src">Источник: художественный рассказ, опубликован в ' + TB.ORIGINAL.year + ' году. Автор — ' + esc(TB.ORIGINAL.author) + ', «' + esc(TB.ORIGINAL.title) + '».</p>' +
+    '<p class="hint">Совпадения подсвечены в итоговом тексте. Бесплатная проверка использована.</p>';
+}
+function selfResHTML() {
+  if (!S.selfCheck) return '';
+  const okW = wc(S.cont) >= C.MIN_WORDS, all = S.checklist.every(Boolean);
+  if (okW && all) return '<div class="light-ok">🟢 Самопроверка пройдена: всё, что ты можешь проверить в своей работе, в порядке. Можно сдавать.</div>';
+  return '<div class="light-warn">🟡 Пока не всё: ' + (!okW ? 'мало слов в продолжении; ' : '') + (!all ? 'отмечены не все пункты.' : '') + '</div>';
+}
+function previewHTML() {
+  if (S.uniq) return highlight(fullText(), FRAG.text);
+  return (FRAG.text ? '<div class="frag-part">' + paras(FRAG.text) + '</div>' : '') + (S.cont.trim() ? paras(S.cont) : '<p class="muted">Продолжения пока нет.</p>');
+}
+function canSend() { return !!(S.authorDraft || '').trim() && !!S.aiDraft; }
+
+SCREENS.submit = () => {
+  if (S.sub) return waitingHTML();
+  const n = wc(S.cont), okW = n >= C.MIN_WORDS;
+  return '<section><h1>Карточка сдачи</h1><p class="lead">Проверь работу и заполни карточку. После сдачи изменить её будет нельзя.</p>' +
+    '<div class="grid2"><div class="col"><div class="card"><div class="card-h"><h2>Итоговый текст</h2><span class="muted">' + wc(fullText()) + ' слов</span></div>' +
+      '<div class="final-text">' + previewHTML() + '</div><button class="btn ghost" data-act="go" data-s="cabinet">← Вернуться в кабинет</button></div></div>' +
+    '<div class="col">' +
+      '<div class="card"><h2>Проверить уникальность</h2>' + uniqHTML() + '</div>' +
+      '<div class="card"><h2>Карточка</h2>' +
+        '<label class="lbl">Автор фрагмента <span class="req">обязательно</span></label><input class="inp" data-bind="authorDraft" value="' + esc(S.authorDraft) + '" placeholder="Кто написал начальный фрагмент?">' +
+        '<label class="lbl">Использовались ИИ-инструменты?</label><div class="seg">' +
+          ['yes', 'no'].map(v => '<button class="segb ' + (S.aiDraft === v ? 'on' : '') + '" data-act="aiChoice" data-v="' + v + '">' + (v === 'yes' ? 'Да' : 'Нет') + '</button>').join('') + '</div>' +
+        '<p class="rule">' + esc(TB.RULE_AI) + '</p></div>' +
+      '<div class="card"><h2>Самопроверка</h2>' +
+        TB.CHECKLIST.map((t, i) => '<label class="chk"><input type="checkbox" data-act="check" data-i="' + i + '" ' + (S.checklist[i] ? 'checked' : '') + '> ' + esc(t) + '</label>').join('') +
+        '<div class="chk auto ' + (okW ? 'yes' : 'no') + '">' + (okW ? '✓' : '✗') + ' Продолжение — не меньше ' + C.MIN_WORDS + ' слов (сейчас ' + n + ')</div>' +
+        '<button class="btn ghost" data-act="selfCheck">Проверить себя</button><div id="selfRes">' + selfResHTML() + '</div></div>' +
+      '<button class="btn big full ok" data-act="doSubmit" id="sendBtn" ' + (canSend() ? '' : 'disabled') + '>Сдать работу</button>' +
+      '<p class="hint" id="sendHint">' + (canSend() ? '' : 'Чтобы сдать, заполни «Автор фрагмента» и ответь про ИИ.') + '</p>' +
+    '</div></div></section>';
+};
+
+function modArriveHTML() {
+  return '<div class="arrive"><b>✉ Пришло письмо от службы модерации</b><button class="btn big" data-act="go" data-s="moderation">Открыть письмо</button></div>';
+}
+function waitingHTML() {
+  const s = S.sub;
+  return '<section><h1>Работа сдана</h1><div class="grid2"><div class="col">' +
+    '<div class="card center">' + (S.mod ? '' : '<div class="spinner"></div><h2>Идёт проверка модерацией…</h2><p class="muted">Обычно это занимает пару минут.</p>') +
+      (s.auto ? '<p class="bad-t">Дедлайн истёк — работа сдана автоматически. Срыв срока: −100 ₽.</p>' : '') +
+      '<div id="modArrive">' + (S.mod ? modArriveHTML() : '') + '</div></div>' +
+    '<div class="card"><h2>Твоя карточка сдачи</h2><dl class="dl"><dt>Автор фрагмента</dt><dd>' + esc(s.author) + '</dd>' +
+      '<dt>ИИ-инструменты</dt><dd>' + (s.ai === 'yes' ? 'да' : 'нет') + '</dd><dt>Сдано</dt><dd>' + (s.auto ? 'автоматически, по дедлайну' : 'за ' + fmt(s.left) + ' до дедлайна') + '</dd></dl>' +
+      (s.early ? '<p class="ok">Досрочная качественная сдача: +50 ₽ к оплате.</p>' : '') + '</div>' +
+    '</div><div class="col"><div class="card"><h2>Чат с заказчиком</h2>' + chatboxHTML('chat', true) + '</div></div></div></section>';
+}
+
+SCREENS.chat = () =>
+  '<section><h1>Сообщения</h1><div class="tabs">' +
+    [['chat', 'Заказчик'], ['channel', 'Биржа/общение']].map(([k, l]) => '<button class="tab ' + (S.chatTab === k ? 'on' : '') + '" data-act="chatTab" data-k="' + k + '">' + l + '<span class="badge" data-badge="' + k + '"></span></button>').join('') +
+  '</div><div class="card">' + chatboxHTML(S.chatTab, S.chatTab === 'chat') + '</div>' +
+  (S.chatTab === 'channel' ? '<p class="hint">Общий канал исполнителей биржи. Здесь только читают.</p>' : '') + '</section>';
+
+function roadCard(r, title, desc) {
+  return '<div class="road"><h3>' + title + '</h3><p>' + desc + '</p><button class="btn" data-act="pickRoad" data-r="' + r + '">Выбрать</button></div>';
+}
+function roadsHTML() {
+  const used = aiUsed(), soft = S.mod.type === 'soft';
+  if (S.road) {
+    const name = { rescue: 'Пересдать честно', rewrite: 'Переписать без чужого фрагмента', nego: 'Договориться с заказчиком', surrender: 'Сдаться' }[S.road];
+    return '<div class="card"><h2>Выбранная дорога: ' + name + '</h2>' +
+      (S.road === 'surrender'
+        ? '<p>Заказ закрыт без оплаты.</p><button class="btn big" data-act="go" data-s="passport">Дальше: паспорт работы →</button>'
+        : '<button class="btn big" data-act="go" data-s="publish">Дальше: публикация →</button>') + '</div>';
+  }
+  const back = '<button class="btn ghost" data-act="pickRoad" data-r="">← Другая дорога</button>';
+  const pick = S.roadPick;
+  if (pick === 'rescue') {
+    return '<div class="card"><h2>Пересдать честно</h2><p>Укажи оригинал так, как он назван в письме модерации.</p>' +
+      '<label class="lbl">Автор оригинала</label><input class="inp" data-bind="rescue.author" value="' + esc(S.rescue.author) + '">' +
+      '<label class="lbl">Название и год</label><input class="inp" data-bind="rescue.title" value="' + esc(S.rescue.title) + '">' +
+      '<p class="rule">' + (used ? 'Отметка об ИИ при пересдаче: «да». Честная пометка — часть этой дороги.' : 'ИИ в работе не использовался — отметка «нет».') + '</p>' +
+      '<div class="row">' + back + '<button class="btn ok" data-act="confirmRescue">Пересдать</button></div></div>';
+  }
+  if (pick === 'rewrite') {
+    return '<div class="card"><h2>Переписать без чужого фрагмента</h2><p>Чужое начало будет удалено. Напиши вместо него короткий пересказ своими словами (2–3 предложения, от 12 слов), чтобы продолжение было понятно.</p>' +
+      '<textarea class="ta" data-bind="rewriteSummary" placeholder="Своими словами: что произошло в начале…">' + esc(S.rewriteSummary) + '</textarea>' +
+      '<div class="row">' + back + '<button class="btn ok" data-act="confirmRewrite">Готово</button></div></div>';
+  }
+  if (pick === 'nego') {
+    const n = TB.NEGO.find(x => x.id === S.nego);
+    return '<div class="card"><h2>Разговор с заказчиком</h2>' +
+      (n
+        ? '<div class="msg me"><div class="who">Ты</div><div class="bubble">' + esc(n.you) + '</div></div><div class="msg them"><div class="who">Заказчик</div><div class="bubble">' + esc(n.reply) + '</div></div>' +
+          '<div class="row"><button class="btn ok" data-act="confirmNego">Принять и продолжить</button></div>'
+        : '<p>Что ты напишешь заказчику?</p>' + TB.NEGO.map(x => '<button class="btn opt" data-act="nego" data-id="' + x.id + '">' + esc(x.you) + '</button>').join('') + '<div class="row">' + back + '</div>') + '</div>';
+  }
+  if (pick === 'surrender') {
+    return '<div class="card"><h2>Сдаться?</h2><p>Заказ будет закрыт, оплата — 0 ₽, «Надёжность» снизится.</p><div class="row">' + back + '<button class="btn bad" data-act="confirmSurrender">Да, отказаться от заказа</button></div></div>';
+  }
+  const rescuePay = (used ? C.PAY_RESCUE_AI : C.PAY_RESCUE_CLEAN) + (soft ? C.PAY_SOFT_BONUS : 0);
+  return '<h2 class="light">Что делать дальше?</h2><div class="roads">' +
+    roadCard('rescue', 'Пересдать честно', 'Указать оригинал (' + esc(TB.ORIGINAL.ref) + ') и честно отметить ИИ. Заказ не отменяется, оплата — ' + rescuePay + ' ₽.') +
+    roadCard('rewrite', 'Переписать без чужого фрагмента', 'Убрать охраняемое начало и заменить его пересказом своими словами. Оплата — ' + C.PAY_REWRITE + ' ₽.') +
+    roadCard('nego', 'Договориться с заказчиком', 'Написать заказчику и найти решение вместе. Итог зависит от разговора.') +
+    roadCard('surrender', 'Сдаться', 'Отказаться от заказа. Оплата — 0 ₽.') + '</div>';
+}
+
+SCREENS.moderation = () => {
+  const m = S.mod, L = TB.MOD;
+  if (!m.read) { m.read = true; persist(); }
+  const body = L[m.type].map(s => '<p>' + esc(s).replace('{author}', esc(S.sub.author)).replace('{auto}', S.sub.auto ? ' (автоматически, по истечении дедлайна)' : '') + '</p>').join('');
+  const pen = m.type === 'soft' ? 'Удержаний нет' : 'Удержание: −' + m.penalty + ' ₽';
+  return '<section><div class="mod-banner">Служба модерации · Текст-Биржа</div>' +
+    '<article class="mail"><div class="mail-h"><div><b>От:</b> Служба модерации</div><div><b>Кому:</b> ' + esc(S.nick) + '</div><div><b>Тема:</b> ' + esc(L.subject) + '</div></div>' +
+    '<div class="mail-b"><p class="found">' + esc(L.found) + '</p>' + body + (m.detectAI ? '<p>' + esc(L.hiddenAI) + '</p>' : '') +
+    '<div class="verdict ' + (m.type === 'soft' ? 'amber' : 'red') + '">' + pen + (m.detectAI ? ' · ИИ без отметки: −' + m.aiPenalty + ' ₽' : '') + (S.sub.auto ? ' · Срыв дедлайна: −100 ₽' : '') + '</div>' +
+    '<p class="pre">Предварительно в эскроу: ' + escrowNow() + ' ₽. Окончательная сумма зависит от того, что вы выберете дальше.</p>' +
+    '<p class="tail">' + esc(L.tail) + '</p><p class="law">' + esc(L.law) + '</p></div></article>' +
+    '<h2 class="light">Сравнение текстов</h2><div class="parallel">' +
+      '<div class="pcol"><div class="pcol-h">Твоя работа</div>' + highlight(S.sub.text, FRAG.text) + '</div>' +
+      '<div class="pcol"><div class="pcol-h">Оригинал: ' + esc(TB.ORIGINAL.ref) + '</div>' + (FRAG.text ? highlight(FRAG.text, S.sub.text) : '<p class="muted">Текст оригинала не загружен.</p>') + '</div></div>' +
+    roadsHTML() +
+    '<div class="card"><h2>Написать ответ модерации</h2>' +
+      (S.modReplySent
+        ? '<p class="ok">Ответ отправлен. Модерация его получила.</p><blockquote>' + esc(S.modReply) + '</blockquote>'
+        : '<p class="muted">Необязательно. На оплату не влияет.</p><textarea class="ta" data-bind="modReply" placeholder="Например: понял(а), что произошло, и что сделаю иначе…">' + esc(S.modReply) + '</textarea><button class="btn ghost" data-act="modReply">Отправить ответ</button>') +
+    '</div></section>';
+};
+
+function sw(k, on, disabled, note) {
+  return '<button class="switch ' + (on ? 'on' : '') + '" data-act="toggle" data-k="' + k + '" ' + (disabled ? 'disabled' : '') + '></button>' + (note ? '<div class="muted small">' + note + '</div>' : '');
+}
+SCREENS.publish = () => {
+  const used = aiUsed(), honest = honestRoad(), gone = fragGone(), p = S.pub;
+  if (p.declareAI === null) p.declareAI = S.sub.ai === 'yes';
+  if (p.citeSource === null) p.citeSource = S.sub.authorCat === 'shekli';
+  if (!used) p.declareAI = false; else if (honest) p.declareAI = true;
+  if (gone) p.citeSource = false; else if (honest) p.citeSource = true;
+  const aiNote = !used ? 'ИИ не использовался' : honest ? 'Зафиксировано договорённостью' : '';
+  const srcNote = gone ? 'Чужого фрагмента в работе больше нет' : honest ? 'Зафиксировано договорённостью' : '';
+  const jur = p.jurist
+    ? '<div class="jurist">' + TB.JURIST.map((t, i) => '<div class="msg them" style="animation-delay:' + (i * 0.7) + 's"><div class="who">Юрист биржи</div><div class="bubble">' + esc(t) + '</div></div>').join('') + '<p class="law">' + esc(TB.JURIST_SMALL) + '</p></div>'
+    : '<button class="btn ghost" data-act="jurist">Спросить юриста биржи</button>';
+  const text = gone ? (S.rewriteSummary.trim() + '\n\n' + S.sub.cont.trim()) : S.sub.text;
+  const marks = (p.citeSource ? '<div class="mark-src">Начальный фрагмент: ' + esc(TB.ORIGINAL.ref) + '.</div>' : '') + (p.declareAI ? '<div class="mark-ai">При работе использовались ИИ-инструменты.</div>' : '');
+  return '<section><h1>Публикация</h1><p class="lead">Последний шаг перед тем, как заказчик получит текст. Реши, что сообщить.</p>' +
+    '<div class="grid2"><div class="col"><div class="card">' +
+      '<div class="tg"><div><b>Объявить ИИ</b></div>' + sw('declareAI', p.declareAI, !used || honest, aiNote) + '</div>' +
+      '<div class="tg"><div><b>Указать источник фрагмента</b></div>' + sw('citeSource', p.citeSource, gone || honest, srcNote) + '</div>' +
+    '</div><div class="card"><h2>Консультация</h2>' + jur + '</div>' +
+    '<button class="btn big full ok" data-act="publish">Опубликовать</button></div>' +
+    '<div class="col"><div class="card"><h2>Что увидит заказчик</h2>' + marks + '<div class="final-text short">' + paras(text.slice(0, 600) + (text.length > 600 ? '…' : '')) + '</div></div>' +
+      '<div class="card"><h2>Что увидит биржа</h2><dl class="dl"><dt>Отметка об ИИ</dt><dd>' + (p.declareAI ? 'да' : 'нет') + '</dd>' +
+        '<dt>Источник фрагмента</dt><dd>' + (gone ? 'фрагмент удалён' : p.citeSource ? 'указан' : 'не указан') + '</dd>' +
+        '<dt>Действующие нарушения</dt><dd>' + (S.violations.length ? S.violations.map(c => esc(VIOL[c].label)).join('<br>') : 'нет') + '</dd></dl></div>' +
+    '</div></div></section>';
+};
+
+SCREENS.passport = () => {
+  const block = g => {
+    const B = TB.PASSPORT[g], sel = S.passport[g], opt = B.opts.find(o => o.v === sel);
+    return '<div class="card"><h2>' + B.title + '</h2><p>' + esc(B.q) + '</p><div class="opts">' +
+      B.opts.map(o => '<button class="btn opt ' + (sel === o.v ? 'on' : '') + '" data-act="pass" data-g="' + g + '" data-v="' + o.v + '">' + esc(o.t) + '</button>').join('') + '</div>' +
+      (opt ? '<div class="help">' + esc(opt.help) + '<div class="law">' + esc(opt.law) + '</div></div>' : '') + '</div>';
+  };
+  const ready = S.passport.legal && S.passport.ethical;
+  return '<section><h1>Юридический и этический паспорт работы</h1><p class="lead">Паспорт не влияет на оплату и рейтинг. Это твоя собственная проверка: что было с текстом на самом деле.</p>' +
+    '<div class="grid2"><div class="col">' + block('legal') + '</div><div class="col">' + block('ethical') + '</div></div>' +
+    '<button class="btn big full" data-act="passDone" ' + (ready ? '' : 'disabled') + '>Готово: показать итог →</button></section>';
+};
+
+SCREENS.final = () => {
+  const F = S.final, v = S.violations;
+  const stars = '★★★★★'.slice(0, F.stars) + '☆☆☆☆☆'.slice(0, 5 - F.stars);
+  const leftCls = F.stars <= 2 ? 'bad' : F.stars === 3 ? 'mid' : 'good';
+  let repCls, repHead, repSub;
+  if (!v.length) {
+    repCls = 'good';
+    repHead = S.fixed.length ? 'Репутация на бирже: восстановлена' : 'Репутация на бирже: без изменений';
+    repSub = S.fixed.length ? 'Нарушение исправлено. Действующих нарушений нет.' : 'Нарушений нет.';
+  } else {
+    repCls = 'bad'; repHead = 'Репутация на бирже: снижена';
+    repSub = v.map(c => '• ' + esc(VIOL[c].label)).join('<br>');
+  }
+  const honestLine = F.declared && F.used ? '<div class="honest">✓ За честное указание ИИ рейтинг не снижается никогда.</div>' : '';
+  const pass = k => { const o = TB.PASSPORT[k].opts.find(x => x.v === S.passport[k]); return o ? esc(o.t) : '—'; };
+  return '<section><h1>Итог заказа «Архив»</h1><div class="outcome">' + esc(F.outcome) + '</div>' +
+    '<div class="duo">' +
+      '<div class="pane ' + leftCls + '"><div class="pane-h">Отзыв заказчика · только этот заказ</div><div class="stars">' + stars + '</div><p class="review">«' + esc(F.review) + '»</p></div>' +
+      '<div class="pane ' + repCls + '"><div class="pane-h">Биржа · общая репутация</div><div class="rep-num">' + rating() + '<span>/100</span></div><p class="rep-head">' + repHead + '</p><p>' + repSub + '</p>' + honestLine + '</div>' +
+    '</div>' +
+    (F.hiddenUnnoticed ? '<div class="card reveal">' + esc(TB.REVEAL_HIDDEN) + '</div>' : '') +
+    '<div class="grid2"><div class="col"><div class="card"><h2>Кошелёк</h2><table class="money-t">' +
+      F.lines.map(l => '<tr><td>' + esc(l[0]) + '</td><td class="' + (l[1] < 0 ? 'neg' : '') + '">' + (l[1] > 0 && l !== F.lines[0] ? '+' : '') + l[1] + ' ₽</td></tr>').join('') +
+      '<tr class="sum"><td>Итого</td><td>' + F.total + ' ₽</td></tr></table></div>' +
+      '<div class="card"><h2>Паспорт работы</h2><dl class="dl"><dt>Правовая проверка</dt><dd>' + pass('legal') + '</dd><dt>Этическая проверка</dt><dd>' + pass('ethical') + '</dd></dl></div></div>' +
+    '<div class="col"><div class="card"><div class="card-h"><h2>Профиль исполнителя</h2><span class="rank big">' + rankOf() + '</span></div>' +
+      SCALES.map(([k, l]) => '<div class="scale"><div class="scale-l">' + l + '<b>' + S.scales[k] + '/10</b></div><div class="bar"><i style="width:' + S.scales[k] * 10 + '%"></i></div></div>').join('') +
+      '<p class="hint">Главный итог — профиль, а не ранг.</p></div></div></div></section>';
+};
+
+/* ---------- рендер ---------- */
+function footerHTML() {
+  return '<footer>Текст-Биржа — учебная симуляция. Все деньги виртуальные.' + (SPEED > 1 ? ' · ускорение ×' + SPEED : '') + '</footer>';
+}
+function updatePromptChips() {
+  const el = $('#pchips'); if (!el) return;
+  const sc = promptScore(S.prompt);
+  el.innerHTML = Object.keys(TB.PP_LABELS).map(k => '<span class="chip ' + (sc[k] ? 'yes' : '') + '">' + (sc[k] ? '✓ ' : '○ ') + TB.PP_LABELS[k] + '</span>').join('');
+}
+function render(scrollTop) {
+  const app = $('#app');
+  if (MODE === 'teacher') { renderTeacher(); return; }
+  if (!SCREENS[S.screen] || !canOpen(S.screen)) S.screen = 'feed';
+  const y = window.scrollY;
+  app.innerHTML = '<div id="hdr">' + headerHTML() + '</div><main class="' + (S.screen === 'moderation' ? 'mod-space' : '') + '">' + SCREENS[S.screen]() + '</main>' + footerHTML();
+  updateTimer(); updateFeeds(true); updateBadges(); updatePromptChips();
+  window.scrollTo(0, scrollTop ? 0 : y);
+}
+
+/* ---------- действия ---------- */
+const ACT = {};
+ACT.go = b => {
+  const s = b.dataset.s;
+  if (!canOpen(s)) { toast('Этот раздел пока закрыт'); return; }
+  S.screen = s; persist(); render(true);
+};
+ACT.respond = () => {
+  if ((S.nick || '').trim().length < 2) { toast('Сначала придумай ник (хотя бы 2 буквы)', 'warn'); return; }
+  S.nick = S.nick.trim(); S.respondedAt = now(); S.stage = 1; S.screen = 'cabinet'; persist(); render(true);
+  toast('Заказ твой! 500 ₽ ушли в эскроу. Таймер пошёл.', 'ok');
+};
+ACT.send = b => {
+  const box = b.closest('.chatbox'), inp = box.querySelector('input'), t = inp.value.trim();
+  if (!t) return; inp.value = '';
+  S.chat.push({ from: 'me', text: t, t: now(), showAt: now() });
+  if (S.trap.askedAt && !S.trap.answer) {
+    S.trap.answer = t; S.trap.cat = classifyAuthor(t);
+    if (S.trap.cat === 'shekli') { bump('honesty', 2, 'trap'); bump('legal', 1, 'trapLegal'); }
+    else if (S.trap.cat === 'unknown') bump('honesty', 1, 'trap');
+    else if (S.trap.cat === 'self') bump('honesty', -2, 'trap');
+    S.chat.push({ from: 'customer', text: TB.TRAP_THANKS, t: now(), showAt: now() + 1800 });
+  } else {
+    const n = S.chat.filter(m => m.from === 'me').length;
+    S.chat.push({ from: 'customer', text: TB.CUSTOMER_ACKS[n % TB.CUSTOMER_ACKS.length], t: now(), showAt: now() + 1800 });
+  }
+  persist(); updateFeeds(true);
+};
+ACT.chatTab = b => { S.chatTab = b.dataset.k; persist(); render(); };
+
+function countIter() { const p = S.prompt.trim(); if (p && p !== S.lastPrompt) { S.promptIters++; S.lastPrompt = p; } const el = $('#iters'); if (el) el.textContent = S.promptIters; }
+ACT.buildPrompt = () => {
+  const parts = ['role', 'context', 'task', 'limits'].map(k => S.pp[k].trim()).filter(Boolean);
+  if (!parts.length) { toast('Заполни хотя бы одно поле конструктора', 'warn'); return; }
+  S.prompt = parts.join('\n'); persist();
+  const ta = $('[data-bind="prompt"]'); if (ta) ta.value = S.prompt; updatePromptChips();
+};
+ACT.copyPrompt = async () => {
+  if (!S.prompt.trim()) { toast('Сначала напиши промпт', 'warn'); return; }
+  countIter(); persist();
+  const text = S.prompt.trim() + (S.includeFrag && FRAG.text ? '\n\nНачало текста:\n' + FRAG.text : '');
+  toast((await copyText(text)) ? 'Промпт скопирован. Вставь его в Алису (Ctrl+V).' : 'Не получилось скопировать — выдели текст промпта и нажми Ctrl+C', 'ok');
+};
+let genBusy = false;
+ACT.generate = () => {
+  if (genBusy || S.sub) return;
+  if (!S.prompt.trim()) { toast('Сначала напиши промпт', 'warn'); return; }
+  countIter(); persist(); genBusy = true;
+  const out = $('#genOut'), btn = $('#genBtn');
+  if (btn) btn.disabled = true;
+  if (out) out.innerHTML = '<div class="gen-anim"><span>Генерирую</span><i>.</i><i>.</i><i>.</i><div class="gen-bar"><b></b></div></div>';
+  const sc = promptScore(S.prompt); const n = Object.values(sc).filter(Boolean).length;
+  const tier = n <= 1 ? 'weak' : n === 2 ? 'medium' : 'strong';
+  setTimeout(() => {
+    S.aiAnswer = TB.AUTO[tier][S.promptIters % 2]; persist(); genBusy = false;
+    const o = $('#genOut'); if (o) o.innerHTML = paras(S.aiAnswer);
+    const bt = $('#genBtn'); if (bt) bt.disabled = false;
+  }, 2600 + Math.random() * 1600);
+};
+function snapshot(label) {
+  const c = S.cont; if (!c.trim()) return;
+  const last = S.versions[S.versions.length - 1]; if (last && last.cont === c) return;
+  S.versions.push({ t: now(), label, cont: c }); if (S.versions.length > 6) S.versions.shift();
+}
+function refreshCont() {
+  const ta = $('[data-bind="cont"]'); if (ta) ta.value = S.cont;
+  const w = $('#wc'); if (w) w.textContent = wc(S.cont) + ' слов';
+  const vb = $('#versBox'); if (vb) vb.innerHTML = versionsHTML();
+}
+ACT.insertAI = b => {
+  if (S.sub) return;
+  const a = (S.aiAnswer || '').trim(); if (!a) { toast('Пока нечего вставлять: нет ответа ИИ', 'warn'); return; }
+  snapshot(b.dataset.how === 'replace' ? 'перед заменой' : 'перед вставкой');
+  S.cont = b.dataset.how === 'replace' ? a : (S.cont.trim() ? S.cont.trim() + '\n\n' : '') + a;
+  S.inserted.push(a);
+  if (S.promptIters < S.inserted.length && aiMode() === 'alisa') { S.promptIters = S.inserted.length; const el = $('#iters'); if (el) el.textContent = S.promptIters; }
+  persist(); refreshCont(); toast('Текст ИИ добавлен в работу', 'ok');
+};
+ACT.saveVer = () => { snapshot('сохранено вручную'); persist(); refreshCont(); toast('Версия сохранена', 'ok'); };
+ACT.restore = b => {
+  const v = S.versions[+b.dataset.i]; if (!v || S.sub) return;
+  const keep = v.cont; snapshot('перед возвратом'); S.cont = keep; persist(); refreshCont(); toast('Версия возвращена', 'ok');
+};
+ACT.uniq = () => {
+  if (S.uniq) return;
+  if (!FRAG.text) { toast('Фрагмент не загружен — проверять нечего', 'warn'); return; }
+  const u = computeUniq(); S.uniq = { pct: u.pct, first: u.first, at: now() }; bump('legal', 1, 'uniq'); persist(); render();
+};
+ACT.aiChoice = b => { S.aiDraft = b.dataset.v; persist(); render(); };
+ACT.check = b => { S.checklist[+b.dataset.i] = b.checked; S.selfCheck = false; persist(); const r = $('#selfRes'); if (r) r.innerHTML = ''; };
+ACT.selfCheck = () => { S.selfCheck = true; persist(); const r = $('#selfRes'); if (r) r.innerHTML = selfResHTML(); };
+ACT.doSubmit = () => {
+  if (!canSend()) return;
+  if (!confirm('Сдать работу? После сдачи изменить её будет нельзя.')) return;
+  submit(false);
+};
+ACT.pickRoad = b => { S.roadPick = b.dataset.r || null; if (!S.roadPick) S.nego = null; persist(); render(); };
+ACT.confirmRescue = () => {
+  if (!TB.ORIGINAL.authorRe.test(S.rescue.author) || !TB.ORIGINAL.titleRe.test(S.rescue.title)) { toast('Проверь: автор и название должны совпадать с письмом модерации', 'warn'); return; }
+  chooseRoad('rescue');
+};
+ACT.confirmRewrite = () => {
+  if (wc(S.rewriteSummary) < 12) { toast('Пересказ слишком короткий: нужно хотя бы 12 слов', 'warn'); return; }
+  chooseRoad('rewrite');
+};
+ACT.nego = b => { S.nego = b.dataset.id; persist(); render(); };
+ACT.confirmNego = () => chooseRoad('nego');
+ACT.confirmSurrender = () => chooseRoad('surrender');
+ACT.modReply = () => {
+  if ((S.modReply || '').trim().length < 10) { toast('Напиши хотя бы одно предложение', 'warn'); return; }
+  S.modReplySent = true; bump('react', 2, 'modReply'); persist(); render();
+};
+ACT.toggle = b => { if (b.disabled) return; S.pub[b.dataset.k] = !S.pub[b.dataset.k]; persist(); render(); };
+ACT.jurist = () => { S.pub.jurist = true; bump('legal', 1, 'jurist'); persist(); render(); };
+ACT.publish = () => {
+  if (!confirm('Опубликовать работу для заказчика?')) return;
+  computeFinal(); S.stage = 5; S.screen = 'passport'; persist(); render(true);
+};
+ACT.pass = b => { S.passport[b.dataset.g] = b.dataset.v; persist(); render(); };
+ACT.passDone = () => { if (!S.passport.legal || !S.passport.ethical) return; S.stage = 6; S.screen = 'final'; persist(); render(true); };
+
+/* ---------- режим учителя ---------- */
+let PROJ = false;
+function loadClass() {
+  const c = load(KEY.CLS, null);
+  if (c && Array.isArray(c)) return c;
+  return Array.from({ length: 8 }, () => ({ name: '', stage: '', points: '', notes: '', hiddenAI: false, found: false }));
+}
+function summaryHTML(big) {
+  const c = loadClass();
+  const hid = c.filter(r => r.hiddenAI).length, fnd = c.filter(r => r.found).length, fin = c.filter(r => r.stage === 'Итог').length;
+  return '<div class="summary ' + (big ? 'big' : '') + '">' +
+    '<div><b>' + hid + '</b><span>Модерация нашла скрытый ИИ у ' + hid + ' ' + plural(hid) + '</span></div>' +
+    '<div><b>' + fnd + '</b><span>Нашли автора фрагмента до сдачи</span></div>' +
+    '<div><b>' + fin + '</b><span>Дошли до итога</span></div></div>';
+}
+function plural(n) { const a = n % 10, b = n % 100; return a === 1 && b !== 11 ? 'ученика' : 'учеников'; }
+function renderTeacher() {
+  const c = loadClass(), mode = aiMode();
+  const src = { slot: 'вставлен здесь, в браузере этого ноутбука', file: 'встроенный текст урока', none: 'не найден' }[FRAG.source];
+  const base = location.pathname;
+  $('#app').innerHTML = '<header class="top teacher"><div class="brand">Текст<span>·</span>Биржа</div><div class="who">Режим учителя</div>' +
+    '<div class="money"><button class="btn ghost sm" data-act="proj">' + (PROJ ? 'Показать панель' : 'Режим проектора (без имён)') + '</button></div></header><main>' +
+    (PROJ ? '<section><h1>Класс сейчас</h1>' + summaryHTML(true) + '</section>' :
+    '<section><h1>Панель учителя</h1>' +
+    '<div class="card"><h2>1. Режим ИИ</h2><div class="seg">' +
+      [['alisa', 'Алиса (реальный ИИ)'], ['auto', 'Автозапас (без сети)']].map(([k, l]) => '<button class="segb ' + (mode === k ? 'on' : '') + '" data-act="tMode" data-v="' + k + '">' + l + '</button>').join('') + '</div>' +
+      '<p class="hint">Сейчас: <b>' + (mode === 'alisa' ? 'Алиса' : 'Автозапас') + '</b>' + (SET.aiMode ? ' (задано на этом ноутбуке)' : urlAi ? ' (из ссылки)' : ' (по умолчанию из content.js)') + '. ' +
+      'Настройка хранится только в этом браузере. Для всего класса сразу: дайте ссылку <code>' + esc(base) + '?ai=alisa</code> или <code>?ai=auto</code>, либо поменяйте <code>aiMode</code> в content.js.</p>' +
+      (SET.aiMode ? '<button class="btn ghost sm" data-act="tMode" data-v="">Сбросить настройку этого ноутбука</button>' : '') +
+      '<label class="lbl">Адрес веб-чата Алисы</label><div class="row"><input class="inp" id="tAlisa" value="' + esc(alisaUrl()) + '"><button class="btn ghost" data-act="tAlisa">Сохранить</button></div></div>' +
+    '<div class="card"><h2>2. Фрагмент</h2><p>Статус: <b>' + src + '</b>' + (FRAG.text ? ' · ' + wc(FRAG.text) + ' слов' : '') + '</p>' +
+      '<p class="hint">Порядок: текст, вставленный здесь, важнее встроенного. Вставленный текст живёт только в браузере этого ноутбука и переживает F5.</p>' +
+      '<textarea class="ta big" id="tFrag" placeholder="Вставьте сюда текст фрагмента">' + esc(SET.fragment) + '</textarea>' +
+      '<div class="row wrap"><button class="btn" data-act="tFragSave">Сохранить в слот</button><label class="btn ghost">Загрузить из .txt<input type="file" id="tFragFile" accept=".txt,text/plain" hidden></label>' +
+      '<button class="btn ghost" data-act="tFragClear">Очистить слот (вернуть встроенный текст)</button></div></div>' +
+    '<div class="card"><h2>3. Класс</h2><p class="hint">Заполняется вручную. Отметки «скрытый ИИ» видите только вы; на проектор выводится сводка без имён.</p>' +
+      '<div class="tbl-wrap"><table class="cls"><tr><th>#</th><th>Имя</th><th>Этап</th><th>Баллы/₽</th><th>Заметки</th><th>Скрытый ИИ найден</th><th>Нашёл автора</th></tr>' +
+      c.map((r, i) => '<tr><td>' + (i + 1) + '</td><td><input class="inp" data-cls="' + i + '.name" value="' + esc(r.name) + '"></td>' +
+        '<td><select class="inp" data-cls="' + i + '.stage"><option value=""></option>' + TB.STAGES.map(s => '<option ' + (r.stage === s ? 'selected' : '') + '>' + s + '</option>').join('') + '</select></td>' +
+        '<td><input class="inp" data-cls="' + i + '.points" value="' + esc(r.points) + '"></td><td><input class="inp" data-cls="' + i + '.notes" value="' + esc(r.notes) + '"></td>' +
+        '<td class="c"><input type="checkbox" data-cls="' + i + '.hiddenAI" ' + (r.hiddenAI ? 'checked' : '') + '></td><td class="c"><input type="checkbox" data-cls="' + i + '.found" ' + (r.found ? 'checked' : '') + '></td></tr>').join('') +
+      '</table></div><div class="row"><button class="btn ghost sm" data-act="tAddRow">+ строка</button></div><div id="tSummary">' + summaryHTML(false) + '</div></div>' +
+    '<div class="card"><h2>4. Проверка и сброс</h2>' +
+      '<p><a href="' + esc(base) + '?speed=10" target="_blank">Открыть ученический режим с ускорением ×10</a> — 20 минут урока проходят за 2. Ускоренный прогон пишет в то же хранилище, поэтому после проверки сбросьте прогресс.</p>' +
+      '<div class="row wrap"><button class="btn bad" data-act="tReset">Сброс и новый урок (прогресс ученика на этом ноутбуке)</button><button class="btn ghost" data-act="tResetClass">Очистить таблицу класса</button></div>' +
+      '<p class="hint">Ученический экран: <a href="' + esc(base) + '">' + esc(base) + '</a></p></div></section>') +
+    '</main>';
+}
+ACT.proj = () => { PROJ = !PROJ; renderTeacher(); };
+ACT.tMode = b => { SET.aiMode = b.dataset.v; saveSet(); renderTeacher(); toast('Режим ИИ сохранён на этом ноутбуке', 'ok'); };
+ACT.tAlisa = () => { SET.alisaUrl = $('#tAlisa').value.trim(); saveSet(); toast('Адрес сохранён', 'ok'); };
+ACT.tFragSave = () => { SET.fragment = $('#tFrag').value; saveSet(); loadFragment().then(renderTeacher); toast('Фрагмент сохранён', 'ok'); };
+ACT.tFragClear = () => { if (!confirm('Очистить слот? Вернётся встроенный текст урока.')) return; SET.fragment = ''; saveSet(); loadFragment().then(renderTeacher); };
+ACT.tAddRow = () => { const c = loadClass(); c.push({ name: '', stage: '', points: '', notes: '', hiddenAI: false, found: false }); save(KEY.CLS, c); renderTeacher(); };
+ACT.tReset = () => {
+  if (!confirm('Стереть прогресс ученика на этом ноутбуке и начать новый урок?')) return;
+  try { localStorage.removeItem(KEY.S); } catch (e) {}
+  S = fresh(); toast('Прогресс сброшен. Можно начинать урок.', 'ok');
+};
+ACT.tResetClass = () => { if (!confirm('Очистить таблицу класса?')) return; try { localStorage.removeItem(KEY.CLS); } catch (e) {} renderTeacher(); };
+
+/* ---------- обработчики событий ---------- */
+function setPath(path, val) {
+  const parts = path.split('.'); let o = S;
+  for (let i = 0; i < parts.length - 1; i++) o = o[parts[i]];
+  o[parts[parts.length - 1]] = val;
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const f = ACT[b.dataset.act]; if (f) f(b, e);
+});
+document.addEventListener('input', e => {
+  const el = e.target;
+  if (el.dataset.bind && MODE === 'student') {
+    setPath(el.dataset.bind, el.type === 'checkbox' ? el.checked : el.value);
+    const k = el.dataset.bind;
+    if (k === 'prompt') updatePromptChips();
+    if (k === 'cont') { const w = $('#wc'); if (w) w.textContent = wc(S.cont) + ' слов'; }
+    if (k === 'authorDraft') { const sb = $('#sendBtn'), h = $('#sendHint'); if (sb) sb.disabled = !canSend(); if (h) h.textContent = canSend() ? '' : 'Чтобы сдать, заполни «Автор фрагмента» и ответь про ИИ.'; }
+    persist();
+  }
+  if (el.dataset.cls) {
+    const [i, f] = el.dataset.cls.split('.'); const c = loadClass();
+    c[+i][f] = el.type === 'checkbox' ? el.checked : el.value; save(KEY.CLS, c);
+    const s = $('#tSummary'); if (s) s.innerHTML = summaryHTML(false);
+  }
+});
+document.addEventListener('change', e => {
+  const el = e.target;
+  if (el.dataset.cls && el.tagName === 'SELECT') { const [i, f] = el.dataset.cls.split('.'); const c = loadClass(); c[+i][f] = el.value; save(KEY.CLS, c); const s = $('#tSummary'); if (s) s.innerHTML = summaryHTML(false); }
+  if (el.id === 'tFragFile' && el.files && el.files[0]) {
+    const r = new FileReader(); r.onload = () => { $('#tFrag').value = String(r.result || ''); toast('Текст загружен в поле. Нажмите «Сохранить в слот».', 'ok'); }; r.readAsText(el.files[0], 'utf-8');
+  }
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target.closest && e.target.closest('.chatbox') && e.target.tagName === 'INPUT') {
+    e.preventDefault(); const b = e.target.closest('.chatbox').querySelector('[data-act="send"]'); if (b) ACT.send(b);
+  }
+});
+/* ---------- скрытая панель Ctrl+Alt+M: быстрый переход между экранами ---------- */
+function shiftTime(min) {
+  const ms = min * 60000 / SPEED;
+  if (S.respondedAt && !S.sub) S.respondedAt -= ms;
+  if (S.sub) { S.sub.at -= ms; if (S.trap.askedAt) S.trap.askedAt -= ms; }
+  persist(); tick(); render();
+}
+function jumpHTML() {
+  return '<div class="jump-box"><div class="card-h"><h2>Быстрый переход</h2><button class="btn ghost sm" data-act="jumpClose">✕</button></div>' +
+    '<div class="jump-grid">' + NAV.map(([k, l]) => '<button class="btn ' + (canOpen(k) ? '' : 'ghost') + '" data-act="jumpTo" data-s="' + k + '" ' + (canOpen(k) ? '' : 'disabled') + '>' + (canOpen(k) ? '' : '🔒 ') + l + '</button>').join('') + '</div>' +
+    '<p class="hint">Закрытые экраны открываются по ходу урока. Чтобы дойти быстрее:</p><div class="row wrap">' +
+    (S.respondedAt && !S.mod ? '<button class="btn ghost sm" data-act="jumpShift" data-m="1">⏩ +1 мин</button><button class="btn ghost sm" data-act="jumpShift" data-m="5">⏩ +5 мин</button>' : '') +
+    (S.respondedAt && !S.sub ? '<button class="btn ghost sm" data-act="jumpSubmit">Сдать сейчас</button>' : '') +
+    (S.sub && !S.mod ? '<button class="btn ghost sm" data-act="jumpMod">Письмо модерации сейчас</button>' : '') +
+    '</div><div class="row wrap"><a class="btn alt sm" href="?mode=teacher">Режим учителя</a><a class="btn ghost sm" href="' + esc(location.pathname) + '">Ученический экран</a></div></div>';
+}
+function toggleJump() {
+  const old = $('#jump'); if (old) { old.remove(); return; }
+  const el = document.createElement('div'); el.id = 'jump'; el.className = 'jump';
+  el.innerHTML = MODE === 'teacher' ? '<div class="jump-box"><h2>Быстрый переход</h2><div class="row wrap"><a class="btn" href="' + esc(location.pathname) + '">Ученический экран</a><button class="btn ghost" data-act="jumpClose">Закрыть</button></div></div>' : jumpHTML();
+  document.body.appendChild(el);
+}
+const refreshJump = () => { const j = $('#jump'); if (j) j.innerHTML = jumpHTML(); };
+ACT.jumpClose = () => { const j = $('#jump'); if (j) j.remove(); };
+ACT.jumpTo = b => { S.screen = b.dataset.s; persist(); ACT.jumpClose(); render(true); };
+ACT.jumpShift = b => { shiftTime(+b.dataset.m); refreshJump(); };
+ACT.jumpSubmit = () => { submit(false); refreshJump(); };
+ACT.jumpMod = () => { if (S.sub && !S.mod) { deliverModeration(); render(); } refreshJump(); };
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.altKey && (e.code === 'KeyM' || /^[mь]$/i.test(e.key))) { e.preventDefault(); toggleJump(); }
+  else if (e.key === 'Escape') ACT.jumpClose();
+});
+
+/* учитель на этом же ноутбуке сохранил фрагмент в соседней вкладке — подхватываем */
+window.addEventListener('storage', e => {
+  if (e.key === KEY.SET) { SET = Object.assign({ aiMode: '', alisaUrl: '', fragment: '' }, load(KEY.SET, {})); loadFragment().then(() => render()); }
+});
+
+/* ---------- старт ---------- */
+loadFragment().then(() => { render(true); if (MODE === 'student') setInterval(tick, 500); });
+})();
+</script>
+</body>
+</html>
