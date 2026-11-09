@@ -4,55 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Рабочий стол учителя</title>
-<style>
-:root{
-  --bg:#1f2329; --panel:#272c33; --line:#3a414a; --ink:#eef1f4; --ink2:#a9b2bc;
-  --amber:#f2a93b; --amber2:#ffcf7a; --paper:#f6f1e6; --paper2:#ece4d2; --pink:#1d2126; --pink2:#5b5346;
-  --sans:"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-  /* цвет предмета: полоска на плашке и заголовок раздела */
-  --s-iiib:#3f7fd6; --s-inf:#2e9a6b; --s-trud:#c8643b;
-}
-*{box-sizing:border-box}
-html,body{margin:0;background:var(--paper);color:var(--pink);font:16px/1.5 var(--sans)}
-header{background:var(--bg);color:var(--ink);padding:22px 24px 18px;border-bottom:4px solid var(--amber)}
-.wrap{max-width:1040px;margin:0 auto}
-header h1{margin:0;font-size:26px;display:flex;align-items:center;gap:10px}
-header h1 svg{width:34px;height:34px;flex:none}
-header p{margin:6px 0 0;color:var(--ink2)}
-.tools{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.tools + .tools{margin-top:8px}
-.tools button{padding:6px 14px;border-radius:20px;border:1px solid var(--line);background:var(--panel);color:var(--ink2);font:inherit;font-size:14px;cursor:pointer}
-.tools button.on{background:#3b3220;color:var(--amber2);border-color:var(--amber)}
-.tools button .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:1px}
-main{padding:22px 16px 40px}
-section{margin-top:30px}
-section:first-child{margin-top:0}
-h2{font-size:20px;margin:0 0 4px;display:flex;align-items:center;gap:10px}
-h2 .bar{width:6px;height:22px;border-radius:3px;flex:none}
-.sub{margin:0 0 12px;color:var(--pink2);font-size:14px;padding-bottom:6px;border-bottom:1px solid #d9cfb9}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
-.card{background:#fff;border:1px solid #d9cfb9;border-top:5px solid var(--c,#999);border-radius:12px;padding:14px 18px 16px;display:flex;flex-direction:column;gap:8px}
-.card .meta{font-size:13px;color:var(--pink2);display:flex;flex-wrap:wrap;gap:6px}
-.card .meta span{background:var(--paper2);border-radius:10px;padding:1px 8px}
-.card .meta .gr{background:var(--c);color:#fff;font-weight:600}
-.card h3{margin:0;font-size:18px;line-height:1.3}
-.card .topic{margin:0;color:var(--pink2);font-size:14px}
-.card p{margin:0;font-size:15px}
-.card .note{font-size:13px;color:#7a4b12;background:#fff4dc;border-radius:8px;padding:6px 10px}
-.card .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:6px}
-.btn{display:inline-block;padding:8px 14px;border-radius:9px;background:var(--amber);color:#2a1d05;font-weight:700;text-decoration:none;font-size:15px}
-.btn:hover{background:var(--amber2)}
-.btn.ghost{background:transparent;border:1px solid #b9a77f;color:var(--pink);font-weight:600}
-.btn.ghost:hover{background:var(--paper2)}
-.empty{color:var(--pink2);font-style:italic}
-footer{text-align:center;color:var(--pink2);font-size:13px;padding:0 16px 30px}
-@media (max-width:420px){ .grid{grid-template-columns:1fr} header{padding:18px 16px 14px} }
-</style>
+<link rel="stylesheet" href="site.css">
 </head>
 <body>
 <header>
   <div class="wrap">
-    <h1><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="9" width="26" height="19" rx="4" fill="#f2a93b"/><rect x="3" y="9" width="26" height="6" fill="#d48a1f"/><path d="M11 9V6a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3" fill="none" stroke="#a9b2bc" stroke-width="2.5"/><rect x="14" y="13" width="4" height="4" rx="1" fill="#1f2329"/></svg>Рабочий стол учителя</h1>
+    <div class="top">
+      <h1><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="9" width="26" height="19" rx="4" fill="#f2a93b"/><rect x="3" y="9" width="26" height="6" fill="#d48a1f"/><path d="M11 9V6a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3" fill="none" stroke="#a9b2bc" stroke-width="2.5"/><rect x="14" y="13" width="4" height="4" rx="1" fill="#1f2329"/></svg>Рабочий стол учителя</h1>
+      <a class="toplink" href="dlya-uchitelya.html">Для учителя →</a>
+    </div>
     <p>Приложения к урокам. Каждое открывается в браузере и работает без интернета.</p>
     <div class="tools" id="fSubj"></div>
     <div class="tools" id="fGrade"></div>
@@ -60,185 +20,21 @@ footer{text-align:center;color:var(--pink2);font-size:13px;padding:0 16px 30px}
 </header>
 <main><div class="wrap" id="list"></div></main>
 
+<script src="lessons.js"></script>
 <script>
-/* ===== ПРЕДМЕТЫ ===== */
-const SUBJECTS = [
-  { id:'iiib', name:'ИИ и информационная безопасность', color:'var(--s-iiib)', dot:'#3f7fd6' },
-  { id:'inf',  name:'Информатика',                      color:'var(--s-inf)',  dot:'#2e9a6b' },
-  { id:'trud', name:'Труд (технология)',                color:'var(--s-trud)', dot:'#c8643b' }
-];
-
-/* ===== КАТАЛОГ =====
-   Новый урок = новый объект в этом списке.
-   subject — id из SUBJECTS; path — папка урока относительно этой страницы;
-   app — файл приложения в папке (по умолчанию index.html);
-   extra — дополнительные кнопки: [{label, href}] (href относительно папки урока);
-   note — короткое замечание на плашке;
-   ready:false — урок готовится, на сайте не показывается. */
-const LESSONS = [
-  /* --- ИИ и информационная безопасность --- */
-  {
-    subject:'iiib', grade: 7,
-    title: 'Помощник сломался',
-    topic: 'Что такое данные. Датасет. Виды датасетов',
-    about: 'Стажёр мастера-наладчика разбирает три улики-датасета, находит, почему чат-бот отправляет срочные жалобы в «не срочно», и собирает чеклист правильного датасета.',
-    format: 'каждому свой ноутбук · 40 минут',
-    path: '7-klass/dataset-pomoshnik/'
-  },
-  {
-    subject:'iiib', grade: 8,
-    title: 'Текст-Биржа: заказ «Архив»',
-    topic: 'Авторство, ИИ и ответственность исполнителя',
-    about: 'Ученики — фрилансеры биржи контента: берут заказ, дописывают текст с помощью ИИ-помощника, проходят модерацию и решают, что честно сообщить заказчику. В финале — паспорт работы и профиль исполнителя.',
-    format: 'каждому свой ноутбук · 40 минут',
-    path: '8-klass/tekst-birzha/'
-  },
-  {
-    subject:'iiib', grade: 9,
-    title: 'Следующая нота',
-    topic: 'Как нейросеть генерирует музыкальные последовательности',
-    about: 'Пары проходят урок по листу в приложении: слепой тест «программа или человек», опыт «Продолжи» на пианино и окно внутрь программы, которая выбирает аккорды и ноты по таблицам частот.',
-    format: 'в парах, на ноутбуках · 45 минут',
-    path: '9-klass/sleduyushchaya-nota/'
-  },
-  {
-    ready:false, subject:'iiib', grade: 1,
-    title: 'Водопровод',
-    topic: 'Правила раскрашивания: замкнутая граница, один цвет, цвет по букве',
-    about: 'Головоломка с водой: дети чинят трубы и резервуары и сами выводят три правила раскрашивания. 15 уровней-лестница, испытание и выбор «запчасти» с правилом.',
-    format: 'каждому свой компьютер · 35 минут',
-    path: '1-klass/vodoprovod/'
-  },
-  {
-    ready:false, subject:'iiib', grade: 1,
-    title: 'Раскраска-головоломка',
-    topic: 'Заливка в Paint и починка контура',
-    about: '15 картинок-уровней: улитка, сова, черепаха, робот… Ищем дырки в контуре, чиним и заливаем. Звёзды за уровни и лампочка-подсказка.',
-    format: 'каждому свой компьютер · 35 минут',
-    path: '1-klass/raskraska/'
-  },
-  {
-    ready:false, subject:'iiib', grade: 2,
-    title: 'Я автор',
-    topic: 'Этапы работы над коллажем',
-    about: 'Дети собирают «лесенку автора» из пяти шагов — от «я придумываю» до «я проверяю и подписываю» — и проверяют её, командуя однокласснику-роботу.',
-    format: '40 минут',
-    path: '2-klass/ya-avtor/'
-  },
-  {
-    ready:false, subject:'iiib', grade: 2,
-    title: 'Моя история в картинках',
-    topic: 'Коллаж как цифровой продукт',
-    about: 'Каждый собирает историю из четырёх кадров по шагам: герой, цель, помеха, финал. Потом подписи, стиль оформления и печать коллажа.',
-    format: 'каждому свой компьютер · 40 минут',
-    path: '2-klass/kollazh-istoriya/'
-  },
-  {
-    ready:false, subject:'iiib', grade: 6,
-    title: 'Дело № 6-ИИ',
-    topic: 'ИИ — думающий собеседник или инструмент?',
-    about: 'Класс — отделы экспертизы: разбирают улики (тексты, предсказание слов, рисунок, арифметика), допрашивают ИИ по досье и выносят вердикт присяжных.',
-    format: 'отделы на компьютерах · 40 минут',
-    note: 'Совместная работа отделов идёт только из общей сетевой папки. С сайта — каждый компьютер сам по себе.',
-    path: '6-klass/delo-6-ii/'
-  },
-
-  /* --- Информатика --- */
-  {
-    ready:false, subject:'inf', grade: 0,
-    title: 'Русские счёты',
-    topic: 'Крестьянское умножение, быстрое возведение в степень, проверка девяткой',
-    about: 'Цифровые счёты: одни удваивают, другие уполовинивают, справа запись строк с зачёркиванием. Весь крестьянский метод можно провести на экране.',
-    format: 'урок с доской и раздаткой',
-    path: 'informatika/schety/'
-  },
-
-  /* --- Труд (технология) --- */
-  {
-    ready:false, subject:'trud', grade: 6,
-    title: 'Диетологи',
-    topic: 'Основы рационального питания — вводный урок модуля',
-    about: 'Пары становятся диетологами: собирают меню на день для клиента, сверяются с нормами и защищают своё решение.',
-    format: 'в парах · 40 минут',
-    path: '6-klass/dietologi/'
-  },
-  {
-    ready:false, subject:'trud', grade: 6,
-    title: 'Ресторан: технологическая карта',
-    topic: 'ТТК салата из моркови и яблока',
-    about: 'Группы — рестораны: выбирают нарезку и пропорции, считают закладку, собирают ТТК, делят общие весы по очереди и проверяют карты соседей. В конце — печать карты к практике.',
-    format: 'группы по 3 ресторана · 40 минут',
-    note: 'Данные ресторанов хранятся на своём компьютере; соседи видят друг друга только на бумаге.',
-    path: '6-klass/ttk-restoran/'
-  }
-];
-
-const SHOWN = LESSONS.filter(l => l.ready !== false);
-const subjOf = id => SUBJECTS.find(s => s.id === id);
-const gradeName = g => g ? g + ' класс' : 'любой класс';
-const esc = s => String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-
-let curSubj = 'all', curGrade = 'all';
-const store = { get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
-                set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} } };
-
-function subjectsUsed(){ return SUBJECTS.filter(s => SHOWN.some(l => l.subject === s.id)); }
-function gradesUsed(){
-  const pool = SHOWN.filter(l => curSubj === 'all' || l.subject === curSubj);
-  return [...new Set(pool.map(l => l.grade))].sort((a,b)=>a-b);
-}
-
-function drawFilters(){
-  const fs = document.getElementById('fSubj');
-  const sOpts = [['all','Все предметы','']].concat(subjectsUsed().map(s => [s.id, s.name, s.dot]));
-  fs.innerHTML = sOpts.map(([v,t,d]) => `<button data-v="${v}" class="${v===curSubj?'on':''}">${d?`<span class="dot" style="background:${d}"></span>`:''}${esc(t)}</button>`).join('');
-  fs.querySelectorAll('button').forEach(b => b.onclick = () => {
-    curSubj = b.dataset.v; store.set('twp-subj', curSubj);
-    if (curGrade !== 'all' && !gradesUsed().map(String).includes(curGrade)) curGrade = 'all';
-    drawFilters(); drawList();
-  });
-
-  const fg = document.getElementById('fGrade');
-  const grades = gradesUsed();
-  const gOpts = [['all','Все классы']].concat(grades.map(g => [String(g), gradeName(g)]));
-  fg.innerHTML = grades.length > 1 ? gOpts.map(([v,t]) => `<button data-v="${v}" class="${v===curGrade?'on':''}">${t}</button>`).join('') : '';
-  fg.querySelectorAll('button').forEach(b => b.onclick = () => { curGrade = b.dataset.v; store.set('twp-grade', curGrade); drawFilters(); drawList(); });
-}
-
-function card(l){
-  const s = subjOf(l.subject);
-  const open = l.path + (l.app || 'index.html');
-  const extra = (l.extra || []).map(x => `<a class="btn ghost" href="${l.path + x.href}">${esc(x.label)}</a>`).join('');
-  return `<article class="card" style="--c:${s.color}">
-    <div class="meta"><span class="gr">${gradeName(l.grade)}</span>${l.format?`<span>${esc(l.format)}</span>`:''}</div>
-    <h3>${esc(l.title)}</h3>
-    <p class="topic">Тема: ${esc(l.topic)}</p>
-    <p>${esc(l.about)}</p>
-    ${l.note?`<div class="note">${esc(l.note)}</div>`:''}
-    <div class="acts"><a class="btn" href="${open}">Открыть урок</a>${extra}</div>
-  </article>`;
-}
-
-function drawList(){
-  const host = document.getElementById('list');
-  const subs = subjectsUsed().filter(s => curSubj === 'all' || s.id === curSubj);
-  host.innerHTML = subs.map(s => {
-    const ls = SHOWN.filter(l => l.subject === s.id && (curGrade === 'all' || String(l.grade) === curGrade))
-                    .sort((a,b) => a.grade - b.grade);
-    if (!ls.length) return '';
-    const n = ls.length;
-    const word = n % 10 === 1 && n % 100 !== 11 ? 'урок' : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 'урока' : 'уроков');
-    return `<section><h2><span class="bar" style="background:${s.color}"></span>${esc(s.name)}</h2>
-      <p class="sub">${n} ${word}</p>
-      <div class="grid">${ls.map(card).join('')}</div></section>`;
-  }).join('') || '<p class="empty">Под этот фильтр пока нет уроков</p>';
-}
-
-(function init(){
-  const s = store.get('twp-subj');  if (s && (s === 'all' || subjectsUsed().some(x => x.id === s))) curSubj = s;
-  const g = store.get('twp-grade'); if (g && (g === 'all' || gradesUsed().map(String).includes(g))) curGrade = g;
-  drawFilters(); drawList();
-})();
+TWP.mount({
+  key: 'twp',
+  emptyText: 'Под этот фильтр пока нет уроков',
+  pool: TWP.shown.filter(l => l.app !== null),
+  card: (l, p) => `<article class="card" style="--c:${TWP.subj(p.s).color}">
+    ${TWP.meta(l, p)}
+    <h3>${TWP.esc(l.title)}</h3>
+    <p class="topic">Тема: ${TWP.esc(l.topic)}</p>
+    <p>${TWP.esc(l.about)}</p>
+    ${l.note ? `<div class="note">${TWP.esc(l.note)}</div>` : ''}
+    <div class="acts"><a class="btn" href="${l.path + (l.app || 'index.html')}">Открыть урок</a></div>
+  </article>`
+});
 </script>
 </body>
 </html>

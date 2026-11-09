@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Для учителя</title>
+<link rel="stylesheet" href="site.css">
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="top">
+      <h1><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="5" y="4" width="22" height="25" rx="3" fill="#f6f1e6"/><rect x="5" y="4" width="22" height="25" rx="3" fill="none" stroke="#f2a93b" stroke-width="2.5"/><path d="M10 11h12M10 16h12M10 21h8" stroke="#5b5346" stroke-width="2.2" stroke-linecap="round"/></svg>Для учителя</h1>
+      <a class="toplink" href="index.html">← К приложениям</a>
+    </div>
+    <p>Слайды, листы для печати и конспекты к урокам. Листы печатаются из браузера: Ctrl+P.</p>
+    <div class="tools" id="fSubj"></div>
+    <div class="tools" id="fGrade"></div>
+  </div>
+</header>
+<main><div class="wrap" id="list"></div></main>
+
+<script src="lessons.js"></script>
+<script>
+const KIND = { slides:'слайды', print:'печать', guide:'конспект', tool:'инструмент' };
+TWP.mount({
+  key: 'twp-t',
+  emptyText: 'Материалы учителя пока не загружены',
+  pool: TWP.shown,
+  card: (l, p) => {
+    const ms = l.teacher || [];
+    const app = l.app === null ? '' :
+      `<li><a href="${l.path + (l.app || 'index.html')}">Приложение урока<span class="k">ученикам</span></a></li>`;
+    return `<article class="card" style="--c:${TWP.subj(p.s).color}">
+      ${TWP.meta(l, p)}
+      <h3>${TWP.esc(l.title)}</h3>
+      <p class="topic">Тема: ${TWP.esc(l.topic)}</p>
+      <ul class="mats">${ms.map(m => `<li><a href="${l.path + m.href}">${TWP.esc(m.label)}${m.kind ? `<span class="k">${KIND[m.kind] || TWP.esc(m.kind)}</span>` : ''}</a></li>`).join('')}${app}</ul>
+      ${ms.length ? '' : '<p class="pending">Материалы ещё не добавлены</p>'}
+    </article>`;
+  }
+});
+</script>
+</body>
+</html>
