@@ -1,0 +1,1137 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Следующая нота</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+  /* Учебный лист-приложение: шапка с вкладками этапов, карточки этапов в одну колонку */
+  :root { --ink:#1a1a1a; --muted:#5b6470; --accent:#1f3a5f; --on-accent:#ffffff; --soft:#e8eef6; --line:#cfd5dd; --bg:#f6f7f9; --card:#ffffff; --bar:#9fb3cc; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --ink:#e7ebf0; --muted:#a3adba; --accent:#9cc0ea; --on-accent:#0f1720; --soft:#1e2a38; --line:#3a4552; --bg:#11161c; --card:#19212a; --bar:#4d6684; color-scheme: dark; } }
+  :root[data-theme="dark"] { --ink:#e7ebf0; --muted:#a3adba; --accent:#9cc0ea; --on-accent:#0f1720; --soft:#1e2a38; --line:#3a4552; --bg:#11161c; --card:#19212a; --bar:#4d6684; color-scheme: dark; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:"PT Sans","Segoe UI",Arial,sans-serif; font-size:17px; line-height:1.45; color:var(--ink); background:var(--bg); }
+  header { background:var(--card); border-bottom:1px solid var(--line); padding:12px max(16px, env(safe-area-inset-right, 0px)) 0 max(16px, env(safe-area-inset-left, 0px)); position:sticky; top:env(safe-area-inset-top, 0px); z-index:5; }
+  .top { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+  header h1 { margin:0; font-size:20px; color:var(--accent); }
+  #clock { font-size:15px; color:var(--accent); font-weight:bold; }
+  nav { display:flex; gap:4px; flex-wrap:wrap; margin-top:10px; }
+  nav button { border:1px solid var(--line); border-bottom:none; background:var(--bg); padding:7px 11px; border-radius:8px 8px 0 0; font:inherit; font-size:15px; cursor:pointer; color:var(--muted); }
+  nav button[aria-selected="true"] { background:var(--card); color:var(--accent); font-weight:bold; border-color:var(--accent); }
+  nav button.side { font-style:italic; }
+  main { max-width:1000px; margin:0 auto; padding-block:18px 60px; padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px 18px; margin-bottom:16px; }
+  h2 { font-size:22px; margin:0 0 10px; color:var(--accent); display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+  h2 .t { font-size:17px; }
+  h3 { font-size:18px; margin:4px 0 8px; color:var(--accent); }
+  p { margin:0 0 10px; }
+  .muted { color:var(--muted); font-size:15px; }
+  .note { font-style:italic; }
+  .box { border:2px solid var(--accent); border-radius:8px; padding:10px 14px; margin:8px 0 12px; }
+  .box ol { margin:4px 0 0; padding-left:22px; }
+  textarea, input[type=text], select { font:inherit; font-size:16px; border:1px solid var(--line); border-radius:6px; padding:6px 8px; width:100%; background:var(--card); color:var(--ink); }
+  textarea { min-height:76px; resize:vertical; }
+  textarea.short { min-height:46px; }
+  input[type=text]:focus, textarea:focus, select:focus { outline:2px solid var(--accent); outline-offset:0; }
+  table.q { width:100%; border-collapse:collapse; margin:6px 0 12px; }
+  table.q th, table.q td { border:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:top; }
+  table.q th { background:var(--bg); font-size:15px; }
+  table.q td.ex { font-style:italic; color:var(--muted); }
+  .opts label { display:block; margin:5px 0; cursor:pointer; }
+  .inline label { display:inline-block; margin-right:16px; cursor:pointer; }
+  .anchor { border:2px solid var(--accent); border-radius:8px; padding:14px; font-size:20px; font-weight:bold; }
+  .anchor input { font-size:20px; margin-top:8px; border-width:0 0 2px 0; border-radius:0; border-color:var(--ink); }
+  button.act { font:inherit; padding:9px 16px; border-radius:8px; border:1px solid var(--accent); background:var(--accent); color:var(--on-accent); cursor:pointer; }
+  button.act.sec { background:var(--card); color:var(--accent); }
+  button.big { font:inherit; font-size:20px; font-weight:bold; padding:14px 22px; border-radius:10px; border:2px solid var(--accent); background:var(--card); color:var(--accent); cursor:pointer; min-width:190px; }
+  button.playing { background:var(--accent) !important; color:var(--on-accent) !important; }
+  button:disabled { opacity:.45; cursor:not-allowed; }
+  .row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin:10px 0; }
+  .choice button { font:inherit; font-size:22px; font-weight:bold; width:70px; height:54px; border-radius:10px; border:2px solid var(--line); background:var(--card); cursor:pointer; }
+  .choice button[aria-pressed="true"] { border-color:var(--accent); background:var(--soft); color:var(--accent); }
+  .seg { display:inline-flex; border:1px solid var(--accent); border-radius:8px; overflow:hidden; }
+  .seg button { font:inherit; font-size:15px; border:0; padding:7px 13px; background:var(--card); color:var(--accent); cursor:pointer; }
+  .seg button[aria-pressed="true"] { background:var(--accent); color:var(--on-accent); }
+  .result { border-left:4px solid var(--accent); background:var(--soft); padding:12px 14px; border-radius:6px; margin-top:12px; }
+  .chips { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0 12px; }
+  .chips button { font:inherit; font-size:15px; padding:5px 10px; border-radius:6px; border:1px solid var(--line); background:var(--card); cursor:pointer; }
+  .chips button[aria-pressed="true"] { border-color:var(--accent); background:var(--accent); color:var(--on-accent); }
+  .bars { display:grid; grid-template-columns: 76px 1fr 120px; gap:6px 10px; align-items:center; }
+  .bars .lbl { font-weight:bold; text-align:right; }
+  .bars .track { background:var(--bg); border:1px solid var(--line); border-radius:4px; height:20px; }
+  .bars .fill { background:var(--bar); height:100%; border-radius:3px; }
+  .bars .fill.on { background:var(--accent); }
+  .bars .num { font-size:14px; color:var(--muted); }
+  table.cand { border-collapse:collapse; width:100%; min-width:420px; font-size:15px; margin-top:8px; }
+  table.cand th, table.cand td { border:1px solid var(--line); padding:4px 8px; text-align:center; }
+  table.cand th { background:var(--bg); font-weight:normal; }
+  table.cand tr.on td { background:var(--soft); font-weight:bold; }
+  .wbar { display:inline-block; height:10px; background:var(--bar); border-radius:2px; vertical-align:middle; }
+  tr.on .wbar { background:var(--accent); }
+  .score { display:grid; gap:4px; margin:8px 0; }
+  .score .line { display:flex; gap:3px; flex-wrap:wrap; align-items:flex-end; }
+  .score .ch { font-size:13px; font-weight:bold; color:var(--accent); border-top:3px solid var(--accent); padding:2px 4px 0; }
+  .score .n { font-size:14px; border:1px solid var(--line); border-radius:5px; padding:2px 6px; background:var(--card); }
+  .score .n.now { background:var(--accent); color:var(--on-accent); border-color:var(--accent); }
+  .score .n.hide { opacity:.15; }
+  table.mel { width:100%; border-collapse:collapse; }
+  table.mel td { border-top:1px solid var(--line); padding:7px 6px; vertical-align:middle; }
+  table.mel td:last-child { text-align:right; white-space:nowrap; }
+  dl.terms { margin:0; display:grid; grid-template-columns:max-content 1fr; gap:6px 16px; }
+  dl.terms dt { font-weight:bold; color:var(--accent); }
+  dl.terms dd { margin:0; }
+  ul.check { list-style:none; padding:0; margin:6px 0 12px; }
+  ul.check li { margin:5px 0; }
+  ul.check li::before { content:"☐ "; color:var(--muted); }
+  ul.check li.ok::before { content:"☑ "; color:var(--accent); }
+  ul.check li.ok { color:var(--accent); }
+  .links li { margin:6px 0; }
+  .piano { position:relative; height:150px; display:flex; margin:10px 0; user-select:none; max-width:600px; }
+  .piano .w { flex:1; border:1px solid #555; background:#fff; color:#1a1a1a; border-radius:0 0 6px 6px; display:flex; align-items:flex-end; justify-content:center; padding-bottom:6px; font-size:14px; cursor:pointer; }
+  .piano .b { position:absolute; top:0; width:7%; height:60%; background:#222; color:#fff; border-radius:0 0 4px 4px; font-size:11px; display:flex; align-items:flex-end; justify-content:center; padding-bottom:4px; cursor:pointer; z-index:2; }
+  .piano .w.down { background:var(--soft); }
+  .piano .b.down { background:var(--accent); }
+  .pv { display:none; }
+  @media (max-width:640px) { table.q { display:block; overflow-x:auto; } }
+  @media (max-width:640px) { .bars { grid-template-columns:60px 1fr 90px; } dl.terms { grid-template-columns:1fr; } }
+  @media print {
+    @page { size:A4; margin:12mm 12mm 12mm 15mm; }
+    body { background:#fff; color:#000; font-size:12pt; }
+    header, nav, .noprint, #clock { display:none !important; }
+    main { max-width:none; padding:0; }
+    section.stage { display:block !important; }
+    section.stage[data-print="none"] { display:none !important; }
+    body.print-audit section.stage { display:none !important; }
+    body.print-audit section#s-audit { display:block !important; }
+    body:not(.print-audit) section#s-audit { display:none !important; }
+    .card { border:0; padding:0; margin:0 0 4mm; break-inside:avoid; }
+    section.stage { break-before:auto; }
+    h2 { break-after:avoid; }
+    textarea, input[type=text], select { display:none !important; }
+    .pv { display:block; border:1px solid #333; min-height:20mm; padding:2mm; white-space:pre-wrap; font-size:12pt; }
+    .pv.small { min-height:10mm; }
+    table.q td .pv, table.q td .pv.small { border:0; min-height:18mm; padding:1mm; }
+    table.q td input + .pv.small + input + .pv.small { min-height:8mm; }
+    .pv.ph { color:#888; font-style:italic; }
+    table.q th, table.q td { border-color:#333; }
+    .anchor .pv { border:0; border-bottom:2px solid #000; min-height:10mm; }
+    a { color:#000; }
+    a[href^="http"]::after { content:" (" attr(href) ")"; font-size:10pt; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <h1>Как нейросеть генерирует музыкальные последовательности</h1>
+    <div id="clock">Отсчёт этапов не запущен</div>
+  </div>
+  <nav role="tablist" id="nav"></nav>
+</header>
+
+<main>
+
+<!-- ================= НАЧАЛО ================= -->
+<section class="stage" id="s-start" data-title="Начало">
+  <div class="card">
+    <h2>Лист ученика</h2>
+    <table class="q">
+      <tr><th style="width:40%">Имя</th><th>Пара с</th><th style="width:22%">Дата</th></tr>
+      <tr><td><input type="text" name="name" data-label="Имя"><div class="pv small"></div></td>
+          <td><input type="text" name="partner" data-label="Пара с"><div class="pv small"></div></td>
+          <td><input type="text" name="date" data-label="Дата"><div class="pv small"></div></td></tr>
+    </table>
+    <p class="note">Все ответы вводите прямо здесь, они сохраняются сами. В конце — этап 6: печать или сохранение файлом.</p>
+    <div class="box">
+      <b>Правила урока</b>
+      <ol>
+        <li>Работаем в парах, отвечаем только на вопросы из этого листа.</li>
+        <li>Важные факты и правила — фиксировать в тетради.</li>
+        <li>Урок о технической стороне: как программа вычисляет следующий элемент. Вопросы о том, «настоящая» ли это музыка, — за рамками урока.</li>
+        <li>Если в материалах или статьях о машине сказано «пишет» — в этом уроке это слово не используем, смотрим техническую часть.</li>
+      </ol>
+    </div>
+    <p>Не работаете со звуком и генерацией? Откройте вкладку «Аудитор». Это полноценная роль со своей оценкой.</p>
+  </div>
+  <div class="card">
+    <h3>Время урока</h3>
+    <p>Когда учитель закончит вступление, нажмите кнопку. Время каждого этапа посчитается само.</p>
+    <div class="row noprint"><button class="act" id="startClock">Учитель закончил вступление — начать отсчёт</button></div>
+    <table class="q" id="timeTable"></table>
+  </div>
+</section>
+
+<!-- ================= ЭТАП 0 ================= -->
+<section class="stage" id="s0" data-title="0 · Гипотеза" hidden>
+  <div class="card">
+    <h2>Этап 0 · Гипотеза <span class="t">2 минуты</span></h2>
+    <p>Как программа получает следующую ноту мелодии? Отметьте один вариант.</p>
+    <div class="opts">
+      <label><input type="radio" name="s0_opt" value="А" data-label="Гипотеза"> А. Программа хранит готовые песни и вставляет из них кусок целиком.</label>
+      <label><input type="radio" name="s0_opt" value="Б"> Б. Программа угадывает следующую ноту по тому, что чаще всего шло после предыдущей.</label>
+      <label><input type="radio" name="s0_opt" value="В"> В. Программа выбирает ноты случайно, без всякого правила.</label>
+      <label><input type="radio" name="s0_opt" value="Г"> Г. Программа подбирает ноты по правилам гармонии, которые ей вручную задал человек.</label>
+      <label><input type="radio" name="s0_opt" value="Д"> Д. Свой вариант:</label>
+    </div>
+    <input type="text" name="s0_own" data-label="Свой вариант"><div class="pv small"></div>
+    <p style="margin-top:10px"><b>Потому что:</b></p>
+    <textarea name="s0_because" data-label="Потому что"></textarea><div class="pv"></div>
+    <p class="note" style="margin-top:8px">Без «потому что…» гипотеза не засчитывается.</p>
+  </div>
+</section>
+
+<!-- ================= ЭТАП 1 ================= -->
+<section class="stage" id="s1" data-title="1 · Слепой тест" hidden>
+  <div class="card">
+    <h2>Этап 1 · Слепой тест <span class="t">4 минуты</span></h2>
+    <p>Один фрагмент сгенерирован программой. Другой — начало мелодии, записанной человеком. Оба звучат одним инструментом, с аккомпанементом, в одном темпе.</p>
+    <div class="noprint">
+      <div class="row">
+        <span class="muted">Программа учитывает предыдущих нот:</span>
+        <span class="seg" id="testOrder"><button data-o="1">1</button><button data-o="2" aria-pressed="true">2</button><button data-o="3">3</button></span>
+      </div>
+      <h3>Раунд <span id="roundNo">1</span></h3>
+      <div class="row">
+        <button class="big" id="playA">▶ Фрагмент A</button>
+        <button class="big" id="playB">▶ Фрагмент B</button>
+      </div>
+      <p><b>Какой фрагмент сгенерирован программой?</b></p>
+      <div class="row choice" id="choice"><button data-g="A" aria-pressed="false">A</button><button data-g="B" aria-pressed="false">B</button></div>
+      <div class="row">
+        <button class="act" id="reveal" disabled>Раскрыть ответ</button>
+        <button class="act sec" id="newRound">Новый раунд</button>
+      </div>
+      <div id="result" class="result" hidden></div>
+    </div>
+    <p style="margin-top:12px"><b>Ход теста</b> <span class="muted">(заполняется сам после каждого раскрытия)</span></p>
+    <textarea name="s1_log" class="short" readonly data-label="Ход слепого теста"></textarea><div class="pv small"></div>
+    <p style="margin-top:10px"><b>По какому признаку вы решали?</b></p>
+    <textarea name="s1_sign" data-label="Признак (этап 1)"></textarea><div class="pv"></div>
+  </div>
+</section>
+
+<!-- ================= ЭТАП 2 ================= -->
+<section class="stage" id="s2" data-title="2 · Продолжи" hidden>
+  <div class="card">
+    <h2>Этап 2 · Опыт «Продолжи» <span class="t">8 минут</span></h2>
+    <ol>
+      <li>Откройте одно пианино: <a href="https://musicca.com/piano" target="_blank" rel="noopener">Musicca</a> · <a href="https://yandex.ru/games/app/270605" target="_blank" rel="noopener">«Пианино для всех» (Яндекс Игры)</a> · <a href="https://notkee.ru/tools/piano/" target="_blank" rel="noopener">Notkee</a>. Ни одно не открылось — пианино ниже.</li>
+      <li>Партнёр 1 играет <b>до–ми–соль–до</b>. Партнёр 2 не смотрит на клавиши и продолжает на слух 1–3 нотами.</li>
+      <li>Поменяйтесь: партнёр 2 играет <b>4 случайные ноты</b>, партнёр 1 продолжает.</li>
+      <li>Заполните таблицу.</li>
+    </ol>
+    <div class="piano noprint" id="piano"></div>
+    <table class="q">
+      <tr><th>Последовательность</th><th>Чем продолжили</th><th style="width:17%">Легко или трудно продолжить?</th><th style="width:24%">Сколько раз такое продолжение встретилось бы в сотне песен: много / мало</th></tr>
+      <tr><td class="ex">Образец: до–ре–ми</td><td class="ex">фа</td><td class="ex">легко</td><td class="ex">много</td></tr>
+      <tr><td>до–ми–соль–до</td><td><input type="text" name="s2_r1_c" data-label="Продолжи, строка 1: продолжение"><div class="pv small"></div></td><td><input type="text" name="s2_r1_e" data-label="Строка 1: легко/трудно"><div class="pv small"></div></td><td><input type="text" name="s2_r1_f" data-label="Строка 1: много/мало"><div class="pv small"></div></td></tr>
+      <tr><td><input type="text" name="s2_r2_s" placeholder="4 случайные ноты" data-label="Строка 2: последовательность"><div class="pv small"></div></td><td><input type="text" name="s2_r2_c" data-label="Строка 2: продолжение"><div class="pv small"></div></td><td><input type="text" name="s2_r2_e" data-label="Строка 2: легко/трудно"><div class="pv small"></div></td><td><input type="text" name="s2_r2_f" data-label="Строка 2: много/мало"><div class="pv small"></div></td></tr>
+      <tr><td><input type="text" name="s2_r3_s" placeholder="по желанию" data-label="Строка 3: последовательность"><div class="pv small"></div></td><td><input type="text" name="s2_r3_c" data-label="Строка 3: продолжение"><div class="pv small"></div></td><td><input type="text" name="s2_r3_e" data-label="Строка 3: легко/трудно"><div class="pv small"></div></td><td><input type="text" name="s2_r3_f" data-label="Строка 3: много/мало"><div class="pv small"></div></td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ================= ЭТАП 3 ================= -->
+<section class="stage" id="s3" data-title="3 · Разведка" hidden>
+  <div class="card">
+    <h2>Этап 3 · Разведка <span class="t">12 минут</span></h2>
+    <h3>3а. Вопросы ИИ-ассистенту · 5 минут</h3>
+    <p>Ответ — коротко, своими словами. В ответе встретились «пишет» или «сочиняет»? Записывайте только техническую часть.</p>
+    <table class="q">
+      <tr><th style="width:40%">Вопрос ассистенту</th><th>Ответ</th></tr>
+      <tr><td>На чём программа «учится» делать музыку?</td><td><textarea name="s3a_1" class="short" data-label="3а: на чём учится"></textarea><div class="pv"></div></td></tr>
+      <tr><td>Что она предсказывает на каждом шаге?</td><td><textarea name="s3a_2" class="short" data-label="3а: что предсказывает"></textarea><div class="pv"></div></td></tr>
+      <tr><td>Чем её «продолжение» отличается от человеческого?</td><td><textarea name="s3a_3" class="short" data-label="3а: отличие продолжения"></textarea><div class="pv"></div></td></tr>
+      <tr><td><b>Мой собственный вопрос:</b><input type="text" name="s3a_ownq" data-label="3а: собственный вопрос"><div class="pv small"></div></td><td><textarea name="s3a_owna" class="short" data-label="3а: ответ на свой вопрос"></textarea><div class="pv"></div></td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h3>3б. Статья · 3 минуты</h3>
+    <p>Откройте одну статью и прочитайте указанный раздел. Выпишите один непонятный термин и его смысл.</p>
+    <ul class="links">
+      <li><a href="https://habr.com/ru/companies/intel/articles/423727/" target="_blank" rel="noopener">Хабр, блог Intel: «AI, практический курс. Глубокое обучение для генерации музыки»</a> — раздел «Генерация музыки — размышление над задачей».</li>
+      <li><a href="https://habr.com/ru/articles/182010/" target="_blank" rel="noopener">Хабр: «Пишем музыку с помощью PHP»</a> — часть про марковский процесс; код можно пропустить.</li>
+      <li><a href="https://habr.com/ru/articles/510798/" target="_blank" rel="noopener">Хабр: «Цепи Маркова и Пайтон — разбираемся в теории и собираем генератор текстов»</a> — теоретическая часть: тот же принцип на словах вместо нот.</li>
+    </ul>
+    <p class="muted">Статья не открывается — вкладка «Если не работает».</p>
+    <table class="q">
+      <tr><th style="width:40%">Непонятный термин</th><th>Что он значит (своими словами)</th></tr>
+      <tr><td><input type="text" name="s3b_term" data-label="3б: термин"><div class="pv small"></div><input type="text" name="s3b_src" placeholder="из какой статьи" data-label="3б: источник" style="margin-top:6px"><div class="pv small"></div></td><td><textarea name="s3b_mean" class="short" data-label="3б: смысл термина"></textarea><div class="pv"></div></td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h3>3в. Мини-слепой тест · 4 минуты</h3>
+    <ol>
+      <li>Фрагмент нейромузыки до 30 с: Яндекс Музыка → Главная → блок «Нейромузыка» → любой режим.</li>
+      <li>Известная песня до 30 с — тоже на Яндекс Музыке.</li>
+      <li>Включите оба соседней паре, не называя, где что. Запишите их догадки.</li>
+    </ol>
+    <table class="q">
+      <tr><th style="width:12%">Фрагмент</th><th>Догадка соседей: программа / люди</th><th>Правильный ответ</th><th style="width:18%">Угадали? да / нет</th></tr>
+      <tr><td>1</td><td><input type="text" name="s3c_1g" data-label="3в фрагмент 1: догадка"><div class="pv small"></div></td><td><input type="text" name="s3c_1a" data-label="3в фрагмент 1: ответ"><div class="pv small"></div></td><td><input type="text" name="s3c_1r" data-label="3в фрагмент 1: угадали"><div class="pv small"></div></td></tr>
+      <tr><td>2</td><td><input type="text" name="s3c_2g" data-label="3в фрагмент 2: догадка"><div class="pv small"></div></td><td><input type="text" name="s3c_2a" data-label="3в фрагмент 2: ответ"><div class="pv small"></div></td><td><input type="text" name="s3c_2r" data-label="3в фрагмент 2: угадали"><div class="pv small"></div></td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ================= ЭТАП 4 ================= -->
+<section class="stage" id="s4" data-title="4 · Возврат" hidden>
+  <div class="card">
+    <h2>Этап 4 · Возврат к гипотезе <span class="t">7 минут</span></h2>
+    <h3>Сначала один · 4 минуты</h3>
+    <p>Моя гипотеза из этапа 0:</p>
+    <div class="inline">
+      <label><input type="radio" name="s4_status" value="подтвердилась" data-label="Гипотеза"> подтвердилась</label>
+      <label><input type="radio" name="s4_status" value="частично"> частично</label>
+      <label><input type="radio" name="s4_status" value="не подтвердилась"> не подтвердилась</label>
+    </div>
+    <p style="margin-top:10px">Это видно из (таблица какого этапа, какая строка):</p>
+    <input type="text" name="s4_where" data-label="Это видно из"><div class="pv small"></div>
+    <table class="q" style="margin-top:12px">
+      <tr><th style="width:40%">Вопрос для размышления</th><th>Ваш ответ</th></tr>
+      <tr><td>Если сыграть программе ноты, которых она никогда не слышала, — продолжит так же уверенно?</td><td><textarea name="s4_q1" data-label="Вопрос 1"></textarea><div class="pv"></div></td></tr>
+      <tr><td>Если в обучении дать только военные марши — что она продолжит после до–ми–соль–до?</td><td><textarea name="s4_q2" data-label="Вопрос 2"></textarea><div class="pv"></div></td></tr>
+    </table>
+    <h3>Потом с соседом · 3 минуты</h3>
+    <p>Сравните ответы. Сосед ответил иначе — в чём разница:</p>
+    <textarea name="s4_diff" data-label="Разница с соседом"></textarea><div class="pv"></div>
+  </div>
+</section>
+
+<!-- ================= ЭТАП 5 ================= -->
+<section class="stage" id="s5" data-title="5 · Выводы" hidden>
+  <div class="card">
+    <h2>Этап 5 · Итоговые выводы <span class="t">7 минут</span></h2>
+    <p>Образец построения выводов (подставьте своё):</p>
+    <ul class="note muted">
+      <li>«В таблице этапа ___ (строка ___) видно, что ______. Значит, программа ______.»</li>
+      <li>«Программа делает: ______. Программа не делает: ______. Это видно из ______.»</li>
+    </ul>
+    <p><b>Вывод 1:</b></p>
+    <textarea name="s5_c1" data-label="Вывод 1"></textarea><div class="pv"></div>
+    <p style="margin-top:10px"><b>Вывод 2:</b></p>
+    <textarea name="s5_c2" data-label="Вывод 2"></textarea><div class="pv"></div>
+  </div>
+  <div class="card">
+    <div class="anchor">Программа выбирает следующую ноту, опираясь на
+      <input type="text" name="s5_anchor" data-label="Программа выбирает следующую ноту, опираясь на"><div class="pv small"></div>
+    </div>
+  </div>
+  <div class="card">
+    <p><b>Вопрос, на который урок не ответил:</b></p>
+    <textarea name="s5_open" class="short" data-label="Вопрос без ответа"></textarea><div class="pv"></div>
+    <p style="margin-top:10px"><b>Моё мнение.</b> Может ли программа выдать музыку, похожую по звучанию на стиль любимой группы?</p>
+    <div class="inline">
+      <label><input type="radio" name="s5_yn" value="да" data-label="Мнение"> да</label>
+      <label><input type="radio" name="s5_yn" value="нет"> нет</label>
+    </div>
+    <p style="margin-top:8px">Почему:</p>
+    <textarea name="s5_why" class="short" data-label="Почему"></textarea><div class="pv"></div>
+  </div>
+</section>
+
+<!-- ================= ЭТАП 6 ================= -->
+<section class="stage" id="s6" data-title="6 · Сдача" hidden>
+  <div class="card">
+    <h2>Этап 6 · Проверка и сдача <span class="t">5 минут</span></h2>
+    <p>Проверка перед сдачей (отмечается сама):</p>
+    <ul class="check" id="selfcheck"></ul>
+    <div class="row noprint">
+      <button class="act" id="printSheet">Распечатать лист</button>
+      <button class="act sec" id="saveFile">Сохранить ответы файлом</button>
+      <button class="act sec" id="clearAll">Очистить ответы (новый ученик)</button>
+    </div>
+    <p class="muted noprint" id="clearHint"></p>
+    <p>Осталось время — допишите вывод 2 или вопрос без ответа.</p>
+    <p class="note"><b>На следующем уроке вы проверите свой прогноз вживую.</b></p>
+  </div>
+  <div class="card">
+    <h3>Как оценивается работа</h3>
+    <table class="q">
+      <tr><th>Оценка 1 · Выполнение (5 пунктов проверки)</th><th style="width:30%">Оценка</th></tr>
+      <tr><td>5 из 5</td><td>«5»</td></tr><tr><td>4 из 5</td><td>«4»</td></tr><tr><td>3 из 5</td><td>«3»</td></tr><tr><td>меньше 3</td><td>пересдача после урока</td></tr>
+    </table>
+    <table class="q">
+      <tr><th>Оценка 2 · Выводы (этап 5)</th><th style="width:30%">Оценка</th></tr>
+      <tr><td>Вывод без ссылки на свои данные</td><td>«3»</td></tr>
+      <tr><td>Вывод ссылается минимум на 1 строку вашей таблицы</td><td>«4»</td></tr>
+      <tr><td>Выводы опираются на данные и различают, что программа делает и чего не делает</td><td>«5»</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ================= ВНУТРИ ПРОГРАММЫ ================= -->
+<section class="stage" id="s-inside" data-title="Внутри программы" data-side="1" data-print="none" hidden>
+  <div class="card">
+    <h2>Внутри программы</h2>
+    <p>Эта программа работает по тому же принципу, что и в статьях этапа 3б: считает частоты в обучающих данных и по ним выбирает следующий элемент. Здесь видно каждый её шаг.</p>
+  </div>
+  <div class="card">
+    <h3>1. Обучающие данные</h3>
+    <p>Программа получила эти мелодии вместе с аккордами. Других мелодий она не знает. Серенада и менуэт перенесены в до мажор, чтобы все мелодии были в одной тональности.</p>
+    <table class="mel" id="melTable"></table>
+  </div>
+  <div class="card">
+    <h3>2. Таблица переходов: какая нота шла после какой</h3>
+    <div class="chips" id="notePick"></div>
+    <div id="noteView"></div>
+    <p class="muted">¹ — первая октава, ² — вторая, м — малая.</p>
+  </div>
+  <div class="card">
+    <h3>3. Гармония: какие ноты звучали над аккордом и какой аккорд шёл дальше</h3>
+    <div class="chips" id="chordPick"></div>
+    <div id="chordView"></div>
+  </div>
+  <div class="card">
+    <h3>4. Генерация по шагам</h3>
+    <p>Сначала программа выбирает последовательность аккордов по частотам переходов. Потом над каждым аккордом выбирает ноты: учитывает, что шло после предыдущих нот, и что звучало над этим аккордом.</p>
+    <div class="row">
+      <span class="muted">Учитывать предыдущих нот:</span>
+      <span class="seg" id="stepOrder"><button data-o="1">1</button><button data-o="2" aria-pressed="true">2</button><button data-o="3">3</button></span>
+      <label class="muted"><input type="checkbox" id="greedy"> всегда брать вариант с самым большим весом</label>
+    </div>
+    <div class="row">
+      <button class="act" id="stepNext">Следующая нота</button>
+      <button class="act sec" id="stepAll">Показать все шаги</button>
+      <button class="act sec" id="stepPlay">▶ Сыграть</button>
+      <button class="act sec" id="stepNew">Новая мелодия</button>
+    </div>
+    <div class="score" id="stepScore"></div>
+    <div id="stepView"></div>
+  </div>
+  <div class="card">
+    <h3>5. Термины</h3>
+    <dl class="terms">
+      <dt>Обучающие данные</dt><dd>мелодии с аккордами, по которым программа посчитала частоты.</dd>
+      <dt>Частота</dt><dd>сколько раз одна нота шла сразу после другой (или звучала над аккордом) в обучающих данных.</dd>
+      <dt>Таблица переходов</dt><dd>все такие подсчёты: для каждой ноты — какие ноты шли после неё и сколько раз.</dd>
+      <dt>Контекст</dt><dd>предыдущие ноты (1, 2 или 3), по которым программа ищет продолжение в таблице.</dd>
+      <dt>Аккорд</dt><dd>несколько звуков, которые звучат вместе под мелодией.</dd>
+      <dt>Вес варианта</dt><dd>частота после контекста, умноженная на то, как часто нота звучала над текущим аккордом.</dd>
+      <dt>Следующий элемент</dt><dd>нота или аккорд, которые программа добавляет на очередном шаге.</dd>
+    </dl>
+  </div>
+</section>
+
+<!-- ================= АУДИТОР ================= -->
+<section class="stage" id="s-audit" data-title="Аудитор" data-side="1" hidden>
+  <div class="card">
+    <h2>Форма аудитора</h2>
+    <table class="q">
+      <tr><th style="width:60%">Имя</th><th>Дата</th></tr>
+      <tr><td><input type="text" name="a_name" data-label="Аудитор: имя"><div class="pv small"></div></td><td><input type="text" name="a_date" data-label="Аудитор: дата"><div class="pv small"></div></td></tr>
+    </table>
+    <p class="note">Роль для тех, кто не работает со звуком и генерацией. Вы проверяете записи: на что опираются утверждения в чужих листах. Эта форма — ваш итоговый документ.</p>
+    <div class="box">
+      <b>Правила аудитора</b>
+      <ol>
+        <li>Звук не слушаете, вкладки «Слепой тест» и «Внутри программы» не открываете.</li>
+        <li>Чужой лист читаете только с разрешения пары. Записи не исправляете.</li>
+        <li>Оцениваете утверждения, а не людей.</li>
+        <li>Урок о технической стороне: как программа вычисляет следующий элемент.</li>
+        <li>Важные факты и правила — фиксировать в тетради.</li>
+      </ol>
+      <p style="margin:8px 0 0"><b>Оценка «5»</b> — найдено не меньше 2 непроверяемых или неточных утверждений <b>или</b> обоснованно показано, что их нет.</p>
+    </div>
+    <p class="muted"><b>Проверяемо</b> — у утверждения есть опора: строка таблицы, опыт, источник; или его можно проверить поиском в Яндексе. <b>Непроверяемо</b> — опоры нет, проверить нельзя. <b>Неточно</b> — опора есть, но утверждение говорит больше, чем она показывает.</p>
+    <p class="muted"><b>0–14 мин</b> — прочитайте форму, пары не отвлекайте · <b>14–33</b> — подходите к парам, выписывайте утверждения из этапов 3 и 4: минимум 4 утверждения из минимум 2 листов · <b>33–40</b> — итог аудита · <b>40–45</b> — сдайте форму.</p>
+  </div>
+  <div class="card">
+    <h3>Таблица аудита</h3>
+    <table class="q" id="auditTable">
+      <tr><th style="width:5%">№</th><th>Утверждение (кратко)</th><th style="width:12%">Чей лист</th><th>На что опирается</th><th style="width:17%">Проверяемо / непроверяемо / неточно</th><th>Как проверить или что не так</th></tr>
+    </table>
+    <h3>Итог аудита</h3>
+    <p>Найдено непроверяемых или неточных утверждений:</p>
+    <input type="text" name="a_count" data-label="Аудит: найдено"><div class="pv small"></div>
+    <p style="margin-top:10px">Если не найдено ни одного — почему их нет (на что опираются все утверждения):</p>
+    <textarea name="a_none" data-label="Аудит: почему нет"></textarea><div class="pv"></div>
+    <div class="row noprint"><button class="act" id="printAudit">Распечатать форму аудитора</button></div>
+  </div>
+</section>
+
+<!-- ================= ЕСЛИ НЕ РАБОТАЕТ ================= -->
+<section class="stage" id="s-help" data-title="Если не работает" data-side="1" data-print="none" hidden>
+  <div class="card">
+    <h2>Если не работает</h2>
+    <h3>Нет звука</h3>
+    <p>Проверьте громкость ноутбука и наушники. Звук появляется только после нажатия на кнопку ▶.</p>
+    <h3>Внешнее пианино не открывается (этап 2)</h3>
+    <p>Пианино есть прямо во вкладке «2 · Продолжи», под списком шагов. Без звука — пропевайте ноты голосом.</p>
+    <h3>ИИ-ассистент недоступен (этап 3а)</h3>
+    <p>Найдите ответы в Яндексе:</p>
+    <ol>
+      <li>На каких данных обучают программы, которые генерируют мелодии?</li>
+      <li>Что программа выбирает на каждом шаге, когда продолжает мелодию?</li>
+      <li>Как программа решает, какая нота будет следующей?</li>
+      <li>Почему программа, обученная только на маршах, продолжает мелодию как марш?</li>
+      <li>Чем мелодия, полученная программой шаг за шагом, отличается от сыгранной человеком?</li>
+    </ol>
+    <h3>Статья не открывается (этап 3б)</h3>
+    <ol>
+      <li>Попробуйте другую статью из списка.</li>
+      <li>Не открывается ни одна — задайте ассистенту вопрос: <b>«Как выглядит процесс генерации изнутри?»</b></li>
+      <li>Выпишите из ответа один непонятный термин и его смысл.</li>
+    </ol>
+  </div>
+</section>
+
+</main>
+
+<script>
+// MODEL-START
+var Model = (function () {
+  "use strict";
+  var NAMES = ["до","до♯","ре","ре♯","ми","фа","фа♯","соль","соль♯","ля","ля♯","си"];
+  function noteName(m) {
+    var oct = Math.floor(m / 12) - 1;
+    var sup = oct === 3 ? "м" : oct === 4 ? "¹" : oct === 5 ? "²" : oct === 6 ? "³" : "";
+    return NAMES[m % 12] + sup;
+  }
+  var CHORDS = {
+    "C":  { name: "до мажор",   tones: [0,4,7],  bass: 48, pad: [55,60,64] },
+    "F":  { name: "фа мажор",   tones: [5,9,0],  bass: 53, pad: [57,60,65] },
+    "G":  { name: "соль мажор", tones: [7,11,2], bass: 43, pad: [55,59,62] },
+    "Am": { name: "ля минор",   tones: [9,0,4],  bass: 45, pad: [57,60,64] },
+    "E":  { name: "ми мажор",   tones: [4,8,11], bass: 40, pad: [56,59,64] },
+    "D":  { name: "ре мажор",   tones: [2,6,9],  bass: 50, pad: [54,57,62] },
+    "Dm": { name: "ре минор",   tones: [2,5,9],  bass: 50, pad: [53,57,62] }
+  };
+  function chordLabel(ch) { return ch + " (" + CHORDS[ch].name + ")"; }
+
+  // Обучающие данные: ноты с длительностями и аккордами.
+  // Длительность: w=4, dh=3, h=2, dq=1,5, q=1, e=0,5 доли.
+  // meter: 2 — чётный размер (2/4, 4/4), 3 — трёхдольный (3/4, 3/8).
+  // shift: перенос в до мажор / ля минор (в полутонах).
+  var SOURCE = [
+    { name: "«Мерцай, звёздочка» (французская мелодия)", frag: 16, meter: 2, shift: 0,
+      text: "C: C4q C4q G4q G4q F: A4q A4q C: G4h F: F4q F4q C: E4q E4q G: D4q D4q C: C4h " +
+            "C: G4q G4q F: F4q F4q C: E4q E4q G: D4h C: G4q G4q F: F4q F4q C: E4q E4q G: D4h " +
+            "C: C4q C4q G4q G4q F: A4q A4q C: G4h F: F4q F4q C: E4q E4q G: D4q D4q C: C4h" },
+    { name: "Бетховен, «Ода к радости»", frag: 16, meter: 2, shift: 0,
+      text: "C: E4q E4q F4q G4q G: G4q F4q E4q D4q C: C4q C4q D4q E4q C: E4dq D4e G: D4h " +
+            "C: E4q E4q F4q G4q G: G4q F4q E4q D4q C: C4q C4q D4q E4q G: D4dq C4e C: C4h" },
+    { name: "Бетховен, «К Элизе» (начало)", frag: 25, meter: 3, shift: 0,
+      text: "Am: E5e D#5e Am: E5e D#5e E5e B4e D5e C5e Am: A4dq C4e E4e A4e E: B4dq E4e G#4e B4e " +
+            "Am: C5dq E4e E5e D#5e Am: E5e D#5e E5e B4e D5e C5e Am: A4dq C4e E4e A4e E: B4dq E4e C5e B4e Am: A4dh" },
+    { name: "Моцарт, «Маленькая ночная серенада» (начало, в до мажоре)", frag: 16, meter: 2, shift: -7,
+      text: "G: G4dq D4e G4dq D4e G: G4e D4e G4e B4e D5h D: C5dq A4e C5dq A4e D: C5e A4e F#4e A4e D4h" },
+    { name: "«Менуэт соль мажор» из нотной тетради Анны Магдалены Бах (начало, в до мажоре)", frag: 24, meter: 3, shift: -7,
+      text: "G: D5q G4e A4e B4e C5e G: D5q G4q G4q C: E5q C5e D5e E5e F#5e G: G5q G4q G4q " +
+            "C: C5q D5e C5e B4e A4e G: B4q C5e B4e A4e G4e D: F#4q G4e A4e B4e G4e D: A4dh" }
+  ];
+  var DUR = { w: 4, dh: 3, h: 2, dq: 1.5, q: 1, e: 0.5 };
+  var STEP_NAMES = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+
+  var ROOTS = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+  function moveChord(ch, shift) {
+    var minor = ch.length > 1 && ch.slice(-1) === "m";
+    var root = minor ? ch.slice(0, -1) : ch;
+    var idx = ROOTS.indexOf(root);
+    return ROOTS[((idx + shift) % 12 + 12) % 12] + (minor ? "m" : "");
+  }
+  function parse(src) {
+    var notes = [], spans = [], ch = null, cur = null;
+    src.text.trim().split(/\s+/).forEach(function (tok) {
+      if (tok.slice(-1) === ":") {
+        ch = moveChord(tok.slice(0, -1), src.shift);
+        cur = { ch: ch, len: 0 };
+        spans.push(cur);
+        return;
+      }
+      var m = /^([A-G])(#|b)?(\d)(w|dh|h|dq|q|e)$/.exec(tok);
+      if (!m) throw new Error("bad token " + tok);
+      var p = 12 * (Number(m[3]) + 1) + STEP_NAMES[m[1]] + (m[2] === "#" ? 1 : m[2] === "b" ? -1 : 0) + src.shift;
+      var d = DUR[m[4]];
+      notes.push({ p: p, d: d, ch: ch });
+      cur.len += d;
+    });
+    return { name: src.name, notes: notes, spans: spans, frag: src.frag, meter: src.meter };
+  }
+  var CORPUS = SOURCE.map(parse);
+
+  function inc(obj, a, b, n) { obj[a] = obj[a] || {}; obj[a][b] = (obj[a][b] || 0) + (n || 1); }
+
+  // ---------- Обучение: подсчёт частот ----------
+  var MEL = { 1: {}, 2: {}, 3: {} };   // MEL[k][k предыдущих нот][следующая нота] = сколько раз
+  var HAR = {};                          // HAR[аккорд][нота] = сколько раз нота звучала над аккордом
+  var CHN = { 2: {}, 3: {} };            // CHN[размер][аккорд][следующий аккорд/длина] = сколько раз
+  var DURS = { 2: {}, 3: {} };           // DURS[размер][длительность][следующая длительность]
+  var CHSTART = [];
+  CORPUS.forEach(function (mel) {
+    var ps = mel.notes.map(function (n) { return n.p; });
+    mel.notes.forEach(function (n, i) {
+      inc(HAR, n.ch, n.p);
+      if (i > 0) inc(DURS[mel.meter], mel.notes[i - 1].d, n.d);
+      for (var k = 1; k <= 3; k++) {
+        if (i - k < 0) continue;
+        inc(MEL[k], ps.slice(i - k, i).join(","), n.p);
+      }
+    });
+    CHSTART.push({ ch: mel.spans[0].ch, len: mel.spans[0].len, meter: mel.meter, p: mel.notes[0].p });
+    for (var j = 0; j + 1 < mel.spans.length; j++) {
+      inc(CHN[mel.meter], mel.spans[j].ch, mel.spans[j + 1].ch + "/" + mel.spans[j + 1].len);
+    }
+  });
+
+  function rnd() { return Math.random(); }
+  function weighted(items, wf) {
+    var total = 0; items.forEach(function (x) { total += wf(x); });
+    var r = rnd() * total;
+    for (var i = 0; i < items.length; i++) { r -= wf(items[i]); if (r < 0) return items[i]; }
+    return items[items.length - 1];
+  }
+  function entries(obj) { return Object.keys(obj || {}).map(function (k) { return { key: k, count: obj[k] }; }); }
+  function isChordTone(p, ch) { return CHORDS[ch].tones.indexOf(p % 12) !== -1; }
+
+  // Кандидаты на следующую ноту: частота после предыдущих нот × частота над текущим аккордом
+  // Звуки тональности: до мажор или ля минор (с повышенными VII и IV ступенями из «К Элизе»)
+  var KEYS = { "C": [0,2,4,5,7,9,11], "Am": [0,2,4,5,7,9,11,8,3] };
+  function inKey(p, key) { return !key || KEYS[key].indexOf(p % 12) !== -1; }
+  function candidates(history, ch, order, key) {
+    var used = 0, row = null, ctx = [];
+    for (var k = Math.min(order, history.length); k >= 1; k--) {
+      ctx = history.slice(-k);
+      row = MEL[k][ctx.join(",")];
+      if (row) { used = k; break; }
+    }
+    var har = HAR[ch] || {};
+    var list = [];
+    if (row) {
+      list = Object.keys(row).map(Number).filter(function (p) { return inKey(p, key); }).map(function (p) {
+        var hc = har[p] || 0;
+        return { p: p, mc: row[p], hc: hc, w: row[p] * (hc + 0.05) };
+      });
+    }
+    if (!list.length) {
+      ctx = [];
+      used = 0;
+      list = Object.keys(har).map(Number).filter(function (p) { return inKey(p, key); }).map(function (p) { return { p: p, mc: 0, hc: har[p], w: har[p] }; });
+    }
+    list.sort(function (a, b) { return b.w - a.w || a.p - b.p; });
+    return { ctx: ctx, used: used, list: list };
+  }
+
+  // Последовательность аккордов: по частотам переходов, в одном размере, с возвратом к начальному аккорду
+  function chordPlan(beats) {
+    var st = CHSTART[Math.floor(rnd() * CHSTART.length)];
+    var meter = st.meter, tonic = st.ch, table = CHN[meter];
+    var plan = [{ ch: st.ch, len: st.len }], total = st.len, guard = 0;
+    while (guard++ < 60) {
+      var last = plan[plan.length - 1];
+      if (total >= beats && last.ch === tonic && last.len >= 2) break;
+      var opts = entries(table[last.ch]);
+      if (!opts.length) break;
+      var prev = plan.length > 1 ? plan[plan.length - 2] : null;
+      if (prev && prev.ch === last.ch) {
+        var other = opts.filter(function (o) { return o.key.split("/")[0] !== last.ch; });
+        // в данных этого размера после аккорда шёл только он сам — берём переходы из другого размера
+        if (!other.length) {
+          var alt = entries(CHN[meter === 2 ? 3 : 2][last.ch]).filter(function (o) { return o.key.split("/")[0] !== last.ch; });
+          other = alt.map(function (o) { return { key: o.key.split("/")[0] + "/" + meter, count: o.count }; });
+        }
+        if (!other.length) other = [{ key: tonic + "/" + meter, count: 1 }];
+        opts = other;
+      }
+      if (total >= beats) {
+        var toT = opts.filter(function (o) { return o.key.split("/")[0] === tonic && Number(o.key.split("/")[1]) >= 2; });
+        if (toT.length) opts = toT;
+      }
+      var pick = weighted(opts, function (o) { return o.count; }).key.split("/");
+      plan.push({ ch: pick[0], len: Number(pick[1]) });
+      total += Number(pick[1]);
+      if (total > beats + 10) break;
+    }
+    var lst = plan[plan.length - 1];
+    if (lst.ch !== tonic || lst.len < 2) plan.push({ ch: tonic, len: meter });
+    return { plan: plan, meter: meter, start: st };
+  }
+
+  function pickDur(meter, prev, maxD) {
+    var opts = entries(DURS[meter][prev]).filter(function (o) { return Number(o.key) <= maxD + 1e-9; });
+    if (!opts.length) return maxD >= 1 ? 1 : maxD;
+    return Number(weighted(opts, function (o) { return o.count; }).key);
+  }
+
+  // Генерация: аккорды, затем ноты над ними. trace — шаги для окна «Внутри программы».
+  function generate(order, beats, greedy) {
+    var cp = chordPlan(beats), plan = cp.plan, meter = cp.meter, key = cp.start.ch;
+    var notes = [], trace = [], history = [];
+    plan.forEach(function (span, si) {
+      var remaining = span.len, lastSpan = si === plan.length - 1;
+      while (remaining > 1e-9) {
+        var c, chosen, d, isFinal = false;
+        if (!history.length) {
+          chosen = cp.start.p;
+          c = { ctx: [], used: 0, list: [{ p: chosen, mc: 0, hc: (HAR[span.ch] || {})[chosen] || 0, w: 1 }], first: true };
+          d = pickDur(meter, 1, Math.min(remaining, 1.5));
+        } else {
+          c = candidates(history, span.ch, order, key);
+          if (lastSpan && remaining <= 2 + 1e-9) { isFinal = true; d = remaining; }
+          else d = pickDur(meter, notes[notes.length - 1].d, lastSpan ? remaining - 1 : remaining);
+          var list = c.list;
+          if (isFinal) {
+            // последний звук — звук тонического аккорда, чаще всего основной тон
+            var tones = list.filter(function (x) { return isChordTone(x.p, span.ch); });
+            if (!tones.length) tones = entries(HAR[span.ch]).map(function (e) { return { p: Number(e.key), mc: 0, hc: e.count, w: e.count }; })
+                                     .filter(function (x) { return isChordTone(x.p, span.ch); });
+            tones.forEach(function (x) { x.w = x.w * ((x.p % 12) === CHORDS[span.ch].tones[0] ? 3 : 1); });
+            list = tones;
+          }
+          chosen = greedy ? list.slice().sort(function (a, b) { return b.w - a.w; })[0].p
+                          : weighted(list, function (x) { return x.w; }).p;
+          c = { ctx: c.ctx, used: c.used, list: list, final: isFinal };
+        }
+        notes.push({ p: chosen, d: d, ch: span.ch });
+        trace.push({ ch: span.ch, ctx: c.ctx, used: c.used, list: c.list, p: chosen, d: d, first: !!c.first, final: !!c.final });
+        history.push(chosen);
+        remaining -= d;
+      }
+    });
+    return { notes: notes, plan: plan, trace: trace, meter: meter };
+  }
+
+  function isCopy(notes) {
+    var s = "," + notes.map(function (n) { return n.p; }).join(",") + ",";
+    return CORPUS.some(function (m) {
+      return ("," + m.notes.map(function (n) { return n.p; }).join(",") + ",").indexOf(s) !== -1;
+    });
+  }
+
+  function fragment(mel) {
+    var notes = [], plan = [], t = 0;
+    for (var i = 0; i < mel.spans.length && t < mel.frag - 1e-9; i++) { plan.push(mel.spans[i]); t += mel.spans[i].len; }
+    var tn = 0;
+    for (var j = 0; j < mel.notes.length && tn < t - 1e-9; j++) { notes.push(mel.notes[j]); tn += mel.notes[j].d; }
+    return { notes: notes, plan: plan, beats: t };
+  }
+
+  return {
+    noteName: noteName, CHORDS: CHORDS, chordLabel: chordLabel, CORPUS: CORPUS,
+    MEL: MEL, HAR: HAR, CHN: CHN, generate: generate, isCopy: isCopy, fragment: fragment,
+    candidates: candidates, entries: entries, isChordTone: isChordTone
+  };
+})();
+// MODEL-END
+</script>
+<script>
+(function () {
+  "use strict";
+  var M = Model;
+
+  // ================= Вкладки =================
+  var sections = Array.prototype.slice.call(document.querySelectorAll("section.stage"));
+  var nav = document.getElementById("nav");
+  function show(id) {
+    stopAll();
+    sections.forEach(function (s) { s.hidden = s.id !== id; });
+    nav.querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-selected", b.dataset.id === id ? "true" : "false"); });
+    try { localStorage.setItem("nota9-tab", id); } catch (e) {}
+    window.scrollTo(0, 0);
+  }
+  sections.forEach(function (s) {
+    var b = document.createElement("button");
+    b.setAttribute("role", "tab"); b.dataset.id = s.id; b.textContent = s.dataset.title;
+    if (s.dataset.side) b.className = "side";
+    b.addEventListener("click", function () { show(s.id); });
+    nav.appendChild(b);
+  });
+
+  // ================= Ответы: сохранение =================
+  var KEY = "nota9-answers";
+  var data = {};
+  try { data = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { data = {}; }
+  function fields() { return Array.prototype.slice.call(document.querySelectorAll("main input[name], main textarea[name]")); }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) {} updateCheck(); }
+  function restore() {
+    fields().forEach(function (f) {
+      var v = data[f.name];
+      if (f.type === "radio") f.checked = v === f.value;
+      else if (f.type !== "checkbox") f.value = v || "";
+    });
+  }
+  document.querySelector("main").addEventListener("input", function (e) {
+    var f = e.target;
+    if (!f.name || f.type === "checkbox") return;
+    if (f.type === "radio") { if (f.checked) data[f.name] = f.value; }
+    else data[f.name] = f.value;
+    save();
+  });
+  document.querySelector("main").addEventListener("change", function (e) {
+    var f = e.target;
+    if (f.type === "radio" && f.checked && f.name) { data[f.name] = f.value; save(); }
+  });
+
+  // Аудит: таблица строк
+  var at = document.getElementById("auditTable");
+  for (var r = 1; r <= 5; r++) {
+    var tr = document.createElement("tr");
+    tr.innerHTML = "<td>" + r + "</td>" + ["st", "who", "base", "kind", "how"].map(function (c) {
+      return "<td><textarea class='short' name='a_" + r + "_" + c + "' data-label='Аудит " + r + ": " + c + "'></textarea><div class='pv small'></div></td>";
+    }).join("");
+    at.appendChild(tr);
+  }
+
+  // ================= Самопроверка (этап 6) =================
+  function filled(k) { return !!(data[k] && String(data[k]).trim()); }
+  var CHECKS = [
+    ["Гипотеза с «потому что…» записана в этапе 0", function () { return (filled("s0_opt") && (data.s0_opt !== "Д" || filled("s0_own"))) && filled("s0_because"); }],
+    ["Таблица «Продолжи» заполнена во всех колонках (строки 1 и 2)", function () { return ["s2_r1_c","s2_r1_e","s2_r1_f","s2_r2_s","s2_r2_c","s2_r2_e","s2_r2_f"].every(filled); }],
+    ["Таблица мини-теста заполнена (2 строки)", function () { return ["s3c_1g","s3c_1a","s3c_1r","s3c_2g","s3c_2a","s3c_2r"].every(filled); }],
+    ["Термин из статьи выписан вместе со смыслом", function () { return filled("s3b_term") && filled("s3b_mean"); }],
+    ["Записан хотя бы один свой вопрос ассистенту", function () { return filled("s3a_ownq"); }]
+  ];
+  function updateCheck() {
+    var ul = document.getElementById("selfcheck");
+    ul.innerHTML = "";
+    CHECKS.forEach(function (c) {
+      var li = document.createElement("li"); li.textContent = c[0];
+      if (c[1]()) li.className = "ok";
+      ul.appendChild(li);
+    });
+  }
+
+  // ================= Печать и файл =================
+  function fillPrint() {
+    fields().forEach(function (f) {
+      var pv = f.nextElementSibling;
+      if (pv && pv.classList.contains("pv")) {
+        pv.textContent = f.value || f.placeholder || "";
+        pv.classList.toggle("ph", !f.value && !!f.placeholder);
+      }
+    });
+  }
+  window.addEventListener("beforeprint", fillPrint);
+  window.addEventListener("afterprint", function () { document.body.classList.remove("print-audit"); });
+  document.getElementById("printSheet").addEventListener("click", function () { fillPrint(); document.body.classList.remove("print-audit"); window.print(); });
+  document.getElementById("printAudit").addEventListener("click", function () { fillPrint(); document.body.classList.add("print-audit"); window.print(); });
+  document.getElementById("saveFile").addEventListener("click", function () {
+    var lines = ["Как нейросеть генерирует музыкальные последовательности — ответы", ""];
+    var seen = {};
+    fields().forEach(function (f) {
+      if (seen[f.name]) return; seen[f.name] = true;
+      var label = f.dataset.label;
+      if (!label) { var g = document.querySelector("[name='" + f.name + "'][data-label]"); label = g ? g.dataset.label : f.name; }
+      lines.push(label + ": " + (data[f.name] || ""));
+    });
+    var blob = new Blob([lines.join("\r\n")], { type: "text/plain;charset=utf-8" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "Ответы_" + ((data.name || data.a_name || "ученик").trim().replace(/[\\\/:*?"<>|]+/g, "_")) + ".txt";
+    document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  });
+  var clearArmed = false;
+  document.getElementById("clearAll").addEventListener("click", function () {
+    var hint = document.getElementById("clearHint");
+    if (!clearArmed) { clearArmed = true; hint.textContent = "Нажмите ещё раз, чтобы стереть все ответы на этом ноутбуке."; setTimeout(function () { clearArmed = false; hint.textContent = ""; }, 5000); return; }
+    clearArmed = false; hint.textContent = "Ответы стёрты.";
+    data = {}; save(); restore();
+  });
+
+  // ================= Отсчёт этапов =================
+  var STAGES = [["0","Гипотеза",0,2],["1","Слепой тест",2,6],["2","Опыт «Продолжи»",6,14],["3","Разведка",14,26],["4","Возврат к гипотезе",26,33],["5","Итоговые выводы",33,40],["6","Проверка и сдача",40,45]];
+  function hhmm(t) { var d = new Date(t); return ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2); }
+  function startTime() { try { return Number(localStorage.getItem("nota9-start")) || 0; } catch (e) { return 0; } }
+  function renderTime() {
+    var st = startTime();
+    if (st && Date.now() - st > 3 * 3600 * 1000) st = 0;
+    var tt = document.getElementById("timeTable");
+    tt.innerHTML = "<tr><th>Этап</th><th>Что делаем</th><th>Минуты урока</th><th>Закончить к</th></tr>" +
+      STAGES.map(function (s) { return "<tr><td>" + s[0] + "</td><td>" + s[1] + "</td><td>" + s[2] + "–" + s[3] + "</td><td>" + (st ? hhmm(st + s[3] * 60000) : "—") + "</td></tr>"; }).join("");
+    var clock = document.getElementById("clock");
+    if (!st) { clock.textContent = "Отсчёт этапов не запущен"; return; }
+    var min = (Date.now() - st) / 60000;
+    var cur = STAGES.filter(function (s) { return min >= s[2] && min < s[3]; })[0];
+    if (!cur) { clock.textContent = min >= 45 ? "Урок окончен — сдайте ответы" : ""; return; }
+    var left = Math.max(0, Math.ceil(cur[3] - min));
+    clock.textContent = "Сейчас: этап " + cur[0] + " · закончить к " + hhmm(st + cur[3] * 60000) + " (осталось " + left + " мин)";
+  }
+  document.getElementById("startClock").addEventListener("click", function () {
+    try { localStorage.setItem("nota9-start", String(Date.now() - 2 * 60000)); } catch (e) {}
+    renderTime();
+  });
+  setInterval(renderTime, 15000);
+
+  // ================= Звук =================
+  var ctx = null, active = [], timers = [];
+  var BEAT = 0.42;
+  function audio() {
+    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (ctx.state === "suspended") ctx.resume();
+    return ctx;
+  }
+  function freq(m) { return 440 * Math.pow(2, (m - 69) / 12); }
+  function tone(m, when, dur, vol) {
+    var c = audio(), g = c.createGain();
+    var peak = vol || 0.3;
+    g.gain.setValueAtTime(0.0001, when);
+    g.gain.exponentialRampToValueAtTime(peak, when + 0.012);
+    g.gain.exponentialRampToValueAtTime(peak * 0.35, when + Math.min(0.25, dur * 0.5));
+    g.gain.exponentialRampToValueAtTime(0.0001, when + dur);
+    g.connect(c.destination);
+    [["triangle", 1, 1], ["sine", 2, 0.22]].forEach(function (p) {
+      var o = c.createOscillator(), og = c.createGain();
+      o.type = p[0]; o.frequency.value = freq(m) * p[1]; og.gain.value = p[2];
+      o.connect(og); og.connect(g);
+      o.start(when); o.stop(when + dur + 0.05);
+      active.push(o);
+    });
+  }
+  function chordTone(ch, when, dur) {
+    var C = M.CHORDS[ch]; if (!C) return;
+    tone(C.bass, when, dur, 0.16);
+    C.pad.forEach(function (m) { tone(m, when, dur, 0.06); });
+  }
+  function stopAll() {
+    active.forEach(function (o) { try { o.stop(); } catch (e) {} });
+    active = []; timers.forEach(clearTimeout); timers = [];
+    document.querySelectorAll(".playing").forEach(function (el) { el.classList.remove("playing"); });
+    document.querySelectorAll(".score .n.now").forEach(function (el) { el.classList.remove("now"); });
+  }
+  // piece: { notes:[{p,d,ch}], plan:[{ch,len}] }
+  function playPiece(piece, opts) {
+    opts = opts || {};
+    stopAll();
+    var c = audio(), t0 = c.currentTime + 0.08, t = 0;
+    var unit = piece.meter === 3 ? 3 : 2;
+    piece.plan.forEach(function (sp) {
+      for (var x = 0; x < sp.len - 1e-9; x += unit) {
+        var dd = Math.min(unit, sp.len - x);
+        chordTone(sp.ch, t0 + (t + x) * BEAT, dd * BEAT * 1.05);
+      }
+      t += sp.len;
+    });
+    var tn = 0, total = 0;
+    piece.notes.forEach(function (n, i) {
+      tone(n.p, t0 + tn * BEAT, Math.max(0.25, n.d * BEAT * 1.1), 0.3);
+      if (opts.onNote) (function (i, at) { timers.push(setTimeout(function () { opts.onNote(i); }, at * 1000)); })(i, 0.08 + tn * BEAT);
+      tn += n.d;
+    });
+    total = Math.max(t, tn);
+    timers.push(setTimeout(function () { if (opts.onEnd) opts.onEnd(); }, (0.08 + total * BEAT + 0.4) * 1000));
+  }
+  function toggleButton(btn, piece, opts) {
+    var was = btn.classList.contains("playing");
+    stopAll();
+    if (was) return;
+    btn.classList.add("playing");
+    opts = opts || {};
+    var end = opts.onEnd;
+    opts.onEnd = function () { btn.classList.remove("playing"); if (end) end(); };
+    playPiece(piece, opts);
+  }
+
+  // ================= Пианино (этап 2) =================
+  (function () {
+    var host = document.getElementById("piano");
+    var whites = [60,62,64,65,67,69,71,72,74,76,77,79];
+    var blacks = { 61: 0, 63: 1, 66: 3, 68: 4, 70: 5, 73: 7, 75: 8, 78: 10 };
+    var w = 100 / whites.length;
+    function press(el, m) {
+      el.classList.add("down"); setTimeout(function () { el.classList.remove("down"); }, 220);
+      tone(m, audio().currentTime + 0.01, 0.9, 0.3);
+    }
+    whites.forEach(function (m) {
+      var k = document.createElement("div"); k.className = "w"; k.textContent = M.noteName(m);
+      k.addEventListener("pointerdown", function (e) { e.preventDefault(); press(k, m); });
+      host.appendChild(k);
+    });
+    Object.keys(blacks).forEach(function (mm) {
+      var m = Number(mm), k = document.createElement("div"); k.className = "b";
+      k.style.left = ((blacks[mm] + 1) * w - w * 0.35) + "%"; k.textContent = M.noteName(m);
+      k.addEventListener("pointerdown", function (e) { e.preventDefault(); press(k, m); });
+      host.appendChild(k);
+    });
+  })();
+
+  // ================= Слепой тест =================
+  function seg(id, onPick) {
+    var el = document.getElementById(id);
+    el.querySelectorAll("button").forEach(function (b) {
+      b.addEventListener("click", function () {
+        el.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+        onPick(Number(b.dataset.o));
+      });
+    });
+  }
+  var testOrder = 2, round = 0, played = 0, correct = 0, cur = null, guess = null, revealed = false;
+  var choiceBtns = document.querySelectorAll("#choice button"), revealBtn = document.getElementById("reveal"), resultBox = document.getElementById("result");
+  function randItem(a) { return a[Math.floor(Math.random() * a.length)]; }
+  function newRound() {
+    stopAll(); round++;
+    var mel = randItem(M.CORPUS);
+    var hf = M.fragment(mel);
+    var human = { notes: hf.notes, plan: hf.plan, meter: mel.meter };
+    var gen, tries = 0;
+    do { gen = M.generate(testOrder, hf.beats, false); } while (tries++ < 25 && (M.isCopy(gen.notes) || gen.meter !== mel.meter));
+    var genIsA = Math.random() < 0.5;
+    cur = { A: genIsA ? gen : human, B: genIsA ? human : gen, genSide: genIsA ? "A" : "B", humanName: mel.name, order: testOrder };
+    guess = null; revealed = false;
+    choiceBtns.forEach(function (b) { b.setAttribute("aria-pressed", "false"); b.disabled = false; });
+    revealBtn.disabled = true; resultBox.hidden = true;
+    document.getElementById("roundNo").textContent = round;
+  }
+  seg("testOrder", function (o) { testOrder = o; newRound(); });
+  document.getElementById("playA").addEventListener("click", function () { toggleButton(this, cur.A); });
+  document.getElementById("playB").addEventListener("click", function () { toggleButton(this, cur.B); });
+  choiceBtns.forEach(function (b) {
+    b.addEventListener("click", function () {
+      if (revealed) return;
+      guess = b.dataset.g;
+      choiceBtns.forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+      revealBtn.disabled = false;
+    });
+  });
+  revealBtn.addEventListener("click", function () {
+    if (!guess || revealed) return;
+    revealed = true; played++;
+    var ok = guess === cur.genSide; if (ok) correct++;
+    var hs = cur.genSide === "A" ? "B" : "A";
+    resultBox.innerHTML = "<b style='font-size:20px'>" + (ok ? "Угадали." : "Не угадали.") + "</b>" +
+      "<p style='margin-top:6px'>Фрагмент <b>" + cur.genSide + "</b> сгенерирован программой: аккорды и ноты выбраны по таблицам частот (учтено предыдущих нот: " + cur.order + ").</p>" +
+      "<p>Фрагмент <b>" + hs + "</b> — " + cur.humanName + ".</p>" +
+      "<p class='muted'>Как программа выбирала аккорды и ноты — вкладка «Внутри программы».</p>";
+    resultBox.hidden = false; revealBtn.disabled = true;
+    choiceBtns.forEach(function (x) { x.disabled = true; });
+    var line = "Раунд " + round + ": ответ " + guess + ", программа — " + cur.genSide + " (" + (ok ? "угадали" : "не угадали") + ")";
+    data.s1_log = (data.s1_log ? data.s1_log + "\n" : "") + line;
+    document.querySelector("[name=s1_log]").value = data.s1_log;
+    save();
+  });
+  document.getElementById("newRound").addEventListener("click", newRound);
+
+  // ================= Внутри программы =================
+  // Обучающие данные
+  var melTable = document.getElementById("melTable");
+  M.CORPUS.forEach(function (mel) {
+    var tr = document.createElement("tr");
+    var chords = mel.spans.map(function (s) { return s.ch; }).filter(function (c, i, a) { return a.indexOf(c) === i; }).join(", ");
+    tr.innerHTML = "<td>" + mel.name + "<div class='muted'>аккорды: " + chords + "</div></td><td class='muted'>" + mel.notes.length + " нот</td><td></td>";
+    var b = document.createElement("button"); b.className = "act sec"; b.textContent = "▶ Послушать";
+    b.addEventListener("click", function () { toggleButton(b, { notes: mel.notes, plan: mel.spans, meter: mel.meter }); });
+    tr.lastChild.appendChild(b);
+    melTable.appendChild(tr);
+  });
+
+  function bars(rows, chosenKey) {
+    var total = rows.reduce(function (s, r) { return s + r.count; }, 0), max = rows.length ? rows[0].count : 1;
+    return "<div class='bars'>" + rows.map(function (r) {
+      return "<div class='lbl'>" + r.label + "</div><div class='track'><div class='fill" + (r.key === chosenKey ? " on" : "") + "' style='width:" + (100 * r.count / max) + "%'></div></div>" +
+             "<div class='num'>" + r.count + " раз (" + Math.round(100 * r.count / total) + "%)</div>";
+    }).join("") + "</div>";
+  }
+
+  // Таблица переходов
+  var notePick = document.getElementById("notePick"), noteView = document.getElementById("noteView");
+  var ALL = Object.keys(M.MEL[1]).map(Number).sort(function (a, b) { return a - b; });
+  function showNote(btn, n, sound) {
+    notePick.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", x === btn ? "true" : "false"); });
+    var rows = M.entries(M.MEL[1][n]).map(function (e) { return { key: e.key, label: M.noteName(Number(e.key)), count: e.count }; })
+      .sort(function (a, b) { return b.count - a.count; });
+    noteView.innerHTML = "<p>После ноты <b>" + M.noteName(n) + "</b> в обучающих данных шли:</p>" + bars(rows);
+    if (sound) { stopAll(); tone(n, audio().currentTime + 0.02, 0.6, 0.3); }
+  }
+  ALL.forEach(function (n) {
+    var b = document.createElement("button"); b.textContent = M.noteName(n);
+    b.addEventListener("click", function () { showNote(b, n, true); });
+    notePick.appendChild(b);
+  });
+  showNote(notePick.querySelector("button"), ALL[0], false);
+
+  // Гармония
+  var chordPick = document.getElementById("chordPick"), chordView = document.getElementById("chordView");
+  var CH_LIST = Object.keys(M.HAR);
+  function showChord(btn, ch, sound) {
+    chordPick.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", x === btn ? "true" : "false"); });
+    var over = M.entries(M.HAR[ch]).map(function (e) { return { key: e.key, label: M.noteName(Number(e.key)), count: e.count }; })
+      .sort(function (a, b) { return b.count - a.count; });
+    var nxt = {};
+    [2, 3].forEach(function (m) { M.entries(M.CHN[m][ch]).forEach(function (e) { var c = e.key.split("/")[0]; nxt[c] = (nxt[c] || 0) + e.count; }); });
+    var nrows = Object.keys(nxt).map(function (c) { return { key: c, label: c, count: nxt[c] }; }).sort(function (a, b) { return b.count - a.count; });
+    chordView.innerHTML = "<p>Аккорд <b>" + M.chordLabel(ch) + "</b>. Ноты мелодии, звучавшие над ним:</p>" + bars(over) +
+      "<p style='margin-top:12px'>Аккорды, которые шли после него:</p>" + (nrows.length ? bars(nrows) : "<p class='muted'>после него мелодии заканчивались</p>");
+    if (sound) { stopAll(); chordTone(ch, audio().currentTime + 0.02, 1.2); }
+  }
+  CH_LIST.forEach(function (ch) {
+    var b = document.createElement("button"); b.textContent = ch + " · " + M.CHORDS[ch].name;
+    b.addEventListener("click", function () { showChord(b, ch, true); });
+    chordPick.appendChild(b);
+  });
+  showChord(chordPick.querySelector("button"), CH_LIST[0], false);
+
+  // Генерация по шагам
+  var stepOrder = 2, piece = null, shown = 0;
+  var scoreBox = document.getElementById("stepScore"), stepView = document.getElementById("stepView"), greedy = document.getElementById("greedy");
+  function newPiece() {
+    stopAll();
+    piece = M.generate(stepOrder, 16, greedy.checked); shown = 0;
+    renderScore();
+    stepView.innerHTML = "<p>Программа выбрала аккорды: <b>" + piece.plan.map(function (s) { return s.ch; }).join(" → ") + "</b>. Нажмите «Следующая нота».</p>";
+  }
+  function renderScore() {
+    scoreBox.innerHTML = "";
+    var line = document.createElement("div"); line.className = "line";
+    var idx = 0;
+    piece.plan.forEach(function (sp) {
+      var grp = document.createElement("div");
+      grp.style.cssText = "display:flex;flex-direction:column;gap:3px;margin-right:6px";
+      var ch = document.createElement("div"); ch.className = "ch"; ch.textContent = sp.ch; grp.appendChild(ch);
+      var ns = document.createElement("div"); ns.style.cssText = "display:flex;gap:3px;flex-wrap:wrap";
+      var t = 0;
+      while (idx < piece.notes.length && t < sp.len - 1e-9) {
+        var n = piece.notes[idx];
+        var s = document.createElement("span"); s.className = "n" + (idx < shown ? "" : " hide"); s.dataset.i = idx;
+        s.textContent = idx < shown ? M.noteName(n.p) : "·";
+        ns.appendChild(s); t += n.d; idx++;
+      }
+      grp.appendChild(ns); line.appendChild(grp);
+    });
+    scoreBox.appendChild(line);
+  }
+  function showStep(i) {
+    var tr = piece.trace[i];
+    var h = "<p>Шаг " + (i + 1) + ". Аккорд: <b>" + M.chordLabel(tr.ch) + "</b>. ";
+    if (tr.first) { stepView.innerHTML = h + "Первая нота — <b>" + M.noteName(tr.p) + "</b>: начало одной из обучающих мелодий.</p>"; return; }
+    h += tr.ctx.length ? "Предыдущие ноты: <b>" + tr.ctx.map(M.noteName).join(" – ") + "</b>." : "Таких предыдущих нот в данных не было — программа берёт ноты, звучавшие над аккордом.";
+    if (tr.used && tr.used < stepOrder) h += " <span class='muted'>(сочетания из " + stepOrder + " нот в данных не было — взято " + tr.used + ")</span>";
+    if (tr.final) h += " <b>Последняя нота:</b> только звуки аккорда " + tr.ch + ".";
+    h += "</p>";
+    var maxW = tr.list.reduce(function (m, x) { return Math.max(m, x.w); }, 0) || 1;
+    h += "<div style='overflow-x:auto'><table class='cand'><tr><th>Нота</th><th>Сколько раз шла после этих нот</th><th>Сколько раз звучала над " + tr.ch + "</th><th>Вес</th></tr>" +
+      tr.list.map(function (x) {
+        return "<tr class='" + (x.p === tr.p ? "on" : "") + "'><td>" + M.noteName(x.p) + "</td><td>" + x.mc + "</td><td>" + x.hc + "</td><td style='text-align:left'><span class='wbar' style='width:" + Math.max(2, 120 * x.w / maxW) + "px'></span> " + (Math.round(x.w * 10) / 10) + "</td></tr>";
+      }).join("") + "</table></div>" +
+      "<p style='margin-top:8px'>Выбрана нота <b>" + M.noteName(tr.p) + "</b>" + (greedy.checked ? " — с самым большим весом." : " — случайно, но чем больше вес, тем больше шанс.") + "</p>";
+    stepView.innerHTML = h;
+  }
+  document.getElementById("stepNext").addEventListener("click", function () {
+    if (shown >= piece.notes.length) { stepView.innerHTML = "<p>Мелодия закончилась на аккорде <b>" + piece.plan[piece.plan.length - 1].ch + "</b>. Нажмите «▶ Сыграть» или «Новая мелодия».</p>"; return; }
+    shown++; renderScore(); showStep(shown - 1);
+    var n = piece.notes[shown - 1];
+    stopAll(); var t = audio().currentTime + 0.02;
+    tone(n.p, t, 0.7, 0.3); chordTone(n.ch, t, 0.7);
+  });
+  document.getElementById("stepAll").addEventListener("click", function () { shown = piece.notes.length; renderScore(); showStep(shown - 1); });
+  document.getElementById("stepPlay").addEventListener("click", function () {
+    var btn = this, upto = Math.max(shown, 1);
+    var part = { notes: piece.notes.slice(0, upto), plan: [], meter: piece.meter };
+    var need = part.notes.reduce(function (s, n) { return s + n.d; }, 0), t = 0;
+    piece.plan.forEach(function (sp) { if (t < need - 1e-9) { part.plan.push({ ch: sp.ch, len: Math.min(sp.len, need - t) }); t += sp.len; } });
+    toggleButton(btn, part, { onNote: function (i) {
+      scoreBox.querySelectorAll(".n").forEach(function (s) { s.classList.toggle("now", Number(s.dataset.i) === i); });
+    }, onEnd: function () { scoreBox.querySelectorAll(".n.now").forEach(function (s) { s.classList.remove("now"); }); } });
+  });
+  document.getElementById("stepNew").addEventListener("click", newPiece);
+  seg("stepOrder", function (o) { stepOrder = o; newPiece(); });
+  greedy.addEventListener("change", newPiece);
+
+  // ================= Старт =================
+  restore(); updateCheck(); renderTime(); newRound(); newPiece();
+  var last = null; try { last = localStorage.getItem("nota9-tab"); } catch (e) {}
+  show(last && document.getElementById(last) ? last : "s-start");
+})();
+</script>
+</body>
+</html>
