@@ -52,3 +52,4 @@
 | Что | Где | Сайт |
 | --- | --- | --- |
 | Графические конспекты ДРАКОН-ГРАФ 0.9.1 — подключаются к любому уроку | `lib/drakon-graf/`, проверка — `tools/konspekt.mjs` | ✅ (проба: `lib/drakon-graf/index.html`) |
+| Дракон-схемы на DrakonWidget 1.5.7 (Степан Митькин, Unlicense): просмотр, силуэт, сборка ученика с сохранением; ввод и вывод | `lib/drakonwidget/`, `lib/drakon-shema/`, проверка — `tools/drakon-shema.mjs` | ✅ (проба: `lib/drakon-shema/index.html`) |

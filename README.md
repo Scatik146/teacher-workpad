@@ -27,6 +27,10 @@
 
 Библиотека лежит в `lib/drakon-graf/` и подключается к любому приложению двумя строками — см. [lib/drakon-graf/README.md](lib/drakon-graf/README.md). Проба конспекта: `lib/drakon-graf/index.html`. Проверка без браузера: `node tools/konspekt.mjs`.
 
+## Дракон-схемы (DrakonWidget)
+
+Алгоритмы и ветвления в уроках — `lib/drakon-shema/` поверх виджета Степана Митькина (`lib/drakonwidget/`, Unlicense). Подключение — в шапке `lib/drakon-shema/drakon-shema.js`, проба — `lib/drakon-shema/index.html`, проверка — `node tools/drakon-shema.mjs`.
+
 ## Списки
 
 - [RAZRABOTANO.md](RAZRABOTANO.md) — все подготовленные уроки и их статус на сайте.

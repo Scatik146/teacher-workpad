@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Проба дракон-схем</title>
+<style>
+  :root { --bg:#f6f1e6; --ink:#2b2620; --mut:#6b6254; --line:#d9cfbd; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.45 system-ui, sans-serif; }
+  .wrap { max-width:1180px; margin:0 auto; padding:20px 16px 40px; }
+  h1 { font-size:22px; margin:0 0 4px; } h2 { font-size:18px; margin:24px 0 6px; }
+  p.sub { margin:0 0 8px; color:var(--mut); }
+  .cols { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; }
+  @media (max-width:860px) { .cols { grid-template-columns:1fr; } }
+  pre { background:#fff; border:1px solid var(--line); border-radius:8px; padding:10px; font-size:13px; max-height:260px; overflow:auto; white-space:pre-wrap; margin:0; }
+  small { color:var(--mut); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Проба дракон-схем</h1>
+  <p class="sub">Схемы рисует DrakonWidget (Степан Митькин). Подключение и формат — в <code>lib/drakon-shema/drakon-shema.js</code>.</p>
+
+  <h2>1. Просмотр: алгоритм с вопросом</h2>
+  <div id="s1"></div>
+
+  <h2>2. Просмотр: силуэт из трёх веток</h2>
+  <div id="s2"></div>
+
+  <h2>3. Сборка: заготовка с пропусками</h2>
+  <p class="sub">Двойной щелчок по блоку — вписать текст. Правая кнопка — меню. Кнопки сверху добавляют блоки. Схема сохраняется — обновите страницу.</p>
+  <div class="cols">
+    <div id="s3" style="height:520px"></div>
+    <div><b>Что получилось (короткий формат)</b><pre id="out"></pre><b>Проверка</b><pre id="chk"></pre></div>
+  </div>
+  <p><small id="ver"></small></p>
+</div>
+<script src="../drakonwidget/drakonwidget.js"></script>
+<script src="drakon-shema.js"></script>
+<script>
+const s1 = /*схема*/{
+  nazvanie: 'Как перейти дорогу',
+  shagi: [
+    'Подойти к пешеходному переходу',
+    { vvod: 'Цвет светофора' },
+    { vopros: 'Есть светофор?',
+      da: [ 'Дождаться зелёного сигнала' ],
+      net: [ 'Посмотреть налево, потом направо' ] },
+    { vopros: 'Машины остановились?', da: [], net: [ 'Подождать на тротуаре' ] },
+    'Перейти дорогу шагом',
+    { kommentarij: 'Не бежать и не смотреть в телефон' }
+  ]
+};
+const s2 = /*схема*/{
+  nazvanie: 'Утро школьника',
+  vetki: [
+    { imya: 'Подъём', shagi: [ 'Встать по будильнику', 'Умыться' ] },
+    { imya: 'Завтрак', shagi: [ { vybor: 'Какой день?', varianty: { 'Будни': ['Каша'], 'Суббота': ['Блины'] } } ] },
+    { imya: 'Выход', shagi: [ 'Собрать рюкзак', 'Выйти из дома' ] }
+  ]
+};
+const s3 = /*заготовка*/{
+  nazvanie: 'Проверка пароля',
+  shagi: [ { vvod: 'Пароль' }, { vopros: '…', da: [ '…' ], net: [ { vyvod: 'Сообщение об ошибке' } ] } ]
+};
+DrakonShema.pokazat(document.getElementById('s1'), s1);
+DrakonShema.pokazat(document.getElementById('s2'), s2);
+const show = (sh) => {
+  document.getElementById('out').textContent = JSON.stringify(sh, null, 2);
+  const e = DrakonShema.proverit(sh, 'pokaz');
+  document.getElementById('chk').textContent = e.length ? e.join('\n') : 'Схема заполнена, ошибок нет';
+};
+window.d3 = DrakonShema.pokazat(document.getElementById('s3'), s3, {
+  rezhim: 'sborka', klyuch: 'proba-drakon-shema', izmenenie: show,
+  razreshit: ['dejstvie', 'vopros', 'vybor', 'vvod', 'vyvod', 'vetka', 'kommentarij']
+});
+window.d3.ready.then(() => show(d3.poluchit()));
+document.getElementById('ver').textContent = 'DrakonWidget ' + createDrakonWidget().getVersion() + ' · Степан Митькин · общественное достояние (Unlicense)';
+</script>
+</body>
+</html>

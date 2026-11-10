@@ -24,6 +24,20 @@
 - Конспект в коде помечать `/*конспект*/` перед строкой-шаблоном и проверять: `node tools/konspekt.mjs --scan путь/к/файлу --class N` (без подсказок «важно»). Рисунок для просмотра: `node tools/konspekt.mjs файл.txt -o рисунок.svg`.
 - Авторство (Паронджанов, Гуленков, Веснин) не удалять: оно в `lib/drakon-graf/NOTICE` и в шапке `konspekt.js`.
 
+## Дракон-схемы (DrakonWidget)
+
+- Виджет Степана Митькина: `lib/drakonwidget/drakonwidget.js` (1.5.7, Unlicense) — **не менять**. Обёртка: `lib/drakon-shema/drakon-shema.js`. Подключение из урока:
+  `<script src="../../lib/drakonwidget/drakonwidget.js"></script><script src="../../lib/drakon-shema/drakon-shema.js"></script>`
+- Вставка: `DrakonShema.pokazat(el, shema)` — просмотр (рамка сама по высоте схемы, широкая схема ужимается по ширине, не мельче 75 %);
+  `DrakonShema.pokazat(el, zagotovka, {rezhim:'sborka', klyuch:'урок-схема-1', razreshit:[…], izmenenie: sh => …})` — ученик дописывает, схема сохраняется.
+  Объект: `poluchit()` (короткий формат), `json()` (родной), `ochistit()`.
+- Короткий формат: `{ nazvanie, shagi:[ 'Действие', {vopros, da:[…], net:[…]}, {vybor, varianty:{'А':[…],'Б':[…]}}, {vvod:'…'}, {vyvod:'…'}, {kommentarij:'…'} ] }`;
+  силуэт — `{ nazvanie, vetki:[ {imya, shagi:[…]}, … ] }`. Пустой блок заготовки — `''` или `'…'`. Кнопки сборки (`razreshit`): `dejstvie, vopros, vybor, vvod, vyvod, vetka, kommentarij`.
+- Ввод — блок со стрелкой-вырезом слева, вывод — с треугольником справа (`simpleinput` / `simpleoutput` виджета).
+- В коде помечать `/*схема*/` (просмотр) или `/*заготовка*/` (сборка) перед объектом и проверять: `node tools/drakon-shema.mjs --scan путь/к/файлу`.
+- Когда что брать: **дракон-схема** — алгоритм, порядок действий, ветвления, «что делать, если…»; **конспект ДРАКОН-ГРАФ** — главные мысли урока для тетради (понятия, правила, сравнения).
+- Проба: `lib/drakon-shema/index.html`. Родной формат виджета (для справки): `items` — словарь id → `{type, content, one, two, branchId, flag1}`; у `question` `one` — «Да» (вниз), `two` — «Нет» (вправо), `flag1:1`; `select.one` → первый `case`, `case.two` → следующий `case`; в силуэте хвост ветки указывает на id следующей `branch`.
+
 ## Проверка перед отправкой
 
 - Пройти приложение в браузере (headless Chrome: `/usr/bin/google-chrome` + Python playwright), смотреть скриншоты и ошибки консоли.
