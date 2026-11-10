@@ -48,9 +48,16 @@ blocks.forEach(([rezhim, text], i) => {
   err.forEach(e => console.log('   ' + e)); bad += err.length;
 });
 function norm(sh) {
-  const st = (list) => (list || []).map(s => typeof s === 'string' ? s : ('dejstvie' in s ? s.dejstvie :
-    'vopros' in s ? { vopros: s.vopros, da: st(s.da), net: st(s.net) } :
-    'vybor' in s ? { vybor: s.vybor, varianty: Object.fromEntries(Object.entries(s.varianty || {}).map(([k, v]) => [k, st(v)])) } : s));
+  const st = (list) => (list || []).map(s => {
+    if (s == null || typeof s === 'string') return s == null ? '' : s;
+    if ('dejstvie' in s) return s.dejstvie;
+    if ('vopros' in s) return { vopros: s.vopros, da: st(s.da), net: st(s.net) };
+    if ('vybor' in s) return { vybor: s.vybor, varianty: Object.fromEntries(Object.entries(s.varianty || {}).map(([k, v]) => [k, st(v)])) };
+    if ('dlya' in s) { const [t, b] = DS.loopParts(s); return { dlya: t, po: b, shagi: st(s.shagi) }; }
+    if ('delat' in s) return { delat: st(s.delat), poka: s.poka };
+    if ('poka' in s) return { poka: s.poka, shagi: st(s.shagi) };
+    return s;
+  });
   return sh.vetki ? { vetki: sh.vetki.map(v => ({ imya: v.imya, shagi: st(v.shagi) })) } : { shagi: st(sh.shagi) };
 }
 if (!blocks.length) console.log('схем не найдено');
