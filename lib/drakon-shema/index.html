@@ -29,7 +29,10 @@
   <h2>2. Просмотр: силуэт из трёх веток</h2>
   <div id="s2"></div>
 
-  <h2>3. Сборка: заготовка с пропусками</h2>
+  <h2>3. Просмотр: циклы «для», «пока» и «делать … пока»</h2>
+  <div id="s4"></div>
+
+  <h2>4. Сборка: заготовка с пропусками</h2>
   <p class="sub">Двойной щелчок по блоку — вписать текст. Правая кнопка — меню. Кнопки сверху добавляют блоки. Схема сохраняется — обновите страницу.</p>
   <div class="cols">
     <div id="s3" style="height:520px"></div>
@@ -61,12 +64,22 @@ const s2 = /*схема*/{
     { imya: 'Выход', shagi: [ 'Собрать рюкзак', 'Выйти из дома' ] }
   ]
 };
+const s4 = /*схема*/{
+  nazvanie: 'Перемена в классе',
+  shagi: [
+    { dlya: 'Для каждого ученика в списке', shagi: [ 'Отметить присутствие' ] },
+    { poka: 'Есть грязные кружки?', shagi: [ 'Помыть кружку' ] },
+    { delat: [ { vvod: 'Пароль от компьютера' } ], poka: 'Пароль неверный?' },
+    { vyvod: 'Рабочий стол' }
+  ]
+};
 const s3 = /*заготовка*/{
   nazvanie: 'Проверка пароля',
   shagi: [ { vvod: 'Пароль' }, { vopros: '…', da: [ '…' ], net: [ { vyvod: 'Сообщение об ошибке' } ] } ]
 };
 DrakonShema.pokazat(document.getElementById('s1'), s1);
 DrakonShema.pokazat(document.getElementById('s2'), s2);
+DrakonShema.pokazat(document.getElementById('s4'), s4);
 const show = (sh) => {
   document.getElementById('out').textContent = JSON.stringify(sh, null, 2);
   const e = DrakonShema.proverit(sh, 'pokaz');
@@ -74,7 +87,7 @@ const show = (sh) => {
 };
 window.d3 = DrakonShema.pokazat(document.getElementById('s3'), s3, {
   rezhim: 'sborka', klyuch: 'proba-drakon-shema', izmenenie: show,
-  razreshit: ['dejstvie', 'vopros', 'vybor', 'vvod', 'vyvod', 'vetka', 'kommentarij']
+  razreshit: ['dejstvie', 'vopros', 'vybor', 'vvod', 'vyvod', 'cikl', 'vetka', 'kommentarij']
 });
 window.d3.ready.then(() => show(d3.poluchit()));
 document.getElementById('ver').textContent = 'DrakonWidget ' + createDrakonWidget().getVersion() + ' · Степан Митькин · общественное достояние (Unlicense)';

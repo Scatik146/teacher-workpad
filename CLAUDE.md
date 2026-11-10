@@ -32,11 +32,15 @@
   `DrakonShema.pokazat(el, zagotovka, {rezhim:'sborka', klyuch:'урок-схема-1', razreshit:[…], izmenenie: sh => …})` — ученик дописывает, схема сохраняется.
   Объект: `poluchit()` (короткий формат), `json()` (родной), `ochistit()`.
 - Короткий формат: `{ nazvanie, shagi:[ 'Действие', {vopros, da:[…], net:[…]}, {vybor, varianty:{'А':[…],'Б':[…]}}, {vvod:'…'}, {vyvod:'…'}, {kommentarij:'…'} ] }`;
-  силуэт — `{ nazvanie, vetki:[ {imya, shagi:[…]}, … ] }`. Пустой блок заготовки — `''` или `'…'`. Кнопки сборки (`razreshit`): `dejstvie, vopros, vybor, vvod, vyvod, vetka, kommentarij`.
+  силуэт — `{ nazvanie, vetki:[ {imya, shagi:[…]}, … ] }`. Пустой блок заготовки — `''` или `'…'`. Кнопки сборки (`razreshit`): `dejstvie, vopros, vybor, vvod, vyvod, cikl, vetka, kommentarij`.
+- Циклы: for — `{dlya:'Для каждого…', shagi:[…]}`; while — `{poka:'Есть …?', shagi:[…]}` (Да — тело справа и назад к стрелке, Нет — выход вниз);
+  do-while — `{delat:[…], poka:'… неверный?'}` (тело, потом вопрос: Да — снова, Нет — дальше). Кнопка сборки `cikl` вставляет только for;
+  циклы «пока» давать в заготовке (виджет вставляет их перетаскиванием линий — школьнику неудобно). Тело цикла по главной линии вниз виджет не рисует — так и задумано в ДРАКОНе.
 - Ввод — блок со стрелкой-вырезом слева, вывод — с треугольником справа (`simpleinput` / `simpleoutput` виджета).
 - В коде помечать `/*схема*/` (просмотр) или `/*заготовка*/` (сборка) перед объектом и проверять: `node tools/drakon-shema.mjs --scan путь/к/файлу`.
 - Когда что брать: **дракон-схема** — алгоритм, порядок действий, ветвления, «что делать, если…»; **конспект ДРАКОН-ГРАФ** — главные мысли урока для тетради (понятия, правила, сравнения).
-- Проба: `lib/drakon-shema/index.html`. Родной формат виджета (для справки): `items` — словарь id → `{type, content, one, two, branchId, flag1}`; у `question` `one` — «Да» (вниз), `two` — «Нет» (вправо), `flag1:1`; `select.one` → первый `case`, `case.two` → следующий `case`; в силуэте хвост ветки указывает на id следующей `branch`.
+- Проба: `lib/drakon-shema/index.html`. Родной формат виджета (для справки): `items` — словарь id → `{type, content, one, two, branchId, flag1}`; у `question` `one` — «Да» (вниз), `two` — «Нет» (вправо), `flag1:1`; `select.one` → первый `case`, `case.two` → следующий `case`; в силуэте хвост ветки указывает на id следующей `branch`;
+  for — `loopbegin` → тело → `loopend`; while/do-while — узел `arrow-loop`, к нему возвращается правая ветка вопроса (`two`), `flag1:0` — вниз «Нет».
 
 ## Проверка перед отправкой
 
