@@ -29,6 +29,10 @@ button:disabled{cursor:not-allowed;opacity:.45}
 .dots i.on{background:var(--cy);box-shadow:0 0 8px var(--cy)}
 .dots i.done{background:#2f7d97}
 .coins{white-space:nowrap;font-weight:700;color:var(--ye)}
+.clock{white-space:nowrap;font-weight:700;color:var(--mut);font-size:16px}
+.clock.hot{color:var(--rd)}
+.event{max-width:560px;width:92%;border:2px solid var(--mg);box-shadow:0 0 30px rgba(255,90,217,.4);text-align:left}
+.event h2{color:var(--mg)} .event p{font-size:20px;margin:6px 0 12px}
 .medals{min-width:40px;white-space:nowrap}
 .tbtn{min-width:52px;height:46px;border-radius:12px;border:2px solid var(--line);background:var(--panel2);font-weight:800;padding:0 12px}
 .tbtn.q{border-color:var(--ye);color:var(--ye);font-size:22px}
@@ -205,6 +209,7 @@ h2{margin:0 0 6px;font-size:22px}
   <div class="logo">ЭХО<b>·</b>УЗЕЛ</div>
   <div class="sname" id="sname"></div>
   <div class="dots" id="dots" aria-hidden="true"></div>
+  <div class="clock" id="clock" title="Время смены"></div>
   <div class="coins" id="coins" title="Битрейты"></div>
   <div class="medals" id="medals" title="Медали за чистую настройку"></div>
   <button class="tbtn snd" id="sndBtn" title="Озвучка помощника"></button>
@@ -229,6 +234,7 @@ h2{margin:0 0 6px;font-size:22px}
   <header><b>ПЕЙДЖЕР</b><button class="tbtn" id="pgClose">✕</button></header>
   <div class="pbody" id="pbody"></div>
 </div>
+<div class="overlay hidden" id="event"><div class="panel event"><h2 id="evT"></h2><p id="evX"></p><button class="btn mg big" id="evB"></button></div></div>
 <div class="overlay hidden" id="tmenu"><div class="panel"><h2>Переход по экранам</h2><div id="tlist" style="display:flex;flex-direction:column;gap:8px"></div><button class="btn ghost" id="tclose">Закрыть</button></div></div>
 
 <script src="tekst.js"></script>
@@ -243,14 +249,16 @@ const pick = a => a[Math.floor(Math.random()*a.length)];
 const clamp = (x,a,b) => Math.max(a, Math.min(b, x));
 const KEY = 'ekho-uzel-v1';
 
+const tr0 = () => ({ fails:0, moves:0, level:1, done:false, last:null });
+const syn0 = (set) => ({ slots:[null,null,null], zamok:null, rate:set.startVoice[0], pitch:set.startVoice[1], fails:0, moves:0, level:1, done:false, last:null, err:null });
 function fresh(){
   return {
-    screen:0, sub:'story', names:['',''], bit:20, medals:{}, voiceOn:true,
+    screen:0, sub:'story', names:['',''], bit:20, medals:{}, voiceOn:true, t0:null, rush:0, bonus:{ step:null },
     cfg:{ mic:{on:true,v:55}, noise:{on:false,v:50}, phon:{on:true,v:60}, dict:{on:true,v:70}, sense:{on:true,v:15} },
     train:0, parse:{i:0, phase:'q', exp:0, fails:0, level:1},
-    trial:'P2', tr:{ P2:{fails:0,moves:0,level:1,done:false,last:null}, P3:{fails:0,moves:0,level:1,done:false,last:null} },
+    trial:'P2', tr:{ P2:tr0(), P3:tr0(), B1:tr0(), B2:tr0() },
     note1:[false,false], note2:[false,false],
-    syn:{ slots:[null,null,null], zamok:null, rate:1.8, pitch:1.7, fails:0, moves:0, level:1, done:false, last:null, err:null },
+    syn:syn0(T.synth), syn2:syn0(T.bonusSynth),
     fin:{ step:'dialogs', i:0, res:[], duhi:null, table:{}, tfails:0, tlevel:1, tdone:false, ans:[{},{},{},{}], sent:false },
     pager:{ log:[], busy:false },
     pred:null
@@ -259,7 +267,9 @@ function fresh(){
 let S;
 try { S = JSON.parse(localStorage.getItem(KEY)); } catch(e){ S = null; }
 if (!S || !S.cfg) S = fresh();
+else { const f = fresh(); S = Object.assign(f, S); S.tr = Object.assign(f.tr, S.tr); if (!S.syn2) S.syn2 = f.syn2; if (!S.bonus) S.bonus = { step:null }; }
 function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
+const mins = () => S.t0 ? Math.floor((Date.now() - S.t0) / 60000) : 0;
 
 /* ================= звук ================= */
 let AC = null;
@@ -339,13 +349,14 @@ $('qBtn').onclick = () => {
 /* ================= шапка ================= */
 function renderTop(){
   const sc = T.screens[S.screen];
-  $('sname').textContent = sc.name;
+  $('sname').textContent = (S.screen === 6 && S.fin.step === 'bonus') ? '7+. Сверхурочный вызов' : sc.name;
+  const m = mins(); $('clock').textContent = S.t0 ? '🕒 ' + m + ' мин' : ''; $('clock').classList.toggle('hot', m >= T.clock.rush && S.screen < 6);
   $('dots').innerHTML = T.screens.map((_,i) => `<i class="${i===S.screen?'on':(i<S.screen?'done':'')}"></i>`).join('');
   $('coins').textContent = '⚡ ' + S.bit + ' битрейт' + (S.bit%10===1&&S.bit%100!==11?'':(S.bit%10>=2&&S.bit%10<=4&&(S.bit%100<10||S.bit%100>=20)?'а':'ов'));
   const M = { gold:'🥇', silver:'🥈', bronze:'🥉' };
   $('medals').textContent = Object.values(S.medals).map(m => M[m]).join('');
   $('sndBtn').textContent = !hasVoice() ? 'Голос: текстом' : (S.voiceOn ? '🔊 Светляк' : '🔈 Светляк');
-  $('pgBtn').disabled = !(S.screen === 2 || S.screen === 4);
+  $('pgBtn').disabled = !pagerOn();
 }
 $('sndBtn').onclick = () => { S.voiceOn = !S.voiceOn; if (!S.voiceOn && 'speechSynthesis' in window) speechSynthesis.cancel(); save(); renderTop(); };
 
@@ -537,7 +548,8 @@ function fillWin(id, P, res){
   if (id === 'phon'){
     const tw = ph.words.find(x => x.twin);
     if (tw && res && res.out.some(o => o.st==='warn' && o.tag===T.hear.twin))
-      w.innerHTML = `похожие звуки: <span class="tw">[${tw.twin[0][0].toLowerCase()}о<u>т</u>]</span> = <span class="tw">[${tw.twin[1][0].toLowerCase()}о<u>т</u>]</span>`;
+    { const snd = x => { const t = x.toLowerCase().replace(/д$/,'т').replace(/г$/,'к'); return '[' + t.slice(0,-1) + '<u>' + t.slice(-1) + '</u>]'; };
+      w.innerHTML = `похожие звуки: <span class="tw">${snd(tw.twin[0])}</span> = <span class="tw">${snd(tw.twin[1])}</span>`; }
     else w.innerHTML = ph.sounds ? esc(ph.sounds) : (tw ? 'похожие звуки: —' : '[ … звуки … ]');
   }
   if (id === 'dict')  w.innerHTML = res.out.map(o => `<span class="wd">${esc(o.t)}</span>`).join(' ');
@@ -603,7 +615,7 @@ function scStart(){
     W.innerHTML = `<section class="panel story"><h2>Ночная смена</h2>${T.story.map(p=>`<p>${esc(p)}</p>`).join('')}
       <div class="row" style="margin-top:14px"><button class="btn big" id="goNames">Принять смену</button>
       ${S.train||S.names[0] ? '<button class="btn ghost" id="restart">Новая смена (для другой пары)</button>' : ''}</div></section>`;
-    $('goNames').onclick = () => { S.sub = 'names'; save(); scStart(); };
+    $('goNames').onclick = () => { if (!S.t0) S.t0 = Date.now(); S.sub = 'names'; save(); scStart(); renderTop(); };
     if ($('restart')) $('restart').onclick = () => { if (confirm('Начать смену заново? Прогресс этой пары сотрётся.')){ S = fresh(); save(); render(); } };
     say('Привет, стажёр! Я Светляк. Буду рядом всю смену. Нажми «Принять смену».');
     return;
@@ -682,7 +694,7 @@ function resumeParse(){
         if (S.parse.i >= T.parse.length){ S.parse.phase = 'exp'; S.parse.exp = 1; save(); clearWins(); startExp(); }
         else resumeParse();
       } else {
-        S.parse.fails++; S.parse.level = Math.min(3, S.parse.level+1); save();
+        S.parse.fails++; S.parse.level = S.rush ? 3 : Math.min(3, S.parse.level+1); save();
         say(S.parse.level === 2 ? st.l2 : st.l3, ['Попробую ещё'], ask, {level:S.parse.level});
       }
     });
@@ -715,16 +727,25 @@ function scTrials(){
   W.innerHTML = `<div class="task">${esc(TT.intro)} Настрой пульт, чтобы машина услышала всё верно. Термометр — зелёный.</div>` + pultHTML() +
     `<div class="row"><span style="color:var(--mut);font-size:16px">Застрял? Нажми «?» — Светляк подскажет. Или позвони специалисту на пейджер.</span></div>`;
   mountPult(P, trialRun, (id, isNew) => { if (isNew){ tr.moves++; save(); } });
+  if (P[0] === 'B') $('plabel').innerHTML = `<b>${esc(T.bonus.names[P === 'B1' ? 0 : 1])}</b> · ${esc(T.phrases[P].label)}`;
+  if (S.rush && tr.level < 3) tr.level = 3;
   ladder('tr'+P, [TT.l1, TT.l2, TT.l3], tr.level);
   showPrev(tr.last, S.cfg);
   if (tr.last){ PULT.res = null; drawWave(); }
   if (tr.fails >= 3) offerRollback();
 }
-const BROKEN = () => fresh().cfg;
+const GOOD = { mic:{on:true,v:55}, noise:{on:true,v:60}, phon:{on:true,v:60}, dict:{on:true,v:70}, sense:{on:true,v:60} };
+function preset(P){
+  const c = fresh().cfg;
+  if (P === 'P3') c.noise = { on:true, v:60 };
+  if (P === 'B1'){ c.mic = { on:true, v:90 }; c.sense = { on:true, v:60 }; }
+  if (P === 'B2'){ c.noise = { on:true, v:60 }; c.sense = { on:true, v:95 }; }
+  return c;
+}
 function offerRollback(){
   const tr = S.tr[S.trial];
   say(T.rollback, ['Да, вернуть пульт','Нет, разберусь сам'], (i) => {
-    if (i === 0){ S.cfg = BROKEN(); if (S.trial === 'P3') S.cfg.noise = { on:true, v:60 }; tr.fails = 0; save(); scTrials(); say('Пульт как в начале испытания. Попробуй снова — спокойно, по одной ручке.'); }
+    if (i === 0){ S.cfg = preset(S.trial); tr.fails = 0; save(); scTrials(); say('Пульт как в начале испытания. Попробуй снова — спокойно, по одной ручке.'); }
     else { tr.fails = 0; save(); showLadder(); }
   });
 }
@@ -743,17 +764,25 @@ function trialRun(){
         S.medals[P] = medal; S.bit += 15 + (medal==='gold'?10:medal==='silver'?5:0);
         save(); renderTop();
         const name = { gold:'золотая', silver:'серебряная', bronze:'бронзовая' }[medal];
-        const next = P === 'P2' ? 'К фразе № 3' : 'К отчёту в тетради';
+        const next = { P2:'К фразе № 3', P3:'К отчёту в тетради', B1:'К вызову 2', B2:'К вызову 3' }[P];
         H = { key:null, lines:null, level:1 };
         say(`${TT.win} Медаль ${name} за чистую настройку.`, [next], () => {
           if (P === 'P2'){ S.trial = 'P3'; save(); scTrials(); say(T.trials.P3.l1, null, null, {level:1}); }
+          else if (P === 'B1'){ S.trial = 'B2'; S.bonus.step = 'B2'; S.cfg = preset('B2'); save(); scTrials(); say(T.trials.B2.l1, null, null, {level:1}); }
+          else if (P === 'B2'){ S.bonus.step = 'synth'; save(); scFinal(); }
           else go(3);
         });
         return;
       }
-      tr.fails++; tr.level = clamp(tr.fails + 1, 1, 3); save();
+      tr.fails++; tr.level = clamp(tr.fails + 1, S.rush ? 3 : 1, 3); save();
       H.level = tr.level;
       say(react, null, null, {silent:true});
+      if (S.rush){
+        /* мастер по рации чинит первый сломанный блок */
+        const b = T.blocks.find(x => res.blame.has(x.id));
+        if (b){ S.cfg[b.id] = Object.assign({}, GOOD[b.id]); save();
+          setTimeout(() => { const P2 = PULT.P; mountPult(P2, PULT.onRun, PULT.onChange); say(T.rush.trialHelp.replace('{block}', b.name)); }, 1600); return; }
+      }
       setTimeout(() => { if (tr.fails >= 3) offerRollback(); else showLadder(); }, 1600);
     });
   });
@@ -766,7 +795,7 @@ function noteScreen(N, key, next){
     <div class="task">Образец, как записать в тетрадь. Так работают специалисты: схема вместо длинного текста.</div></section>
     <section class="paper" id="kon"></section>
     <section class="panel"><div style="display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px">
-      <div><h2 style="font-size:19px">Что сделать</h2><ol class="steps">${D.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol></div>
+      <div><h2 style="font-size:19px">Что сделать${S.rush?' — быстро':''}</h2><ol class="steps">${(S.rush ? T.rush[N] : D.steps).map(s=>`<li>${esc(s)}</li>`).join('')}</ol></div>
       <div><h2 style="font-size:19px">Как читать схему</h2><div class="legend">${T.legend.map(([a,b])=>`<b>${esc(a)}</b><span>${esc(b)}</span>`).join('')}</div></div>
     </div></section>
     <section class="panel"><div class="ready">${[0,1].map(i=>`<button data-i="${i}" aria-pressed="${S[key][i]}">✔ ${esc(S.names[i]||('Стажёр '+(i+1)))}: записал(а)</button>`).join('')}
@@ -785,23 +814,27 @@ function scNote1(){ noteScreen('note1', 'note1', () => go(4)); }
 function scNote2(){ noteScreen('note2', 'note2', () => go(6)); }
 
 /* ---------- 5. Голос машины ---------- */
-const CH = Object.fromEntries(T.synth.chips.map(c => [c.id, c]));
+const BON = () => S.screen === 6 && S.fin.step === 'bonus';
+const TS  = () => BON() ? T.bonusSynth : T.synth;
+const SYN = () => BON() ? S.syn2 : S.syn;
+const CHS = () => Object.fromEntries(TS().chips.map(c => [c.id, c]));
 function chipText(c, forSpeech){
   let t = c.text;
   if (c.homograph){
-    const z = T.synth.zamok, pickd = S.syn.zamok;
+    const z = TS().zamok, pickd = SYN().zamok;
     t = t.replace('{ZAMOK}', forSpeech ? (pickd ? z.say[pickd] : 'замок') : (pickd ? z[pickd] : 'замок'));
   }
-  return t;
+  return t.charAt(0).toUpperCase() + t.slice(1);
 }
-function normalize(t){ T.synth.normal.forEach(([a,b]) => { t = t.split(a).join(b); }); return t; }
-function synthText(forSpeech){ return S.syn.slots.filter(Boolean).map(id => chipText(CH[id], forSpeech)).join(' '); }
+function normalize(t){ TS().normal.forEach(([a,b]) => { t = t.split(a).join(b); }); return t; }
+function synthText(forSpeech){ return SYN().slots.filter(Boolean).map(id => chipText(CHS()[id], forSpeech)).join(' '); }
 function scSynth(){
-  const sy = S.syn;
+  const sy = SYN();
+  if (S.rush && !BON() && !sy.rushFixed){ sy.rate = 1; sy.pitch = 1; sy.rushFixed = true; save(); setTimeout(() => say(T.rush.synthHelp), 50); }
   W.innerHTML = `
-  <section class="panel"><div class="req"><div class="who"></div><div class="say">${esc(T.synth.request)}</div></div></section>
+  <section class="panel"><div class="req"><div class="who"></div><div class="say">${esc(TS().request)}</div></div></section>
   <section class="panel">
-    <div class="row" style="justify-content:space-between"><div class="rule">${esc(T.synth.rule)}</div></div>
+    <div class="row" style="justify-content:space-between"><div class="rule">${esc(TS().rule)}</div></div>
     <div class="shelf" id="shelf" style="margin:10px 0"></div>
     <div style="font-size:15px;color:var(--mut);margin-bottom:6px">Готовые части ответа (нажми, чтобы положить на полку; на полке — нажми, чтобы убрать):</div>
     <div class="tray" id="tray"></div>
@@ -817,7 +850,7 @@ function scSynth(){
       </div>
     </div>
   </section>
-  <section class="honest">${esc(T.synth.honest)}</section>`;
+  <section class="honest">${esc(TS().honest)}</section>`;
   const fmtR = v => v < 0.8 ? v.toFixed(1)+' · медленно' : v > 1.25 ? v.toFixed(1)+' · быстро' : v.toFixed(1)+' · спокойно';
   const fmtP = v => v < 0.8 ? v.toFixed(1)+' · низко' : v > 1.3 ? v.toFixed(1)+' · пискляво' : v.toFixed(1)+' · обычно';
   const mv = (id) => (commit) => { if (commit && countMove(id)){ sy.moves++; } save(); drawSpipe(); };
@@ -826,16 +859,16 @@ function scSynth(){
   drawShelf();
   $('listen').onclick = () => { if (!sy.slots.some(Boolean)){ say('Сначала положи на полку хотя бы одну часть ответа.'); return; } speakAnswer(); };
   $('send').onclick = synthSend;
-  ladder('synth', [T.synth.l1, T.synth.l2[sy.err||'empty'], T.synth.l3[sy.err||'empty']], sy.level);
-  if (!sy.slots.some(Boolean)) say(T.synth.intro); else showLadder();
+  ladder('synth', [TS().l1, TS().l2[sy.err||'empty'], TS().l3[sy.err||'empty']], sy.level);
+  if (!sy.slots.some(Boolean)) say(TS().intro); else showLadder();
   showSynthPrev();
 }
 function drawShelf(){
-  const sy = S.syn;
+  const sy = SYN();
   $('shelf').innerHTML = sy.slots.map((id,k) => {
     if (!id) return `<div class="slot"><span class="n">место ${k+1}</span><span style="color:var(--mut)">пусто</span></div>`;
-    const c = CH[id];
-    const stress = c.homograph ? `<div class="stress">${['a','b'].map(x=>`<button data-z="${x}" aria-pressed="${sy.zamok===x}">${T.synth.zamok[x]}</button>`).join('')}</div>` : '';
+    const c = CHS()[id];
+    const stress = c.homograph ? `<div class="stress">${['a','b'].map(x=>`<button data-z="${x}" aria-pressed="${sy.zamok===x}">${TS().zamok[x]}</button>`).join('')}</div>` : '';
     return `<div class="slot full" data-k="${k}"><span class="n">место ${k+1} · нажми, чтобы убрать</span><span>${esc(chipText(c))}</span>${stress}</div>`;
   }).join('');
   $('shelf').querySelectorAll('.slot.full').forEach(el => el.onclick = (e) => {
@@ -844,7 +877,7 @@ function drawShelf(){
   });
   $('shelf').querySelectorAll('[data-z]').forEach(b => b.onclick = (e) => { e.stopPropagation(); sy.zamok = b.dataset.z; sy.moves++; save(); drawShelf(); });
   const used = new Set(sy.slots.filter(Boolean));
-  $('tray').innerHTML = T.synth.chips.map(c => `<button class="part ${used.has(c.id)?'used':''}" data-id="${c.id}" ${used.has(c.id)?'disabled':''}>${esc(c.text.replace('{ZAMOK}','замок'))}</button>`).join('');
+  $('tray').innerHTML = TS().chips.map(c => { const t = c.text.replace('{ZAMOK}','замок'); return `<button class="part ${used.has(c.id)?'used':''}" data-id="${c.id}" ${used.has(c.id)?'disabled':''}>${esc(t.charAt(0).toUpperCase()+t.slice(1))}</button>`; }).join('');
   $('tray').querySelectorAll('.part').forEach(b => b.onclick = () => {
     const k = sy.slots.indexOf(null);
     if (k < 0){ say('Полка полная. Убери часть, чтобы положить другую.'); return; }
@@ -854,35 +887,35 @@ function drawShelf(){
 }
 function drawSpipe(){
   const raw = synthText(false), nrm = normalize(raw);
-  const z = S.syn.zamok;
-  const sounds = !S.syn.slots.some(Boolean) ? '' : !S.syn.slots.includes('c1') ? '…звуки готовы' : (z ? (z === 'a' ? '…[за́мак]…' : '…[замо́к]…') : '…[зам?к] — где ударение?');
-  const st = T.synth.stages;
+  const z = SYN().zamok;
+  const sounds = !SYN().slots.some(Boolean) ? '' : !SYN().slots.includes('c1') ? '…звуки готовы' : (z ? (z === 'a' ? '…[за́мак]…' : '…[замо́к]…') : '…[зам?к] — где ударение?');
+  const st = TS().stages;
   $('spipe').innerHTML = `<div class="sst"><b>${st[0]}</b>${esc(raw)||'—'}</div><div class="sst"><b>${st[1]}</b>${esc(nrm)||'—'}</div>
-    <div class="sst"><b>${st[2]}</b>${esc(sounds)||'—'}</div><div class="sst"><b>${st[3]}</b>темп ${S.syn.rate.toFixed(1)}, высота ${S.syn.pitch.toFixed(1)}</div>`;
+    <div class="sst"><b>${st[2]}</b>${esc(sounds)||'—'}</div><div class="sst"><b>${st[3]}</b>темп ${SYN().rate.toFixed(1)}, высота ${SYN().pitch.toFixed(1)}</div>`;
 }
 function speakAnswer(done){
   const t = normalize(synthText(true));
   $('listen').disabled = true;
-  machineSpeak(t, S.syn.rate, S.syn.pitch, $('msays'), () => { $('listen').disabled = false; $('msays').textContent = normalize(synthText(false)); done && done(); });
+  machineSpeak(t, SYN().rate, SYN().pitch, $('msays'), () => { $('listen').disabled = false; $('msays').textContent = normalize(synthText(false)); done && done(); });
 }
 function synthCheck(){
-  const sy = S.syn, sl = sy.slots;
+  const sy = SYN(), sl = sy.slots;
   if (sl.some(x => !x)) return 'empty';
   const order = ['приветствие','суть','уточнение'];
-  if (sl.some((id,k) => CH[id].type !== order[k])) return 'order';
-  if (sl.some(id => !CH[id].fit)) return 'fit';
-  if (sy.zamok !== T.synth.zamok.ok) return 'stress';
+  if (sl.some((id,k) => CHS()[id].type !== order[k])) return 'order';
+  if (sl.some(id => !CHS()[id].fit)) return 'fit';
+  if (sy.zamok !== TS().zamok.ok) return 'stress';
   if (sy.rate < 0.8 || sy.rate > 1.25 || sy.pitch < 0.8 || sy.pitch > 1.3) return 'voice';
   return null;
 }
 function showSynthPrev(){
-  const l = S.syn.last, p = $('prev');
+  const l = SYN().last, p = $('prev');
   if (!l){ p.classList.add('hidden'); return; }
   p.classList.remove('hidden');
   p.innerHTML = `<h3>Прошлая попытка</h3><div style="font-size:16px">«${esc(l.text)}»</div><ul><li>темп ${l.rate.toFixed(1)}, высота ${l.pitch.toFixed(1)}</li><li>${esc(l.verdict)}</li></ul>`;
 }
 function synthSend(){
-  const sy = S.syn;
+  const sy = SYN();
   askPredict(T.predict.synthQ, T.predict.synthOpts, (pi) => {
     const err = synthCheck();
     const verdict = { empty:'на полке не хватает частей', order:'части не по правилу', fit:'часть не про просьбу жителя', stress:'ударение не там', voice:'голос неспокойный' }[err] || 'житель всё понял';
@@ -893,18 +926,21 @@ function synthSend(){
       if (!err){
         sy.done = true;
         const medal = sy.moves <= 7 ? 'gold' : sy.moves <= 10 ? 'silver' : 'bronze';
-        S.medals.syn = medal; S.bit += 15 + (medal==='gold'?10:medal==='silver'?5:0); save(); renderTop();
+        S.medals[BON() ? 'b3' : 'syn'] = medal; S.bit += 15 + (medal==='gold'?10:medal==='silver'?5:0); save(); renderTop();
         H = { key:null, lines:null, level:1 };
-        say(T.synth.win + ' Медаль ' + { gold:'золотая', silver:'серебряная', bronze:'бронзовая' }[medal] + '.', ['К отчёту в тетради'], () => go(5));
+        const bon = BON();
+        say(TS().win + ' Медаль ' + { gold:'золотая', silver:'серебряная', bronze:'бронзовая' }[medal] + '.', [bon ? 'Сдать вызов' : 'К отчёту в тетради'], () => {
+          if (bon){ S.bonus.step = 'end'; save(); scFinal(); } else go(5);
+        });
         return;
       }
       sy.fails++; sy.err = err; sy.level = clamp(sy.fails + 1, 1, 3); save();
-      H = { key:'synth', lines:[T.synth.l1, T.synth.l2[err], T.synth.l3[err]], level:sy.level };
+      H = { key:'synth', lines:[TS().l1, TS().l2[err], TS().l3[err]], level:sy.level };
       say(react, null, null, {silent:true});
       setTimeout(() => {
         if (sy.fails >= 3){
           say('Три попытки. Вернуть голос как был в начале? Части на полке останутся, битрейты и медали — тоже.', ['Да, вернуть ручки','Нет, разберусь'], (i) => {
-            if (i === 0){ sy.rate = 1.8; sy.pitch = 1.7; } sy.fails = 0; save(); scSynth();
+            if (i === 0){ sy.rate = TS().startVoice[0]; sy.pitch = TS().startVoice[1]; } sy.fails = 0; save(); scSynth();
           });
         } else showLadder();
       }, 1600);
@@ -918,6 +954,7 @@ function scFinal(){
   if (F.step === 'dialogs') return finDialogs();
   if (F.step === 'table') return finTable();
   if (F.step === 'check') return finCheck();
+  if (F.step === 'bonus') return scBonus();
   return finEnd();
 }
 function finDialogs(){
@@ -980,9 +1017,10 @@ ${T.final.rows.map((r,i) => `${r.q} -> ${v(i+'a')} | ${v(i+'b')}`).join('\n')}`;
 }
 function finTable(){
   const F = S.fin, R = T.final.rows;
-  W.innerHTML = `<section class="panel"><h2>Свой конспект</h2><div class="task">${esc(T.final.tableIntro)}</div>
+  if (S.rush){ [0,1].forEach(i => ['a','b'].forEach(x => { F.table[i+x] = R[i][x]; })); save(); }
+  W.innerHTML = `<section class="panel"><h2>Свой конспект</h2><div class="task">${esc(S.rush ? T.rush.table : T.final.tableIntro)}</div>
     <div class="ttab" style="margin-top:10px"><span></span><span class="h">Распознавание<br><small style="color:var(--mut)">машина слушает</small></span><span class="h">Синтез<br><small style="color:var(--mut)">машина говорит</small></span>
-    ${R.map((r,i) => `<b>${esc(r.q)}</b>${['a','b'].map(s => `<select data-c="${i}${s}" aria-label="${esc(r.q)}"><option value="">— выбери —</option>${T.final.chips.map(c=>`<option ${F.table[i+s]===c?'selected':''}>${esc(c)}</option>`).join('')}</select>`).join('')}`).join('')}
+    ${R.map((r,i) => `<b>${esc(r.q)}</b>${['a','b'].map(s => `<select data-c="${i}${s}" aria-label="${esc(r.q)}" ${S.rush && i < 2 ? 'disabled' : ''}><option value="">— выбери —</option>${T.final.chips.map(c=>`<option ${F.table[i+s]===c?'selected':''}>${esc(c)}</option>`).join('')}</select>`).join('')}`).join('')}
     </div>
     <div class="row" style="margin-top:12px"><button class="btn mg big" id="tcheck">Проверить конспект</button></div></section>
     <section class="paper" id="tkon"></section>`;
@@ -1004,13 +1042,13 @@ function finTable(){
     if (F.tlevel >= 3) wrong.forEach(c => W.querySelector(`select[data-c="${c}"]`).classList.add('bad'));
     showLadder();
   };
-  say(T.final.tableIntro);
+  say(S.rush ? T.rush.table : T.final.tableIntro);
 }
 function finCheck(){
-  const F = S.fin, Q = T.check.qs, names = [S.names[0]||'Стажёр 1', S.names[1]||'Стажёр 2'];
+  const F = S.fin, Q = S.rush ? T.check.qs.slice(0,2) : T.check.qs, names = [S.names[0]||'Стажёр 1', S.names[1]||'Стажёр 2'];
   const SP = Object.fromEntries(T.specialists.map(s => [s.id, s]));
-  const done = F.ans.every(a => a.to && a.why !== undefined);
-  W.innerHTML = `<section class="panel"><h2>Отчёт специалистам</h2><div class="task">${esc(T.check.intro)}</div></section>` +
+  const done = Q.every((q,i) => F.ans[i].to && F.ans[i].why !== undefined);
+  W.innerHTML = `<section class="panel"><h2>Отчёт специалистам</h2><div class="task">${esc(T.check.intro)}${S.rush ? ' ' + esc(T.rush.check) : ''}</div></section>` +
     Q.map((q,i) => {
       const a = F.ans[i];
       let fb = '';
@@ -1032,25 +1070,73 @@ function finCheck(){
   if (!F.sent) say('Отвечайте по очереди: имя над вопросом — тот и выбирает. Сначала кого позвать, потом — зачем.', null, null, {silent:true});
 }
 function finEnd(){
-  const n = S.fin.res.filter(r => r && r.ok).length;
+  const n = S.fin.res.filter(r => r && r.ok).length, m = mins();
   const E = T.endings.find(e => n >= e.min);
   const M = { gold:'🥇', silver:'🥈', bronze:'🥉' };
+  const bonusDone = S.bonus.step === 'end';
+  const early = m < T.clock.bonusUntil;
+  const miss = [['note1', T.note1], ['note2', T.note2]].filter(([k]) => !S[k].every(Boolean));
   W.innerHTML = `<section class="panel ending"><h2>${esc(E.title)}</h2><p style="font-size:21px">${esc(E.text)}</p>
-    <p>Жителей поняли: <b>${n} из 3</b> · ${esc(String(S.bit))} битрейтов · медали: ${Object.values(S.medals).map(m=>M[m]).join(' ') || '—'}</p></section>
-    <section class="panel"><h2>${esc(T.oral.title)}</h2><ol class="oral">${T.oral.frames.map(f=>`<li>${esc(f)}</li>`).join('')}</ol>
+    ${bonusDone ? `<p style="font-size:21px;color:var(--gr)"><b>${esc(T.bonus.done.title)}</b> ${esc(T.bonus.done.text)}</p>` : ''}
+    <p>Жителей поняли: <b>${n} из 3</b> · ${esc(String(S.bit))} битрейтов · медали: ${Object.values(S.medals).map(x=>M[x]).join(' ') || '—'}</p></section>
+    ${!S.bonus.step && early ? `<section class="panel event" style="max-width:none;width:auto"><h2>${esc(T.bonus.call.title)}</h2><p>${esc(T.bonus.call.text)}</p><button class="btn mg big" id="bonusGo">${esc(T.bonus.call.btn)}</button></section>` : ''}
+    ${miss.map(([k,D],i) => `<section class="panel"><div class="task">${esc(T.late.note)}</div></section><section class="paper" id="miss${i}"></section>`).join('')}
+    <section class="panel"><h2>${esc(T.oral.title)}</h2>
+    ${early || bonusDone ? `<div class="task" style="margin-bottom:8px">${esc(T.ending.wait)}${bonusDone ? ' ' + esc(T.ending.wait2) : ''}</div>` : ''}
+    <ol class="oral">${T.oral.frames.map(f=>`<li>${esc(f)}</li>`).join('')}</ol>
     <p style="color:var(--mut)">Дополните фразы вслух, по очереди. Подсказка — в ваших двух схемах в тетради.</p></section>`;
-  say('Смена окончена! Обсудите вывод вслух всей группой — фразы на экране.');
+  miss.forEach(([k,D],i) => { try { Konspekt.draw($('miss'+i), D.konspekt, { class:5, width:760 }); } catch(e){} });
+  if ($('bonusGo')) $('bonusGo').onclick = () => {
+    S.fin.step = 'bonus'; S.bonus.step = 'B1'; S.trial = 'B1'; S.cfg = preset('B1'); save(); render(); window.scrollTo(0,0);
+  };
+  if (!S.bonus.step && early) say(T.bonus.call.text, null, null, {silent:true});
+  else say(bonusDone ? T.ending.wait2 : 'Смена окончена! Обсудите вывод вслух всей группой — фразы на экране.');
 }
+function scBonus(){
+  const b = S.bonus.step;
+  if (b === 'B1' || b === 'B2'){ S.trial = b; return scTrials(); }
+  if (b === 'synth') return scSynth();
+  S.fin.step = 'end'; save(); renderTop(); return finEnd();
+}
+
+/* ================= часы смены ================= */
+function showEvent(t, x, btn, cb){
+  $('evT').textContent = t; $('evX').textContent = x; $('evB').textContent = btn;
+  $('evB').onclick = () => { $('event').classList.add('hidden'); cb && cb(); };
+  $('event').classList.remove('hidden'); beep(440,.12); setTimeout(() => beep(660,.12), 160);
+  helperSpeak(x);
+}
+function checkTime(){
+  if (!S.t0) return;
+  renderTop();
+  if (!$('event').classList.contains('hidden') || !$('tmenu').classList.contains('hidden')) return;
+  const m = mins();
+  if (S.screen < 6 && S.rush < 2 && m >= T.clock.late){
+    S.rush = 2;
+    S.cfg = JSON.parse(JSON.stringify(GOOD));
+    if (!S.syn.done) Object.assign(S.syn, { slots:['g1','c1','u1'], zamok:'b', rate:1, pitch:1, done:true });
+    S.fin = fresh().fin; save();
+    showEvent(T.late.title, T.late.text, T.late.btn, () => go(6));
+    return;
+  }
+  if (S.screen <= 4 && !S.rush && m >= T.clock.rush){
+    S.rush = 1; save();
+    showEvent(T.rush.title, T.rush.text, T.rush.btn, () => render());
+  }
+}
+setInterval(checkTime, 10000);
 
 /* ================= пейджер ================= */
 let typingTimer = null;
 function openPager(){
-  if (!(S.screen === 2 || S.screen === 4)){ say('Специалисты на связи во время испытаний.'); return; }
+  if (!pagerOn()){ say('Специалисты на связи во время испытаний.'); return; }
   $('pager').classList.remove('hidden'); pagerHome();
 }
 $('pgBtn').onclick = openPager;
 $('pgClose').onclick = () => $('pager').classList.add('hidden');
-function ctxHyps(){ return S.screen === 4 ? T.hyps.synth : T.hyps.recog; }
+const pagerOn = () => S.screen === 2 || S.screen === 4 || (S.screen === 6 && S.fin.step === 'bonus' && ['B1','B2','synth'].includes(S.bonus.step));
+const synthCtx = () => S.screen === 4 || (S.screen === 6 && S.fin.step === 'bonus' && S.bonus.step === 'synth');
+function ctxHyps(){ return synthCtx() ? T.hyps.synth : T.hyps.recog; }
 function pagerHome(){
   if (S.pager.busy) return pagerChat();
   $('pbody').innerHTML = `<div style="font-size:16px;color:var(--mut)">${esc(T.help.pager)} Ответ стоит ${T.cost} битрейтов. Не тот специалист — переадресует бесплатно.</div>` +
@@ -1073,7 +1159,7 @@ function pagerAsk(sid){
     }
     if (S.bit < T.cost){ $('pbody').insertAdjacentHTML('afterbegin', `<div class="msg">Не хватает битрейтов. Пройди испытание — и звони.</div>`); return; }
     S.bit -= T.cost; renderTop();
-    const mini = pick(S.screen === 4 ? T.mini.synth : T.mini.recog);
+    const mini = pick(synthCtx() ? T.mini.synth : T.mini.recog);
     S.pager = { busy:true, sid, hid:h.id, shown:'', full:h.a, more:false, mini:mini.block, miniSay:mini.say, miniDone:false, log:[] };
     save(); pagerChat(); typeReply();
   });
@@ -1115,6 +1201,8 @@ document.addEventListener('click', e => {
 
 /* ================= учитель: Ctrl+Alt+M ================= */
 function fillDefaults(i){
+  if (!S.t0) S.t0 = Date.now();
+  S.bonus = { step:null };
   if (i >= 1){ S.sub = 'done'; S.train = 4; }
   if (i >= 2){ S.parse = { i:4, phase:'exp', exp:4, fails:0, level:1, started:true }; S.cfg.dict.on = true; }
   if (i === 2){ const f = fresh(); S.trial = 'P2'; S.tr = f.tr; S.cfg = f.cfg; }
@@ -1127,11 +1215,21 @@ function fillDefaults(i){
 }
 function teacherMenu(){
   $('tlist').innerHTML = T.screens.map((s,i) => `<button class="btn ghost" data-i="${i}">${esc(s.name)} · ${s.min} мин</button>`).join('') +
+    `<button class="btn ghost" data-i="b">7+. Сверхурочный вызов</button>` +
+    `<div style="color:var(--mut);font-size:15px;margin-top:6px">Часы смены: ${S.t0 ? mins() + ' мин' : 'не запущены'}${S.rush ? ' · режим «мастер на связи»' : ''}</div>` +
+    `<button class="btn ghost" data-i="c0">Часы смены: начать с нуля</button>` +
+    `<button class="btn ghost" data-i="c5">Часы смены: +5 минут</button>` +
+    `<button class="btn ghost" data-i="p">Лист для вклейки (печать)</button>` +
     `<button class="btn ghost" data-i="r">Новая смена (стереть прогресс)</button>`;
   $('tlist').querySelectorAll('button').forEach(b => b.onclick = () => {
     $('tmenu').classList.add('hidden');
-    if (b.dataset.i === 'r'){ S = fresh(); save(); render(); return; }
-    const i = +b.dataset.i; fillDefaults(i); go(i);
+    const d = b.dataset.i;
+    if (d === 'r'){ S = fresh(); save(); render(); return; }
+    if (d === 'p'){ window.open('vkleyka.html', '_blank'); return; }
+    if (d === 'c0'){ S.t0 = Date.now(); S.rush = 0; save(); renderTop(); return; }
+    if (d === 'c5'){ S.t0 = (S.t0 || Date.now()) - 5*60000; save(); checkTime(); return; }
+    if (d === 'b'){ fillDefaults(6); S.fin.res = [{ok:true},{ok:true},{ok:true}]; S.fin.i = 3; S.fin.step = 'bonus'; S.bonus.step = 'B1'; S.trial = 'B1'; S.cfg = preset('B1'); go(6); return; }
+    const i = +d; fillDefaults(i); go(i);
   });
   $('tmenu').classList.remove('hidden');
 }

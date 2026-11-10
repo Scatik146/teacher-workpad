@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Эхо-Узел: лист для вклейки</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#eee;font:15px/1.4 "Segoe UI",Arial,sans-serif;color:#222}
+  .bar{padding:10px 16px;background:#1f2329;color:#eef1f4;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .bar button{font:inherit;font-weight:700;background:#f2a93b;border:0;border-radius:16px;padding:6px 14px;cursor:pointer}
+  .sheet{width:210mm;min-height:297mm;margin:12px auto;background:#fff;padding:12mm 20mm}
+  .cut{border-top:1.5px dashed #888;margin:6mm 0 4mm;position:relative}
+  .cut span{position:absolute;top:-9px;left:0;background:#fff;padding-right:6px;font-size:12px;color:#666}
+  .cap{font-size:13px;color:#555;margin:0 0 2mm}
+  .kon svg{width:100%;height:auto;display:block}
+  @media print{ body{background:#fff} .bar{display:none} .sheet{margin:0;padding:10mm 20mm;width:auto;min-height:auto} @page{size:A4;margin:0} }
+</style>
+</head>
+<body>
+<div class="bar"><b>Лист для вклейки в тетрадь</b><span>Одна копия — один ученик. Вырезать по пунктиру.</span><button onclick="window.print()">Печать</button></div>
+<div class="sheet">
+  <div class="cut"><span>✂</span></div>
+  <p class="cap">Отчёт № 1 · как машина слушает</p><div class="kon" id="k1"></div>
+  <div class="cut"><span>✂</span></div>
+  <p class="cap">Отчёт № 2 · как машина говорит</p><div class="kon" id="k2"></div>
+  <div class="cut"><span>✂</span></div>
+  <p class="cap">Итог смены · слушает или говорит</p><div class="kon" id="k3"></div>
+  <div class="cut"><span>✂</span></div>
+</div>
+<script src="tekst.js"></script>
+<script src="../../lib/drakon-graf/drakon-graf.min.js"></script>
+<script src="../../lib/drakon-graf/konspekt.js"></script>
+<script>
+const F = T.final;
+const tbl = `тема: Слушает или говорит?
+связка: Распознавание | Синтез
+${F.rows.map(r => `${r.q} -> ${r.a} | ${r.b}`).join('\n')}`;
+[['k1', T.note1.konspekt], ['k2', T.note2.konspekt], ['k3', tbl]].forEach(([id, t]) =>
+  Konspekt.draw(document.getElementById(id), t, { class:5, width:640, theme:'bw' }));
+</script>
+</body>
+</html>
