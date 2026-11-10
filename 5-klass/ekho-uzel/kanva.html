@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Канва урока «Эхо-Узел»</title>
+<style>
+:root{--ink:#1d2126;--ink2:#5b5346;--line:#d9cfb9;--paper:#f6f1e6;--accent:#f2a93b}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 "Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+.bar{position:sticky;top:0;z-index:5;display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 16px;background:#1f2329;color:#eef1f4;border-bottom:3px solid var(--accent)}
+.bar a,.bar button{font:inherit;font-size:14px;color:#eef1f4;background:#272c33;border:1px solid #3a414a;border-radius:18px;padding:5px 12px;text-decoration:none;cursor:pointer}
+.bar button{background:var(--accent);color:#2a1d05;border-color:var(--accent);font-weight:700}
+.bar .t{flex:1;min-width:0;color:#a9b2bc;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.doc{max-width:900px;margin:20px auto 48px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:28px 34px}
+h1{font-size:28px;line-height:1.25;margin:0 0 12px}
+h2{font-size:21px;margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--line)}
+h3{font-size:17px;margin:20px 0 8px}
+p{margin:8px 0}
+table{border-collapse:collapse;width:100%;margin:10px 0;font-size:14.5px}
+th,td{border:1px solid #cfc5ae;padding:6px 8px;vertical-align:top;text-align:left}
+th{background:#f3ecdd}
+blockquote{margin:10px 0;padding:8px 14px;border-left:4px solid var(--accent);background:#fbf6ea}
+ul,ol{padding-left:24px}
+.k{color:var(--ink2);font-size:14px}
+.ok{color:#1e7a4a;font-weight:700} .no{color:#a3471f;font-weight:700}
+.kon{margin:10px 0;border:1px solid var(--line);border-radius:8px;padding:8px}
+a{color:#1f5fa8}
+@media (max-width:600px){.doc{padding:18px 16px;margin:10px 8px}table{font-size:13px}}
+@media print{
+  html,body{background:#fff}.bar{display:none}
+  .doc{border:0;border-radius:0;margin:0;padding:0;max-width:none}
+  h2{break-after:avoid} tr,blockquote,.kon{break-inside:avoid}
+  a{color:inherit;text-decoration:none} @page{size:A4;margin:14mm}
+}
+</style>
+</head>
+<body>
+<div class="bar"><a href="../../dlya-uchitelya.html">← Для учителя</a><span class="t">Канва урока «Эхо-Узел»</span><a href="index.html">Открыть игру</a><button type="button" onclick="window.print()">Печать</button></div>
+<main class="doc">
+<h1>«Эхо-Узел»: как машина слушает и говорит</h1>
+<p>ИИ и информационная безопасность · 5 класс · 40 минут · 4 пары · вводный урок блока о речевых технологиях. Опора — прошлый урок о сложностях компьютерного зрения («Где ИИ ошибается»).</p>
+<blockquote>Урок проходит без учителя-предметника: всю методику ведёт игра. Помощник Светляк задаёт вопросы к тому, что видно на экране, просит прогноз перед каждым запуском и подсказывает по лестнице из трёх ступеней. Кнопка «?» — следующая ступень подсказки. Обновление страницы прогресс не стирает. Для следующей пары на заставке есть кнопка «Новая смена».</blockquote>
+
+<h2>Цели: что к концу урока делает каждый ребёнок</h2>
+<ol>
+<li>Своими словами описывает цепочки распознавания и синтеза речи.</li>
+<li>Знает, какой блок за какую ошибку отвечает, и настраивает пульт под конкретную фразу.</li>
+<li>Видит, как обе части собираются в голосового чат-бота.</li>
+<li>Отличает «машина слушает» (звук → текст) от «машина говорит» (текст → звук).</li>
+<li>Понимает, кто в речевых технологиях за что отвечает: инженер, лингвист, звукорежиссёр, дизайнер диалогов.</li>
+</ol>
+<p>Конспекты в тетради оформляются графически, на языке ГРАФ (ДРАКОН-ГРАФ): на тетрадных точках игра показывает готовый образец, в финале пара собирает схему сама.</p>
+
+<h2>A. Канва урока по минутам</h2>
+<table>
+<thead><tr><th>Мин</th><th>Экран</th><th>Что делает пара</th><th>Когда говорит Светляк</th></tr></thead>
+<tbody>
+<tr><td>0–4</td><td>1. Смена началась</td><td>Читают сюжет, вписывают имена. Учатся на пробной фразе: выключают и включают микрофон, крутят ручку, жмут «Запуск».</td><td>Ведёт по шагам: каждое новое задание — одна короткая фраза.</td></tr>
+<tr><td>4–8</td><td>2. Разбор машины</td><td>Фраза № 1 (чистая). Блоки загораются по очереди, в окошке каждого — его результат. Отвечают на 4 вопроса. Опыт: выключают «Словарь», дают прогноз, запускают, находят место поломки, включают обратно.</td><td>Вопрос к загоревшемуся блоку; после ошибки — сужение к окошку, после второй — сравнение из жизни.</td></tr>
+<tr><td>8–12</td><td>3. Испытания слуха</td><td>Фраза № 2 под шумом вентиляции: уверенность 60–80 %. Находят шумодав, включают, ставят ручку на середину. Пейджер открыт.</td><td>Перед каждым запуском — прогноз. После 1 неудачи — подсказка 2, после 2 — подсказка 3, после 3 — предложение вернуть пульт.</td></tr>
+<tr><td>12–16</td><td>3. Испытания слуха</td><td>Фраза № 3: машина колеблется «КОТ? КОД?». Чинят ручкой «Угадывание по смыслу». По желанию — звонок специалисту.</td><td>Лестница по образцу «КОТ и КОД»; медаль за чистую настройку.</td></tr>
+<tr><td>16–19</td><td>4. Тетрадь № 1</td><td>Перерисовывают образец «Как машина слушает?». Каждый дописывает: «Красный флаг ставлю на …, потому что …». Оба отмечают «записал».</td><td>Одна реплика-напоминание.</td></tr>
+<tr><td>19–28</td><td>5. Голос машины</td><td>Собирают ответ жителю из готовых частей по правилу «приветствие → суть → уточнение». Ставят ударение «замо́к». Настраивают темп и высоту, слушают, отправляют. Пейджер открыт.</td><td>Прогноз перед отправкой; лестница по первой найденной ошибке: части, смысл, ударение, голос.</td></tr>
+<tr><td>28–30</td><td>6. Тетрадь № 2</td><td>Перерисовывают «Как машина говорит?» под первой схемой, сравнивают стрелки, дописывают главное отличие.</td><td>Одна реплика-напоминание.</td></tr>
+<tr><td>30–33</td><td>7. Живой разговор</td><td>Зовут трёх жителей: станция слушает их пультом и говорит их голосом. У третьего жителя выбирают «духи́».</td><td>Реакция на каждый разговор.</td></tr>
+<tr><td>33–36</td><td>7. Свой конспект</td><td>Сами заполняют таблицу «Распознавание / Синтез», программа сразу рисует схему. Переписывают её в тетрадь.</td><td>Лестница при ошибке; на третьей ступени неверные клетки подсвечиваются.</td></tr>
+<tr><td>36–39</td><td>7. Отчёт специалистам</td><td>Четыре вопроса по очереди (имя над вопросом): кого позвать и зачем. Читают ответы специалистов, могут исправить.</td><td>—</td></tr>
+<tr><td>39–40</td><td>7. Концовка</td><td>Одна из трёх концовок. Всей группой вслух дополняют пять фраз вывода.</td><td>Приглашает к устному выводу.</td></tr>
+</tbody>
+</table>
+
+<h2>B. Полный контент игры</h2>
+<p class="k">Этот раздел собирается из того же файла, что и игра (<code>tekst.js</code>), поэтому всегда совпадает с ней.</p>
+<div id="content"></div>
+
+<h2>D. Самопроверка</h2>
+<table>
+<thead><tr><th>Что проверяли</th><th>Итог</th></tr></thead>
+<tbody>
+<tr><td>Запуск с сайта и из сетевой папки</td><td><span class="ok">да</span> — нет внешних ссылок; библиотека конспектов и шрифты лежат на сайте в <code>lib/</code>. Для сетевой папки копировать сайт целиком.</td></tr>
+<tr><td>Все 7 экранов</td><td><span class="ok">да</span> — пройдены от начала до конца в браузере, ошибок нет.</td></tr>
+<tr><td>Каждый экран читается за 15–20 секунд</td><td><span class="ok">да</span> — сверху одна строка задания, справа одна реплика Светляка.</td></tr>
+<tr><td>Реплики в лимите</td><td><span class="ok">да</span> — помощник до 106 знаков (2 строки), специалист до 115 знаков (3 строки); проверено скриптом.</td></tr>
+<tr><td>Лестница подсказок и авто-подсказка после 2 неудач</td><td><span class="ok">да</span> — после 1-й неудачи ступень 2, после 2-й — ступень 3, после 3-й — предложение вернуть пульт; «?» — следующая ступень в любой момент.</td></tr>
+<tr><td>Прогноз перед каждым запуском</td><td><span class="ok">да</span> — запуск после любого ответа, затем реакция «угадал / почему так».</td></tr>
+<tr><td>Прогресс сохраняется</td><td><span class="ok">да</span> — в браузере компьютера; перезагрузка возвращает на тот же экран.</td></tr>
+<tr><td>Без русского голоса</td><td><span class="ok">да</span> — ответ машины печатается текстом с писком: скорость печати — от темпа, высота писка — от высоты. В шапке надпись «Голос: текстом».</td></tr>
+<tr><td>Ударение в голосе браузера</td><td><span class="no">проверить на школьном компьютере</span> — ударение передаётся знаком «´»; часть голосов его не слушает. Выбор ударения игра проверяет сама, так что пройти урок можно в любом случае.</td></tr>
+<tr><td>Конспекты ДРАКОН-ГРАФ</td><td><span class="ok">да</span> — три схемы проверены библиотекой, подсказок об ошибках нет.</td></tr>
+</tbody>
+</table>
+</main>
+
+<script src="tekst.js"></script>
+<script src="../../lib/drakon-graf/drakon-graf.min.js"></script>
+<script src="../../lib/drakon-graf/konspekt.js"></script>
+<script>
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ul = a => '<ul>' + a.map(x => '<li>' + x + '</li>').join('') + '</ul>';
+const SP = Object.fromEntries(T.specialists.map(s => [s.id, s]));
+let h = '';
+h += '<h3>Сюжет (экран 1)</h3>' + ul(T.story.map(esc)) + '<p>' + esc(T.namesAsk) + '</p>';
+h += '<h3>Обучение пульту</h3>' + ul(T.training.map(t => esc(t.say))) + '<p>' + esc(T.trainingDone) + '</p>';
+h += '<h3>Фразы жителей</h3><table><tr><th>Где</th><th>Фраза</th><th>Что ломает</th></tr>' +
+  Object.entries(T.phrases).map(([k,p]) => `<tr><td>${esc(p.label)}</td><td>${esc(p.words.map(w=>w.w).join(' '))}</td><td>${p.noise?'шум':''}${p.words.some(w=>w.twin)?'слова-близнецы: '+p.words.find(w=>w.twin).twin.join(' / '):''}${k==='F3'?'омограф в ответе: ду́хи / духи́':''}</td></tr>`).join('') + '</table>';
+h += '<p>Пульт распознавания: ' + T.blocks.map(b => `<b>${esc(b.name)}</b> → ${esc(b.stage)} (ручка «${esc(b.knob)}»)`).join('; ') + '.</p>';
+h += '<p class="k">Уверенность: чистая запись — 96–97 %; шум без шумодава — 60–80 %; слова-близнецы без угадывания — около 87 %. Слишком сильный шумодав «съедает» тихие звуки, слишком смелое угадывание «додумывает» слова.</p>';
+h += '<h3>Разбор машины (экран 2): вопросы и лестница</h3><table><tr><th>Ступень 1 (варианты, верный — первый)</th><th>Ступень 2</th><th>Ступень 3</th></tr>' +
+  T.parse.map(p => `<tr><td>${esc(p.q)}<br><span class="k">${p.opts.map(esc).join(' · ')}</span></td><td>${esc(p.l2)}</td><td>${esc(p.l3)}</td></tr>`).join('') +
+  `<tr><td>${esc(T.experiment.ask)}<br>${esc(T.experiment.after)}<br><span class="k">${T.experiment.afterOpts.map(esc).join(' · ')}</span></td><td>${esc(T.experiment.l2)}</td><td>${esc(T.experiment.l3)}</td></tr></table><p>${esc(T.experiment.done)}</p>`;
+h += '<h3>Испытания (экран 3): лестница подсказок</h3><table><tr><th>Фраза</th><th>Ступень 1</th><th>Ступень 2</th><th>Ступень 3</th><th>Успех</th></tr>' +
+  Object.entries(T.trials).map(([k,t]) => `<tr><td>${esc(t.intro)}</td><td>${esc(t.l1)}</td><td>${esc(t.l2)}</td><td>${esc(t.l3)}</td><td>${esc(t.win)}</td></tr>`).join('') + '</table>';
+h += `<p>Прогноз: «${esc(T.predict.q)}» (${T.predict.opts.map(esc).join(' / ')}). После запуска: «${esc(T.predictRight)}» или «${esc(T.predictWrong)}»</p>`;
+h += `<p>Откат после трёх неудач: «${esc(T.rollback)}»</p>`;
+h += '<p>Капризы машины: ' + [...T.reactions.up, ...T.reactions.down].map(r => '«' + esc(r) + '»').join(', ') + '.</p>';
+h += '<h3>Специалисты на пейджере</h3><table><tr><th>Кто</th><th>Характер</th><th>Речевые приметы</th></tr>' +
+  T.specialists.map(s => `<tr><td><b>${esc(s.name)}</b><br><span class="k">${esc(s.who)}</span></td><td>${esc(s.look)}</td><td>${s.markers.map(esc).join(', ')}</td></tr>`).join('') + '</table>';
+h += `<p>Ответ стоит ${T.cost} битрейтов, уточнение бесплатно. Специалист печатает со скоростью взрослого (~${String(T.typingSpeed).replace('.',',')} знака в секунду), в это время у пары разминка — нажать на знакомый блок. Не тот специалист: «${esc(T.redirect.replace('{who}','…'))}»</p>`;
+['recog','synth'].forEach(c => {
+  h += `<h3>Гипотезы ребёнка — ${c==='recog'?'распознавание':'голос машины'}</h3><table><tr><th>Гипотеза</th><th>Кому</th><th>Ответ</th><th>Уточнение</th></tr>` +
+    T.hyps[c].map(x => `<tr><td>${esc(x.text)}</td><td>${esc(SP[x.to].name)}</td><td>${esc(x.a)}</td><td>${esc(x.more)}</td></tr>`).join('') + '</table>';
+});
+const sy = T.synth;
+h += '<h3>Голос машины (экран 5)</h3><p>Житель: «' + esc(sy.request) + '»</p><p><b>' + esc(sy.rule) + '</b></p><p>' + esc(sy.honest) + '</p>';
+h += '<table><tr><th>Часть</th><th>Тип</th><th>Подходит?</th></tr>' + sy.chips.map(c => `<tr><td>${esc(c.text.replace('{ZAMOK}','замо́к / за́мок'))}</td><td>${esc(c.type)}</td><td>${c.fit?'да':'нет'}</td></tr>`).join('') + '</table>';
+h += '<p>Верный ответ: «Здравствуйте! (или «Добрый вечер!») Мастер починит замо́к сегодня до шести. Позвать мастера прямо сейчас?», темп 0,8–1,25, высота 0,8–1,3. В начале голос стоит на 1,8 / 1,7 — тараторит и пищит.</p>';
+h += '<table><tr><th>Ошибка</th><th>Ступень 2</th><th>Ступень 3</th></tr>' + Object.keys(sy.l2).map(k => `<tr><td>${esc({order:'порядок частей',fit:'часть не по делу',stress:'ударение',voice:'голос',empty:'полка не заполнена'}[k])}</td><td>${esc(sy.l2[k])}</td><td>${esc(sy.l3[k])}</td></tr>`).join('') + `</table><p>Ступень 1: «${esc(sy.l1)}» Успех: «${esc(sy.win)}»</p>`;
+h += '<h3>Тетради: образцы ДРАКОН-ГРАФ</h3>';
+[T.note1, T.note2].forEach((n,i) => { h += `<p><b>${esc(n.title)}</b></p><div class="kon" id="kon${i}"></div><ol>${n.steps.map(s=>'<li>'+esc(s)+'</li>').join('')}</ol>`; });
+h += '<p>Как читать схему: ' + T.legend.map(([a,b]) => `<b>${esc(a)}</b> — ${esc(b)}`).join('; ') + '.</p>';
+const F = T.final;
+h += '<h3>Финал (экран 7)</h3><p>' + esc(F.intro) + '</p><table><tr><th>Житель</th><th>Ответ станции</th></tr>' +
+  ['F1','F2','F3'].map(k => `<tr><td>${esc(T.phrases[k].words.map(w=>w.w).join(' '))}</td><td>${esc(F.answers[k].replace('{DUHI}','Духи́'))}</td></tr>`).join('') +
+  `<tr><td>если не расслышала</td><td>${esc(F.answers.fail)}</td></tr></table><p>${esc(F.duhiAsk)} Неверно: «${esc(F.duhiWrong)}»</p>`;
+h += '<p><b>Свой конспект</b> — ' + esc(F.tableIntro) + '</p><div class="kon" id="kon2"></div>';
+h += `<p>Лестница: «${esc(F.l1)}» → «${esc(F.l2.replace('{row}','…'))}» → «${esc(F.l3)}»</p>`;
+h += '<h3>Отчёт специалистам</h3><p>' + esc(T.check.intro) + '</p><table><tr><th>Вопрос</th><th>Кого</th><th>Зачем (верный — первый)</th><th>Обратная связь</th></tr>' +
+  T.check.qs.map(q => `<tr><td>${esc(q.q)}</td><td>${esc(SP[q.to].name)}</td><td>${q.why.map(esc).join(' · ')}</td><td><span class="ok">${esc(q.good)}</span><br>${esc(q.bad)}</td></tr>`).join('') + '</table>';
+h += '<h3>Три концовки</h3><table><tr><th>Жителей поняли</th><th>Концовка</th></tr>' + T.endings.map(e => `<tr><td>${e.min===3?'3 из 3':e.min===2?'2 из 3':'0–1'}</td><td><b>${esc(e.title)}</b><br>${esc(e.text)}</td></tr>`).join('') + '</table>';
+h += '<h3>Устный вывод</h3><ol>' + T.oral.frames.map(f => '<li>' + esc(f) + '</li>').join('') + '</ol>';
+h += '<p class="k">Ожидаемые ответы: звук → текст; текст → звук; шум и слова-близнецы; ударения и омографы; распознавание и синтез (слушает и говорит).</p>';
+document.getElementById('content').innerHTML = h;
+const tbl = `тема: Слушает или говорит?
+связка: Распознавание | Синтез
+${F.rows.map(r => `${r.q} -> ${r.a} | ${r.b}`).join('\n')}`;
+try {
+  Konspekt.draw(document.getElementById('kon0'), T.note1.konspekt, { class:5, width:760 });
+  Konspekt.draw(document.getElementById('kon1'), T.note2.konspekt, { class:5, width:760 });
+  Konspekt.draw(document.getElementById('kon2'), tbl, { class:5, width:760 });
+} catch(e) {}
+</script>
+</body>
+</html>

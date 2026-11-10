@@ -1,0 +1,35 @@
+ДРАКОН-ГРАФ (drakon-graf) — расширенная версия языка ГРАФ
+Copyright 2026 Сергей Николаевич Веснин
+
+Создатель оригинального языка ГРАФ — В. Д. Паронджанов
+(«Как написать хороший учебник для хороших людей», 2017).
+Язык ГРАФ разработан по инициативе и при активном участии
+Геннадия Алексеевича Гуленкова.
+Расширенная версия языка ГРАФ (текстовая запись, включение ГНОМ и МОЛНИЯ,
+схемы Дерево, Сцена, Шеренга, правила раскладки, эталон) и её реализация —
+С. Н. Веснин.
+
+Любое распространение этого программного обеспечения или произведений
+на его основе, в том числе в коммерческих продуктах, должно сохранять
+указание всех трёх авторов в соответствии с пунктом 4(d) лицензии Apache 2.0.
+
+Независимый проект; не связан с DrakonHub и Drakon.Tech.
+
+Шрифты PT Serif и PT Mono — © ПараТайп (ParaType Inc.), авторы А. Королькова,
+О. Умпелева, В. Ефимов; шрифт Asana Math — © А. Сиропулос (Apostolos Syropoulos).
+Распространяются по лицензии SIL Open Font License 1.1
+(тексты лицензии — graf/fonts/OFL_*.txt).
+
+---
+DRAKON-GRAF — an extended version of the GRAF language.
+The original GRAF language was created by V. D. Parondzhanov.
+GRAF was developed on the initiative and with the active participation
+of G. A. Gulenkov. Extended version and implementation: S. N. Vesnin.
+Redistributions and derivative works must retain this attribution
+(Apache License 2.0, Section 4(d)).
+Independent project; not affiliated with DrakonHub or Drakon.Tech.
+
+src/text/metrics.js contains glyph advance widths and kerning values derived from
+PT Serif and PT Mono (ParaType, SIL OFL 1.1) and advance widths of glyphs from
+Asana Math (A. Syropoulos, SIL OFL 1.1) and DejaVu Sans (Bitstream Vera Fonts
+license); no glyph outlines are included.

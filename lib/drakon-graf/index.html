@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Проба конспекта</title>
+<style>
+  :root { --bg:#f6f1e6; --ink:#2b2620; --mut:#6b6254; --line:#d9cfbd; --acc:#c8643b; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.45 system-ui, sans-serif; }
+  .wrap { max-width:1180px; margin:0 auto; padding:20px 16px 40px; }
+  h1 { font-size:22px; margin:0 0 4px; }
+  p.sub { margin:0 0 16px; color:var(--mut); }
+  .cols { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.3fr); gap:16px; }
+  @media (max-width:820px) { .cols { grid-template-columns:1fr; } }
+  textarea { width:100%; min-height:300px; font:15px/1.5 ui-monospace, Consolas, monospace; padding:12px; border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); resize:vertical; }
+  .out { background:#fff; border:1px solid var(--line); border-radius:8px; padding:12px; min-height:300px; }
+  .hints { margin-top:10px; font-size:14px; }
+  .hints div { padding:6px 10px; border-radius:6px; margin-top:6px; background:#fff4d6; }
+  .hints div.imp { background:#fde0d6; }
+  .row { display:flex; gap:8px; flex-wrap:wrap; margin:10px 0; align-items:center; }
+  button, select { font:inherit; padding:6px 12px; border-radius:6px; border:1px solid var(--line); background:#fff; cursor:pointer; }
+  small { color:var(--mut); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Проба конспекта ДРАКОН-ГРАФ</h1>
+  <p class="sub">Пишите слева — картинка справа. Справочник языка: <a href="https://github.com/Scatik146/drakon-graf">github.com/Scatik146/drakon-graf</a>.</p>
+  <div class="row">
+    <label>Класс <select id="cls"><option>5</option><option>6</option><option selected>7</option><option>8</option><option>9</option><option>10</option><option>11</option></select></label>
+    <label><input type="checkbox" id="bw"> чёрно-белая (для печати)</label>
+    <button id="ex">Пример</button>
+  </div>
+  <div class="cols">
+    <textarea id="src" spellcheck="false"></textarea>
+    <div><div class="out" id="out"></div><div class="hints" id="hints"></div></div>
+  </div>
+  <p><small id="ver"></small></p>
+</div>
+<script src="drakon-graf.min.js"></script>
+<script src="konspekt.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const EX = `тема: Деление с остатком
+правило → остаток: Остаток всегда меньше делителя.
+пример: [17]{делимое} = [5]{делитель} · [3]{неполное частное} + [2]{остаток}`;
+function draw(){
+  const r = Konspekt.draw($('out'), $('src').value, { class:+$('cls').value, theme:$('bw').checked?'bw':'color' });
+  $('hints').innerHTML = r.hints.map(h => `<div class="${h.level==='важно'?'imp':''}">${h.line?'строка '+h.line+' · ':''}${h.text.replace(/</g,'&lt;')}</div>`).join('');
+  try { localStorage.setItem('dg-proba', $('src').value); } catch(e){}
+}
+let t0; $('src').oninput = () => { clearTimeout(t0); t0 = setTimeout(draw, 200); };
+$('cls').onchange = $('bw').onchange = draw;
+$('ex').onclick = () => { $('src').value = EX; draw(); };
+let saved = null; try { saved = localStorage.getItem('dg-proba'); } catch(e){}
+$('src').value = saved || EX; draw();
+$('ver').textContent = 'ДРАКОН-ГРАФ ' + Konspekt.version() + ' · язык ГРАФ — В. Д. Паронджанов, Г. А. Гуленков; расширенная версия — С. Н. Веснин';
+</script>
+</body>
+</html>
