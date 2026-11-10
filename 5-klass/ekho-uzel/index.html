@@ -29,6 +29,10 @@ button:disabled{cursor:not-allowed;opacity:.45}
 .dots i.on{background:var(--cy);box-shadow:0 0 8px var(--cy)}
 .dots i.done{background:#2f7d97}
 .coins{white-space:nowrap;font-weight:700;color:var(--ye)}
+.pilot{white-space:nowrap;font-weight:700;color:var(--gr);font-size:16px;border:1px solid #2c6b52;border-radius:10px;padding:4px 10px;background:#0f2a22}
+.pilot:empty{display:none}
+@media (max-width:1500px){ .dots{display:none} .sname{flex:0 1 auto} .top .pilot{margin-right:auto} }
+.pilotbar{background:linear-gradient(90deg,rgba(71,245,165,.18),transparent);border-left:4px solid var(--gr);padding:8px 12px;border-radius:8px;font-weight:700;font-size:19px}
 .clock{white-space:nowrap;font-weight:700;color:var(--mut);font-size:16px}
 .clock.hot{color:var(--rd)}
 .event{max-width:560px;width:92%;border:2px solid var(--mg);box-shadow:0 0 30px rgba(255,90,217,.4);text-align:left}
@@ -208,6 +212,7 @@ h2{margin:0 0 6px;font-size:22px}
 <div class="top">
   <div class="logo">ЭХО<b>·</b>УЗЕЛ</div>
   <div class="sname" id="sname"></div>
+  <div class="pilot" id="pilot"></div>
   <div class="dots" id="dots" aria-hidden="true"></div>
   <div class="clock" id="clock" title="Время смены"></div>
   <div class="coins" id="coins" title="Битрейты"></div>
@@ -322,6 +327,19 @@ function machineSpeak(text, rate, pitch, box, done){
 function helperSpeak(text){
   if (!S.voiceOn || !hasVoice()) return;
   try{ speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text.replace(/[«»]/g,'')); u.voice = RU; u.lang = RU.lang; u.rate = 1.05; speechSynthesis.speak(u); }catch(e){}
+}
+
+/* ================= перемешивание вариантов ================= */
+/* верный ответ не всегда первый; порядок устойчив внутри смены, чтобы не прыгал при перерисовке */
+function order(key, n){
+  let h = 2166136261; for (const ch of key + '|' + (S.t0 || 0)){ h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); }
+  const a = [...Array(n).keys()];
+  for (let i = n-1; i > 0; i--){ h = Math.imul(h ^ (h >>> 15), 2246822507) >>> 0; const j = h % (i+1); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+function sayShuf(text, options, cb, o, key){
+  const ord = order(key || ('r' + Math.random()), options.length);
+  say(text, ord.map(i => options[i]), (k) => cb(ord[k]), o);
 }
 
 /* ================= помощник ================= */
@@ -594,11 +612,43 @@ function showPrev(last, nowCfg){
 
 /* ================= прогноз перед запуском ================= */
 function askPredict(q, opts, go){
-  say(q, opts, (i) => { S.pred = i; go(i); });
+  sayShuf(q, opts, (i) => { S.pred = i; go(i); });
 }
 function predictReact(i, ok, worse){
   const actual = ok ? 0 : (worse ? 2 : 1);
   return i === actual ? T.predictRight : T.predictWrong;
+}
+
+/* ================= кто за пультом ================= */
+const NM = i => S.names[i] || ('Стажёр ' + (i+1));
+function pilotIdx(){
+  const sc = S.screen;
+  if (sc === 3 || sc === 5) return -1;
+  if (sc === 0) return S.sub === 'train' ? 0 : -9;
+  if (sc === 1) return 1;
+  if (sc === 2) return S.trial === 'P3' ? 1 : 0;
+  if (sc === 4) return 0;
+  const F = S.fin;
+  if (F.step === 'bonus') return S.bonus.step === 'B2' ? 1 : 0;
+  if (F.step === 'dialogs') return 1;
+  if (F.step === 'table') return 0;
+  if (F.step === 'check') return -9;
+  return -1;
+}
+function updatePilot(){
+  const i = pilotIdx(), el = $('pilot');
+  if (i === -9){ el.textContent = ''; return; }
+  if (i === -1){ el.textContent = '✍ ' + T.pilot.both; return; }
+  el.textContent = '🎮 ' + T.pilot.head.replace('{a}', NM(i)).replace('{b}', NM(1-i));
+  if (S.lastPilot !== i){
+    if (S.lastPilot !== undefined && S.lastPilot !== null){
+      const bar = document.createElement('div'); bar.className = 'pilotbar';
+      bar.textContent = '🔄 ' + T.pilot.say.replace('{a}', NM(i)).replace('{b}', NM(1-i));
+      W.prepend(bar); beep(700,.06); setTimeout(() => beep(900,.06), 90);
+      setTimeout(() => bar.remove(), 9000);
+    }
+    S.lastPilot = i; save();
+  }
 }
 
 /* ================= экраны ================= */
@@ -607,6 +657,7 @@ function go(i){ S.screen = i; save(); render(); window.scrollTo(0,0); }
 function render(){
   renderTop(); $('prev').classList.add('hidden'); H = { key:null, lines:null, level:1 };
   [scStart, scParse, scTrials, scNote1, scSynth, scNote2, scFinal][S.screen]();
+  updatePilot();
 }
 
 /* ---------- 1. Смена началась ---------- */
@@ -615,7 +666,7 @@ function scStart(){
     W.innerHTML = `<section class="panel story"><h2>Ночная смена</h2>${T.story.map(p=>`<p>${esc(p)}</p>`).join('')}
       <div class="row" style="margin-top:14px"><button class="btn big" id="goNames">Принять смену</button>
       ${S.train||S.names[0] ? '<button class="btn ghost" id="restart">Новая смена (для другой пары)</button>' : ''}</div></section>`;
-    $('goNames').onclick = () => { if (!S.t0) S.t0 = Date.now(); S.sub = 'names'; save(); scStart(); renderTop(); };
+    $('goNames').onclick = () => { if (!S.t0) S.t0 = Date.now(); S.sub = 'names'; save(); scStart(); renderTop(); updatePilot(); };
     if ($('restart')) $('restart').onclick = () => { if (confirm('Начать смену заново? Прогресс этой пары сотрётся.')){ S = fresh(); save(); render(); } };
     say('Привет, стажёр! Я Светляк. Буду рядом всю смену. Нажми «Принять смену».');
     return;
@@ -624,7 +675,7 @@ function scStart(){
     W.innerHTML = `<section class="panel"><h2>Кто на смене?</h2><p>${esc(T.namesAsk)}</p>
       <div class="names"><input id="n1" placeholder="Стажёр 1" value="${esc(S.names[0])}" maxlength="20"><input id="n2" placeholder="Стажёр 2" value="${esc(S.names[1])}" maxlength="20"></div>
       <div class="row" style="margin-top:14px"><button class="btn big" id="goTrain">К пульту</button></div></section>`;
-    $('goTrain').onclick = () => { S.names = [$('n1').value.trim(), $('n2').value.trim()]; S.sub = 'train'; save(); scStart(); };
+    $('goTrain').onclick = () => { S.names = [$('n1').value.trim(), $('n2').value.trim()]; S.sub = 'train'; save(); scStart(); updatePilot(); };
     say('Впишите имена. Можно и без них — тогда будете «Стажёр 1» и «Стажёр 2».');
     return;
   }
@@ -688,7 +739,7 @@ function resumeParse(){
     const st = T.parse[S.parse.i];
     stageShow(S.parse.i);
     $('ptask').textContent = 'Смотри на загоревшийся блок и его окошко. Ответь Светляку.';
-    const ask = () => say(st.q, st.opts, (i) => {
+    const ask = () => sayShuf(st.q, st.opts, (i) => {
       if (i === st.ok){
         S.parse.i++; S.parse.fails = 0; S.parse.level = 1; save();
         if (S.parse.i >= T.parse.length){ S.parse.phase = 'exp'; S.parse.exp = 1; save(); clearWins(); startExp(); }
@@ -697,7 +748,7 @@ function resumeParse(){
         S.parse.fails++; S.parse.level = S.rush ? 3 : Math.min(3, S.parse.level+1); save();
         say(S.parse.level === 2 ? st.l2 : st.l3, ['Попробую ещё'], ask, {level:S.parse.level});
       }
-    });
+    }, {}, 'parse' + S.parse.i);
     H = { key:'parse'+S.parse.i, lines:[st.q, st.l2, st.l3], level:S.parse.level };
     ask();
     return;
@@ -713,10 +764,10 @@ function expAfter(){
   T.blocks.forEach(b => $('b-'+b.id).classList.toggle('err', PULT.res.blame.has(b.id)));
   $('ptask').textContent = 'Смотри на волну и на красный блок. Ответь Светляку.';
   const E = T.experiment; let lvl = 1;
-  const ask = () => say(E.after, E.afterOpts, (i) => {
+  const ask = () => sayShuf(E.after, E.afterOpts, (i) => {
     if (i === E.ok){ S.parse.exp = 3; save(); $('ptask').textContent = 'Включи «Словарь» обратно и нажми «Запуск».'; say('Верно! Включи «Словарь» обратно и нажми «Запуск».'); }
     else { lvl = Math.min(3, lvl+1); say(lvl === 2 ? E.l2 : E.l3, ['Попробую ещё'], ask, {level:lvl}); }
-  });
+  }, {}, 'exp');
   H = { key:'exp', lines:[E.after, E.l2, E.l3], level:1 };
   ask();
 }
@@ -767,9 +818,9 @@ function trialRun(){
         const next = { P2:'К фразе № 3', P3:'К отчёту в тетради', B1:'К вызову 2', B2:'К вызову 3' }[P];
         H = { key:null, lines:null, level:1 };
         say(`${TT.win} Медаль ${name} за чистую настройку.`, [next], () => {
-          if (P === 'P2'){ S.trial = 'P3'; save(); scTrials(); say(T.trials.P3.l1, null, null, {level:1}); }
-          else if (P === 'B1'){ S.trial = 'B2'; S.bonus.step = 'B2'; S.cfg = preset('B2'); save(); scTrials(); say(T.trials.B2.l1, null, null, {level:1}); }
-          else if (P === 'B2'){ S.bonus.step = 'synth'; save(); scFinal(); }
+          if (P === 'P2'){ S.trial = 'P3'; save(); scTrials(); updatePilot(); say(T.trials.P3.l1, null, null, {level:1}); }
+          else if (P === 'B1'){ S.trial = 'B2'; S.bonus.step = 'B2'; S.cfg = preset('B2'); save(); scTrials(); updatePilot(); say(T.trials.B2.l1, null, null, {level:1}); }
+          else if (P === 'B2'){ S.bonus.step = 'synth'; save(); scFinal(); updatePilot(); }
           else go(3);
         });
         return;
@@ -930,7 +981,7 @@ function synthSend(){
         H = { key:null, lines:null, level:1 };
         const bon = BON();
         say(TS().win + ' Медаль ' + { gold:'золотая', silver:'серебряная', bronze:'бронзовая' }[medal] + '.', [bon ? 'Сдать вызов' : 'К отчёту в тетради'], () => {
-          if (bon){ S.bonus.step = 'end'; save(); scFinal(); } else go(5);
+          if (bon){ S.bonus.step = 'end'; save(); scFinal(); updatePilot(); } else go(5);
         });
         return;
       }
@@ -969,7 +1020,7 @@ function finDialogs(){
   const btn = () => {
     const b = $('fnext');
     if (F.i < 3){ b.textContent = `Позвать жителя ${F.i+1}`; b.onclick = () => runDialog(F.i); }
-    else { b.textContent = 'Дальше: свой конспект'; b.onclick = () => { F.step = 'table'; save(); scFinal(); }; }
+    else { b.textContent = 'Дальше: свой конспект'; b.onclick = () => { F.step = 'table'; save(); scFinal(); updatePilot(); }; }
   };
   const P = keys[Math.min(F.i,2)];
   $('flab').innerHTML = `<b>${esc(T.phrases[P].label)}</b>`;
@@ -1033,7 +1084,7 @@ function finTable(){
     R.forEach((r,i) => ['a','b'].forEach(s => { if (F.table[i+s] !== r[s]) wrong.push(i+s); }));
     if (!wrong.length){
       F.tdone = true; save(); H = { key:null, lines:null, level:1 };
-      say(T.final.tableWin, ['Записали — дальше'], () => { F.step = 'check'; save(); scFinal(); });
+      say(T.final.tableWin, ['Записали — дальше'], () => { F.step = 'check'; save(); scFinal(); updatePilot(); });
       return;
     }
     F.tfails++; F.tlevel = clamp(F.tfails + 1, 1, 3); save();
@@ -1059,14 +1110,14 @@ function finCheck(){
       }
       return `<section class="qcard"><div class="who">Отвечает: ${esc(names[i%2])}</div><div style="font-weight:700">${esc(q.q)}</div>
         <div class="opts">${T.specialists.map(s => `<button data-q="${i}" data-to="${s.id}" aria-pressed="${a.to===s.id}">${esc(s.name)}</button>`).join('')}</div>
-        ${a.to ? `<div style="margin-top:8px;font-size:16px;color:var(--mut)">Зачем он нужен?</div><div class="opts">${q.why.map((w,k) => `<button data-q="${i}" data-why="${k}" aria-pressed="${a.why===k}">${esc(w)}</button>`).join('')}</div>` : ''}
+        ${a.to ? `<div style="margin-top:8px;font-size:16px;color:var(--mut)">Зачем он нужен?</div><div class="opts">${order('why'+i, q.why.length).map(k => `<button data-q="${i}" data-why="${k}" aria-pressed="${a.why===k}">${esc(q.why[k])}</button>`).join('')}</div>` : ''}
         ${fb}</section>`;
     }).join('') +
     `<section class="panel"><div class="row">${F.sent ? `<span>${esc(T.check.again)}</span><button class="btn mg big" id="endBtn">Завершить смену</button>` : `<button class="btn mg big" id="sendRep" ${done?'':'disabled'}>Отправить отчёт</button>`}</div></section>`;
   W.querySelectorAll('[data-to]').forEach(b => b.onclick = () => { const a = F.ans[+b.dataset.q]; a.to = b.dataset.to; delete a.why; save(); finCheck(); });
   W.querySelectorAll('[data-why]').forEach(b => b.onclick = () => { F.ans[+b.dataset.q].why = +b.dataset.why; save(); finCheck(); });
   if ($('sendRep')) $('sendRep').onclick = () => { F.sent = true; save(); finCheck(); say('Специалисты ответили. Прочитайте. Если хотите — поменяйте ответ.'); };
-  if ($('endBtn')) $('endBtn').onclick = () => { F.step = 'end'; save(); scFinal(); };
+  if ($('endBtn')) $('endBtn').onclick = () => { F.step = 'end'; save(); scFinal(); updatePilot(); };
   if (!F.sent) say('Отвечайте по очереди: имя над вопросом — тот и выбирает. Сначала кого позвать, потом — зачем.', null, null, {silent:true});
 }
 function finEnd(){
@@ -1079,18 +1130,23 @@ function finEnd(){
   W.innerHTML = `<section class="panel ending"><h2>${esc(E.title)}</h2><p style="font-size:21px">${esc(E.text)}</p>
     ${bonusDone ? `<p style="font-size:21px;color:var(--gr)"><b>${esc(T.bonus.done.title)}</b> ${esc(T.bonus.done.text)}</p>` : ''}
     <p>Жителей поняли: <b>${n} из 3</b> · ${esc(String(S.bit))} битрейтов · медали: ${Object.values(S.medals).map(x=>M[x]).join(' ') || '—'}</p></section>
-    ${!S.bonus.step && early ? `<section class="panel event" style="max-width:none;width:auto"><h2>${esc(T.bonus.call.title)}</h2><p>${esc(T.bonus.call.text)}</p><button class="btn mg big" id="bonusGo">${esc(T.bonus.call.btn)}</button></section>` : ''}
+    <!--CONCL-->
     ${miss.map(([k,D],i) => `<section class="panel"><div class="task">${esc(T.late.note)}</div></section><section class="paper" id="miss${i}"></section>`).join('')}
-    <section class="panel"><h2>${esc(T.oral.title)}</h2>
-    ${early || bonusDone ? `<div class="task" style="margin-bottom:8px">${esc(T.ending.wait)}${bonusDone ? ' ' + esc(T.ending.wait2) : ''}</div>` : ''}
-    <ol class="oral">${T.oral.frames.map(f=>`<li>${esc(f)}</li>`).join('')}</ol>
-    <p style="color:var(--mut)">Дополните фразы вслух, по очереди. Подсказка — в ваших двух схемах в тетради.</p></section>`;
+    `;
+  const frames = S.rush ? T.oral.frames.slice(0, T.oral.rushN) : T.oral.frames;
+  const concl = `<section class="panel"><h2>${esc(T.oral.title)}</h2>
+    <div class="task" style="margin-bottom:8px">${esc(T.oral.intro)}${S.rush ? ' ' + esc(T.rush.oral) : ''}</div>
+    <ol class="oral">${frames.map(f=>`<li>${esc(f)}</li>`).join('')}</ol>
+    <p style="color:var(--mut)">${esc(T.oral.hint)}</p></section>`;
+  const bonusCard = !S.bonus.step && early ? `<section class="panel event" style="max-width:none;width:auto"><h2>${esc(T.bonus.call.title)}</h2><p>${esc(T.bonus.call.text)}</p><button class="btn mg big" id="bonusGo">${esc(T.bonus.call.btn)}</button></section>` : '';
+  const extra = bonusDone ? `<section class="panel"><div class="task">${esc(T.ending.wait)} ${esc(T.ending.wait2)}</div></section>` : '';
+  W.innerHTML = W.innerHTML.replace('<!--CONCL-->', concl + bonusCard + extra);
   miss.forEach(([k,D],i) => { try { Konspekt.draw($('miss'+i), D.konspekt, { class:5, width:760 }); } catch(e){} });
   if ($('bonusGo')) $('bonusGo').onclick = () => {
     S.fin.step = 'bonus'; S.bonus.step = 'B1'; S.trial = 'B1'; S.cfg = preset('B1'); save(); render(); window.scrollTo(0,0);
   };
-  if (!S.bonus.step && early) say(T.bonus.call.text, null, null, {silent:true});
-  else say(bonusDone ? T.ending.wait2 : 'Смена окончена! Обсудите вывод вслух всей группой — фразы на экране.');
+  if (!S.bonus.step && early) say('Сначала — свой вывод в тетрадь. Записали? Тогда вас ждёт тревожный вызов!');
+  else say(bonusDone ? T.ending.wait2 : 'Смена окончена! Теперь каждый пишет свой вывод в тетрадь — фразы на экране.');
 }
 function scBonus(){
   const b = S.bonus.step;
