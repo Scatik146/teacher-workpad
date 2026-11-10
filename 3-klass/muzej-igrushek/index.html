@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Музей игрушек</title>
+<style>
+@font-face{font-family:"PT Serif";src:url(../../lib/drakon-graf/fonts/PT_Serif-Web-Regular.ttf);font-weight:400}
+@font-face{font-family:"PT Serif";src:url(../../lib/drakon-graf/fonts/PT_Serif-Web-Bold.ttf);font-weight:700}
+:root{
+  --bg:#f7f0e1; --paper:#fffdf7; --ink:#2a2118; --mut:#6e5d48;
+  --wood:#8a5a2b; --wood2:#5c3a1a; --gold:#c79a3b; --gold2:#e9cf8d;
+  --yes:#1e6b3a; --no:#a3361f; --yellow:#ffff99; --line:#993300;
+}
+*{box-sizing:border-box}
+/* единица — от размера экрана: на проекторе 1024×768 ≈ 31 px, на 1920×1080 ≈ 45 px */
+html{font-size:min(4.2vh,3vw)}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font-family:"PT Serif",Georgia,serif;line-height:1.2}
+#app{height:100%;display:grid;grid-template-rows:1fr auto}
+.scr{display:none;min-height:0;padding:.6rem 1rem .4rem;flex-direction:column;gap:.4rem}
+.scr.on{display:flex}
+h1{margin:0;font-size:2.3rem;text-align:center;color:var(--wood2);letter-spacing:.02em}
+h2{margin:0;font-size:1.6rem;text-align:center;color:var(--wood2)}
+.rule{height:.18rem;width:40%;margin:0 auto;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+
+/* ===== нижняя полоса ===== */
+.bar{display:flex;align-items:center;gap:.4rem;padding:.3rem .6rem;background:var(--wood2);border-top:.15rem solid var(--gold)}
+.bar button{font:inherit;font-size:.72rem;white-space:nowrap;border-radius:.35rem;cursor:pointer;border:.08rem solid var(--gold);background:#7a5230;color:#fdf3dc;padding:.25rem .7rem}
+.bar .main{font-size:.95rem;padding:.3rem .8rem;font-weight:700}
+.bar .main.on{background:var(--gold2);color:var(--wood2)}
+.bar .sp{flex:1}
+.bar .opt{display:none;gap:.3rem}
+.bar .opt.on{display:flex}
+.bar .opt button.on{background:var(--gold2);color:var(--wood2)}
+
+/* ===== экран 1: зал ===== */
+.hall{flex:1;min-height:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.3rem 1.2rem;align-items:end;padding:0 1rem}
+@media (min-aspect-ratio:3/2){.hall{grid-template-columns:repeat(8,minmax(0,1fr));gap:.3rem .7rem}.plq{font-size:.5rem}}
+.ped{display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end;min-height:0}
+.case{width:78%;flex:1;min-height:0;max-height:7rem;border:.1rem solid transparent;border-bottom:0;border-radius:.3rem .3rem 0 0;position:relative}
+.top{width:96%;height:.5rem;background:var(--wood);border-radius:.15rem}
+.col{width:72%;height:3.2rem;background:linear-gradient(90deg,#e8dcc4,#f8f1e2 45%,#ddcfb3);border-left:.1rem solid #cdbd9c;border-right:.1rem solid #cdbd9c;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.num{font-size:1.25rem;font-weight:700;color:var(--wood2)}
+.plq{display:none;font-size:.62rem;background:var(--gold2);border:.06rem solid var(--wood);padding:.05rem .3rem;border-radius:.15rem;white-space:nowrap}
+.base{width:100%;height:.6rem;background:var(--wood2);border-radius:.15rem}
+.full .case{border-color:#b9c9cf;background:linear-gradient(180deg,rgba(255,238,190,.55),rgba(220,235,240,.35));box-shadow:0 0 1.2rem rgba(233,207,141,.8);animation:light .6s ease-out both}
+.full .plq{display:block}
+.full .num{font-size:.8rem}
+@keyframes light{from{opacity:0;transform:translateY(.6rem)}to{opacity:1;transform:none}}
+.ann{text-align:center;font-size:1.05rem;margin:.2rem 0 0}
+.seal{display:flex;align-items:center;justify-content:center;gap:.5rem;font-size:1rem;color:var(--wood2)}
+.seal i{display:inline-block;width:1.3rem;height:1.3rem;border-radius:50%;border:.15rem double var(--no);box-shadow:inset 0 0 0 .12rem #fff,inset 0 0 0 .22rem var(--no)}
+
+/* ===== экран 2: стандарты ===== */
+.step{display:none;flex:1;min-height:0;flex-direction:column;gap:.5rem}
+.step.on{display:flex}
+.sheet{flex:1;min-height:0;background:var(--paper);border:.08rem solid #d9cdb3;border-radius:.4rem;display:flex;align-items:center;justify-content:center;padding:.4rem}
+#graf{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+#graf svg{width:100%!important;height:100%!important;max-width:100%!important}
+.std{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:space-evenly;padding:0 .5rem}
+.std .row{display:grid;grid-template-columns:2rem 1fr auto 1fr;align-items:center;gap:.5rem;font-size:1.35rem}
+.std .n{width:1.7rem;height:1.7rem;border-radius:50%;background:var(--wood);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700}
+.std .q{font-weight:700}
+.std .ar{color:var(--wood)}
+.std .a{background:var(--yellow);border:.1rem solid var(--line);border-radius:.35rem;padding:.2rem .5rem}
+.lab{display:flex;flex-direction:column;gap:.35rem}
+.lab div{display:flex;gap:.6rem;align-items:center;font-size:1.05rem;background:var(--paper);border:.08rem solid #d9cdb3;border-radius:.35rem;padding:.25rem .6rem}
+.lab b{font-size:1.2rem;min-width:1.4rem;text-align:center}
+.lab .no{color:var(--no)} .lab .no+span{color:var(--mut);text-decoration:line-through;text-decoration-color:rgba(163,54,31,.6)}
+.lab .yes{color:var(--yes)} .lab .yes+span{font-weight:700;font-size:1.25rem}
+.words{flex:1;min-height:0;display:grid;grid-template-columns:3fr 2fr;gap:.8rem}
+.wbox{background:var(--paper);border:.08rem solid #d9cdb3;border-radius:.4rem;padding:.3rem .6rem;display:flex;flex-direction:column;min-height:0}
+.wbox h3{margin:0 0 .2rem;font-size:.8rem;color:var(--wood);text-transform:uppercase;letter-spacing:.06em}
+.wbox ul{list-style:none;margin:0;padding:0;flex:1;display:grid;grid-auto-flow:column;align-content:space-evenly;gap:0 .8rem;font-size:.95rem}
+#nouns{grid-template-rows:repeat(5,auto)} #adjs{grid-template-rows:repeat(5,auto)}
+
+/* ===== экран 3: схема ===== */
+.s3{flex:1;min-height:0;display:flex;gap:.6rem}
+.board{flex:1;min-width:0;min-height:0;background:var(--paper);border:.08rem solid #d9cdb3;border-radius:.4rem;position:relative;overflow:hidden}
+#widget{position:absolute;inset:.3rem;overflow:auto}
+#krupno{position:absolute;inset:0;container-type:size;display:none}
+.board.big #widget{display:none} .board.big #krupno{display:block}
+.side{display:none;width:28%;min-height:0;flex-direction:column;gap:.4rem}
+.side.on{display:flex}
+.side .wbox{flex:1;overflow:hidden}
+.side ul{font-size:.55rem;grid-auto-flow:row;grid-template-columns:1fr 1fr;align-content:space-evenly}
+.side h3{font-size:.6rem}
+
+/* ручная ДРАКОН-схема «крупно» */
+.kg{position:absolute;inset:2.5cqh 2cqw;display:grid;grid-template-columns:1.2fr .95fr .8fr;grid-template-rows:repeat(8,1fr);column-gap:7cqw;row-gap:1.8cqh;font-size:min(4.2cqh,2.65cqw)}
+.kb{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;text-align:center;background:#fff;border:.12em solid var(--line);border-radius:.2em;padding:.12em .4em;line-height:1.08}
+.kq{background:var(--line);clip-path:polygon(9% 0,91% 0,100% 50%,91% 100%,9% 100%,0 50%);border:0;padding:0}
+.kq span{position:absolute;inset:.12em;background:#fff;clip-path:polygon(9% 0,91% 0,100% 50%,91% 100%,9% 100%,0 50%);display:flex;align-items:center;justify-content:center;font-weight:700;padding:0 1em}
+.kf{background:#fff7d6}
+#k_b3{margin-top:3.4cqh}
+#kSvg{position:absolute;inset:0;width:100%;height:100%;z-index:0;overflow:visible}
+.yn{position:absolute;z-index:2;font-weight:700;font-size:min(4.4cqh,2.7cqw);line-height:1;padding:0 .15em;background:var(--paper)}
+.yn.y{color:var(--yes)} .yn.n{color:var(--no)}
+
+/* ===== служебное меню ===== */
+#menu{position:fixed;inset:0;background:rgba(30,20,10,.55);display:none;align-items:center;justify-content:center;z-index:9}
+#menu.on{display:flex}
+#menu .box{background:var(--paper);border:.12rem solid var(--gold);border-radius:.5rem;padding:.6rem .9rem;font-size:.7rem;max-width:90vw;max-height:90vh;overflow:auto}
+#menu h4{margin:.3rem 0;font-size:.75rem;color:var(--wood)}
+#menu button,#menu a{font:inherit;margin:.15rem;padding:.2rem .5rem;border:.06rem solid var(--wood);border-radius:.3rem;background:#fff;color:var(--ink);cursor:pointer;text-decoration:none;display:inline-block}
+#menu .x{float:right}
+</style>
+</head>
+<body>
+<div id="app">
+  <div>
+    <!-- экран 1 -->
+    <section class="scr" id="s1" style="height:100%">
+      <h1 id="hTitle"></h1>
+      <div class="rule"></div>
+      <div class="hall" id="hall"></div>
+      <p class="ann" id="hAnn"></p>
+      <div class="seal"><i></i><span id="hSeal"></span></div>
+    </section>
+
+    <!-- экран 2 -->
+    <section class="scr" id="s2" style="height:100%">
+      <div class="step" id="st1">
+        <h2 id="stdTitle"></h2>
+        <div class="sheet" id="grafBox"><div id="graf"></div></div>
+        <div class="std" id="stdBig" style="display:none"></div>
+      </div>
+      <div class="step" id="st2">
+        <h2 id="labTitle"></h2>
+        <div class="lab">
+          <div><b class="no">✗</b><span id="labNo"></span></div>
+          <div><b class="yes">✓</b><span id="labYes"></span></div>
+        </div>
+        <div class="words">
+          <div class="wbox"><h3>Кто? Что?</h3><ul id="nouns"></ul></div>
+          <div class="wbox"><h3>Какой?</h3><ul id="adjs"></ul></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- экран 3 -->
+    <section class="scr" id="s3" style="height:100%">
+      <h2 id="shTitle"></h2>
+      <div class="s3">
+        <div class="board" id="board">
+          <div id="widget"></div>
+          <div id="krupno"></div>
+        </div>
+        <div class="side" id="side">
+          <div class="wbox"><h3>Кто? Что?</h3><ul id="sideN"></ul></div>
+          <div class="wbox"><h3>Какой?</h3><ul id="sideA"></ul></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <nav class="bar">
+    <button class="main" data-go="1">Зал</button>
+    <button class="main" data-go="2">Стандарты</button>
+    <button class="main" data-go="3">Схема</button>
+    <span class="sp"></span>
+    <span class="opt" data-for="1">
+      <button data-act="full" id="bFull">Зал полон</button>
+      <button data-act="reset">Начать заново</button>
+    </span>
+    <span class="opt" data-for="2">
+      <button data-act="step1" id="bSt1">Правила</button>
+      <button data-act="step2" id="bSt2">Этикетка</button>
+      <button data-act="grafView" id="bGraf">Крупно</button>
+    </span>
+    <span class="opt" data-for="3">
+      <button data-act="words" id="bWords">Слова</button>
+      <button data-act="shemaView" id="bShema">Крупно</button>
+    </span>
+  </nav>
+</div>
+
+<div id="menu"><div class="box">
+  <button class="x" data-m="close">✕</button>
+  <h4>Перейти</h4>
+  <button data-m="p0">Зал</button><button data-m="p1">Стандарты: правила</button><button data-m="p2">Стандарты: этикетка и слова</button><button data-m="p3">Схема</button>
+  <h4>Вид</h4>
+  <button data-m="full">Зал пуст / полон</button><button data-m="grafView">Правила: ГРАФ / крупно</button><button data-m="shemaView">Схема: виджет / крупно</button><button data-m="words">Слова у схемы</button>
+  <h4>Служебное</h4>
+  <button data-m="fs">Во весь экран</button><button data-m="reset">Начать заново</button><a href="kanva.html">Канва урока</a>
+</div></div>
+
+<script src="tekst.js"></script>
+<script src="../../lib/drakon-graf/drakon-graf.min.js"></script>
+<script src="../../lib/drakon-graf/konspekt.js"></script>
+<script src="../../lib/drakonwidget/drakonwidget.js"></script>
+<script src="../../lib/drakon-shema/drakon-shema.js"></script>
+<script>
+(function(){
+'use strict';
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- состояние (вид на доске) ---------- */
+const KEY = 'muzej-igrushek-vid';
+const DEF = { pos:0, full:false, grafBig:false, shemaBig:true, words:false };
+let S = Object.assign({}, DEF);
+try { const s = JSON.parse(localStorage.getItem(KEY)); if (s) S = Object.assign(S, s); } catch(e){}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} };
+/* позиции по порядку урока: зал → правила → этикетка и слова → схема */
+const POS = [ {scr:1}, {scr:2, step:1}, {scr:2, step:2}, {scr:3} ];
+
+/* ---------- тексты ---------- */
+document.title = T.title;
+$('hTitle').textContent = T.title;
+$('hAnn').textContent = T.hall.announce;
+$('hSeal').textContent = T.hall.seal;
+let h = '';
+for (let i = 1; i <= T.hall.places; i++)
+  h += `<div class="ped"><div class="case"></div><div class="top"></div><div class="col"><span class="num">${i}</span><span class="plq">${esc(T.hall.plaque(i))}</span></div><div class="base"></div></div>`;
+$('hall').innerHTML = h;
+
+$('stdTitle').textContent = T.standardsTitle;
+$('stdBig').innerHTML = T.standards.map((s, i) =>
+  `<div class="row"><span class="n">${i+1}</span><span class="q">${esc(s.q)}</span><span class="ar">→</span><span class="a">${esc(s.a)}</span></div>`).join('');
+$('labTitle').textContent = T.labelTitle + ': так не надо / так надо';
+$('labNo').textContent = '«' + T.labelNo + '»';
+$('labYes').textContent = '«' + T.labelYes + '»';
+const li = a => a.map(w => `<li>${esc(w)}</li>`).join('');
+$('nouns').innerHTML = li(T.nouns); $('adjs').innerHTML = li(T.adjs);
+$('sideN').innerHTML = li(T.nouns); $('sideA').innerHTML = li(T.adjs);
+$('shTitle').textContent = T.shema.nazvanie;
+
+/* ---------- ГРАФ-конспект ---------- */
+let grafDone = false;
+function drawGraf(){
+  if (grafDone) return;
+  try {
+    Konspekt.draw($('graf'), T.konspekt, { class:5, width:560 });
+    grafDone = true;
+  } catch(e){ S.grafBig = true; render(); }
+}
+
+/* ---------- ДРАКОН-схема (виджет) ---------- */
+let sh = null;
+/* виджет рисует схему мелко (шрифт 16 px): для проектора основной вид — «крупно», виджет — по кнопке */
+function drawWidget(){
+  if (sh) return;
+  try { sh = DrakonShema.pokazat($('widget'), T.shema); }
+  catch(e){ S.shemaBig = true; render(); }
+}
+
+/* ---------- ДРАКОН-схема «крупно» (резерв, вёрстка вручную) ---------- */
+const g = T.shema.shagi, q1 = g[2], q2 = q1.net[2];
+const K = [
+  ['b1', g[0], 1, 1], ['b2', g[1], 1, 2], ['q1', q1.vopros, 1, 3, 'q'],
+  ['r1', q1.net[0], 2, 3], ['r2', q1.net[1], 2, 4], ['q2', q2.vopros, 2, 5, 'q'], ['f1', q2.net[0], 3, 5, 'f'],
+  ['b3', g[3], 1, 6], ['b4', g[4], 1, 7], ['b5', g[5], 1, 8]
+];
+$('krupno').innerHTML = '<div class="kg" id="kg"><svg id="kSvg"></svg>' + K.map(([id, t, c, r, kind]) =>
+  `<div class="kb${kind==='q'?' kq':''}${kind==='f'?' kf':''}" id="k_${id}" style="grid-column:${c};grid-row:${r}">${kind==='q'?'<span>'+esc(t)+'</span>':esc(t)}</div>`).join('') +
+  '<b class="yn y" id="y1">Да</b><b class="yn n" id="n1">Нет</b><b class="yn y" id="y2">Да</b><b class="yn n" id="n2">Нет</b></div>';
+function drawKrupno(){
+  const kg = $('kg'), o = kg.getBoundingClientRect();
+  if (!o.width) return;
+  const R = id => { const r = $('k_' + id).getBoundingClientRect();
+    return { l:r.left-o.left, r:r.right-o.left, t:r.top-o.top, b:r.bottom-o.top, x:(r.left+r.right)/2-o.left, y:(r.top+r.bottom)/2-o.top }; };
+  const A = {}; K.forEach(k => A[k[0]] = R(k[0]));
+  const sw = Math.max(2, o.height / 220), head = sw * 3.2;
+  const line = pts => `<polyline points="${pts.map(p => p.join(',')).join(' ')}" fill="none" stroke="#993300" stroke-width="${sw}"/>`;
+  const arrow = (x, y, dir) => { const s = head; const P = dir === 'd' ? [[x-s,y-s*1.4],[x+s,y-s*1.4],[x,y]] : [[x-s*1.4,y-s],[x-s*1.4,y+s],[x,y]];
+    return `<polygon points="${P.map(p => p.join(',')).join(' ')}" fill="#993300"/>`; };
+  const x1 = A.b1.x, x2 = A.r1.x, mergeY = A.b3.t - 1.6 * $('y2').offsetHeight / 2.2;
+  let s = '';
+  s += line([[x1, A.b1.b], [x1, A.b2.t]]) + arrow(x1, A.b2.t, 'd');
+  s += line([[x1, A.b2.b], [x1, A.q1.t]]) + arrow(x1, A.q1.t, 'd');
+  s += line([[x1, A.q1.b], [x1, A.b3.t]]) + arrow(x1, A.b3.t, 'd');                 /* Да — вниз */
+  s += line([[A.q1.r, A.q1.y], [A.r1.l, A.q1.y]]) + arrow(A.r1.l, A.q1.y, 'r');     /* Нет — вправо */
+  s += line([[x2, A.r1.b], [x2, A.r2.t]]) + arrow(x2, A.r2.t, 'd');
+  s += line([[x2, A.r2.b], [x2, A.q2.t]]) + arrow(x2, A.q2.t, 'd');
+  s += line([[A.q2.r, A.q2.y], [A.f1.l, A.q2.y]]) + arrow(A.f1.l, A.q2.y, 'r');
+  s += line([[x2, A.q2.b], [x2, mergeY], [x1, mergeY]]);                              /* Да — к общей линии */
+  s += line([[A.f1.x, A.f1.b], [A.f1.x, mergeY], [x2, mergeY]]);                      /* фонд — к общей линии */
+  s += line([[x1, A.b3.b], [x1, A.b4.t]]) + arrow(x1, A.b4.t, 'd');
+  s += line([[x1, A.b4.b], [x1, A.b5.t]]) + arrow(x1, A.b5.t, 'd');
+  $('kSvg').innerHTML = s;
+  const put = (id, x, y) => { const e = $(id); e.style.left = x + 'px'; e.style.top = y + 'px'; };
+  const yn = $('y1').offsetHeight;
+  put('y1', x1 + sw * 3, A.q1.b + yn * .1);
+  put('n1', (A.q1.r + A.r1.l - $('n1').offsetWidth) / 2, A.q1.y - yn * 1.1);
+  put('y2', x2 - $('y2').offsetWidth - sw * 3, A.q2.b + yn * .02);
+  put('n2', (A.q2.r + A.f1.l - $('n2').offsetWidth) / 2, A.q2.y - yn * 1.1);
+}
+new ResizeObserver(() => { if (S.shemaBig) drawKrupno(); }).observe($('krupno'));
+
+/* ---------- показ ---------- */
+function render(){
+  const p = POS[S.pos];
+  [1,2,3].forEach(n => $('s' + n).classList.toggle('on', p.scr === n));
+  document.querySelectorAll('.bar .main').forEach(b => b.classList.toggle('on', +b.dataset.go === p.scr));
+  document.querySelectorAll('.bar .opt').forEach(o => o.classList.toggle('on', +o.dataset.for === p.scr));
+  $('hall').classList.toggle('full', S.full);
+  $('bFull').textContent = S.full ? 'Зал пуст' : 'Зал полон';
+  $('st1').classList.toggle('on', p.step === 1); $('st2').classList.toggle('on', p.step === 2);
+  $('bSt1').classList.toggle('on', p.step === 1); $('bSt2').classList.toggle('on', p.step === 2);
+  $('bGraf').style.display = p.step === 1 ? '' : 'none';
+  $('grafBox').style.display = S.grafBig ? 'none' : ''; $('stdTitle').style.display = S.grafBig ? '' : 'none'; $('stdBig').style.display = S.grafBig ? 'flex' : 'none';
+  $('bGraf').textContent = S.grafBig ? 'ГРАФ' : 'Крупно';
+  $('board').classList.toggle('big', S.shemaBig);
+  $('bShema').textContent = S.shemaBig ? 'ДРАКОН-виджет' : 'Крупно';
+  $('side').classList.toggle('on', S.words); $('bWords').classList.toggle('on', S.words);
+  save();
+  if (p.scr === 2 && p.step === 1 && !S.grafBig) drawGraf();
+  if (p.scr === 3) { if (S.shemaBig) requestAnimationFrame(drawKrupno); else drawWidget(); }
+}
+function go(pos){ S.pos = Math.max(0, Math.min(POS.length - 1, pos)); render(); }
+function act(a){
+  if (a === 'full') S.full = !S.full;
+  if (a === 'step1') S.pos = 1;
+  if (a === 'step2') S.pos = 2;
+  if (a === 'grafView') S.grafBig = !S.grafBig;
+  if (a === 'shemaView') S.shemaBig = !S.shemaBig;
+  if (a === 'words') S.words = !S.words;
+  if (a === 'reset') { S = Object.assign({}, DEF, { grafBig:S.grafBig, shemaBig:S.shemaBig }); }
+  render();
+}
+document.querySelector('.bar').onclick = e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.go) go({1:0, 2:POS[S.pos].scr === 2 ? S.pos : 1, 3:3}[b.dataset.go]);
+  else act(b.dataset.act);
+};
+
+/* ---------- служебное меню Ctrl+Alt+M ---------- */
+const menu = $('menu');
+menu.onclick = e => {
+  const b = e.target.closest('[data-m]');
+  if (!b) { if (e.target === menu) menu.classList.remove('on'); return; }
+  const m = b.dataset.m;
+  if (m === 'close') return menu.classList.remove('on');
+  if (m[0] === 'p') { go(+m.slice(1)); return menu.classList.remove('on'); }
+  if (m === 'fs') { try { document.documentElement.requestFullscreen(); } catch(e){} return menu.classList.remove('on'); }
+  act(m);
+};
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.altKey && e.code === 'KeyM') { e.preventDefault(); menu.classList.toggle('on'); return; }
+  if (e.key === 'Escape') return menu.classList.remove('on');
+  if (e.ctrlKey || e.altKey || e.metaKey) return;
+  if (e.key === 'ArrowRight' || e.key === 'PageDown') go(S.pos + 1);
+  if (e.key === 'ArrowLeft' || e.key === 'PageUp') go(S.pos - 1);
+  if (e.key === '1') go(0);
+  if (e.key === '2') go(1);
+  if (e.key === '3') go(3);
+});
+
+render();
+})();
+</script>
+</body>
+</html>
