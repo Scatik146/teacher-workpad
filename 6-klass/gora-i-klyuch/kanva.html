@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Канва урока «Гора и Ключ»</title>
+<style>
+:root{--ink:#1d2126;--ink2:#5b5346;--line:#d9cfb9;--paper:#f6f1e6;--accent:#c79a3b}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 "Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+.bar{position:sticky;top:0;z-index:5;display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 16px;background:#3d2814;color:#f6ecd8;border-bottom:3px solid var(--accent)}
+.bar a,.bar button{font:inherit;font-size:14px;color:#f6ecd8;background:#5c3a1a;border:1px solid #7a5230;border-radius:18px;padding:5px 12px;text-decoration:none;cursor:pointer}
+.bar button{background:var(--accent);color:#2a1d05;border-color:var(--accent);font-weight:700}
+.bar .t{flex:1;min-width:0;color:#d9c8a8;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.doc{max-width:900px;margin:20px auto 48px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:28px 34px}
+h1{font-size:28px;line-height:1.25;margin:0 0 12px}
+h2{font-size:21px;margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--line)}
+h3{font-size:17px;margin:20px 0 8px}
+p{margin:8px 0}
+table{border-collapse:collapse;width:100%;margin:10px 0;font-size:14.5px}
+th,td{border:1px solid #cfc5ae;padding:6px 8px;vertical-align:top;text-align:left}
+th{background:#f3ecdd}
+blockquote{margin:10px 0;padding:8px 14px;border-left:4px solid var(--accent);background:#fbf6ea}
+ul,ol{padding-left:24px}
+.k{color:var(--ink2);font-size:14px}
+.ok{color:#1e7a4a;font-weight:700} .no{color:#a3471f;font-weight:700}
+.kon{margin:10px 0;border:1px solid var(--line);border-radius:8px;padding:8px}
+pre.inv{font:14px/1.5 "PT Mono",Consolas,monospace;background:#fbf6ea;border:1px dashed #8a5a2b;border-radius:8px;padding:10px 14px;white-space:pre-wrap;max-width:520px}
+.teacher{border:2px solid #a3471f;border-radius:10px;padding:2px 16px 10px;background:#fff6f2;margin-top:28px}
+.teacher h2{border-color:#efcdbf;color:#a3471f}
+a{color:#1f5fa8}
+@media (max-width:600px){.doc{padding:18px 16px;margin:10px 8px}table{font-size:13px}}
+@media print{
+  html,body{background:#fff}.bar{display:none}
+  .doc{border:0;border-radius:0;margin:0;padding:0;max-width:none}
+  h2{break-after:avoid} tr,blockquote,.kon,pre{break-inside:avoid}
+  a{color:inherit;text-decoration:none} @page{size:A4;margin:14mm}
+}
+</style>
+</head>
+<body>
+<div class="bar"><a href="../../dlya-uchitelya.html">← Для учителя</a><span class="t">Канва урока «Гора и Ключ»</span><a href="index.html">Открыть студию</a><a href="vkleyka.html">Лист для вклейки</a><button type="button" onclick="window.print()">Печать</button></div>
+<main class="doc">
+<h1>«Гора и Ключ»: студия визуальной новеллы</h1>
+<p>ИИ и информационная безопасность · 6 класс · 12 лет · практикум в парах · 40 минут. Два класса: 8 человек (4 пары) и 16 человек (8 пар). Один ноутбук на пару.</p>
+<p>Опора: дети умеют пользоваться Алисой (прошлый урок). Мир — по мотивам уральских сказов П. П. Бажова.</p>
+<blockquote>Снаружи — игра: пара делает мини-новеллу в «студии». На деле урок про две вещи, и обе остаются в тетради: <b>формула промпта</b> (графический конспект ДРАКОН-ГРАФ) и <b>звенья разработки</b> (дракон-схема). Учитель не ведёт урок с доски — он ходит по рядам и смотрит на крупную плашку сверху: звено, кто Сценарист, кто Редактор, сколько осталось времени.</blockquote>
+
+<h2>Инструкция за минуту</h2>
+<ol>
+  <li>Откройте сайт → ИИИБ → 6 класс → «Гора и Ключ». На каждом ноутбуке пары — студия во вкладке, Алиса (Яндекс) — в соседней вкладке.</li>
+  <li>Пара вписывает имена и выбирает режим: «С подсказками» (новички: готовые варианты, честный поступок уже вписан) или «Свободно» (сильные: сами пишут задачу и детали мира). Подскажите паре, какой режим брать.</li>
+  <li>Дальше пара идёт сама по кнопке «Дальше». Таймер на каждом шаге только подсказывает и ничего не блокирует.</li>
+  <li>На 33-й минуте скажите «Обмен» — пары жмут «Начать обмен» и передают ноутбук соседям по ряду.</li>
+  <li>Кнопка «Класс» — на последнем экране студии. Откройте студию на компьютере у проектора, нажмите «Класс» и отметьте, сколько пар дошло до каждого финала.</li>
+</ol>
+
+<h2>Роли в паре</h2>
+<p><b>Сценарист</b> собирает промпт и вставляет ответ Алисы. <b>Редактор</b> сверяет текст с законом мира, ставит галочки, отвечает на вопросы проверки. На каждом новом звене роли меняются местами — студия сама пишет наверху, кто сейчас кто.</p>
+
+<h2>Ход урока</h2>
+<table><thead><tr><th>Мин</th><th>Звено</th><th>Экран</th><th>Что делают дети</th></tr></thead><tbody id="hod"></tbody></table>
+
+<h2>Мир урока</h2>
+<p id="about"></p>
+<p><b>Закон мира:</b> «<span id="law"></span>» — помощник ссылается на него на каждом шаге. <span id="keepers"></span></p>
+<table><thead><tr><th>Герой</th><th>Черта</th><th>Слабость</th><th>Заметка</th></tr></thead><tbody id="heroes"></tbody></table>
+
+<h2>Четыре финала</h2>
+<p>Развилка 1 — как Мастер отвечает испытанию: <b>честно / жадно</b>. Жадность ведёт в единый финал «Золото ушло». Развилка 2 (после «честно») — что Мастер делает с находкой. Пара пишет один финал сценой (сильные — больше, если хватит времени), все четыре класс собирает на карте финалов.</p>
+<div id="finals"></div>
+<p class="k">Цитаты сверены с текстами сказов. Полный текст сказа открывается кнопкой «Сказ целиком» в онлайн-библиотеке. Чтобы сказы открывались без интернета, вставьте их тексты в <code>tekst.js</code>, в раздел <code>polnyj</code> (номер — как у финала).</p>
+<div class="kon" id="dsS"></div>
+
+<h2>Конструктор промпта</h2>
+<p>Четыре части — четыре цвета: <b style="color:#7d4fc4">роль</b>, <b style="color:#2f7fd0">что сделать</b>, <b style="color:#2e8a5a">детали мира</b>, <b style="color:#c06a1e">формат</b>. Кнопка «Собрать промпт» сначала проверяет три типовые ошибки:</p>
+<table><thead><tr><th>Ошибка</th><th>Подсказка Дедушки Слышко</th></tr></thead><tbody id="errs"></tbody></table>
+<h3>Если Алиса ответила не по миру</h3>
+<ol>
+  <li>Слышко сам подчёркивает слова не из мира сказов (смартфон, магазин, интернет…). Пока они в тексте, «Сцена годится» не нажимается — Редактор может просто вычеркнуть слово в поле.</li>
+  <li>Первая неудача («Не годится») — кнопка «Подставить»: в промпт добавляется строка с законом Охранника. Пара копирует промпт заново и спрашивает Алису ещё раз.</li>
+  <li>Вторая неудача — <b>режим одной ветки</b>: Редактор правит текст сам и принимает сцену; сцену-финал можно не писать («Закончить одной сценой»). Появляется кнопка «Спросить учителя» — это сигнал вам подойти.</li>
+</ol>
+
+<h2>Стоп-кадр 1: формула промпта (ДРАКОН-ГРАФ)</h2>
+<p>Вспышка и фраза: «<span id="stopSay"></span>» Дети перерисовывают схему и подписывают под ней части своего промпта.</p>
+<div class="kon" id="graf"></div>
+
+<h2>Стоп-кадр 2: звенья разработки (дракон-схема)</h2>
+<p>Пара собирает схему сама: двойной щелчок по пустому блоку — вписать звено. Экспертиза в схеме — вопрос: если ошибка есть, стрелка ведёт назад. После «Проверить схему» (или после двух попыток) появляется образец.</p>
+<div class="kon" id="dsZ"></div>
+
+<h2>Проверка: шесть редакторских вопросов</h2>
+<p>Студия выбирает два случайных. Отвечает Редактор, Сценарист показывает строчку в тексте.</p>
+<ol id="qs"></ol>
+
+<h2>Обмен</h2>
+<p>Без пересадки: ноутбук передают соседям по ряду (0:30). Гости проходят чужую игру и пишут одно несоответствие миру — хозяева увидят запись на последнем экране. На экране всё время правило симметрии: «<span id="rule"></span>»</p>
+
+<h2>Фишки удержания</h2>
+<p><b>Ключ от тайника.</b> За каждый финал, до которого доходят в игре этой студии, — печать. Четыре печати открывают короткую концовку «Тайник открыт». <b>Карта класса</b> — кнопка «Класс» на последнем экране, для проектора.</p>
+
+<div class="teacher">
+<h2>Что изменено по сравнению с исходным заданием</h2>
+<ul>
+  <li><b>Финал 3</b> взят из сказа «Медной горы Хозяйка» (Степан не променял невесту на богатства горы, получил малахитовую шкатулку для неё, а радости в жизни не нашёл). Это точнее подходит к «верности близким», чем «Малахитовая шкатулка». Название финала — «Подарок Хозяйки».</li>
+  <li>Цитат «не ходи за богатством» (Синюшка) и «Опять обман!» (Танюшка) дословно в текстах нет — взяты настоящие цитаты из тех же сказов. «Обманул — золото уйдёт» — формула закона мира урока; в сказе «Про Великого Полоза» мысль та же: Полоз не любит обмана около золота и отводит его.</li>
+  <li>Порядок экранов: сначала скелет истории (поступки и развилка — звено «Канва»), потом тексты сцен (звено «Контент»). Так карта звеньев проживается по порядку.</li>
+  <li>Два поступка — честный и жадный — и есть первая развилка. Жадная ветка всегда ведёт в «Золото ушло», даже если сцену не написали: закон мира срабатывает сам.</li>
+  <li>Таймеры только подсказывают; кнопок «разблокировать» у учителя нет.</li>
+</ul>
+</div>
+
+<p class="k">Графический конспект — язык ГРАФ (В. Д. Паронджанов; Г. А. Гуленков; библиотека drakon-graf — С. Н. Веснин). Схемы — DrakonWidget (Степан Митькин). Мир урока — по мотивам сказов П. П. Бажова.</p>
+</main>
+
+<script src="tekst.js"></script>
+<script src="../../lib/drakon-graf/drakon-graf.min.js"></script>
+<script src="../../lib/drakon-graf/konspekt.js"></script>
+<script src="../../lib/drakonwidget/drakonwidget.js"></script>
+<script src="../../lib/drakon-shema/drakon-shema.js"></script>
+<script>
+(function(){
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const what = {
+  start:'Имена, режим работы. Слышко здоровается.',
+  demo:'Слайды про экспедицию; сравнивают слабый и сильный промпт; ищут строчку, где Охранник нарушил закон.',
+  lib:'Читают четыре карточки финалов с цитатами; выбирают, к какому финалу хотят привести Мастера.',
+  acts:'Придумывают честный и жадный поступок Мастера — две ветки скелета.',
+  fork:'Выбирают ветку для сцены-финала; видят сюжет как дракон-схему.',
+  scene1:'Собирают промпт из 4 частей, копируют в Алису, вставляют ответ; Редактор проверяет.',
+  stop1:'Перерисовывают ГРАФ-конспект «Как собрать промпт?» и подписывают части своего промпта.',
+  scene2:'Тем же конструктором пишут сцену-финал своей ветки.',
+  tree:'Смотрят дерево игры, проходят свою игру; сильные пишут ещё ветку.',
+  check:'Отвечают на два редакторских вопроса.',
+  stop2:'Собирают дракон-схему звеньев разработки и перерисовывают её.',
+  swap:'Передают ноутбук соседям, проходят чужую игру, пишут одно несоответствие миру.',
+  final:'Карта финалов и печати; запись в тетрадь «Наш финал ближе к сказу …, потому что …».'
+};
+$('hod').innerHTML = T.screens.map(s => `<tr><td>${s.min}</td><td>${esc(T.stages[s.stage].name)}</td><td>${esc(s.name)}</td><td>${esc(what[s.id] || '')}</td></tr>`).join('');
+$('about').textContent = T.world.about;
+$('law').textContent = T.world.law.replace(/\.$/,'');
+$('keepers').textContent = T.world.keepers;
+$('heroes').innerHTML = T.world.heroes.map(h => `<tr><td><b>${esc(h.name)}</b></td><td>${esc(h.trait)}</td><td>${esc(h.weak)}</td><td>${esc(h.note)}</td></tr>`).join('');
+$('finals').innerHTML = T.finals.map(f => `<h3>${f.n}. «${esc(f.name)}» — сказ «${esc(f.skaz)}»</h3>
+  <p><b>Условие:</b> ${esc(f.cond)}. <b>Плашка:</b> «${esc(f.plaque)}»</p>
+  <p>${esc(f.usushka)} <span class="k">(${esc(T.finalsNote)})</span></p>
+  ${f.quotes.map(q => `<blockquote>${esc(q.q)} <span class="k">— ${esc(q.src)}</span></blockquote>`).join('')}
+  <p class="k"><a href="${esc(f.url)}" target="_blank" rel="noopener">Текст сказа</a></p>`).join('');
+$('errs').innerHTML = [['Слитная роль (роль не выбрана или в задаче «Алиса»)', T.builder.errRole], ['Детали без ограничений (закон не выбран)', T.builder.errLaw], ['Формат оценочными словами («интересно», «красиво»…)', T.builder.errFormat]]
+  .map(([a,b]) => `<tr><td>${esc(a)}</td><td>${esc(b)}</td></tr>`).join('');
+$('stopSay').textContent = T.stopSay;
+$('qs').innerHTML = T.check.qs.map(q => `<li>${esc(q)}</li>`).join('');
+$('rule').textContent = T.swap.rule;
+try { Konspekt.draw($('graf'), T.stop1.konspekt, { class:6, width:680 }); } catch(e){}
+try { DrakonShema.pokazat($('dsZ'), T.stop2.shema); } catch(e){}
+try { DrakonShema.pokazat($('dsS'), T.shemaSyuzhet); } catch(e){}
+})();
+</script>
+</body>
+</html>

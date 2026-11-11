@@ -1,0 +1,787 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Студия новеллы «Гора и Ключ»</title>
+<style>
+@font-face{font-family:"PT Serif";src:url("../../lib/drakon-graf/fonts/PT_Serif-Web-Regular.ttf") format("truetype");font-weight:400}
+@font-face{font-family:"PT Serif";src:url("../../lib/drakon-graf/fonts/PT_Serif-Web-Bold.ttf") format("truetype");font-weight:700}
+@font-face{font-family:"PT Serif";src:url("../../lib/drakon-graf/fonts/PT_Serif-Web-Italic.ttf") format("truetype");font-style:italic}
+:root{
+  --bg:#0f2a22;--bg2:#163a2f;--mal:#1f5c46;--mal2:#2f7d5f;--cu:#c27a3a;--cu2:#e0a060;--gold:#f2c94c;
+  --paper:#fffdf7;--paper2:#f6f0e1;--ink:#1d2622;--mut:#5d6b64;--line:#d8cfb8;
+  --blue:#3f7fd6;--grey:#9aa6a0;--yel:#ffe680;--bad:#b3412a;--ok:#1e7a4a;
+  --c-role:#7d4fc4;--c-task:#2f7fd0;--c-world:#2e8a5a;--c-format:#c06a1e;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg) radial-gradient(ellipse at 20% -10%,#1f5c46 0,transparent 55%),var(--bg);color:#eef4ef;font:16px/1.45 "Segoe UI",Roboto,Arial,sans-serif;display:flex;flex-direction:column;overflow:hidden}
+h1,h2,h3,.serif{font-family:"PT Serif",Georgia,serif}
+button{font:inherit;cursor:pointer}
+.hidden{display:none!important}
+/* ---------- верх ---------- */
+.top{flex:0 0 auto;display:flex;align-items:center;gap:14px;padding:6px 14px;background:#0a1f19;border-bottom:3px solid var(--cu);min-height:58px}
+.zveno{display:flex;flex-direction:column;line-height:1.1;min-width:150px}
+.zveno small{font-size:12px;color:#9fc3b3;text-transform:uppercase;letter-spacing:.08em}
+.zveno b{font:700 24px "PT Serif",Georgia,serif;color:var(--gold)}
+.chain{display:flex;align-items:center;gap:2px;flex:1;min-width:0;overflow:hidden}
+.chain span{font-size:12.5px;padding:3px 8px;border-radius:12px;background:#183d31;color:#9fc3b3;white-space:nowrap}
+.chain span.on{background:var(--gold);color:#2a2105;font-weight:700}
+.chain span.past{background:#24533f;color:#d6eadf}
+.chain i{color:#4f7d69;font-style:normal;font-size:12px}
+.roles{font-size:14px;line-height:1.25;text-align:right;white-space:nowrap}
+.roles b{color:var(--cu2)}
+.timer{position:relative;width:46px;height:46px;flex:0 0 46px}
+.timer svg{width:46px;height:46px;transform:rotate(-90deg)}
+.timer .tx{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:700 12px "Segoe UI",Arial;color:#eef4ef}
+.timer.out .tx{color:#ffb4a0}
+.timer.out svg{animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.4}}
+/* ---------- середина ---------- */
+main{flex:1 1 auto;overflow:auto;padding:12px 18px 18px}
+.wrap{max-width:1240px;margin:0 auto}
+.panel{background:var(--paper);color:var(--ink);border-radius:12px;padding:14px 18px;margin-bottom:12px;box-shadow:0 2px 0 #0a1f19}
+.panel h2{margin:0 0 6px;font-size:22px}
+.panel h3{margin:10px 0 6px;font-size:17px}
+.lead{font-size:17px}
+.mut{color:var(--mut);font-size:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.btn{border:0;border-radius:22px;padding:8px 18px;font-weight:700;background:var(--cu);color:#fff}
+.btn:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.45;cursor:default;filter:none}
+.btn.big{font-size:18px;padding:11px 24px}
+.btn.ghost{background:transparent;border:2px solid var(--cu);color:var(--cu)}
+.btn.mal{background:var(--mal2)}
+.btn.sm{padding:5px 12px;font-size:14px}
+.pick{border:2px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:8px 12px;text-align:left}
+.pick.on{border-color:var(--cu);background:#fff3e4;box-shadow:inset 0 0 0 1px var(--cu)}
+.pick:hover{border-color:var(--cu2)}
+input[type=text],textarea,select{font:inherit;border:2px solid var(--line);border-radius:8px;padding:7px 10px;background:#fff;color:var(--ink);width:100%}
+textarea{resize:vertical}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--cu)}
+.bad{border-color:var(--bad)!important;background:#fff3f0}
+/* ---------- низ: помощник ---------- */
+.foot{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:8px 14px;background:#0a1f19;border-top:2px solid #24533f;min-height:66px}
+.ava{width:46px;height:46px;border-radius:50%;background:var(--cu);display:flex;align-items:center;justify-content:center;font:700 22px "PT Serif",Georgia;color:#fff;flex:0 0 46px;border:2px solid var(--gold)}
+.say{flex:1;min-width:0}
+.say .who{font-size:12px;color:#9fc3b3}
+.say .tx{font-size:16px}
+.say .acts{display:inline-flex;gap:6px;margin-left:8px;vertical-align:middle}
+.say.flash{animation:sayIn .3s}
+@keyframes sayIn{from{opacity:.2;transform:translateY(4px)}}
+/* ---------- персонажи ---------- */
+.hero{background:var(--paper2);border-radius:10px;padding:8px 10px;border-left:5px solid var(--mal2);font-size:14px}
+.hero b{font:700 16px "PT Serif",Georgia}
+.hero .ic{float:right;font-size:22px}
+/* ---------- конструктор ---------- */
+.slot{border:2px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:8px;background:#fff}
+.slot>.h{font-weight:700;font-size:14px;margin-bottom:6px}
+.slot.role{border-left:6px solid var(--c-role)} .slot.task{border-left:6px solid var(--c-task)}
+.slot.world{border-left:6px solid var(--c-world)} .slot.format{border-left:6px solid var(--c-format)}
+.slot.err{border-color:var(--bad);background:#fff6f3}
+.chk{display:flex;gap:8px;align-items:flex-start;font-size:14.5px;margin:3px 0}
+.chk input{margin-top:3px;width:auto}
+.prompt{white-space:pre-wrap;background:#fbf7ec;border:1px dashed var(--cu);border-radius:10px;padding:10px 12px;font-size:15px}
+.prompt .p-role{color:var(--c-role);font-weight:700} .prompt .p-task{color:var(--c-task);font-weight:700}
+.prompt .p-world{color:var(--c-world)} .prompt .p-format{color:var(--c-format);font-weight:700}
+.hl{white-space:pre-wrap;font-size:14.5px;background:#fbf7ec;border-radius:8px;padding:8px 10px;max-height:150px;overflow:auto}
+.hl mark{background:#ffd2c4;text-decoration:underline wavy var(--bad)}
+/* ---------- слайды и библиотека ---------- */
+.slide{font:400 22px/1.4 "PT Serif",Georgia;color:var(--ink);min-height:96px;display:flex;align-items:center;padding:8px 6px}
+.dots{display:flex;gap:6px}.dots i{width:10px;height:10px;border-radius:50%;background:var(--line)}.dots i.on{background:var(--cu)}
+.line{display:block;width:100%;text-align:left;border:0;background:transparent;padding:6px 10px;border-radius:8px;font:17px/1.4 "PT Serif",Georgia;color:var(--ink)}
+.line:hover{background:#f3ead6}
+.line.ok{background:#e0f2e7;outline:2px solid var(--ok)} .line.no{background:#fbe3dc}
+.card{color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;font-size:14px}
+.card h3{margin:0;font-size:18px} .card .src{color:var(--mut);font-size:13px}
+.card .cond{font-size:13px;background:#f3ecdd;border-radius:6px;padding:3px 7px;margin:6px 0}
+.card .us{font-size:14px;margin:4px 0}
+.card .cap{font-size:11.5px;color:var(--mut);font-style:italic}
+.card q{display:block;font:italic 14px/1.35 "PT Serif",Georgia;margin:6px 0 0;quotes:"«" "»"}
+.card q+.qs{font-size:12px;color:var(--mut)}
+.card .ic{font-size:26px;float:right}
+/* ---------- дерево ---------- */
+.tree svg{width:100%;max-width:820px;height:auto;display:block;margin:0 auto}
+.grow{stroke-dasharray:500;stroke-dashoffset:500;animation:grow .2s ease-out forwards}
+@keyframes grow{to{stroke-dashoffset:0}}
+.nodeIn{animation:nodeIn .2s ease-out}
+@keyframes nodeIn{from{opacity:0}}
+/* ---------- развилка ---------- */
+.fork{display:grid;grid-template-columns:160px 1fr;gap:14px;align-items:center}
+.knot{width:130px;height:130px;border-radius:50%;background:var(--mal);color:#fff;display:flex;align-items:center;justify-content:center;text-align:center;font:700 16px "PT Serif",Georgia;border:4px solid var(--gold);padding:10px}
+.ways{display:flex;flex-direction:column;gap:10px}
+.way{display:flex;align-items:center;gap:10px}
+.way .ln{width:60px;height:3px;background:var(--grey)} .way.on .ln{background:var(--cu);height:4px}
+.plq{background:var(--yel);color:#3a2f00;border-radius:8px;padding:6px 12px;font-weight:700;border:2px solid #d9b800}
+/* ---------- бумага и схемы ---------- */
+.paper{background:#fffdf7;border-radius:10px;padding:8px;border:1px solid var(--line)}
+.ds{background:#fffdf7;border-radius:10px;border:1px solid var(--line)}
+.steps{margin:6px 0 0;padding-left:22px;font-size:15px}
+.legend{font-size:13px;color:var(--mut)}
+/* ---------- финалы, печати ---------- */
+.fin{color:var(--ink);background:#fff;border:2px solid var(--line);border-radius:12px;padding:10px;text-align:center;opacity:.55}
+.fin.on{opacity:1;border-color:#d9b800;background:#fffbe6}
+.fin .ic{font-size:36px}
+.seal{width:54px;height:54px;border-radius:50%;border:3px dashed #7a9b8c;display:inline-flex;align-items:center;justify-content:center;font-size:24px;margin-right:6px;color:#7a9b8c}
+.seal.on{border:3px solid #8a1f12;background:#b3412a;color:#fff;box-shadow:0 0 0 3px #f2c3b6}
+.tainik{background:#2a1d05;color:#ffe9a8;border-radius:12px;padding:14px 18px;font:17px/1.5 "PT Serif",Georgia;border:2px solid var(--gold)}
+/* ---------- оверлеи ---------- */
+.ov{position:fixed;inset:0;z-index:50;background:rgba(5,20,15,.82);display:flex;align-items:center;justify-content:center;padding:14px}
+.ovb{background:var(--paper);color:var(--ink);border-radius:14px;padding:18px 22px;max-width:980px;width:100%;max-height:100%;overflow:auto}
+#flash{z-index:60;background:radial-gradient(circle,#fff6c8 0,rgba(242,201,76,.9) 35%,rgba(10,31,25,.95) 75%);animation:fl 1.6s forwards}
+#flash .big{font:700 46px "PT Serif",Georgia;color:#2a1d05;text-align:center}
+#flash .big small{display:block;font-size:20px;font-weight:400}
+@keyframes fl{0%{opacity:0}10%{opacity:1}80%{opacity:1}100%{opacity:0}}
+#pl .ovb{max-width:860px;background:#fbf5e6}
+.pscene{font:19px/1.55 "PT Serif",Georgia;white-space:pre-wrap;max-height:52vh;overflow:auto;padding:4px 2px}
+.pchoices{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.pchoices .pick{font-size:17px}
+.bigplq{font:700 26px "PT Serif",Georgia;background:var(--yel);border:3px solid #d9b800;border-radius:12px;padding:14px 18px;text-align:center;color:#3a2f00}
+#tmenu .ovb{max-width:520px}
+#tlist{display:flex;flex-direction:column;gap:6px}
+#tlist .btn{text-align:left}
+#klass{background:var(--bg)}
+#klass .ovb{max-width:1400px;background:var(--bg);color:#eef4ef}
+.kgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:2vw}
+.kfin{background:var(--paper);color:var(--ink);border-radius:2vw;padding:2vw;text-align:center}
+.kfin .ic{font-size:6vw}
+.kfin h3{font-size:2.2vw;margin:.5vw 0}
+.kfin .n{font:700 6vw "PT Serif",Georgia;color:var(--cu)}
+.kfin.on{background:#fffbe6;box-shadow:0 0 0 .4vw var(--gold)}
+@media (max-width:1000px){.grid4{grid-template-columns:1fr 1fr}.chain{display:none}.kgrid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="zveno"><small>звено</small><b id="zv">Идея</b></div>
+  <div class="chain" id="chain"></div>
+  <div class="roles" id="roles"></div>
+  <div class="timer" id="timer" title="Время на этом шаге"><svg viewBox="0 0 46 46"><circle cx="23" cy="23" r="19" fill="none" stroke="#24533f" stroke-width="5"/><circle id="tring" cx="23" cy="23" r="19" fill="none" stroke="#f2c94c" stroke-width="5" stroke-dasharray="119.4" stroke-dashoffset="0"/></svg><div class="tx" id="ttx"></div></div>
+</header>
+<main><div class="wrap" id="w"></div></main>
+<footer class="foot">
+  <div class="ava" title="Дедушка Слышко">С</div>
+  <div class="say" id="say"><div class="who">Дедушка Слышко</div><div><span class="tx" id="saytx"></span><span class="acts" id="sayacts"></span></div></div>
+  <button class="btn" id="back" title="Назад">←</button>
+  <button class="btn big" id="next">Дальше →</button>
+</footer>
+
+<div class="ov hidden" id="flash"><div class="big">Стоп-кадр!<small>Зафиксируй победу в конспекте</small></div></div>
+<div class="ov hidden" id="pl"><div class="ovb" id="plb"></div></div>
+<div class="ov hidden" id="modal"><div class="ovb" id="modb"></div></div>
+<div class="ov hidden" id="klass"><div class="ovb" id="klb"></div></div>
+<div class="ov hidden" id="tmenu"><div class="ovb"><h2 style="margin-top:0">Служебное меню</h2><div id="tlist"></div><p style="text-align:right;margin:10px 0 0"><button class="btn ghost" id="tclose">Закрыть</button></p></div></div>
+
+<script src="tekst.js"></script>
+<script src="../../lib/drakon-graf/drakon-graf.min.js"></script>
+<script src="../../lib/drakon-graf/konspekt.js"></script>
+<script src="../../lib/drakonwidget/drakonwidget.js"></script>
+<script src="../../lib/drakon-shema/drakon-shema.js"></script>
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const SC = T.screens, B = T.builder;
+const FIN = Object.fromEntries(T.finals.map(f => [f.n, f]));
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } return a; };
+
+/* ================= состояние ================= */
+const KEY = 'gora-i-klyuch-v1', KKEY = 'gora-i-klyuch-klass';
+const blankScene = () => ({ role:null, task:'', taskSel:null, law:null, det:[], detFree:'', format:null, built:false, patched:false, text:'', fails:0, ok:false });
+function fresh(){
+  return { v:1, scr:0, names:['',''], mode:'novice', tStart:{}, said:{}, demo:{ slide:0, cmp:false, broken:false },
+    target:null, acts:{ honest:'', greedy:'' }, branch:null, cur:1, sc:{ s1:blankScene() },
+    stop2:{ fails:0, ok:false }, check:{ q:null, a:['',''] }, seals:[], guests:[], swap:'wait', single:false, lastStage:-1 };
+}
+let S = null;
+try { S = JSON.parse(localStorage.getItem(KEY)); } catch(e){ S = null; }
+if (!S || S.v !== 1) S = fresh();
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} };
+const scn = k => (S.sc[k] = S.sc[k] || blankScene());
+const nm = i => (S.names[i] || '').trim() || ('Участник ' + (i+1));
+
+/* ================= помощник ================= */
+function say(text, acts){
+  $('saytx').textContent = text;
+  const box = $('sayacts'); box.innerHTML = '';
+  (acts || []).forEach(([label, fn]) => { const b = document.createElement('button'); b.className = 'btn sm'; b.textContent = label; b.onclick = fn; box.appendChild(b); });
+  const s = $('say'); s.classList.remove('flash'); void s.offsetWidth; s.classList.add('flash');
+}
+
+/* ================= верх: звено, роли, таймер ================= */
+function renderTop(){
+  const st = SC[S.scr].stage;
+  $('zv').textContent = T.stages[st].name;
+  $('chain').innerHTML = T.stages.map((s,i) => `<span class="${i===st?'on':i<st?'past':''}">${esc(s.name)}</span>`).join('<i>→</i>');
+  const sc = S.names[0] || S.names[1] ? `Сценарист: <b>${esc(nm(st%2))}</b><br>Редактор: <b>${esc(nm((st+1)%2))}</b>` : '';
+  $('roles').innerHTML = sc;
+  $('back').disabled = S.scr === 0;
+}
+let outSaid = false;
+function tick(){
+  const s = SC[S.scr], el = $('timer');
+  if (!s.sec){ el.classList.add('hidden'); return; }
+  el.classList.remove('hidden');
+  const t0 = S.tStart[s.id] || Date.now();
+  const left = Math.max(0, s.sec - Math.floor((Date.now() - t0)/1000));
+  $('tring').setAttribute('stroke-dashoffset', (119.4 * (1 - left / s.sec)).toFixed(1));
+  $('ttx').textContent = Math.floor(left/60) + ':' + String(left%60).padStart(2,'0');
+  el.classList.toggle('out', left === 0);
+  if (left === 0 && !outSaid && !S.said['out'+s.id]){ outSaid = true; S.said['out'+s.id] = 1; save(); say('Время этого шага вышло. Заканчивайте и жмите «Дальше».'); }
+}
+setInterval(tick, 1000);
+
+/* ================= переходы ================= */
+let W;
+function go(i){
+  S.scr = Math.max(0, Math.min(SC.length - 1, i));
+  const s = SC[S.scr];
+  if (!S.tStart[s.id]) S.tStart[s.id] = Date.now();
+  outSaid = false; save(); render();
+  if (s.stage !== S.lastStage){
+    const st = T.stages[s.stage];
+    S.lastStage = s.stage; save();
+    if (S.scr > 0) say(st.say + (S.names[0] ? ` Меняемся ролями: Сценарист — ${nm(s.stage%2)}.` : ''));
+  }
+  if ((s.id === 'stop1' || s.id === 'stop2') && !S.said['flash'+s.id]){
+    S.said['flash'+s.id] = 1; save();
+    const f = $('flash'); f.classList.remove('hidden'); setTimeout(() => f.classList.add('hidden'), 1600);
+    say(T.stopSay);
+  }
+}
+$('next').onclick = () => { if (!$('next').disabled) go(S.scr + 1); };
+$('back').onclick = () => go(S.scr - 1);
+function nextOk(ok, label){ $('next').disabled = !ok; $('next').textContent = label || 'Дальше →'; $('next').classList.toggle('hidden', S.scr === SC.length - 1); }
+
+function render(){
+  W = $('w'); renderTop(); tick();
+  const id = SC[S.scr].id;
+  ({ start:scStart, demo:scDemo, lib:scLib, acts:scActs, fork:scFork, scene1:() => scBuilder('s1'),
+     stop1:scStop1, scene2:scScene2, tree:scTree, check:scCheck, stop2:scStop2, swap:scSwap, final:scFinal })[id]();
+  $('w').parentElement.scrollTop = 0;
+}
+
+/* ================= 1. старт ================= */
+function scStart(){
+  const st = T.start;
+  W.innerHTML = `<section class="panel"><h2>${esc(T.title)}</h2><p class="lead">${esc(st.lead)}</p>
+    <p class="mut">${esc(T.world.about)}</p></section>
+    <section class="panel"><h3>${esc(st.namesAsk)}</h3>
+      <div class="grid2"><input type="text" id="n0" maxlength="24" placeholder="Имя первого" value="${esc(S.names[0])}"><input type="text" id="n1" maxlength="24" placeholder="Имя второго" value="${esc(S.names[1])}"></div>
+      <p class="mut" style="margin:8px 0 0">${esc(st.roles.scen)}<br>${esc(st.roles.red)}</p>
+      <h3>${esc(st.modeAsk)}</h3>
+      <div class="row">${['novice','strong'].map(m => `<button class="pick ${S.mode===m?'on':''}" data-m="${m}"><b>${esc(st.modes[m].name)}</b><br><span class="mut">${esc(st.modes[m].note)}</span></button>`).join('')}</div>
+    </section>
+    <section class="row"><button class="btn big" id="go">Начать работу</button><button class="btn ghost" id="reset">Новая смена / начать заново</button></section>`;
+  const upd = () => { S.names = [$('n0').value, $('n1').value]; save(); renderTop(); $('go').disabled = !(S.names[0].trim() && S.names[1].trim()); };
+  $('n0').oninput = $('n1').oninput = upd; upd();
+  W.querySelectorAll('[data-m]').forEach(b => b.onclick = () => { S.mode = b.dataset.m; save(); scStart(); });
+  $('go').onclick = () => go(1);
+  $('reset').onclick = () => { if (confirm('Стереть работу этой пары и начать заново?')){ S = fresh(); save(); render(); say(T.start.hello); } };
+  nextOk(!!(S.names[0].trim() && S.names[1].trim()));
+  if (!$('saytx').textContent) say(st.hello);
+}
+
+/* ================= 2. показ студии ================= */
+function scDemo(){
+  const D = S.demo, n = T.slides.length;
+  W.innerHTML = `<section class="panel"><div class="row" style="justify-content:space-between"><h2>Экспедиция к горе</h2><div class="dots">${T.slides.map((_,i) => `<i class="${i===D.slide?'on':''}"></i>`).join('')}</div></div>
+      <div class="slide">${esc(T.slides[D.slide])}</div>
+      <div class="row"><button class="btn ghost sm" id="sp" ${D.slide===0?'disabled':''}>← Назад</button><button class="btn sm" id="sn" ${D.slide===n-1?'disabled':''}>Дальше слайд →</button></div></section>
+    <div class="grid2">
+      <section class="panel"><h3>Сравнить два промпта</h3><p class="mut">${esc(T.compare.intro)}</p><button class="btn mal" id="cmp">${D.cmp ? 'Скрыть' : 'Сравнить два промпта'}</button><div id="cmpb"></div></section>
+      <section class="panel"><h3>Найди сломанную сцену</h3><p class="mut">${esc(T.broken.intro)}</p><div id="brk">${T.broken.lines.map((l,i) => `<button class="line ${D.broken && i===T.broken.bad?'ok':''}" data-i="${i}">${esc(l)}</button>`).join('')}</div></section>
+    </div>`;
+  $('sp').onclick = () => { D.slide--; save(); scDemo(); };
+  $('sn').onclick = () => { D.slide++; save(); scDemo(); };
+  $('cmp').onclick = () => { D.cmp = !D.cmp; save(); scDemo(); };
+  if (D.cmp){
+    const C = T.compare, part = x => `<div style="margin-top:8px"><b>${esc(x.label)}</b><div class="prompt" style="margin:4px 0">${esc(x.prompt)}</div><div class="mut">Ответ:</div><div class="hl">${esc(x.result)}</div><p style="margin:4px 0;font-size:14px">${esc(x.verdict)}</p></div>`;
+    $('cmpb').innerHTML = part(C.a) + part(C.b) + `<p class="mut" style="font-size:12px">${esc(C.note)}</p>`;
+  }
+  W.querySelectorAll('#brk .line').forEach(b => b.onclick = () => {
+    const i = +b.dataset.i;
+    if (i === T.broken.bad){ D.broken = true; save(); b.classList.add('ok'); say(T.broken.win); }
+    else { b.classList.add('no'); setTimeout(() => b.classList.remove('no'), 900); say(T.broken.miss); }
+  });
+  nextOk(true);
+}
+
+/* ================= 3. библиотека ================= */
+function finCard(f, extra){
+  return `<div class="card"><span class="ic">${f.icon}</span><h3>${f.n}. ${esc(f.name)}</h3><div class="src">сказ «${esc(f.skaz)}»</div>
+    <div class="cond">${esc(f.cond)}</div><div class="us">${esc(f.usushka)}</div><div class="cap">${esc(T.finalsNote)}</div>
+    ${f.quotes.map(q => `<q>${esc(q.q)}</q><div class="qs">${esc(q.src)}</div>`).join('')}
+    <div style="margin-top:auto;padding-top:8px">${extra || ''}<button class="btn ghost sm" data-full="${f.n}">Сказ целиком</button></div></div>`;
+}
+function openFull(n){
+  const f = FIN[n], txt = (T.polnyj[n] || '').trim();
+  $('modb').innerHTML = `<h2 style="margin-top:0">«${esc(f.skaz)}»</h2><p class="mut">П. П. Бажов</p>` +
+    (txt ? `<div class="pscene" style="max-height:62vh">${esc(txt)}</div>` : `<p>${esc(T.lib.noText)}</p><p><a class="btn" href="${esc(f.url)}" target="_blank" rel="noopener">Открыть сказ</a></p>`) +
+    `<p style="text-align:right;margin:10px 0 0"><button class="btn ghost" id="mclose">Закрыть</button></p>`;
+  $('modal').classList.remove('hidden');
+  $('mclose').onclick = () => $('modal').classList.add('hidden');
+}
+function bindFull(){ W.querySelectorAll('[data-full]').forEach(b => b.onclick = () => openFull(+b.dataset.full)); }
+function scLib(){
+  W.innerHTML = `<section class="panel" style="padding:10px 16px"><b>${esc(T.lib.intro)}</b> <span class="mut">${esc(T.world.keepers)}</span></section>
+    <div class="grid4">${T.finals.map(f => finCard(f)).join('')}</div>
+    <section class="panel" style="margin-top:12px"><h3>${esc(T.lib.expAsk)}</h3><div class="row">${T.finals.map(f => `<button class="pick ${S.target===f.n?'on':''}" data-t="${f.n}">${f.icon} ${esc(f.name)}</button>`).join('')}</div></section>`;
+  bindFull();
+  W.querySelectorAll('[data-t]').forEach(b => b.onclick = () => { S.target = +b.dataset.t; save(); scLib(); say(T.lib.expSay[S.target]); });
+  nextOk(!!S.target);
+}
+
+/* ================= дерево (SVG) ================= */
+let grownBefore = null;
+function treeSVG(mini){
+  const ok = k => !!(S.sc[k] && S.sc[k].ok);
+  const P = { s1:[95,150], k:[360,95], f1:[600,32], f2:[600,98], f3:[600,164], f4:[600,250] };
+  const now = { s1:ok('s1'), f1:ok('f1'), f2:ok('f2'), f3:ok('f3'), f4:ok('f4'), k: !!S.acts.honest.trim(), g: !!S.acts.greedy.trim() };
+  const prev = grownBefore || {}; grownBefore = now;
+  const cut = (s,n) => { s = (s||'').trim(); return s.length > n ? s.slice(0,n-1) + '…' : s; };
+  const col = on => on ? 'var(--blue)' : 'var(--grey)';
+  const edge = (x1,y1,x2,y2,on,newly,w) => `<path d="M${x1} ${y1} C ${(x1+x2)/2} ${y1}, ${(x1+x2)/2} ${y2}, ${x2} ${y2}" fill="none" stroke="${on?'#c27a3a':'#b9c3be'}" stroke-width="${w||2}" ${newly?'class="grow"':''}/>`;
+  const box = (k,label,on,mark) => { const [x,y] = P[k]; return `<g ${on && !prev[k] ? 'class="nodeIn"' : ''}><rect x="${x-70}" y="${y-20}" width="140" height="40" rx="9" fill="${col(on)}" ${mark?'stroke="#c27a3a" stroke-width="3" stroke-dasharray="6 4"':''}/><text x="${x}" y="${y+5}" text-anchor="middle" font-size="14" fill="#fff" font-weight="700">${esc(label)}</text></g>`; };
+  const plq = n => { const [x,y] = P['f'+n]; const lit = ok('f'+n) || (n === 4); return `<g opacity="${ok('f'+n)?1:.45}"><rect x="${x+95}" y="${y-17}" width="170" height="34" rx="7" fill="#ffe680" stroke="#d9b800" stroke-width="2"/><text x="${x+180}" y="${y+5}" text-anchor="middle" font-size="13" fill="#3a2f00" font-weight="700">${n}. ${esc(FIN[n].name)}</text></g>` + edge(x+70,y,x+95,y,lit && ok('f'+n),false,1.5); };
+  let s = `<svg viewBox="0 0 880 285" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial">`;
+  // поступки от сцены 1
+  s += edge(165,150,330,95,now.k,now.k&&!prev.k,2.5) + edge(165,150,530,250,now.g,now.g&&!prev.g,2.5);
+  const halo = 'paint-order="stroke" stroke="#fffdf7" stroke-width="5" stroke-linejoin="round"';
+  s += `<text x="20" y="52" font-size="12.5" fill="#1e7a4a" font-weight="700" ${halo}>${esc(now.k ? '✓ ' + cut(S.acts.honest,40) : 'честный поступок — ?')}</text><path d="M120 58 L 245 120" stroke="#1e7a4a" stroke-width="1" stroke-dasharray="3 3" fill="none"/>`;
+  s += `<text x="20" y="262" font-size="12.5" fill="#a3471f" font-weight="700" ${halo}>${esc(now.g ? '✗ ' + cut(S.acts.greedy,40) : 'жадный поступок — ?')}</text><path d="M120 250 L 318 187" stroke="#a3471f" stroke-width="1" stroke-dasharray="3 3" fill="none"/>`;
+  // развилка 2
+  [1,2,3].forEach(n => { s += edge(390,95,530,P['f'+n][1],ok('f'+n),ok('f'+n)&&!prev['f'+n],1.6); });
+  s += `<g><polygon points="360,70 390,95 360,120 330,95" fill="${now.k?'var(--mal2)':'var(--grey)'}"/><text x="360" y="100" text-anchor="middle" font-size="13" fill="#fff" font-weight="700">?</text></g>`;
+  s += `<text x="360" y="140" text-anchor="middle" font-size="11.5" fill="#5d6b64">что с находкой</text>`;
+  s += box('s1','Сцена 1',now.s1);
+  [1,2,3,4].forEach(n => { s += box('f'+n, 'Сцена-финал', ok('f'+n), S.branch === n) + plq(n); });
+  return s + `</svg>`;
+}
+
+/* ================= 4. Канва: два поступка ================= */
+function scActs(){
+  if (S.mode === 'novice' && !S.acts.honest) { S.acts.honest = T.acts.novHonest; save(); }
+  const A = T.acts;
+  W.innerHTML = `<section class="panel"><h2>Скелет истории</h2><p class="lead">${esc(A.intro)}</p>
+      <div class="grid2"><label><b style="color:var(--ok)">${esc(A.honest.label)}</b><input type="text" id="ah" maxlength="90" placeholder="${esc(A.honest.ph)}" value="${esc(S.acts.honest)}"></label>
+      <label><b style="color:var(--bad)">${esc(A.greedy.label)}</b><input type="text" id="ag" maxlength="90" placeholder="${esc(A.greedy.ph)}" value="${esc(S.acts.greedy)}"></label></div></section>
+    <section class="panel tree" id="tr">${treeSVG(true)}</section>`;
+  const words = s => s.trim().split(/\s+/).filter(Boolean).length;
+  const upd = () => { S.acts.honest = $('ah').value; S.acts.greedy = $('ag').value; save(); $('tr').innerHTML = treeSVG(true); nextOk(words(S.acts.honest) >= 3 && words(S.acts.greedy) >= 3); };
+  $('ah').oninput = $('ag').oninput = upd; upd();
+  $('ah').onblur = $('ag').onblur = () => { if (words(S.acts.honest) < 3 || words(S.acts.greedy) < 3) say(A.short); };
+}
+
+/* ================= 5. Канва: развилка ================= */
+function scFork(){
+  const F = T.fork, b = S.branch, honest = b && b !== 4;
+  const chosen1 = b ? (b === 4 ? 'g' : 'h') : (S.fork1 || null);
+  W.innerHTML = `<section class="panel"><h2>Развилка</h2><p class="lead">${esc(F.intro)}</p>
+     <div class="fork"><div class="knot">${esc(F.q1)}</div><div class="ways">
+       <div class="way ${chosen1==='h'?'on':''}"><span class="ln"></span><button class="pick ${chosen1==='h'?'on':''}" id="w1h"><b>Честно</b> — ${esc(S.acts.honest)}</button></div>
+       <div class="way ${chosen1==='g'?'on':''}"><span class="ln"></span><button class="pick ${chosen1==='g'?'on':''}" id="w1g"><b>Жадно</b> — ${esc(S.acts.greedy)}</button></div>
+     </div></div>
+     <div id="f2" class="${chosen1==='h'?'':'hidden'}" style="margin-top:12px"><div class="fork"><div class="knot" style="background:#2f5c7d">${esc(F.q2)}</div><div class="ways">
+       ${[1,2,3].map(n => `<div class="way ${b===n?'on':''}"><span class="ln"></span><button class="pick ${b===n?'on':''}" data-b="${n}"><b>${esc(FIN[n].way[1])}</b></button><span class="plq">${n}. ${esc(FIN[n].name)}</span></div>`).join('')}
+     </div></div></div>
+     <div class="${chosen1==='g'?'':'hidden'}" style="margin-top:12px"><span class="plq">4. ${esc(FIN[4].name)}</span> <span class="mut">— ${esc(FIN[4].cond)}</span></div>
+    </section>
+    <section class="panel"><h3>Так сюжет выглядит в виде дракон-схемы</h3><div class="ds" id="dsS"></div></section>`;
+  $('w1h').onclick = () => { S.fork1 = 'h'; if (S.branch === 4) S.branch = null; save(); scFork(); };
+  $('w1g').onclick = () => { S.fork1 = 'g'; S.branch = 4; S.cur = 4; save(); scFork(); say(F.picked); };
+  W.querySelectorAll('[data-b]').forEach(x => x.onclick = () => { S.branch = +x.dataset.b; S.cur = S.branch; save(); scFork(); say(F.picked); });
+  try { DrakonShema.pokazat($('dsS'), T.shemaSyuzhet); } catch(e){ $('dsS').textContent = 'Схема не загрузилась.'; }
+  nextOk(!!S.branch);
+}
+
+/* ================= конструктор промпта ================= */
+function heroCards(){
+  return `<div class="grid3">${T.world.heroes.map(h => `<div class="hero"><span class="ic">${h.icon}</span><b>${esc(h.name)}</b><br>Черта: ${esc(h.trait)}<br>Слабость: ${esc(h.weak)}<br><span class="mut">${esc(h.note)}</span></div>`).join('')}</div>`;
+}
+function taskOptions(k){ return k === 's1' ? B.start1 : B.start2[+k.slice(1)]; }
+function taskOf(x, k){ return S.mode === 'novice' ? (x.taskSel != null ? taskOptions(k)[x.taskSel] : '') : x.task.trim(); }
+function promptParts(k){
+  const x = scn(k), n = k === 's1' ? 0 : +k.slice(1);
+  const det = x.det.map(i => B.detailsNovice[i]).concat(x.detFree.trim() ? [x.detFree.trim()] : []);
+  const heroes = T.world.heroes.map(h => `${h.name} (${h.trait}; слабость: ${h.weak})`).join(', ');
+  const before = n ? (n === 4 ? `Перед этим Мастер поступил жадно: ${S.acts.greedy.trim()}.` : `Перед этим Мастер поступил честно: ${S.acts.honest.trim()}.`) : '';
+  const after = n && n < 4 ? ` Потом он ${FIN[n].way[1].toLowerCase()}.` : '';
+  return [
+    ['role',  `Ты — ${x.role != null ? B.roles[x.role] : '…'}.`],
+    ['task',  `Напиши сцену: ${taskOf(x,k) || '…'}.`],
+    ['world', `Мир: уральский сказ, давние времена. Герои: ${heroes}. Закон мира: «${T.world.law.replace(/\.$/,'')}». В этой сцене: ${x.law != null ? B.lawHow[x.law] : '…'}.${det.length ? ' ' + det.join('. ') + '.' : ''}${before ? ' ' + before + after : ''}${x.patched ? ' ' + B.patchLine : ''}`],
+    ['format',`Формат: ${x.format != null ? B.formats[x.format] : '…'}. Пиши простыми словами, как в сказе.`]
+  ];
+}
+const promptText = k => promptParts(k).map(p => p[1]).join('\n');
+function promptErrors(k){
+  const x = scn(k), t = taskOf(x,k), all = (t + ' ' + x.detFree).toLowerCase();
+  const e = [];
+  if (x.role == null || /алис/.test(all)) e.push(['role', B.errRole]);
+  if (!t) e.push(['task', B.errTask]);
+  if (x.law == null) e.push(['world', B.errLaw]);
+  if (x.format == null || B.evalWords.some(w => all.includes(w))) e.push(['format', B.errFormat]);
+  return e;
+}
+function foreignIn(text){
+  const found = new Set(), low = text.toLowerCase();
+  T.foreign.forEach(w => { const re = new RegExp('(^|[^а-яё])' + w + '[а-яё]*', 'gi'); let m; while ((m = re.exec(low))) found.add(m[0].replace(/^[^а-яё]/i,'')); });
+  return [...found];
+}
+function highlight(text){
+  let h = esc(text);
+  foreignIn(text).forEach(w => { h = h.replace(new RegExp('(^|[^а-яёА-ЯЁ])(' + w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')', 'gi'), '$1<mark>$2</mark>'); });
+  return h;
+}
+function copyText(str){
+  const fallback = () => { const ta = document.createElement('textarea'); ta.value = str; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch(e){} ta.remove(); };
+  try { if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(str).catch(fallback); else fallback(); } catch(e){ fallback(); }
+}
+
+function scBuilder(k){
+  const x = scn(k), n = k === 's1' ? 0 : +k.slice(1), nov = S.mode === 'novice';
+  const title = n ? `Сцена-финал: ${n}. ${FIN[n].name}` : 'Сцена 1: испытание у горы';
+  const opts = taskOptions(k);
+  W.innerHTML = `<section class="panel" style="padding:10px 16px"><div class="row" style="justify-content:space-between"><h2 style="margin:0">${esc(title)}</h2>${n ? `<span class="plq">${esc(FIN[n].cond)}</span>` : ''}</div></section>
+    <section class="panel" style="padding:10px 12px">${heroCards()}</section>
+    <div class="grid2" style="align-items:start">
+    <section class="panel">
+      <div class="slot role" data-s="role"><div class="h">${esc(B.steps.role)}</div><div class="row">${B.roles.map((r,i) => `<button class="pick ${x.role===i?'on':''}" data-role="${i}">${esc(r)}</button>`).join('')}</div></div>
+      <div class="slot task" data-s="task"><div class="h">${esc(B.steps.task)}</div>
+        ${nov ? opts.map((o,i) => `<label class="chk"><input type="radio" name="task" value="${i}" ${x.taskSel===i?'checked':''}> ${esc(o)}</label>`).join('')
+              : `<input type="text" id="task" maxlength="160" placeholder="${esc(opts[0])}" value="${esc(x.task)}"><div class="mut" style="font-size:12.5px;margin-top:3px">Например: ${esc(opts.join(' / '))}</div>`}</div>
+      <div class="slot world" data-s="world"><div class="h">${esc(B.steps.world)}</div>
+        <div style="font-size:14px;margin-bottom:3px"><b>Закон:</b> «${esc(T.world.law)}» Как он касается сцены?</div>
+        ${B.lawHow.map((l,i) => `<label class="chk"><input type="radio" name="law" value="${i}" ${x.law===i?'checked':''}> ${esc(l)}</label>`).join('')}
+        <div style="font-size:14px;margin:5px 0 2px"><b>Ещё детали мира:</b></div>
+        ${B.detailsNovice.map((d,i) => `<label class="chk"><input type="checkbox" data-det="${i}" ${x.det.includes(i)?'checked':''}> ${esc(d)}</label>`).join('')}
+        ${nov ? '' : `<input type="text" id="detf" maxlength="140" placeholder="Своя деталь мира" value="${esc(x.detFree)}" style="margin-top:4px">`}</div>
+      <div class="slot format" data-s="format"><div class="h">${esc(B.steps.format)}</div><div class="row">${B.formats.map((f,i) => `<button class="pick ${x.format===i?'on':''}" data-fmt="${i}">${esc(f)}</button>`).join('')}</div></div>
+      <button class="btn big" id="build">${esc(B.build)}</button>
+    </section>
+    <section class="panel">
+      <div id="pbox" class="${x.built?'':'hidden'}"><h3 style="margin-top:0">Промпт для Алисы</h3><div class="prompt" id="ptx"></div>
+        <div class="row" style="margin:8px 0"><button class="btn mal" id="copy">${esc(B.copy)}</button><span class="mut" id="cmsg"></span></div></div>
+      <div id="abox" class="${x.built?'':'hidden'}"><h3>${esc(B.paste)}</h3>
+        <textarea id="ans" rows="6" placeholder="${esc(B.pastePh)}" ${x.ok?'readonly':''}>${esc(x.text)}</textarea>
+        <div id="hlw" class="hidden"><div class="mut" style="margin-top:4px">Слышко подчеркнул слова не из мира сказов:</div><div class="hl" id="hl"></div></div>
+        <div id="edbox" style="margin-top:6px"></div></div>
+      <div id="empty" class="${x.built?'hidden':''} mut">Соберите промпт слева — здесь появится текст для Алисы и поле для её ответа.</div>
+    </section></div>`;
+
+  const rerenderPrompt = () => {
+    $('ptx').innerHTML = promptParts(k).map(([c,t]) => `<span class="p-${c}">${esc(t)}</span>`).join('\n');
+  };
+  const markErr = errs => W.querySelectorAll('.slot').forEach(s => s.classList.toggle('err', errs.some(e => e[0] === s.dataset.s)));
+  const changed = () => { if (x.built){ const e = promptErrors(k); markErr(e); if (e.length){ x.built = false; save(); scBuilder(k); return; } rerenderPrompt(); } save(); };
+
+  W.querySelectorAll('[data-role]').forEach(b => b.onclick = () => { x.role = +b.dataset.role; save(); W.querySelectorAll('[data-role]').forEach(y => y.classList.toggle('on', y === b)); changed(); });
+  W.querySelectorAll('[data-fmt]').forEach(b => b.onclick = () => { x.format = +b.dataset.fmt; save(); W.querySelectorAll('[data-fmt]').forEach(y => y.classList.toggle('on', y === b)); changed(); });
+  W.querySelectorAll('input[name=task]').forEach(r => r.onchange = () => { x.taskSel = +r.value; changed(); });
+  W.querySelectorAll('input[name=law]').forEach(r => r.onchange = () => { x.law = +r.value; changed(); });
+  W.querySelectorAll('[data-det]').forEach(c => c.onchange = () => { const i = +c.dataset.det; x.det = c.checked ? [...new Set(x.det.concat(i))] : x.det.filter(j => j !== i); changed(); });
+  if ($('task')) $('task').oninput = () => { x.task = $('task').value; changed(); };
+  if ($('detf')) $('detf').oninput = () => { x.detFree = $('detf').value; changed(); };
+  $('build').onclick = () => {
+    const e = promptErrors(k); markErr(e);
+    if (e.length){ say(e[0][1]); return; }
+    x.built = true; save(); scBuilder(k); say(B.ready);
+  };
+  if (x.built){
+    rerenderPrompt();
+    $('copy').onclick = () => { copyText(promptText(k)); $('cmsg').textContent = B.copied; };
+    const ans = $('ans');
+    const onText = () => {
+      x.text = ans.value; save();
+      const f = foreignIn(x.text);
+      $('hlw').classList.toggle('hidden', !f.length);
+      if (f.length) $('hl').innerHTML = highlight(x.text);
+      editorBox(k);
+    };
+    ans.oninput = onText; onText();
+  }
+  if (!S.said['b'+k]){ S.said['b'+k] = 1; save();
+    say(k === 's1' ? `С чего начнём? Можно так: «${B.start1[0]}» — или так: «${B.start1[1]}». Шаг за шагом заполните четыре части.` : `Финал «${FIN[n].name}». Соберите промпт ещё раз — все четыре части.`); }
+  nextOk(x.ok || (S.single && k !== 's1'), x.ok ? 'Дальше →' : (S.single && k !== 's1' ? 'Закончить одной сценой →' : 'Дальше →'));
+  if (k !== 's1' && x.ok) nextOk(true);
+}
+function editorBox(k){
+  const x = scn(k), box = $('edbox'); if (!box) return;
+  if (x.ok){ box.innerHTML = `<p style="color:var(--ok);font-weight:700;margin:4px 0">✓ ${esc(B.accepted)}</p>`; nextOk(true); return; }
+  if (x.text.trim().length < 60){ box.innerHTML = ''; return; }
+  const f = foreignIn(x.text);
+  box.innerHTML = `<b>${esc(B.edAsk)}</b>
+    <label class="chk"><input type="checkbox" id="e1"> ${esc(B.edLaw)}</label>
+    <label class="chk"><input type="checkbox" id="e2"> ${esc(B.edWords)}</label>
+    <div class="row" style="margin-top:6px"><button class="btn" id="acc" disabled>${esc(B.accept)}</button><button class="btn ghost" id="rej">${esc(B.reject)}</button>
+    ${x.fails >= 1 && !x.patched ? `<button class="btn mal" id="patch">${esc(B.patchYes)}</button>` : ''}
+    ${x.fails >= 2 ? `<button class="btn ghost" id="askT">${esc(B.askTeacher)}</button>` : ''}</div>`;
+  const upd = () => { $('acc').disabled = !($('e1').checked && $('e2').checked && (!foreignIn(x.text).length || x.fails >= 2)); };
+  $('e1').onchange = $('e2').onchange = () => { if ($('e2').checked && foreignIn(x.text).length) say(B.foreignFound); upd(); };
+  upd();
+  $('acc').onclick = () => { x.ok = true; save(); say(B.accepted); scBuilder(k); };
+  $('rej').onclick = () => {
+    x.fails++; save();
+    if (x.fails === 1) say(B.patchAsk, [[B.patchYes, () => doPatch(k)]]);
+    else { S.single = true; save(); say(B.oneBranch); }
+    editorBox(k);
+  };
+  if ($('patch')) $('patch').onclick = () => doPatch(k);
+  if ($('askT')) $('askT').onclick = () => say(B.teacherSay);
+}
+function doPatch(k){ const x = scn(k); x.patched = true; x.text = ''; save(); scBuilder(k); say(B.patchDone); }
+
+/* ================= 7. стоп-кадр 1 ================= */
+function worldShort(k){
+  const x = scn(k), det = x.det.map(i => B.detailsNovice[i]).concat(x.detFree.trim() ? [x.detFree.trim()] : []);
+  return `закон «${T.world.law}» ${x.law != null ? B.lawHow[x.law] + '.' : ''}${det.length ? ' ' + det.join('. ') + '.' : ''}`;
+}
+function scStop1(){
+  const x = scn('s1'), P = promptParts('s1');
+  const names = { role:'Роль', task:'Что сделать', world:'Детали мира', format:'Формат' };
+  W.innerHTML = `<section class="panel"><h2>Стоп-кадр: ${esc(T.stop1.title)}</h2>
+    <div class="grid2" style="align-items:start"><div><div class="paper" id="kon"></div>
+      <p class="legend">Жёлтое — запомни, белое — разберись. Овал — тема, рамка — пример, кружки — части.</p></div>
+      <div><ol class="steps">${T.stop1.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>
+      <h3>${esc(T.stop1.mine)}</h3>${P.map(([c,t]) => `<div style="margin:4px 0;font-size:14.5px"><b class="p-${c}" style="color:var(--c-${c})">${names[c]}:</b> ${esc(c === 'world' ? worldShort('s1') : t)}</div>`).join('')}</div></div></section>`;
+  try { Konspekt.draw($('kon'), T.stop1.konspekt, { class:6, width:680 }); } catch(e){ $('kon').textContent = T.stop1.konspekt; }
+  nextOk(true);
+}
+
+/* ================= 8. сцена-финал ================= */
+function scScene2(){
+  if (!S.branch){ S.branch = S.target || 1; }
+  if (!S.cur) S.cur = S.branch;
+  scBuilder('f' + S.cur);
+}
+
+/* ================= 9. дерево ================= */
+function written(){ return [1,2,3,4].filter(n => S.sc['f'+n] && S.sc['f'+n].ok); }
+function scTree(){
+  const left = [1,2,3,4].filter(n => !written().includes(n));
+  W.innerHTML = `<section class="panel"><h2>Дерево игры</h2><p class="mut">${esc(T.tree.intro)}</p><div class="tree" id="tr">${treeSVG()}</div>
+    <div class="row" style="margin-top:8px"><button class="btn big" id="play">${esc(T.tree.play)}</button></div></section>
+    ${left.length && !S.single ? `<section class="panel"><h3>${esc(T.tree.more)}</h3><p class="mut">${esc(T.tree.moreNote)}</p><div class="row">${left.map(n => `<button class="pick" data-more="${n}">${FIN[n].icon} ${n}. ${esc(FIN[n].name)}</button>`).join('')}</div></section>` : ''}`;
+  $('play').onclick = () => openPlayer(false);
+  W.querySelectorAll('[data-more]').forEach(b => b.onclick = () => { S.cur = +b.dataset.more; save(); go(SC.findIndex(s => s.id === 'scene2')); });
+  nextOk(true);
+}
+
+/* ================= игрок ================= */
+let PL = null;
+function openPlayer(guest){
+  PL = { guest, step:'title' }; $('pl').classList.remove('hidden'); plRender();
+}
+function closePlayer(){ $('pl').classList.add('hidden'); PL = null; if (SC[S.scr].id === 'swap') scSwap(); else if (SC[S.scr].id === 'final') scFinal(); }
+function seal(n){ if (!S.seals.includes(n)){ S.seals.push(n); save(); } }
+function plRender(){
+  const b = $('plb'), p = PL, title = `${esc(nm(0))} и ${esc(nm(1))} · «Гора и Ключ»`;
+  const btns = list => `<div class="pchoices">${list.map(([l,fn,dis],i) => `<button class="pick" data-pi="${i}" ${dis?'disabled style="opacity:.5"':''}>${l}</button>`).join('')}</div>`;
+  const bind = list => b.querySelectorAll('[data-pi]').forEach(x => x.onclick = () => list[+x.dataset.pi][1]());
+  const close = `<p style="text-align:right;margin:12px 0 0"><button class="btn ghost" id="plx">${esc(T.player.close)}</button></p>`;
+  let html = '', list = [];
+  if (p.step === 'title'){
+    html = `<h2 style="margin-top:0" class="serif">${title}</h2><p class="mut">${esc(T.world.about)}</p>`;
+    list = [[T.player.start, () => { p.step = 's1'; plRender(); }]];
+  } else if (p.step === 's1'){
+    html = `<div class="pscene">${esc(scn('s1').text || '(Сцена 1 ещё не написана.)')}</div><h3>${esc(T.player.choose1)}</h3>`;
+    list = shuffle([[esc(S.acts.honest), () => { p.step = 'k'; plRender(); }], [esc(S.acts.greedy), () => { p.step = 'f4'; plRender(); }]]);
+  } else if (p.step === 'k'){
+    html = `<h3 style="margin-top:0">${esc(T.player.choose2)}</h3>`;
+    list = [1,2,3].map(n => { const ok = S.sc['f'+n] && S.sc['f'+n].ok; return [esc(FIN[n].way[1]) + (ok ? '' : ` <span class="mut">(${esc(T.player.notWritten)})</span>`), () => { p.step = 'f'+n; plRender(); }, !ok]; });
+    if (!list.some(l => !l[2])) list.push([`${esc(FIN[S.branch && S.branch < 4 ? S.branch : 1].way[1])} <span class="mut">(${esc(T.player.lawWorks)})</span>`, () => { p.step = 'end'+(S.branch && S.branch < 4 ? S.branch : 1); p.nows = true; plRender(); }]);
+  } else if (/^f\d$/.test(p.step)){
+    const n = +p.step[1], x = S.sc['f'+n];
+    if (x && x.ok) html = `<div class="pscene">${esc(x.text)}</div>`;
+    else html = `<p class="mut">${esc(T.player.lawWorks)}</p>`;
+    list = [['Дальше →', () => { p.step = 'end'+n; p.nows = !(x && x.ok) && n !== 4; plRender(); }]];
+  } else if (/^end\d$/.test(p.step)){
+    const n = +p.step[3];
+    if (!p.nows) seal(n);
+    html = `<div class="bigplq">Финал ${n}. «${esc(FIN[n].name)}»<div style="font-size:18px;font-weight:400;margin-top:6px">${esc(FIN[n].plaque)}</div></div>
+      <p style="text-align:center;margin:12px 0 0">${p.nows ? '' : `<span class="seal on">${FIN[n].icon}</span> Печать ключа от тайника!`}</p>`;
+    list = [[T.player.again, () => { p.step = 'title'; plRender(); }]];
+  }
+  const guestBox = p.guest ? `<div class="panel" style="background:#fff3e4;margin:12px 0 0"><b>${esc(T.swap.guestTask)}</b><textarea id="gn" rows="2" placeholder="${esc(T.swap.guestPh)}">${esc(p.note || '')}</textarea><div class="row" style="margin-top:6px"><button class="btn" id="gsave">Готово</button></div></div>` : '';
+  b.innerHTML = html + btns(list) + guestBox + close;
+  bind(list);
+  $('plx').onclick = closePlayer;
+  if (p.guest){
+    $('gn').oninput = () => { p.note = $('gn').value; };
+    $('gsave').onclick = () => { const t = (p.note || '').trim(); if (t.length < 3){ $('gn').classList.add('bad'); return; } S.guests.push(t); S.swap = 'done'; save(); closePlayer(); say(T.swap.guestDone); };
+  }
+}
+
+/* ================= 10. проверка ================= */
+function scCheck(){
+  const C = S.check;
+  if (!C.q){ C.q = shuffle([0,1,2,3,4,5]).slice(0,2); save(); }
+  W.innerHTML = `<section class="panel"><h2>Проверка</h2><p class="lead">${esc(T.check.intro)}</p>
+    ${C.q.map((qi,i) => `<div class="slot" style="border-left:6px solid var(--cu)"><div class="h" style="font-size:16px">${i+1}. ${esc(T.check.qs[qi])}</div><textarea rows="2" data-a="${i}" placeholder="${esc(T.check.ph)}">${esc(C.a[i])}</textarea></div>`).join('')}
+    <div class="row"><button class="btn big" id="play">${esc(T.tree.play)}</button><button class="btn ghost" id="txt">Показать наши сцены</button></div><div id="scx"></div></section>`;
+  const upd = () => nextOk(C.a.every(a => a.trim().length >= 2));
+  W.querySelectorAll('[data-a]').forEach(t => t.oninput = () => { C.a[+t.dataset.a] = t.value; save(); upd(); if (C.a.every(a => a.trim().length >= 2) && !S.said.chk){ S.said.chk = 1; save(); say(T.check.done); } });
+  $('play').onclick = () => openPlayer(false);
+  $('txt').onclick = () => { $('scx').innerHTML = ['s1','f1','f2','f3','f4'].filter(k => S.sc[k] && S.sc[k].ok).map(k => `<h3>${k === 's1' ? 'Сцена 1' : 'Финал «' + esc(FIN[+k[1]].name) + '»'}</h3><div class="hl" style="max-height:none">${highlight(S.sc[k].text)}</div>`).join(''); };
+  upd();
+}
+
+/* ================= 11. стоп-кадр 2: дракон-схема ================= */
+let DS2 = null;
+function flatten(sh){
+  const out = [];
+  const walk = list => (list || []).forEach(s => {
+    if (s == null) return;
+    if (typeof s === 'string') { out.push(s); return; }
+    if (s.delat) walk(s.delat);
+    if (s.shagi) walk(s.shagi);
+    if (s.da) walk(s.da); if (s.net) walk(s.net);
+    if (s.varianty) Object.values(s.varianty).forEach(walk);
+  });
+  walk(sh && sh.shagi); return out;
+}
+const norm = s => String(s || '').toLowerCase().replace(/ё/g,'е').replace(/[^а-яa-z]/g,'');
+function scStop2(){
+  const Z = T.stop2, st = S.stop2;
+  W.innerHTML = `<section class="panel"><h2>Стоп-кадр: ${esc(Z.title)}</h2>
+    <p>${esc(Z.intro)}${shuffle(Z.words).map(w => `<b class="plq" style="padding:1px 8px;margin:0 3px">${esc(w)}</b>`).join('')}</p>
+    <div class="grid2" style="align-items:start"><div><div class="ds" id="dsZ" style="height:430px"></div>
+      <div class="row" style="margin-top:6px"><button class="btn" id="chk">${esc(Z.check)}</button><span id="res" class="mut"></span></div></div>
+      <div><ol class="steps">${Z.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>
+      <div id="sample" class="${st.ok || st.fails >= 2 ? '' : 'hidden'}"><h3>Образец</h3><div class="ds" id="dsO"></div></div></div></div></section>`;
+  try { DS2 = DrakonShema.pokazat($('dsZ'), Z.zagotovka, { rezhim:'sborka', klyuch:'gora-i-klyuch-zvenya', razreshit:[] }); } catch(e){ $('dsZ').textContent = 'Схема не загрузилась.'; }
+  const showSample = () => { $('sample').classList.remove('hidden'); try { DrakonShema.pokazat($('dsO'), Z.shema); } catch(e){} };
+  if (st.ok || st.fails >= 2) showSample();
+  $('chk').onclick = () => {
+    let got = [];
+    try { got = flatten(DS2.poluchit()).map(norm).filter(Boolean); } catch(e){}
+    const okk = Z.answer.length === got.length && Z.answer.every((a,i) => got[i].startsWith(norm(a).slice(0,4)));
+    if (okk){ st.ok = true; save(); $('res').innerHTML = '<b style="color:var(--ok)">✓ Верно</b>'; say(Z.win); showSample(); return; }
+    st.fails++; save(); $('res').innerHTML = '<b style="color:var(--bad)">Пока не так</b>';
+    say(st.fails === 1 ? Z.hint1 : Z.hint2); if (st.fails >= 2) showSample();
+  };
+  nextOk(true);
+}
+
+/* ================= 12. обмен ================= */
+let passTimer = null;
+function scSwap(){
+  const Z = T.swap;
+  clearInterval(passTimer);
+  if (S.swap === 'wait'){
+    W.innerHTML = `<section class="panel"><h2>Обмен играми</h2><p class="lead">${esc(Z.intro)}</p><div class="plq" style="font-size:19px;margin:10px 0">${esc(Z.rule)}</div><button class="btn big" id="st">${esc(Z.start)}</button></section>`;
+    $('st').onclick = () => { S.swap = 'pass'; S.passT = Date.now(); save(); scSwap(); };
+  } else if (S.swap === 'pass'){
+    W.innerHTML = `<section class="panel" style="text-align:center"><h2>${esc(Z.pass)}</h2><div class="plq" style="font-size:19px;margin:10px auto;display:inline-block">${esc(Z.rule)}</div><div style="font:700 60px 'PT Serif',Georgia;color:var(--cu)" id="pt">0:30</div><button class="btn big" id="gs">Мы гости — ${esc(Z.play)}</button></section>`;
+    const upd = () => { const l = Math.max(0, 30 - Math.floor((Date.now() - (S.passT||Date.now()))/1000)); if ($('pt')) $('pt').textContent = '0:' + String(l).padStart(2,'0'); };
+    upd(); passTimer = setInterval(upd, 500);
+    $('gs').onclick = () => { S.swap = 'play'; save(); clearInterval(passTimer); openPlayer(true); };
+  } else if (S.swap === 'play'){
+    W.innerHTML = `<section class="panel"><h2>Игра гостей</h2><p>${esc(Z.guestTask)}.</p><button class="btn big" id="gp">${esc(Z.play)}</button></section>`;
+    $('gp').onclick = () => openPlayer(true);
+  } else {
+    W.innerHTML = `<section class="panel"><h2>Обмен прошёл</h2><p class="lead">${esc(Z.guestDone)}</p><div class="plq" style="display:inline-block">${esc(Z.rule)}</div>
+      <p class="mut">Записей гостей: ${S.guests.length}</p><button class="btn ghost" id="again">Ещё одни гости</button></section>`;
+    $('again').onclick = () => { S.swap = 'pass'; S.passT = Date.now(); save(); scSwap(); };
+  }
+  nextOk(true);
+}
+
+/* ================= 13. финал ================= */
+function novelShema(){
+  const wr = [1,2,3].filter(n => S.sc['f'+n] && S.sc['f'+n].ok);
+  let da;
+  if (wr.length >= 2) da = [{ vybor:'Что он сделал с находкой?', varianty:Object.fromEntries(wr.map(n => [FIN[n].way[1], ['Финал ' + n + ' «' + FIN[n].name + '»']])) }];
+  else if (wr.length === 1) da = [FIN[wr[0]].way[1], 'Финал ' + wr[0] + ' «' + FIN[wr[0]].name + '»'];
+  else da = ['Ветка не написана'];
+  const cut = s => { s = (s||'').trim(); return s.length > 60 ? s.slice(0,59) + '…' : s; };
+  return { nazvanie: nm(0) + ' и ' + nm(1), shagi:[ 'Сцена 1: Охранник испытывает Мастера',
+    { vopros:'Мастер ответил честно?', da:[cut(S.acts.honest) || 'Честный поступок'].concat(da), net:[cut(S.acts.greedy) || 'Жадный поступок', 'Финал 4 «Золото ушло»'] } ] };
+}
+function scFinal(){
+  const F = T.final, wr = written();
+  W.innerHTML = `<section class="panel"><h2>Карта финалов</h2><p class="lead">${esc(F.intro)}</p>
+      <div class="grid4">${T.finals.map(f => `<div class="fin ${S.seals.includes(f.n)?'on':''}"><div class="ic">${f.icon}</div><b>${f.n}. ${esc(f.name)}</b><div class="mut">сказ «${esc(f.skaz)}»</div>${wr.includes(f.n) ? `<div style="margin-top:6px;font-size:14px">${esc(f.plaque)}</div>` : ''}</div>`).join('')}</div>
+      <p style="margin:12px 0 4px">${[1,2,3,4].map(n => `<span class="seal ${S.seals.includes(n)?'on':''}" title="Печать финала ${n}">${S.seals.includes(n) ? FIN[n].icon : '?'}</span>`).join('')}<span class="mut">${esc(F.sealsNote)}</span></p>
+      ${S.seals.length >= 4 ? `<div class="tainik">${esc(F.tainik)}</div>` : ''}
+    </section>
+    <div class="grid2" style="align-items:start">
+      <section class="panel"><h3 style="margin-top:0">${esc(F.reflect)}</h3>
+        ${S.guests.length ? `<b>${esc(F.guests)}</b><ul>${S.guests.map(g => `<li>${esc(g)}</li>`).join('')}</ul>` : ''}
+        <div class="row" style="margin-top:8px"><button class="btn mal" id="play">${esc(T.tree.play)}</button><button class="btn" id="kl">${esc(F.klass)}</button></div></section>
+      <section class="panel"><h3 style="margin-top:0">${esc(F.shemaTitle)}</h3><div class="ds" id="dsN"></div></section>
+    </div>`;
+  try { DrakonShema.pokazat($('dsN'), novelShema()); } catch(e){ $('dsN').textContent = 'Схема не загрузилась.'; }
+  $('play').onclick = () => openPlayer(false);
+  $('kl').onclick = openKlass;
+  if (!S.said.fin){ S.said.fin = 1; save(); say(F.reflect); }
+  else if (S.tStart.final && Date.now() - S.tStart.final > 90000 && !S.said.fin2){ S.said.fin2 = 1; save(); say(F.close); }
+  nextOk(true);
+}
+setInterval(() => { if (SC[S.scr].id === 'final' && S.tStart.final && Date.now() - S.tStart.final > 90000 && !S.said.fin2){ S.said.fin2 = 1; save(); say(T.final.close); } }, 2000);
+
+/* ================= карта класса (проектор) ================= */
+function openKlass(){
+  let K = [0,0,0,0]; try { K = JSON.parse(localStorage.getItem(KKEY)) || K; } catch(e){}
+  const draw = () => {
+    $('klb').innerHTML = `<div class="row" style="justify-content:space-between;margin-bottom:2vw"><h1 style="margin:0;font-size:3vw;color:var(--gold)">${esc(T.klass.title)}</h1><button class="btn ghost" id="kx" style="color:#eef4ef;border-color:#eef4ef">Закрыть</button></div>
+      <p style="font-size:1.6vw;margin:0 0 2vw;color:#cfe3d8">${esc(T.klass.note)}</p>
+      <div class="kgrid">${T.finals.map((f,i) => `<div class="kfin ${K[i]?'on':''}"><div class="ic">${f.icon}</div><h3>${f.n}. ${esc(f.name)}</h3><div class="mut" style="font-size:1.3vw">сказ «${esc(f.skaz)}»</div><div class="n">${K[i]}</div><div class="row" style="justify-content:center"><button class="btn ghost" data-k="${i}" data-d="-1">−</button><button class="btn" data-k="${i}" data-d="1">+ пара</button></div></div>`).join('')}</div>
+      <p style="font-size:1.6vw;text-align:center;margin-top:2vw">Открыто финалов: <b style="color:var(--gold)">${K.filter(Boolean).length} из 4</b></p>`;
+    $('kx').onclick = () => $('klass').classList.add('hidden');
+    $('klb').querySelectorAll('[data-k]').forEach(b => b.onclick = () => { const i = +b.dataset.k; K[i] = Math.max(0, K[i] + (+b.dataset.d)); try { localStorage.setItem(KKEY, JSON.stringify(K)); } catch(e){} draw(); });
+  };
+  draw(); $('klass').classList.remove('hidden');
+}
+
+/* ================= служебное меню: Ctrl+Alt+M ================= */
+const SAMPLE = 'Образец сцены для перехода по экранам.\n\n' ;
+function fillDefaults(i){
+  if (!S.names[0]) S.names = ['Аня','Боря'];
+  if (i >= 3 && !S.target) S.target = 1;
+  if (i >= 4){ if (!S.acts.honest.trim()) S.acts.honest = T.acts.novHonest; if (!S.acts.greedy.trim()) S.acts.greedy = 'Мастер прячет самородок за пазуху'; }
+  if (i >= 5 && !S.branch){ S.branch = S.target === 4 ? 4 : (S.target || 1); S.fork1 = S.branch === 4 ? 'g' : 'h'; S.cur = S.branch; }
+  if (i >= 6){ const x = scn('s1'); if (i > 6 && !x.ok){ Object.assign(x, { role:0, taskSel:0, law:0, format:0, built:true, text:T.compare.b.result, ok:true }); } }
+  if (i > 8){ const x = scn('f' + S.branch); if (!x.ok) Object.assign(x, { role:0, taskSel:0, law:0, format:0, built:true, text:SAMPLE + FIN[S.branch].usushka, ok:true }); }
+  if (i > 10 && !S.check.q){ S.check.q = [0,5]; S.check.a = ['Да, в третьей строчке.','Ближе к «' + FIN[S.branch].skaz + '».']; }
+  if (i > 12 && !S.guests.length){ S.swap = 'done'; }
+  save();
+}
+function teacherMenu(){
+  $('tlist').innerHTML = SC.map((s,i) => `<button class="btn ghost" data-i="${i}">${esc(s.name)} · ${s.min} мин · ${esc(T.stages[s.stage].name)}</button>`).join('') +
+    `<button class="btn ghost" data-i="t1">Таймер шага: +1 минута</button>` +
+    `<button class="btn ghost" data-i="t0">Таймер шага: заново</button>` +
+    `<button class="btn ghost" data-i="k">Карта финалов класса</button>` +
+    `<button class="btn ghost" data-i="p">Лист для вклейки (печать)</button>` +
+    `<button class="btn ghost" data-i="c">Канва урока</button>` +
+    `<button class="btn ghost" data-i="r">Новая смена (стереть работу пары)</button>`;
+  $('tlist').querySelectorAll('button').forEach(b => b.onclick = () => {
+    $('tmenu').classList.add('hidden');
+    const d = b.dataset.i, id = SC[S.scr].id;
+    if (d === 'r'){ S = fresh(); save(); grownBefore = null; render(); return; }
+    if (d === 'p'){ window.open('vkleyka.html', '_blank'); return; }
+    if (d === 'c'){ window.open('kanva.html', '_blank'); return; }
+    if (d === 'k'){ openKlass(); return; }
+    if (d === 't1'){ S.tStart[id] = (S.tStart[id] || Date.now()) + 60000; S.said['out'+id] = 0; save(); tick(); return; }
+    if (d === 't0'){ S.tStart[id] = Date.now(); S.said['out'+id] = 0; save(); tick(); return; }
+    const i = +d; fillDefaults(i); go(i);
+  });
+  $('tmenu').classList.remove('hidden');
+}
+$('tclose').onclick = () => $('tmenu').classList.add('hidden');
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.altKey && e.code === 'KeyM'){ e.preventDefault(); teacherMenu(); return; }
+  if (e.key === 'Escape'){ ['tmenu','modal','klass'].forEach(id => $(id).classList.add('hidden')); }
+});
+
+/* ================= старт ================= */
+render();
+if (S.scr === 0) say(T.start.hello); else say(T.stages[SC[S.scr].stage].say);
+</script>
+</body>
+</html>
