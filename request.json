@@ -1,0 +1,14 @@
+{
+  "model": "deepseek-chat",
+  "messages": [
+    {
+      "role": "system",
+      "content": "Ты — опытный веб-разработчик. Твоя задача — предлагать улучшения для кода. Отвечай ТОЛЬКО полным, исправленным кодом файла, без каких-либо пояснений, markdown-разметки или комментариев."
+    },
+    {
+      "role": "user",
+      "content": "Улучши этот HTML-файл, добавив в футер копирайт с текущим годом. Вот его содержимое:\n\n<!doctype html>\n<html lang=\"ru\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<title>Рабочий стол учителя</title>\n<link rel=\"stylesheet\" href=\"site.css\">\n</head>\n<body>\n<header>\n  <div class=\"wrap\">\n    <div class=\"top\">\n      <h1><svg viewBox=\"0 0 32 32\" aria-hidden=\"true\"><rect x=\"3\" y=\"9\" width=\"26\" height=\"19\" rx=\"4\" fill=\"#f2a93b\"/><rect x=\"3\" y=\"9\" width=\"26\" height=\"6\" fill=\"#d48a1f\"/><path d=\"M11 9V6a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v3\" fill=\"none\" stroke=\"#a9b2bc\" stroke-width=\"2.5\"/><rect x=\"14\" y=\"13\" width=\"4\" height=\"4\" rx=\"1\" fill=\"#1f2329\"/></svg>Рабочий стол учителя</h1>\n      <a class=\"toplink\" href=\"dlya-uchitelya.html\">Для учителя →</a>\n    </div>\n    <p>Приложения к урокам. Каждое открывается в браузере и работает без интернета.</p>\n    <div class=\"tools\" id=\"fSubj\"></div>\n    <div class=\"tools\" id=\"fGrade\"></div>\n  </div>\n</header>\n<main><div class=\"wrap\" id=\"list\"></div></main>\n\n<script src=\"lessons.js\"></script>\n<script>\nTWP.mount({\n  key: 'twp',\n  emptyText: 'Под этот фильтр пока нет уроков',\n  pool: TWP.apps,\n  card: (l, p) => `<article class=\"card\" style=\"--c:${TWP.subj(p.s).color}\">\n    ${TWP.meta(l, p)}\n    <h3>${TWP.esc(l.title)}</h3>\n    <p class=\"topic\">Тема: ${TWP.esc(l.topic)}</p>\n    <p>${TWP.esc(l.about)}</p>\n    ${l.note ? `<div class=\"note\">${TWP.esc(l.note)}</div>` : ''}\n    <div class=\"acts\"><a class=\"btn\" href=\"${l.path + (l.app || 'index.html')}\">Открыть урок</a></div>\n  </article>`\n});\n</script>\n</body>\n</html>"
+    }
+  ],
+  "temperature": 0.2
+}
