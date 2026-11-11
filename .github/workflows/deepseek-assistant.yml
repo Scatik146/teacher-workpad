@@ -39,7 +39,7 @@ jobs:
       - name: Call DeepSeek API
         id: deepseek
         run: |
-          RESPONSE=$(curl -s -f -X POST https://api.deepseek.com/v1/chat/completions \
+          RESPONSE=$(curl -s -X POST https://api.deepseek.com/v1/chat/completions \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer ${{ secrets.DEEPSEEK_API_KEY }}" \
             --data @request.json)
@@ -58,6 +58,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "DeepSeek: предложение по улучшению index.html"
+          Debug: show DeepSeek API response
           title: "🤖 Предложение от DeepSeek для index.html"
           body: "Это автоматически сгенерированное предложение. Пожалуйста, проверьте изменения перед слиянием."
           branch: deepseek/proposed-change
