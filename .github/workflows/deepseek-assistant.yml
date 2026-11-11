@@ -1,0 +1,65 @@
+name: "DeepSeek Assistant"
+
+on:
+  workflow_dispatch: # Позволяет запускать workflow вручную из вкладки Actions
+
+jobs:
+  propose-change:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write       # Разрешение на создание ветки и коммита
+      pull-requests: write  # Разрешение на создание Pull Request
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Prepare request for DeepSeek
+        id: prepare
+        run: |
+          # Читаем содержимое файла, который хотим изменить
+          FILE_CONTENT=$(cat index.html)
+          
+          # Формируем JSON-запрос. Обратите внимание на экранирование.
+          # Мы используем jq для безопасного создания JSON.
+          jq -n \
+            --arg file_content "$FILE_CONTENT" \
+            '{
+              model: "deepseek-chat",
+              messages: [
+                {
+                  role: "system",
+                  content: "Ты — опытный веб-разработчик. Твоя задача — предлагать улучшения для кода. Отвечай ТОЛЬКО полным, исправленным кодом файла, без каких-либо пояснений, markdown-разметки или комментариев."
+                },
+                {
+                  role: "user",
+                  content: ("Улучши этот HTML-файл, добавив в футер копирайт с текущим годом. Вот его содержимое:\n\n" + $file_content)
+                }
+              ],
+              temperature: 0.2
+            }' > request.json
+
+      - name: Call DeepSeek API
+        id: deepseek
+        run: |
+          # Отправляем запрос и сохраняем ответ
+          RESPONSE=$(curl -s -X POST https://api.deepseek.com/chat/completions \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.DEEPSEEK_API_KEY }}" \
+            --data @request.json)
+          
+          # Извлекаем предложенный код из ответа
+          echo "$RESPONSE" | jq -r '.choices[0].message.content' > index.html.new
+          
+          # Заменяем старый файл новым
+          mv index.html.new index.html
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "DeepSeek: предложение по улучшению index.html"
+          title: "🤖 Предложение от DeepSeek для index.html"
+          body: "Это автоматически сгенерированное предложение. Пожалуйста, проверьте изменения перед слиянием."
+          branch: deepseek/proposed-change
+          delete-branch: true
