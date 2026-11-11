@@ -1,14 +1,14 @@
 name: "DeepSeek Assistant"
 
 on:
-  workflow_dispatch: # Позволяет запускать workflow вручную из вкладки Actions
+  workflow_dispatch: # Запуск вручную из вкладки Actions
 
 jobs:
   propose-change:
     runs-on: ubuntu-latest
     permissions:
-      contents: write       # Разрешение на создание ветки и коммита
-      pull-requests: write  # Разрешение на создание Pull Request
+      contents: write       # Создание ветки и коммита
+      pull-requests: write  # Создание Pull Request
 
     steps:
       - name: Checkout repository
@@ -17,15 +17,12 @@ jobs:
       - name: Prepare request for DeepSeek
         id: prepare
         run: |
-          # Читаем содержимое файла, который хотим изменить
           FILE_CONTENT=$(cat index.html)
-          
-          # Формируем JSON-запрос. Обратите внимание на экранирование.
-          # Мы используем jq для безопасного создания JSON.
+
           jq -n \
             --arg file_content "$FILE_CONTENT" \
             '{
-              model: "deepseek-chat",
+              model: "deepseek-flash",
               messages: [
                 {
                   role: "system",
@@ -42,16 +39,18 @@ jobs:
       - name: Call DeepSeek API
         id: deepseek
         run: |
-          # Отправляем запрос и сохраняем ответ
-          RESPONSE=$(curl -s -X POST https://api.deepseek.com/chat/completions \
+          RESPONSE=$(curl -s -f -X POST https://api.deepseek.com/v1/chat/completions \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer ${{ secrets.DEEPSEEK_API_KEY }}" \
             --data @request.json)
-          
-          # Извлекаем предложенный код из ответа
+
+          if [ -z "$RESPONSE" ] || [ "$(echo "$RESPONSE" | jq -r '.choices[0].message.content // empty')" = "" ]; then
+            echo "Ошибка: DeepSeek API вернул пустой или некорректный ответ."
+            echo "Полный ответ: $RESPONSE"
+            exit 1
+          fi
+
           echo "$RESPONSE" | jq -r '.choices[0].message.content' > index.html.new
-          
-          # Заменяем старый файл новым
           mv index.html.new index.html
 
       - name: Create Pull Request
