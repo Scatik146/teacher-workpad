@@ -35,6 +35,10 @@
   <h2>3а. Выход из цикла и «к следующему шагу»; кнопки «Псевдокод» и «Маршруты»</h2>
   <div id="s5"></div>
 
+  <h2>3в. Программа по схеме: задача ОГЭ (кнопка «Код» — Python или КуМир)</h2>
+  <p class="sub">Текст в блоках написан на КуМире; схема задаёт только порядок, развилки и цикл.</p>
+  <div id="s7"></div>
+
   <h2>3б. Схема в ИИ-формате DrakonHub: пауза, время действия, одновременные действия</h2>
   <p class="sub">Такой JSON пишет нейросеть по промпту Митькина; обёртка рисует его как обычную схему.</p>
   <div id="s6"></div>
@@ -50,6 +54,7 @@
 <script src="../drakonwidget/drakonwidget.js"></script>
 <script src="../drakongen/drakongen.js"></script>
 <script src="../drakongen/ai-ast.js"></script>
+<script src="../drakongen/drakontechgen.js"></script>
 <script src="drakon-shema.js"></script>
 <script>
 const s1 = /*схема*/{
@@ -111,6 +116,14 @@ const s6 = { name: 'Учим попугая брать корм', stages: [ { na
     then: [ { type: 'action', content: 'Похвали попугая' } ],
     else: [ { type: 'action', content: 'Повтори завтра' } ] } ] } ] };
 DrakonShema.pokazat(document.getElementById('s6'), s6, { knopki: true });
+const s7 = /*схема*/{
+  nazvanie: 'Сумма чисел, кратных 3 и оканчивающихся на 4',
+  shagi: [ 'цел n, i, a, s', 's := 0', { vvod: 'n' },
+    { dlya: 'для i от 1 до n', shagi: [ { vvod: 'a' },
+      { vopros: 'mod(a, 3) = 0 и mod(a, 10) = 4', da: [ 's := s + a' ], net: [] } ] },
+    { vyvod: 's' } ]
+};
+DrakonShema.pokazat(document.getElementById('s7'), s7, { knopki: true, kod: true, yazykKoda: 'kumir' });
 const show = (sh) => {
   document.getElementById('out').textContent = JSON.stringify(sh, null, 2);
   const e = DrakonShema.proverit(sh, 'pokaz');

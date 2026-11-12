@@ -51,6 +51,8 @@ description: "Дракон-схемы (DrakonWidget) в уроках teacher-wor
 - `lib/drakongen/drakongen.js` и `ai-ast.js` (Митькин, public domain) подключать до обёртки. `pokazat(el, shema, {knopki:true})` — кнопки «Псевдокод» и «Маршруты»; `DrakonShema.psevdokod(shema,'ru')`, `marshruty(shema)`.
 - `pokazat` принимает ИИ-формат DrakonHub `{name, stages:[{name, steps:[{type:'action'|'question'|'select'|'loop'|'break'|'address'|'pause'|'insertion'|'process'|'simpleinput'|'simpleoutput'|'concurrent'|'controlperiod', …}]}]}` — его пишет нейросеть по промпту `drakon-graf/docs/komanda/drakonhub-prompt.md`.
 
+- `DrakonShema.kod(shema, 'python'|'kumir'|'c'|'1c')` → Promise `{kod, oshibki}`, кнопка «Код». Текст в блоках — на целевом языке. КуМир: имя `алг` чистится от цифр и служебных слов (иначе КуМир не понимает), `использовать Робот` — в начало, `выход` = выход из цикла и «конец»; «к следующему шагу» в КуМире нет. Тест: `node tools/drakon-kod-test.mjs`.
+
 ## Родной формат (если нужно руками)
 `items`: id → `{type, content, one, two, branchId, flag1}`. Первая `branch` (branchId 0, content '' для одной ветки), в конце `end`. `question`: `one` — вниз, `two` — вправо, `flag1:1` — вниз «Да». `select.one` → первый `case`, `case.two` → следующий. Силуэт: хвост ветки указывает на id следующей `branch`. for: `loopbegin` → тело → `loopend` (у обоих `content`; ранний выход — ветка `two` вопроса ведёт в блок после `loopend`, `flag1:0`). while/do-while: узел `arrow-loop`, к нему возвращается ветка `two` вопроса, `flag1:0`. Ввод/вывод — `simpleinput` / `simpleoutput`.
 
