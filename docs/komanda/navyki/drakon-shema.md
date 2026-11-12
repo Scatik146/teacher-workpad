@@ -47,6 +47,10 @@ description: "Дракон-схемы (DrakonWidget) в уроках teacher-wor
 - Заготовка для сборки: пустой блок — `''` или `'…'`, помечать `/*заготовка*/`. Кнопка `cikl` вставляет только for; циклы «пока» давать готовыми в заготовке.
 - Тело цикла «пока» в ДРАКОНе всегда справа — по главной линии вниз не рисуется. Вложенные for — две крышки подряд: это правильно.
 
+## Псевдокод, маршруты, ИИ-формат
+- `lib/drakongen/drakongen.js` и `ai-ast.js` (Митькин, public domain) подключать до обёртки. `pokazat(el, shema, {knopki:true})` — кнопки «Псевдокод» и «Маршруты»; `DrakonShema.psevdokod(shema,'ru')`, `marshruty(shema)`.
+- `pokazat` принимает ИИ-формат DrakonHub `{name, stages:[{name, steps:[{type:'action'|'question'|'select'|'loop'|'break'|'address'|'pause'|'insertion'|'process'|'simpleinput'|'simpleoutput'|'concurrent'|'controlperiod', …}]}]}` — его пишет нейросеть по промпту `drakon-graf/docs/komanda/drakonhub-prompt.md`.
+
 ## Родной формат (если нужно руками)
 `items`: id → `{type, content, one, two, branchId, flag1}`. Первая `branch` (branchId 0, content '' для одной ветки), в конце `end`. `question`: `one` — вниз, `two` — вправо, `flag1:1` — вниз «Да». `select.one` → первый `case`, `case.two` → следующий. Силуэт: хвост ветки указывает на id следующей `branch`. for: `loopbegin` → тело → `loopend` (у обоих `content`; ранний выход — ветка `two` вопроса ведёт в блок после `loopend`, `flag1:0`). while/do-while: узел `arrow-loop`, к нему возвращается ветка `two` вопроса, `flag1:0`. Ввод/вывод — `simpleinput` / `simpleoutput`.
 

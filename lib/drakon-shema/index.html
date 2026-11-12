@@ -32,8 +32,12 @@
   <h2>3. Просмотр: циклы «для», «пока» и «делать … пока»</h2>
   <div id="s4"></div>
 
-  <h2>3а. Выход из цикла и «к следующему шагу»</h2>
+  <h2>3а. Выход из цикла и «к следующему шагу»; кнопки «Псевдокод» и «Маршруты»</h2>
   <div id="s5"></div>
+
+  <h2>3б. Схема в ИИ-формате DrakonHub: пауза, время действия, одновременные действия</h2>
+  <p class="sub">Такой JSON пишет нейросеть по промпту Митькина; обёртка рисует его как обычную схему.</p>
+  <div id="s6"></div>
 
   <h2>4. Сборка: заготовка с пропусками</h2>
   <p class="sub">Двойной щелчок по блоку — вписать текст. Правая кнопка — меню. Кнопки сверху добавляют блоки. Схема сохраняется — обновите страницу.</p>
@@ -44,6 +48,8 @@
   <p><small id="ver"></small></p>
 </div>
 <script src="../drakonwidget/drakonwidget.js"></script>
+<script src="../drakongen/drakongen.js"></script>
+<script src="../drakongen/ai-ast.js"></script>
 <script src="drakon-shema.js"></script>
 <script>
 const s1 = /*схема*/{
@@ -93,7 +99,18 @@ const s3 = /*заготовка*/{
 DrakonShema.pokazat(document.getElementById('s1'), s1);
 DrakonShema.pokazat(document.getElementById('s2'), s2);
 DrakonShema.pokazat(document.getElementById('s4'), s4);
-DrakonShema.pokazat(document.getElementById('s5'), s5);
+DrakonShema.pokazat(document.getElementById('s5'), s5, { knopki: true });
+const s6 = { name: 'Учим попугая брать корм', stages: [ { name: 'Главная', steps: [
+  { type: 'action', content: 'Разговаривай с попугаем ласково' },
+  { type: 'action', content: 'Начни приучать к рукам', duration: 'Утром' },
+  { type: 'concurrent', paths: [
+    [ { type: 'action', content: 'Медленно просунь ладонь с зёрнами' } ],
+    [ { type: 'action', content: 'Одновременно говори с попугаем' } ] ] },
+  { type: 'pause', content: '5 мин' },
+  { type: 'question', content: 'Попугай ест с ладони?', invert: false,
+    then: [ { type: 'action', content: 'Похвали попугая' } ],
+    else: [ { type: 'action', content: 'Повтори завтра' } ] } ] } ] };
+DrakonShema.pokazat(document.getElementById('s6'), s6, { knopki: true });
 const show = (sh) => {
   document.getElementById('out').textContent = JSON.stringify(sh, null, 2);
   const e = DrakonShema.proverit(sh, 'pokaz');
