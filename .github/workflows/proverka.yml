@@ -1,0 +1,24 @@
+name: "Проверка"
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  proverka:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Код по дракон-схемам (Python запускается, КуМир — эталоны)
+        run: node tools/drakon-kod-test.mjs
+      - name: Дракон-схемы во всех уроках
+        run: |
+          for f in $(grep -rl --include=*.html --include=*.js -e '/\*схема\*/' -e '/\*заготовка\*/' . | grep -v '^./lib/drakonwidget'); do
+            node tools/drakon-shema.mjs --scan "$f" || exit 1
+          done
+      - name: Синтаксис скриптов обёрток
+        run: node --check lib/drakon-shema/drakon-shema.js && node --check lib/drakongen/ai-ast.js

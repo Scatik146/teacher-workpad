@@ -1,0 +1,48 @@
+name: "DeepSeek: выполнить задание"
+
+on:
+  workflow_dispatch:
+    inputs:
+      zadanie:
+        description: "Файл задания (например docs/komanda/zadaniya/001-shag-cikla.md)"
+        required: true
+      model:
+        description: "Модель: deepseek-flash (дёшево) или deepseek-v4-pro (сложное)"
+        required: false
+        default: "deepseek-flash"
+
+jobs:
+  vypolnit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Задание — DeepSeek
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        run: node tools/deepseek-zadanie.mjs "${{ inputs.zadanie }}" "${{ inputs.model }}"
+      - name: Проверки (результат попадёт в описание PR)
+        run: |
+          {
+            echo; echo "## Проверки"; echo '```'
+            node tools/drakon-kod-test.mjs 2>&1 || echo "ПРОВЕРКА НЕ ПРОШЛА"
+            echo '```'
+          } >> deepseek-otchet.md
+      - name: Pull Request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "DeepSeek: ${{ inputs.zadanie }}"
+          title: "🤖 DeepSeek: ${{ inputs.zadanie }}"
+          body-path: deepseek-otchet.md
+          branch: deepseek/${{ github.run_id }}
+          add-paths: |
+            lib/**
+            tools/**
+            docs/**
+            *-klass/**
+            obshchie/**
