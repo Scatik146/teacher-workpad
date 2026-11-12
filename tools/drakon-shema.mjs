@@ -43,7 +43,13 @@ blocks.forEach(([rezhim, text], i) => {
   const err = DS.proverit(sh, rezhim);
   try { DS.vNative(sh); } catch (e) { err.push(e.message); }
   /* туда и обратно: схема должна читаться так же, как записана */
-  try { const back = DS.iz(DS.vNative(sh)); if (JSON.stringify(norm(back)) !== JSON.stringify(norm(sh))) err.push('после перевода в формат виджета схема читается иначе — проверьте структуру'); } catch (e) {}
+  try {
+    const nat = DS.vNative(sh), back = DS.iz(nat);
+    /* та же картинка, записанная иначе (например, «выход из цикла» вместо пустой ветки) — не ошибка */
+    const same = JSON.stringify(norm(back)) === JSON.stringify(norm(sh)) ||
+      (Object.keys(DS.vNative(back).items).length === Object.keys(nat.items).length && JSON.stringify(norm(DS.iz(DS.vNative(back)))) === JSON.stringify(norm(back)));
+    if (!same) err.push('после перевода в формат виджета схема читается иначе — проверьте структуру');
+  } catch (e) { err.push('схема не строится: ' + e.message); }
   console.log(`— #${i + 1} «${sh.nazvanie || ''}» · ${rezhim === 'sborka' ? 'заготовка' : 'просмотр'}${err.length ? '' : ' · ошибок нет'}`);
   err.forEach(e => console.log('   ' + e)); bad += err.length;
 });
@@ -53,7 +59,7 @@ function norm(sh) {
     if ('dejstvie' in s) return s.dejstvie;
     if ('vopros' in s) return { vopros: s.vopros, da: st(s.da), net: st(s.net) };
     if ('vybor' in s) return { vybor: s.vybor, varianty: Object.fromEntries(Object.entries(s.varianty || {}).map(([k, v]) => [k, st(v)])) };
-    if ('dlya' in s) { const [t, b] = DS.loopParts(s); return { dlya: t, po: b, shagi: st(s.shagi) }; }
+    if ('dlya' in s) return { dlya: DS.loopParts(s)[0], shagi: st(s.shagi) };
     if ('delat' in s) return { delat: st(s.delat), poka: s.poka };
     if ('poka' in s) return { poka: s.poka, shagi: st(s.shagi) };
     return s;

@@ -32,6 +32,9 @@
   <h2>3. Просмотр: циклы «для», «пока» и «делать … пока»</h2>
   <div id="s4"></div>
 
+  <h2>3а. Выход из цикла и «к следующему шагу»</h2>
+  <div id="s5"></div>
+
   <h2>4. Сборка: заготовка с пропусками</h2>
   <p class="sub">Двойной щелчок по блоку — вписать текст. Правая кнопка — меню. Кнопки сверху добавляют блоки. Схема сохраняется — обновите страницу.</p>
   <div class="cols">
@@ -67,10 +70,20 @@ const s2 = /*схема*/{
 const s4 = /*схема*/{
   nazvanie: 'Перемена в классе',
   shagi: [
-    { dlya: 'Для каждого ученика', po: 'в списке класса', shagi: [ 'Отметить присутствие' ] },
+    { dlya: 'Для каждого ученика в списке класса', shagi: [ 'Отметить присутствие' ] },
     { poka: 'Есть грязные кружки?', shagi: [ 'Помыть кружку' ] },
     { delat: [ { vvod: 'Пароль от компьютера' } ], poka: 'Пароль неверный?' },
     { vyvod: 'Рабочий стол' }
+  ]
+};
+const s5 = /*схема*/{
+  nazvanie: 'Карлсон нашёл кошелёк',
+  shagi: [
+    { poka: 'В кошельке есть монеты?', shagi: [ 'Купи плюшку', 'Съешь плюшку',
+      { vopros: 'Карлсон наелся?', da: [ { vyhod: true } ], net: [] } ] },
+    { dlya: 'Для каждой крошки на столе', shagi: [
+      { vopros: 'Крошка от плюшки?', da: [], net: [ { dalshe: true } ] }, 'Склюй крошку' ] },
+    'Полети домой'
   ]
 };
 const s3 = /*заготовка*/{
@@ -80,6 +93,7 @@ const s3 = /*заготовка*/{
 DrakonShema.pokazat(document.getElementById('s1'), s1);
 DrakonShema.pokazat(document.getElementById('s2'), s2);
 DrakonShema.pokazat(document.getElementById('s4'), s4);
+DrakonShema.pokazat(document.getElementById('s5'), s5);
 const show = (sh) => {
   document.getElementById('out').textContent = JSON.stringify(sh, null, 2);
   const e = DrakonShema.proverit(sh, 'pokaz');
