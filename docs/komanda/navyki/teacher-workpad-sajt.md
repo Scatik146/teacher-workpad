@@ -10,6 +10,7 @@ description: "Публикация уроков, приложений и мат�
 ## Начало работы
 1. `add_repo` (owner `Scatik146`, repo `teacher-workpad`, access `push`), затем `git clone --depth 1 https://github.com/Scatik146/teacher-workpad /home/claude/teacher-workpad`.
 2. Прочитать `CLAUDE.md` репозитория — там действующие правила. Он главнее этого навыка.
+3. Для помощников ИИ — `docs/komanda/README.md`; копии навыков — `docs/komanda/navyki/` (при правке навыка обновить копию). Журнал решений по ДРАКОН-ГРАФ и дракон-схемам — `Scatik146/drakon-graf`, `docs/komanda/README.md`.
 
 ## Правила приложений
 - Папка `<класс>-klass/<имя>/` (для нескольких предметов — `obshchie/<имя>/`), приложение — `index.html`, рядом другие файлы.

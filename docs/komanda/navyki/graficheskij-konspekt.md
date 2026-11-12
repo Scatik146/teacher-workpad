@@ -12,7 +12,7 @@ description: "Графические конспекты ДРАКОН-ГРАФ д
 ## Где лежит
 - `lib/drakon-graf/drakon-graf.min.js` — библиотека (0.9.1), `konspekt.js` — обвязка сайта, `fonts/` — PT Serif, PT Mono.
 - `lib/drakon-graf/drakon-graf.mjs` — для Node; `tools/konspekt.mjs` — проверка без браузера.
-- `lib/drakon-graf/index.html` — «Проба конспекта».
+- `lib/drakon-graf/index.html` — «Проба конспекта»; онлайн-генератор (печать, PNG, SVG, ссылка) — https://scatik146.github.io/drakon-graf/generator/.
 - Справочник языка — репозиторий `Scatik146/drakon-graf`: `docs/graf/шпаргалка_ученика.md`, `справочник_учителя.md`.
 - Обновить библиотеку: в репо drakon-graf `node tools/bundle.mjs` (esbuild есть в `/opt/npm-tools`), скопировать `dist/drakon-graf.min.js` и `.mjs` в `lib/drakon-graf/`.
 
