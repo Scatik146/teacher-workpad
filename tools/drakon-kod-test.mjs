@@ -23,4 +23,6 @@ const etalon = 'алг Сумма чисел кратных оканчивающ
 const k = await D.kod(ogeKu, 'kumir'); ok('КуМир: задача ОГЭ (эталон с qumir.dev)', k.kod === etalon, k.kod);
 const robot = await D.kod({ nazvanie: 'Робот у стены', shagi: ['использовать Робот', { poka: 'не справа свободно', shagi: ['закрасить', 'вниз'] }] }, 'kumir');
 ok('КуМир: Робот — «использовать» в начале файла, «нц пока»', /^использовать Робот\n\nалг Робот у стены\nнач\n    нц пока не справа свободно\n/.test(robot.kod), robot.kod);
+const dalee = await D.kod({ nazvanie: 'Нечётные', shagi: ['цел i', { dlya: 'для i от 1 до 10', shagi: [{ vopros: 'mod(i, 2) = 0', da: [{ dalshe: true }], net: [] }, { vopros: 'i > 7', da: [{ vyhod: true }], net: [] }, { vyvod: 'i, " "' }] }] }, 'kumir');
+ok('КуМир: «далее» и «выход» (на qumir.dev выводит 1 3 5 7)', /            далее\n/.test(dalee.kod) && /            выход\n/.test(dalee.kod) && dalee.oshibki.length === 1, dalee.kod);
 process.exit(bad ? 1 : 0);
