@@ -2,72 +2,82 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Сначала обучи, потом объясни — слайды</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&family=Nunito:wght@400;600;700&display=swap">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Слайды — «Сначала обучи, потом объясни»</title>
 <style>
-*{box-sizing:border-box}
-html,body{margin:0;height:100%;background:#111;overflow:hidden;font-family:Nunito,Arial,sans-serif}
-#stage{position:fixed;left:50%;top:50%;width:1920px;height:1080px;transform-origin:0 0}
-#stage>section{position:absolute;inset:0;width:1920px;height:1080px;display:none!important}
-#stage>section.on{display:flex!important}
-#stage>section *{margin:0}
-#stage ol{padding-left:1.3em}
-#stage aside.note{display:none}
-#notes{position:fixed;left:0;right:0;bottom:0;max-height:40vh;overflow:auto;background:rgba(20,22,28,.94);color:#eef1f4;font:16px/1.45 "Segoe UI",Arial,sans-serif;padding:12px 18px 40px;display:none}
-#notes.on{display:block}
-#ctl{position:fixed;right:10px;bottom:8px;display:flex;gap:6px;align-items:center;font:13px "Segoe UI",Arial,sans-serif;color:#9aa3ad;opacity:.35;transition:opacity .2s}
-#ctl:hover{opacity:1}
-#ctl button,#ctl a{font:inherit;background:#272c33;color:#eef1f4;border:1px solid #3a414a;border-radius:6px;padding:4px 9px;cursor:pointer;text-decoration:none}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:#0E1118;overflow:hidden;font-family:'Segoe UI',Arial,sans-serif}
+  #viewport{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  #stage{position:relative;width:1920px;height:1080px;transform-origin:center center;flex:none}
+  .slide{position:absolute;inset:0;width:1920px;height:1080px;overflow:hidden}
+  .slide:not(.active){display:none !important}
+  .slide h1,.slide h2,.slide h3,.slide p,.slide ol,.slide ul{margin:0}
+  .slide ol,.slide ul{padding-left:1.3em}
+  .slide li{padding-left:.2em}
+  #hud{position:fixed;right:16px;bottom:12px;color:#8A93A6;font-size:14px;user-select:none;opacity:.7}
+  #help{position:fixed;left:16px;bottom:12px;color:#8A93A6;font-size:14px;opacity:.7;transition:opacity .4s}
+  #notes{position:fixed;left:0;right:0;bottom:0;background:rgba(14,17,24,.94);color:#E8ECF3;font-size:20px;line-height:1.45;padding:18px 24px 36px;display:none;max-height:40vh;overflow:auto;border-top:2px solid #F2B36B}
+  #notes b{color:#F2B36B}
+  body.show-notes #notes{display:block}
+  @media print{
+    @page{size:1920px 1080px;margin:0}
+    html,body{overflow:visible;height:auto;background:#fff}
+    #viewport{position:static;display:block}
+    #stage{transform:none !important;width:auto;height:auto}
+    .slide{position:relative;display:flex}
+    .slide:not(.active){display:flex !important}
+    .slide{break-after:page;page-break-after:always}
+    #hud,#help,#notes{display:none !important}
+  }
 </style>
 </head>
 <body>
-<div id="stage">
-<section id="cover" data-transition="fade" style="background:#1E2433;color:#F5F1E8;font-family:'Nunito', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:48px">
-<p style="font-family:'Rubik', Arial, sans-serif;font-size:32px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:#8FB8E3">ИИ и информационная безопасность · 8 класс</p>
-<h1 style="font-family:'Rubik', Arial, sans-serif;font-size:120px;font-weight:700;line-height:1.05;color:#F5F1E8">Сначала обучи,<br>потом объясни</h1>
+<div id="viewport"><div id="stage">
+<section class="slide" id="cover" data-notes="Слайд висит, пока ученики заходят и садятся. Раздатка уже на столах: рабочий лист пары, красная и зелёная карточки, закрытый конверт с терминами. Досье, челлендж и сметы — у учителя до нужного этапа. Держать, пока ученики садятся (около 30 секунд), затем следующий слайд." style="background:#1E2433;color:#F5F1E8;font-family:'Segoe UI', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:48px">
+<p style="font-family:'Segoe UI', Arial, sans-serif;font-size:32px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:#8FB8E3">ИИ и информационная безопасность · 8 класс</p>
+<h1 style="font-family:'Segoe UI', Arial, sans-serif;font-size:120px;font-weight:700;line-height:1.05;color:#F5F1E8">Сначала обучи,<br>потом объясни</h1>
 <p style="font-size:44px;line-height:1.35;color:#C9D3E3;width:1400px">Сегодня вы научите компьютер отличать акварель от карандашного рисунка. А потом узнаете, чего стоит научить его <b style="color:#F2B36B">рисовать картины</b>.</p>
-<aside class="note">Слайд висит, пока ученики заходят и садятся. Раздатка уже на столах: рабочий лист пары, красная и зелёная карточки, закрытый конверт с терминами. Досье, челлендж и сметы — у учителя до нужного этапа. Через минуту — следующий слайд.</aside>
+
 </section>
-<section id="rules" data-transition="fade" style="background:#F5F1E8;color:#1E2433;font-family:'Nunito', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:64px">
-<h2 style="font-family:'Rubik', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">Учитель сегодня молчит. <span style="color:#2F6FB0">Вы — нет.</span></h2>
+<section class="slide" id="rules" data-notes="Около 40 секунд. Проследить, что у каждой пары лежат обе карточки. С этого момента учитель не говорит, только показывает слайды, раздаёт материалы и следит за уровнем шума." style="background:#F5F1E8;color:#1E2433;font-family:'Segoe UI', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:64px">
+<h2 style="font-family:'Segoe UI', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">Учитель сегодня молчит. <span style="color:#2F6FB0">Вы — нет.</span></h2>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px">
 <div style="display:flex;flex-direction:column;gap:12px;background:#FFFDF8;border:1px solid #E4DED1;border-radius:20px;padding:40px">
-<h3 style="font-family:'Rubik', Arial, sans-serif;font-size:40px;font-weight:600">Говорите</h3>
-<p style="font-size:32px;line-height:1.4;color:#3B4252">Обсуждайте с напарником, спорьте, помогайте соседям — вполголоса.</p>
+<h3 style="font-family:'Segoe UI', Arial, sans-serif;font-size:40px;font-weight:600">Работайте в паре</h3>
+<p style="font-size:32px;line-height:1.4;color:#3B4252">У каждого свой ноутбук, но модель одна на двоих. Говорить можно — вполголоса.</p>
 </div>
 <div style="display:flex;flex-direction:column;gap:12px;background:#FFFDF8;border:1px solid #E4DED1;border-left:12px solid #C0392B;border-radius:20px;padding:40px">
-<h3 style="font-family:'Rubik', Arial, sans-serif;font-size:40px;font-weight:600">Застряли — красная карточка</h3>
+<h3 style="font-family:'Segoe UI', Arial, sans-serif;font-size:40px;font-weight:600">Застряли — красная карточка</h3>
 <p style="font-size:32px;line-height:1.4;color:#3B4252">Положите её на ноутбук. Учитель молча принесёт подсказку.</p>
 </div>
 <div style="display:flex;flex-direction:column;gap:12px;background:#FFFDF8;border:1px solid #E4DED1;border-left:12px solid #2E7D4F;border-radius:20px;padding:40px">
-<h3 style="font-family:'Rubik', Arial, sans-serif;font-size:40px;font-weight:600">Этап готов — зелёная карточка</h3>
+<h3 style="font-family:'Segoe UI', Arial, sans-serif;font-size:40px;font-weight:600">Этап готов — зелёная карточка</h3>
 <p style="font-size:32px;line-height:1.4;color:#3B4252">Когда зелёные у всех четырёх пар, слайд сменится.</p>
 </div>
 <div style="display:flex;flex-direction:column;gap:12px;background:#FFFDF8;border:1px solid #E4DED1;border-radius:20px;padding:40px">
-<h3 style="font-family:'Rubik', Arial, sans-serif;font-size:40px;font-weight:600">Всё остальное — на слайде</h3>
+<h3 style="font-family:'Segoe UI', Arial, sans-serif;font-size:40px;font-weight:600">Всё остальное — на слайде</h3>
 <p style="font-size:32px;line-height:1.4;color:#3B4252">Наверху — какой сейчас этап и до какой минуты он идёт.</p>
 </div>
 </div>
-<aside class="note">Держать около минуты. Проследить, что у каждой пары лежат обе карточки. С этого момента учитель не говорит, только показывает слайды, раздаёт материалы и следит за уровнем шума.</aside>
+
 </section>
-<section id="bridge" data-transition="fade" style="background:#F5F1E8;color:#1E2433;font-family:'Nunito', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:64px">
-<h2 style="font-family:'Rubik', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">От двойника к ученику</h2>
+<section class="slide" id="bridge" data-notes="Около 30 секунд. Затем слайд «Гипотеза»." style="background:#F5F1E8;color:#1E2433;font-family:'Segoe UI', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:64px">
+<h2 style="font-family:'Segoe UI', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">От двойника к ученику</h2>
 <div style="display:flex;gap:48px;align-items:stretch">
 <div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#E9E4D8;border-radius:20px;padding:48px">
-<p style="font-family:'Rubik', Arial, sans-serif;font-size:28px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#5A5F6B">Прошлый урок</p>
-<h3 style="font-family:'Rubik', Arial, sans-serif;font-size:44px;font-weight:600;line-height:1.2">Цифровой двойник станка</h3>
+<p style="font-family:'Segoe UI', Arial, sans-serif;font-size:28px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#5A5F6B">Прошлый урок</p>
+<h3 style="font-family:'Segoe UI', Arial, sans-serif;font-size:44px;font-weight:600;line-height:1.2">Цифровой двойник станка</h3>
 <p style="font-size:34px;line-height:1.4;color:#3B4252">Повторяет то, что в него заложили люди: формулы, правила, данные датчиков.</p>
 </div>
 <div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#1E2433;border-radius:20px;padding:48px">
-<p style="font-family:'Rubik', Arial, sans-serif;font-size:28px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#8FB8E3">Сегодня</p>
-<h3 style="font-family:'Rubik', Arial, sans-serif;font-size:44px;font-weight:600;line-height:1.2;color:#F5F1E8">Программа без правил</h3>
+<p style="font-family:'Segoe UI', Arial, sans-serif;font-size:28px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#8FB8E3">Сегодня</p>
+<h3 style="font-family:'Segoe UI', Arial, sans-serif;font-size:44px;font-weight:600;line-height:1.2;color:#F5F1E8">Программа без правил</h3>
 <p style="font-size:34px;line-height:1.4;color:#C9D3E3">Ей никто не объясняет, чем акварель отличается от карандаша. Она выведет правило сама — из примеров.</p>
 </div>
 </div>
-<aside class="note">Около 30 секунд — пусть прочитают. Затем слайд «Гипотеза».</aside>
+
 </section>
-<section id="s0" data-transition="fade" style="background:#F5F1E8;color:#1E2433;font-family:'Nunito', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:56px">
+<section class="slide" id="s0" data-notes="Около минуты. Когда у всех пар записаны числа — следующий слайд (не позже 2,5 минуты)." style="background:#F5F1E8;color:#1E2433;font-family:'Segoe UI', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:56px">
 <div style="display:flex;gap:12px;align-items:center">
 <p style="font-size:26px;font-weight:700;padding:8px 22px;border-radius:999px;background:#2F6FB0;color:#F5F1E8">Гипотеза</p>
 <p style="font-size:26px;padding:8px 22px;border-radius:999px;background:#E4DED1;color:#4A4F5C">Стенд</p>
@@ -76,21 +86,21 @@ html,body{margin:0;height:100%;background:#111;overflow:hidden;font-family:Nunit
 <p style="font-size:26px;padding:8px 22px;border-radius:999px;background:#E4DED1;color:#4A4F5C">Смета</p>
 <p style="font-size:26px;padding:8px 22px;border-radius:999px;background:#E4DED1;color:#4A4F5C">Билет</p>
 <div style="flex:1"></div>
-<p style="font-family:'Rubik', Arial, sans-serif;font-size:32px;font-weight:700;color:#2F6FB0">до 3-й минуты</p>
+<p style="font-family:'Segoe UI', Arial, sans-serif;font-size:32px;font-weight:700;color:#2F6FB0">0–2,5 мин</p>
 </div>
-<h2 style="font-family:'Rubik', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">Сначала — прогноз</h2>
+<h2 style="font-family:'Segoe UI', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">Сначала — прогноз</h2>
 <p style="font-size:40px;line-height:1.4;color:#3B4252;width:1400px">Ноутбуки пока не трогаем. Рабочий лист, <b>этап 0</b>: договоритесь в паре и запишите два числа.</p>
 <div style="display:flex;gap:32px">
 <div style="flex:1;background:#FFFDF8;border:1px solid #E4DED1;border-radius:20px;padding:40px">
 <p style="font-size:36px;line-height:1.4">За сколько <b>секунд</b> компьютер научится отличать акварель от карандаша?</p>
 </div>
 <div style="flex:1;background:#FFFDF8;border:1px solid #E4DED1;border-radius:20px;padding:40px">
-<p style="font-size:36px;line-height:1.4">Сколько из <b>10 секретных картинок</b> он потом угадает?</p>
+<p style="font-size:36px;line-height:1.4">Сколько из <b>6 секретных картинок</b> он потом угадает?</p>
 </div>
 </div>
-<aside class="note">Две минуты. Когда у всех пар записаны числа — следующий слайд.</aside>
+
 </section>
-<section id="s1" data-transition="fade" style="background:#F5F1E8;color:#1E2433;font-family:'Nunito', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:48px">
+<section class="slide" id="s1" data-notes="Teachable Machine уже открыта на всех ноутбуках (Image Project), ярлык «Стенд» — на рабочем столе. Если пара всё же ищет папку — подсказка П2. Если пара долго ищет кнопку — П5 или просто показать пальцем на экран. Как только у пары модель обучена, она переходит к тесту — следующий слайд включить, когда обучили хотя бы две пары (ориентир — 8-я минута)." style="background:#F5F1E8;color:#1E2433;font-family:'Segoe UI', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:48px">
 <div style="display:flex;gap:12px;align-items:center">
 <p style="font-size:26px;padding:8px 22px;border-radius:999px;background:#E4DED1;color:#4A4F5C">Гипотеза</p>
 <p style="font-size:26px;font-weight:700;padding:8px 22px;border-radius:999px;background:#2F6FB0;color:#F5F1E8">Стенд</p>
@@ -99,11 +109,11 @@ html,body{margin:0;height:100%;background:#111;overflow:hidden;font-family:Nunit
 <p style="font-size:26px;padding:8px 22px;border-radius:999px;background:#E4DED1;color:#4A4F5C">Смета</p>
 <p style="font-size:26px;padding:8px 22px;border-radius:999px;background:#E4DED1;color:#4A4F5C">Билет</p>
 <div style="flex:1"></div>
-<p style="font-family:'Rubik', Arial, sans-serif;font-size:32px;font-weight:700;color:#2F6FB0">3–13 мин</p>
+<p style="font-family:'Segoe UI', Arial, sans-serif;font-size:32px;font-weight:700;color:#2F6FB0">2,5–12 мин</p>
 </div>
-<h2 style="font-family:'Rubik', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">Обучите модель</h2>
+<h2 style="font-family:'Segoe UI', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">Обучите модель</h2>
 <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
-<p style="font-family:'Rubik', Arial, sans-serif;font-size:30px;font-weight:600;padding:10px 24px;border-radius:12px;background:#1E2433;color:#F5F1E8">teachablemachine.withgoogle.com</p>
+<p style="font-family:'Segoe UI', Arial, sans-serif;font-size:30px;font-weight:600;padding:10px 24px;border-radius:12px;background:#1E2433;color:#F5F1E8">teachablemachine.withgoogle.com</p>
 <p style="font-size:30px;color:#5A5F6B">→</p>
 <p style="font-size:30px;font-weight:600;padding:10px 24px;border-radius:12px;background:#FFFDF8;border:1px solid #D6CFBF">Get Started</p>
 <p style="font-size:30px;color:#5A5F6B">→</p>
@@ -112,14 +122,14 @@ html,body{margin:0;height:100%;background:#111;overflow:hidden;font-family:Nunit
 <p style="font-size:30px;font-weight:600;padding:10px 24px;border-radius:12px;background:#FFFDF8;border:1px solid #D6CFBF">Standard image model</p>
 </div>
 <ol style="font-size:36px;line-height:1.45;color:#3B4252;display:flex;flex-direction:column;gap:14px">
-<li>Переименуйте <b>Class 1</b> в «Акварель», <b>Class 2</b> — в «Карандаш».</li>
-<li>В каждом классе: <b>Upload</b> → сетевая папка «Стенд» → нужная подпапка → Ctrl+A → Открыть.</li>
+<li><b>Оба партнёра, каждый на своём ноутбуке:</b> <b>Class 1</b> → «Акварель», <b>Class 2</b> → «Карандаш».</li>
+<li>В каждом классе: <b>Upload</b> → ярлык «Стенд» на рабочем столе → нужная подпапка → Ctrl+A → Открыть.</li>
 <li>Нажмите <b>Train Model</b> и засеките время. Вкладку не переключать!</li>
-<li>Запишите время обучения в рабочий лист.</li>
+<li>Запишите в рабочий лист оба времени — ваше и партнёра.</li>
 </ol>
-<aside class="note">Узкое место — путь к сетевой папке: держать наготове подсказку П2 с вписанным путём. Если пара долго ищет кнопку — П5 или просто показать пальцем на экран. Как только у пары модель обучена, она переходит к тесту — следующий слайд можно включить, когда обучили хотя бы две пары.</aside>
+
 </section>
-<section id="s1test" data-transition="fade" style="background:#F5F1E8;color:#1E2433;font-family:'Nunito', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:48px">
+<section class="slide" id="s1test" data-notes="Пары сами выбирают 6 картинок из 10 — выбор и есть их гипотеза. Ждём, что они возьмут ловушки и модель уверенно на них ошибётся: цветной карандаш примет за акварель, монохромную размывку — за карандаш. Значит, она различает цвет, а не технику. Это момент открытия, ничего не подсказывать. Пара угадала все 6 — подсказка П8. Быстрые пары после теста — карточка-челлендж. На 12-й минуте — следующий слайд." style="background:#F5F1E8;color:#1E2433;font-family:'Segoe UI', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:48px">
 <div style="display:flex;gap:12px;align-items:center">
 <p style="font-size:26px;padding:8px 22px;border-radius:999px;background:#E4DED1;color:#4A4F5C">Гипотеза</p>
 <p style="font-size:26px;font-weight:700;padding:8px 22px;border-radius:999px;background:#2F6FB0;color:#F5F1E8">Стенд</p>
@@ -128,24 +138,24 @@ html,body{margin:0;height:100%;background:#111;overflow:hidden;font-family:Nunit
 <p style="font-size:26px;padding:8px 22px;border-radius:999px;background:#E4DED1;color:#4A4F5C">Смета</p>
 <p style="font-size:26px;padding:8px 22px;border-radius:999px;background:#E4DED1;color:#4A4F5C">Билет</p>
 <div style="flex:1"></div>
-<p style="font-family:'Rubik', Arial, sans-serif;font-size:32px;font-weight:700;color:#2F6FB0">3–13 мин</p>
+<p style="font-family:'Segoe UI', Arial, sans-serif;font-size:32px;font-weight:700;color:#2F6FB0">2,5–12 мин</p>
 </div>
-<h2 style="font-family:'Rubik', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">Секретный тест</h2>
+<h2 style="font-family:'Segoe UI', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">Секретный тест</h2>
 <div style="display:flex;gap:48px">
 <ol style="flex:1;font-size:36px;line-height:1.45;color:#3B4252;display:flex;flex-direction:column;gap:14px">
 <li>Справа, в окне <b>Preview</b>, переключите <b>Input</b>: Webcam → <b>File</b>.</li>
-<li>По одной загружайте <b>test_01 … test_10</b> из папки «Секретный_тест».</li>
-<li>Ответ модели и её уверенность — в таблицу рабочего листа.</li>
+<li>В папке «Секретный_тест» 10 картинок. <b>Каждый выбирает 3</b> — где модель, по-вашему, может ошибиться, и одну, где не ошибётся.</li>
+<li>Ответы и уверенность — в общую таблицу рабочего листа.</li>
 </ol>
 <div style="width:640px;display:flex;flex-direction:column;gap:16px;background:#1E2433;border-radius:20px;padding:48px">
-<p style="font-family:'Rubik', Arial, sans-serif;font-size:28px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#F2B36B">Главный вопрос</p>
-<p style="font-family:'Rubik', Arial, sans-serif;font-size:44px;font-weight:600;line-height:1.25;color:#F5F1E8">Поймайте модель на жульничестве.</p>
+<p style="font-family:'Segoe UI', Arial, sans-serif;font-size:28px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#F2B36B">Главный вопрос</p>
+<p style="font-family:'Segoe UI', Arial, sans-serif;font-size:44px;font-weight:600;line-height:1.25;color:#F5F1E8">Поймайте модель на жульничестве.</p>
 <p style="font-size:32px;line-height:1.4;color:#C9D3E3">По какому признаку она на самом деле отличает акварель от карандаша?</p>
 </div>
 </div>
-<aside class="note">Ждём, что модель уверенно ошибётся на ловушках: цветной карандаш примет за акварель, монохромную размывку — за карандаш. Значит, она различает цвет, а не технику. Это момент открытия, ничего не подсказывать. Пара угадала все 10 — подсказка П8. Быстрые пары после теста — карточка-челлендж. В 13 минут — следующий слайд.</aside>
+
 </section>
-<section id="s2" data-transition="fade" style="background:#F5F1E8;color:#1E2433;font-family:'Nunito', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:48px">
+<section class="slide" id="s2" data-notes="Если пара не находит Advanced или Under the hood — подсказка П5. На 19-й минуте — слайд с конвертом. Если графики не появляются — в рабочем листе есть запасной путь (сравнить строки таблицы), вмешиваться не нужно. Быстрые пары — карточка-челлендж («Зубрила» отлично ложится на этот этап)." style="background:#F5F1E8;color:#1E2433;font-family:'Segoe UI', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:48px">
 <div style="display:flex;gap:12px;align-items:center">
 <p style="font-size:26px;padding:8px 22px;border-radius:999px;background:#E4DED1;color:#4A4F5C">Гипотеза</p>
 <p style="font-size:26px;padding:8px 22px;border-radius:999px;background:#E4DED1;color:#4A4F5C">Стенд</p>
@@ -154,31 +164,31 @@ html,body{margin:0;height:100%;background:#111;overflow:hidden;font-family:Nunit
 <p style="font-size:26px;padding:8px 22px;border-radius:999px;background:#E4DED1;color:#4A4F5C">Смета</p>
 <p style="font-size:26px;padding:8px 22px;border-radius:999px;background:#E4DED1;color:#4A4F5C">Билет</p>
 <div style="flex:1"></div>
-<p style="font-family:'Rubik', Arial, sans-serif;font-size:32px;font-weight:700;color:#2F6FB0">13–22 мин</p>
+<p style="font-family:'Segoe UI', Arial, sans-serif;font-size:32px;font-weight:700;color:#2F6FB0">12–20,5 мин</p>
 </div>
-<h2 style="font-family:'Rubik', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">Загляните под капот</h2>
+<h2 style="font-family:'Segoe UI', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">Загляните под капот</h2>
 <div style="display:flex;gap:48px">
 <ol style="flex:1;font-size:34px;line-height:1.45;color:#3B4252;display:flex;flex-direction:column;gap:14px">
 <li>Под Train Model раскройте <b>Advanced</b>. Найдите поле <b>Epochs</b>.</li>
-<li>Обучите с Epochs = <b>1</b>, потом <b>10</b>, потом <b>50</b>. Каждый раз — время и 3 трудные картинки.</li>
+<li><b>Партнёр 1:</b> Epochs = 1. <b>Партнёр 2:</b> Epochs = 10. Обучите, засеките время, проверьте 2 картинки, на которых модель ошиблась.</li>
 <li>Нажмите <b>Under the hood</b>. Что растёт? Что падает?</li>
 <li>Придумайте <b>свои названия</b> — таблица в рабочем листе.</li>
 </ol>
 <div style="width:560px;display:flex;flex-direction:column;gap:16px;justify-content:center;background:#FFFDF8;border:4px dashed #B8621B;border-radius:20px;padding:48px">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#B8621B;width:72px;height:72px"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-<p style="font-family:'Rubik', Arial, sans-serif;font-size:44px;font-weight:600;line-height:1.25">Конверт пока закрыт</p>
-<p style="font-size:32px;line-height:1.4;color:#3B4252">Сначала ваши слова. Термины — после пункта 5.</p>
+<svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="#B8621B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+<p style="font-family:'Segoe UI', Arial, sans-serif;font-size:44px;font-weight:600;line-height:1.25">Конверт пока закрыт</p>
+<p style="font-size:32px;line-height:1.4;color:#3B4252">Сначала ваши слова. Термины — после пункта 4.</p>
 </div>
 </div>
-<aside class="note">Если пара не находит Advanced или Under the hood — подсказка П5. Перед уроком проверить, что графики в Under the hood действительно показываются. Быстрые пары — карточка-челлендж («Зубрила» отлично ложится на этот этап).</aside>
+
 </section>
-<section id="envelope" data-transition="fade" style="background:#2F6FB0;color:#F5F1E8;font-family:'Nunito', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:56px">
-<p style="font-family:'Rubik', Arial, sans-serif;font-size:32px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:#DCE8F5">Под капотом · пункт 6</p>
-<h2 style="font-family:'Rubik', Arial, sans-serif;font-size:112px;font-weight:700;line-height:1.05">Теперь откройте конверт</h2>
+<section class="slide" id="envelope" data-notes="Включить на 19-й минуте, когда у пар заполнена таблица «свои названия». Пара открыла конверт раньше времени — не страшно, но на этапе гипотез это видно по пустой таблице." style="background:#2F6FB0;color:#F5F1E8;font-family:'Segoe UI', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:56px">
+<p style="font-family:'Segoe UI', Arial, sans-serif;font-size:32px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:#DCE8F5">Под капотом · пункт 5</p>
+<h2 style="font-family:'Segoe UI', Arial, sans-serif;font-size:112px;font-weight:700;line-height:1.05">Теперь откройте конверт</h2>
 <p style="font-size:44px;line-height:1.35;width:1450px;color:#EEF3F9">Вы уже видели всё это своими руками. Сравните свои названия с тем, как это называют специалисты. Где вы оказались ближе всего?</p>
-<aside class="note">Включить около 20-й минуты, когда у пар заполнена таблица «свои названия». Пара открыла конверт раньше времени — не страшно, но на этапе гипотез это видно по пустой таблице.</aside>
+
 </section>
-<section id="s3" data-transition="fade" style="background:#F5F1E8;color:#1E2433;font-family:'Nunito', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:48px">
+<section class="slide" id="s3" data-notes="Раздать досье в начале этапа (по одному на пару). Застряли на поиске числа — П6, на расчёте — П7. На 27-й минуте включить слайд-сверку." style="background:#F5F1E8;color:#1E2433;font-family:'Segoe UI', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:48px">
 <div style="display:flex;gap:12px;align-items:center">
 <p style="font-size:26px;padding:8px 22px;border-radius:999px;background:#E4DED1;color:#4A4F5C">Гипотеза</p>
 <p style="font-size:26px;padding:8px 22px;border-radius:999px;background:#E4DED1;color:#4A4F5C">Стенд</p>
@@ -187,54 +197,54 @@ html,body{margin:0;height:100%;background:#111;overflow:hidden;font-family:Nunit
 <p style="font-size:26px;padding:8px 22px;border-radius:999px;background:#E4DED1;color:#4A4F5C">Смета</p>
 <p style="font-size:26px;padding:8px 22px;border-radius:999px;background:#E4DED1;color:#4A4F5C">Билет</p>
 <div style="flex:1"></div>
-<p style="font-family:'Rubik', Arial, sans-serif;font-size:32px;font-weight:700;color:#2F6FB0">22–31 мин</p>
+<p style="font-family:'Segoe UI', Arial, sans-serif;font-size:32px;font-weight:700;color:#2F6FB0">20,5–28 мин</p>
 </div>
-<h2 style="font-family:'Rubik', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">А если научить его рисовать?</h2>
+<h2 style="font-family:'Segoe UI', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">А если научить его рисовать?</h2>
 <p style="font-size:36px;line-height:1.4;color:#3B4252;width:1500px">Возьмите <b>досье</b>. Числа ищите в английском столбце, русский — подстраховка. Заполните лестницу в рабочем листе.</p>
 <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:24px">
 <div style="display:flex;flex-direction:column;gap:10px;background:#FFFDF8;border:1px solid #E4DED1;border-radius:20px;padding:32px">
-<p style="font-family:'Rubik', Arial, sans-serif;font-size:56px;font-weight:700;color:#2F6FB0">А</p>
+<p style="font-family:'Segoe UI', Arial, sans-serif;font-size:56px;font-weight:700;color:#2F6FB0">А</p>
 <p style="font-size:30px;line-height:1.35">Что спрятано внутри нашего стенда</p>
 </div>
 <div style="display:flex;flex-direction:column;gap:10px;background:#FFFDF8;border:1px solid #E4DED1;border-radius:20px;padding:32px">
-<p style="font-family:'Rubik', Arial, sans-serif;font-size:56px;font-weight:700;color:#2F6FB0">Б</p>
+<p style="font-family:'Segoe UI', Arial, sans-serif;font-size:56px;font-weight:700;color:#2F6FB0">Б</p>
 <p style="font-size:30px;line-height:1.35">Модель-художник в одном стиле</p>
 </div>
 <div style="display:flex;flex-direction:column;gap:10px;background:#FFFDF8;border:1px solid #E4DED1;border-radius:20px;padding:32px">
-<p style="font-family:'Rubik', Arial, sans-serif;font-size:56px;font-weight:700;color:#2F6FB0">В</p>
+<p style="font-family:'Segoe UI', Arial, sans-serif;font-size:56px;font-weight:700;color:#2F6FB0">В</p>
 <p style="font-size:30px;line-height:1.35">Генератор с нуля: сколько часов</p>
 </div>
 <div style="display:flex;flex-direction:column;gap:10px;background:#FFFDF8;border:1px solid #E4DED1;border-radius:20px;padding:32px">
-<p style="font-family:'Rubik', Arial, sans-serif;font-size:56px;font-weight:700;color:#2F6FB0">Г</p>
+<p style="font-family:'Segoe UI', Arial, sans-serif;font-size:56px;font-weight:700;color:#2F6FB0">Г</p>
 <p style="font-size:30px;line-height:1.35">Генератор с нуля: сколько картинок</p>
 </div>
 </div>
 <p style="font-size:32px;line-height:1.4;color:#3B4252"><b>Подсказка для расчёта:</b> часы × 3600 = секунды. Потом большое время делим на время вашего стенда.</p>
-<aside class="note">Раздать досье в начале этапа (по одному на пару). Застряли на поиске числа — П6, на расчёте — П7. Около 29-й минуты включить слайд-сверку.</aside>
+
 </section>
-<section id="ladder" data-transition="fade" style="background:#1E2433;color:#F5F1E8;font-family:'Nunito', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:48px">
-<h2 style="font-family:'Rubik', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">Сверка: лестница сложности</h2>
+<section class="slide" id="ladder" data-notes="27-я минута, ровно одна минута: сверка для тех, кто не досчитал. 150 000 ч × 3600 = 540 000 000 с; ÷ 10 с = 54 000 000. У пар своё время стенда — их ответ будет другим, и это нормально: важен порядок величины. На 28-й минуте — смета." style="background:#1E2433;color:#F5F1E8;font-family:'Segoe UI', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:48px">
+<h2 style="font-family:'Segoe UI', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">Сверка: лестница сложности</h2>
 <div style="display:flex;gap:32px;align-items:end">
 <div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#2A3245;border-top:8px solid #8FB8E3;border-radius:20px;padding:40px">
-<p style="font-family:'Rubik', Arial, sans-serif;font-size:28px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#8FB8E3">Наш стенд</p>
-<p style="font-family:'Rubik', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">секунды</p>
+<p style="font-family:'Segoe UI', Arial, sans-serif;font-size:28px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#8FB8E3">Наш стенд</p>
+<p style="font-family:'Segoe UI', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">секунды</p>
 <p style="font-size:30px;line-height:1.4;color:#C9D3E3">около 100 ваших картинок · ноутбук, браузер · дообучение готовой модели</p>
 </div>
 <div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#2A3245;border-top:8px solid #F2B36B;border-radius:20px;padding:40px">
-<p style="font-family:'Rubik', Arial, sans-serif;font-size:28px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#F2B36B">Художник в стиле</p>
-<p style="font-family:'Rubik', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">37 минут</p>
+<p style="font-family:'Segoe UI', Arial, sans-serif;font-size:28px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#F2B36B">Художник в стиле</p>
+<p style="font-family:'Segoe UI', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">37 минут</p>
 <p style="font-size:30px;line-height:1.4;color:#C9D3E3">30 картинок · одна домашняя видеокарта · дообучение готового генератора</p>
 </div>
 <div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#2A3245;border-top:8px solid #E8806B;border-radius:20px;padding:40px">
-<p style="font-family:'Rubik', Arial, sans-serif;font-size:28px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#E8806B">Генератор с нуля</p>
-<p style="font-family:'Rubik', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">150 000 ч</p>
-<p style="font-size:30px;line-height:1.4;color:#C9D3E3">2,32 млрд картинок · 256 видеокарт около 24 дней · с нуля</p>
+<p style="font-family:'Segoe UI', Arial, sans-serif;font-size:28px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#E8806B">Генератор с нуля</p>
+<p style="font-family:'Segoe UI', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">150 000 ч</p>
+<p style="font-size:30px;line-height:1.4;color:#C9D3E3">2,32 млрд картинок · 256 видеокарт · около 24 дней</p>
 </div>
 </div>
 <p style="font-size:38px;line-height:1.4;color:#F5F1E8">Если стенд учился 10 секунд, генератор с нуля учился в <b style="color:#F2B36B">54 миллиона раз</b> дольше.</p>
-<aside class="note">Около 29-й минуты: сверка для тех, кто не досчитал. 150 000 ч × 3600 = 540 000 000 с; ÷ 10 с = 54 000 000. У пар своё время стенда — их ответ будет другим, и это нормально: важен порядок величины. Через 2 минуты — смета.</aside>
+
 </section>
-<section id="s4" data-transition="fade" style="background:#F5F1E8;color:#1E2433;font-family:'Nunito', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:48px">
+<section class="slide" id="s4" data-notes="Раздать каждой паре одну карточку заказчика и бланк сметы. Бланки собрать вместе с рабочими листами после урока. Ожидаемые ответы — в памятке учителя." style="background:#F5F1E8;color:#1E2433;font-family:'Segoe UI', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:48px">
 <div style="display:flex;gap:12px;align-items:center">
 <p style="font-size:26px;padding:8px 22px;border-radius:999px;background:#E4DED1;color:#4A4F5C">Гипотеза</p>
 <p style="font-size:26px;padding:8px 22px;border-radius:999px;background:#E4DED1;color:#4A4F5C">Стенд</p>
@@ -243,9 +253,9 @@ html,body{margin:0;height:100%;background:#111;overflow:hidden;font-family:Nunit
 <p style="font-size:26px;font-weight:700;padding:8px 22px;border-radius:999px;background:#2F6FB0;color:#F5F1E8">Смета</p>
 <p style="font-size:26px;padding:8px 22px;border-radius:999px;background:#E4DED1;color:#4A4F5C">Билет</p>
 <div style="flex:1"></div>
-<p style="font-family:'Rubik', Arial, sans-serif;font-size:32px;font-weight:700;color:#2F6FB0">31–37 мин</p>
+<p style="font-family:'Segoe UI', Arial, sans-serif;font-size:32px;font-weight:700;color:#2F6FB0">28–34 мин</p>
 </div>
-<h2 style="font-family:'Rubik', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">Вам пришёл заказ</h2>
+<h2 style="font-family:'Segoe UI', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">Вам пришёл заказ</h2>
 <p style="font-size:36px;line-height:1.4;color:#3B4252;width:1500px">У каждой пары свой заказчик. Заполните бланк сметы: как учить, сколько картинок, сколько времени, откуда данные — и главный красный флаг.</p>
 <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:24px">
 <div style="background:#FFFDF8;border:1px solid #E4DED1;border-radius:20px;padding:32px"><p style="font-size:30px;line-height:1.35"><b>1.</b> Художница с 40 своими акварелями</p></div>
@@ -253,10 +263,10 @@ html,body{margin:0;height:100%;background:#111;overflow:hidden;font-family:Nunit
 <div style="background:#FFFDF8;border:1px solid #E4DED1;border-radius:20px;padding:32px"><p style="font-size:30px;line-height:1.35"><b>3.</b> Блогер и 30 чужих иллюстраций</p></div>
 <div style="background:#FFFDF8;border:1px solid #E4DED1;border-radius:20px;padding:32px"><p style="font-size:30px;line-height:1.35"><b>4.</b> Стартап: генератор с нуля за 1 млн ₽</p></div>
 </div>
-<p style="font-size:34px;line-height:1.4;color:#1E2433"><b>На 36-й минуте:</b> впишите на доске одну строку — номер заказчика, вердикт и красный флаг.</p>
-<aside class="note">Раздать каждой паре одну карточку заказчика и бланк сметы. На электронной доске заранее открыть таблицу из трёх столбцов: «Заказчик», «Вердикт», «Красный флаг». Ожидаемые ответы — в памятке учителя.</aside>
+<p style="font-size:34px;line-height:1.4;color:#1E2433"><b>Готово?</b> Положите бланк сметы на рабочий лист и поднимите зелёную карточку.</p>
+
 </section>
-<section id="ticket" data-transition="fade" style="background:#F5F1E8;color:#1E2433;font-family:'Nunito', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:56px">
+<section class="slide" id="ticket" data-notes="Раздать каждому ученику выходной билет на 34-й минуте. Собрать на выходе. Минуты 37–40 — резерв: он съедается задержками раньше; если не съелся, урок просто заканчивается спокойно. Последние 30 секунд — слайд «Главная мысль», уже после того, как билеты заполнены, чтобы он не стал подсказкой." style="background:#F5F1E8;color:#1E2433;font-family:'Segoe UI', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:56px">
 <div style="display:flex;gap:12px;align-items:center">
 <p style="font-size:26px;padding:8px 22px;border-radius:999px;background:#E4DED1;color:#4A4F5C">Гипотеза</p>
 <p style="font-size:26px;padding:8px 22px;border-radius:999px;background:#E4DED1;color:#4A4F5C">Стенд</p>
@@ -265,40 +275,62 @@ html,body{margin:0;height:100%;background:#111;overflow:hidden;font-family:Nunit
 <p style="font-size:26px;padding:8px 22px;border-radius:999px;background:#E4DED1;color:#4A4F5C">Смета</p>
 <p style="font-size:26px;font-weight:700;padding:8px 22px;border-radius:999px;background:#2F6FB0;color:#F5F1E8">Билет</p>
 <div style="flex:1"></div>
-<p style="font-family:'Rubik', Arial, sans-serif;font-size:32px;font-weight:700;color:#2F6FB0">37–40 мин</p>
+<p style="font-family:'Segoe UI', Arial, sans-serif;font-size:32px;font-weight:700;color:#2F6FB0">34–37 мин</p>
 </div>
-<h2 style="font-family:'Rubik', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">Выходной билет</h2>
+<h2 style="font-family:'Segoe UI', Arial, sans-serif;font-size:72px;font-weight:700;line-height:1.1">Выходной билет</h2>
 <div style="display:flex;gap:48px;align-items:center">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#2F6FB0;width:160px;height:160px"><path d="M22 9 12 4 2 9l10 5 10-5z"/><path d="M6 11v5c3 2.5 9 2.5 12 0v-5"/><path d="M22 9v6"/></svg>
+<svg width="160" height="160" viewBox="0 0 24 24" fill="none" stroke="#2F6FB0" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/><path d="M22 9v6"/></svg>
 <p style="font-size:44px;line-height:1.4;width:1300px">Теперь — <b>каждый сам и молча</b>. Четыре строки своими словами. Сдайте билет на выходе.</p>
 </div>
-<aside class="note">Раздать каждому ученику выходной билет. Собрать на выходе. Последние 30 секунд — слайд «Главная мысль», уже после того, как билеты заполнены, чтобы он не стал подсказкой.</aside>
+
 </section>
-<section id="idea" data-transition="fade" style="background:#1E2433;color:#F5F1E8;font-family:'Nunito', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:56px">
-<p style="font-family:'Rubik', Arial, sans-serif;font-size:32px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:#8FB8E3">Главная мысль</p>
-<h2 style="font-family:'Rubik', Arial, sans-serif;font-size:80px;font-weight:700;line-height:1.15;width:1600px">Время обучения растёт с числом картинок, эпох и размером модели. Мощное железо его сокращает.</h2>
+<section class="slide" id="idea" data-notes="Показать, когда билеты уже сданы (около 37-й минуты). Урок окончен." style="background:#1E2433;color:#F5F1E8;font-family:'Segoe UI', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:56px">
+<p style="font-family:'Segoe UI', Arial, sans-serif;font-size:32px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:#8FB8E3">Главная мысль</p>
+<h2 style="font-family:'Segoe UI', Arial, sans-serif;font-size:80px;font-weight:700;line-height:1.15;width:1600px">Время обучения растёт с числом картинок, эпох и размером модели. Мощное железо его сокращает.</h2>
 <p style="font-size:40px;line-height:1.4;color:#C9D3E3;width:1500px">Поэтому наш стенд — это ноутбук и секунды, а генератор картин с нуля — дата-центр и недели. И чем больше данных, тем важнее вопрос: <span style="color:#F2B36B">чьи они и можно ли их брать?</span></p>
-<aside class="note">Показать, когда билеты уже сданы. Урок окончен.</aside>
+
 </section>
-</div>
+</div></div>
+<div id="hud"></div>
+<div id="help">→ / пробел / щелчок — дальше · ← — назад · F — во весь экран · N — заметки для учителя</div>
 <div id="notes"></div>
-<div id="ctl"><a href="../../dlya-uchitelya.html">↩</a><button id="pv">←</button><span id="cnt"></span><button id="nx">→</button><button id="nb">Заметки</button><button id="fs">⛶</button></div>
 <script>
-const S=[...document.querySelectorAll('#stage>section')];let i=0;
-try{const h=parseInt((location.hash.match(/\d+/)||[])[0]);if(h>0&&h<=S.length)i=h-1;}catch(e){}
-function fit(){const st=document.getElementById('stage');const k=Math.min(innerWidth/1920,innerHeight/1080);st.style.transform=`scale(${k}) translate(-50%,-50%)`;}
-function show(){S.forEach((s,j)=>s.classList.toggle('on',j===i));document.getElementById('cnt').textContent=(i+1)+' / '+S.length;
- const n=S[i].querySelector('aside.note');document.getElementById('notes').textContent=n?n.textContent.trim():'';
- try{history.replaceState(null,'','#'+(i+1));}catch(e){}}
-function go(d){i=Math.max(0,Math.min(S.length-1,i+d));show();}
-addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();go(1);}
- else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();go(-1);}
- else if(e.key==='n'||e.key==='N'||e.key==='т'||e.key==='Т')document.getElementById('notes').classList.toggle('on');
- else if(e.key==='Home'){i=0;show();} else if(e.key==='End'){i=S.length-1;show();}});
-document.getElementById('pv').onclick=()=>go(-1);document.getElementById('nx').onclick=()=>go(1);
-document.getElementById('nb').onclick=()=>document.getElementById('notes').classList.toggle('on');
-document.getElementById('fs').onclick=()=>{try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}catch(e){}};
-addEventListener('resize',fit);fit();show();
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var stage = document.getElementById('stage'), hud = document.getElementById('hud'), notes = document.getElementById('notes');
+  var i = 0;
+  try { var h = parseInt((location.hash.match(/\d+/)||[])[0], 10); if (h >= 1 && h <= slides.length) i = h - 1; } catch(e){}
+  function fit(){
+    var s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+    stage.style.transform = 'scale(' + s + ')';
+  }
+  function show(n){
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function(el, k){ el.classList.toggle('active', k === i); });
+    hud.textContent = (i + 1) + ' / ' + slides.length;
+    var t = slides[i].getAttribute('data-notes') || '';
+    notes.innerHTML = '<b>Слайд ' + (i + 1) + '.</b> ' + (t ? t.replace(/[&<>]/g, function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];}) : 'Заметок нет.');
+    try { history.replaceState(null, '', '#' + (i + 1)); } catch(e){}
+  }
+  document.addEventListener('keydown', function(e){
+    var k = e.key;
+    if (k === 'ArrowRight' || k === 'PageDown' || k === ' ' || k === 'Enter') { e.preventDefault(); show(i + 1); }
+    else if (k === 'ArrowLeft' || k === 'PageUp' || k === 'Backspace') { e.preventDefault(); show(i - 1); }
+    else if (k === 'Home') show(0);
+    else if (k === 'End') show(slides.length - 1);
+    else if (k === 'f' || k === 'F' || k === 'а' || k === 'А') {
+      if (!document.fullscreenElement) { (document.documentElement.requestFullscreen || function(){}).call(document.documentElement); }
+      else { document.exitFullscreen(); }
+    }
+    else if (k === 'n' || k === 'N' || k === 'т' || k === 'Т') document.body.classList.toggle('show-notes');
+  });
+  document.getElementById('viewport').addEventListener('click', function(e){
+    if (e.clientX < window.innerWidth * 0.25) show(i - 1); else show(i + 1);
+  });
+  window.addEventListener('resize', fit);
+  setTimeout(function(){ document.getElementById('help').style.opacity = '0'; }, 6000);
+  fit(); show(i);
+})();
 </script>
 </body>
 </html>
