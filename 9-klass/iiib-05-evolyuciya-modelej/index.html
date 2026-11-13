@@ -13,7 +13,6 @@ h3 { color: #34495e; margin-top: 20px; }
 .mode-btn.active { background: #3498db; color: white; }
 .mode { display: none; margin-top: 20px; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
 .mode.active { display: block; }
-
 .mode1-layout { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 20px; align-items: start; }
 .matrix-block { text-align: center; }
 .matrix { border-collapse: collapse; margin: 10px auto; }
@@ -33,6 +32,7 @@ h3 { color: #34495e; margin-top: 20px; }
 .example-btn-sm:hover { background: #8e44ad; }
 .calculate-btn { padding: 12px 30px; background: #e67e22; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; }
 .calculate-btn:hover { background: #d35400; }
+.calculate-btn:disabled { background: #bdc3c7; cursor: not-allowed; }
 label { margin-right: 15px; font-size: 14px; }
 .controls { margin: 20px 0; text-align: center; }
 .task-box { background: #fff3cd; padding: 15px; border-radius: 10px; margin-top: 20px; border: 2px solid #ffc107; }
@@ -46,7 +46,6 @@ label { margin-right: 15px; font-size: 14px; }
 .output-vector { background: #fff3cd; border: 2px solid #ffc107; padding: 15px; border-radius: 10px; margin: 20px 0; text-align: center; }
 .output-vector h4 { margin: 0 0 10px 0; color: #856404; }
 
-/* Режим 2 - визуальные связи */
 .mode2-container { position: relative; }
 .mode2-input-section { text-align: center; margin-bottom: 30px; position: relative; }
 .mode2-neurons-section { position: relative; }
@@ -72,11 +71,169 @@ label { margin-right: 15px; font-size: 14px; }
 .neuron-block-sm .weight-input { width: 40px; height: 40px; font-size: 14px; }
 .neuron-block-sm .threshold { width: 60px; height: 32px; font-size: 14px; }
 
-/* Режим 3 - окна и оверлей */
 .input-matrix-container { position: relative; display: inline-block; }
 .window-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
 .mode3-connections { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
 .mode3-wrapper { position: relative; }
+
+.m4-layout { display: grid; grid-template-columns: 1fr 1.4fr; gap: 20px; align-items: start; }
+.m4-examples { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+.m4-example { text-align: center; padding: 10px; border: 2px solid #3498db; border-radius: 10px; background: #ecf0f1; }
+.m4-example.m4-current { border-color: #e67e22; background: #fff3cd; box-shadow: 0 0 0 3px rgba(230,126,34,0.3); }
+.m4-ex-name { font-weight: bold; margin-bottom: 5px; color: #2c3e50; }
+.m4-state { display: flex; gap: 20px; flex-wrap: wrap; font-size: 15px; margin: 10px 0; padding: 10px; background: #ecf0f1; border-radius: 8px; }
+.m4-state span { font-weight: bold; color: #c0392b; }
+.algo-panel { background: #f9f9f9; border: 2px solid #bdc3c7; border-radius: 8px; padding: 12px; font-size: 13px; line-height: 1.5; }
+.algo-line { padding: 4px 6px; border-radius: 4px; margin: 2px 0; transition: background 0.2s; }
+.algo-line.algo-active { background: #ffe082; border-left: 4px solid #e67e22; font-weight: bold; }
+.m4-controls { margin: 15px 0; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.m4-input-area { margin: 10px 0; padding: 12px; border: 2px dashed #3498db; border-radius: 8px; background: #e3f2fd; }
+.m4-input-area input[type="number"] { font-size: 18px; padding: 6px 10px; width: 100px; border: 2px solid #3498db; border-radius: 5px; }
+.m4-feedback { margin-top: 8px; padding: 8px; border-radius: 5px; font-size: 14px; }
+.m4-feedback.ok { background: #d4edda; color: #155724; border-left: 4px solid #28a745; }
+.m4-feedback.warn { background: #fff3cd; color: #856404; border-left: 4px solid #ffc107; }
+.m4-feedback.err { background: #f8d7da; color: #721c24; border-left: 4px solid #dc3545; }
+.log-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
+.log-table th, .log-table td { border: 1px solid #bdc3c7; padding: 4px 6px; text-align: center; }
+.log-table th { background: #3498db; color: white; }
+.log-table tr:nth-child(even) td { background: #f9f9f9; }
+.m4-finish { background: #d4edda; border: 3px solid #28a745; border-radius: 10px; padding: 15px; margin-top: 15px; }
+.m4-finish h3 { margin-top: 0; color: #155724; }
+.reference-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 8px; background: #fff; }
+.reference-table th, .reference-table td { border: 1px solid #999; padding: 3px 5px; text-align: center; }
+.reference-table th { background: #95a5a6; color: white; }
+
+.m4-btn {
+  display: inline-block;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: bold;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #fff;
+  min-width: 110px;
+  text-align: center;
+  box-sizing: border-box;
+  transition: filter 0.15s;
+  margin: 3px;
+}
+.m4-btn:hover { filter: brightness(0.92); }
+.m4-btn:disabled { background: #bdc3c7; border-color: #bdc3c7; cursor: not-allowed; filter: none; opacity: 0.7; }
+.m4-btn.orange { background: #e67e22; }
+.m4-btn.purple { background: #9b59b6; }
+.m4-btn.blue   { background: #3498db; }
+.m4-btn.green  { background: #27ae60; }
+.m4-btn.red    { background: #e74c3c; }
+.m4-btn.grey   { background: #7f8c8d; }
+.m4-btn.m4-btn-narrow { min-width: 60px; padding: 8px 14px; font-size: 13px; }
+
+.m4-answer-row { display: flex; align-items: center; gap: 14px; font-size: 16px; flex-wrap: wrap; margin: 6px 0; }
+.m4-answer-input { font-size: 20px; padding: 8px 12px; width: 110px; border: 3px solid #3498db; border-radius: 8px; text-align: center; font-weight: bold; box-sizing: border-box; }
+.m4-answer-input.m4-ok { border-color: #28a745; background: #d4edda; color: #155724; }
+.m4-answer-input.m4-bad { border-color: #dc3545; background: #f8d7da; color: #721c24; }
+.m4-indicator {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 48px; height: 48px; font-size: 26px; font-weight: bold;
+  border-radius: 50%; border: 3px dashed #bdc3c7; background: #f9f9f9;
+  color: #95a5a6; line-height: 1; transition: all 0.2s; flex-shrink: 0;
+}
+.m4-indicator.m4-ok { border: 3px solid #28a745; background: #d4edda; color: #28a745; }
+.m4-indicator.m4-bad { border: 3px solid #dc3545; background: #f8d7da; color: #dc3545; }
+.m4-hint { font-size: 13px; margin-top: 6px; padding: 6px 10px; border-radius: 5px; }
+.m4-hint.m4-ok { background: #d4edda; color: #155724; }
+.m4-hint.m4-bad { background: #f8d7da; color: #721c24; }
+.m4-branch-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin: 6px 0; }
+.m4-branch-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+
+.m5-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.m5-panel { border: 3px solid #3498db; border-radius: 10px; padding: 15px; background: #ecf0f1; }
+.m5-panel.m5-machine { border-color: #e74c3c; background: #ffebee; }
+.m5-panel h3 { margin-top: 0; }
+.m5-counters { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0; }
+.m5-counter { background: #fff; border: 2px solid #bdc3c7; border-radius: 8px; padding: 8px; text-align: center; }
+.m5-counter .lbl { font-size: 11px; color: #555; }
+.m5-counter .val { font-size: 22px; font-weight: bold; color: #2c3e50; }
+.m5-counter .val .lim { font-size: 14px; color: #888; font-weight: normal; }
+.m5-machine-hidden { background: #34495e; color: white; padding: 20px; border-radius: 8px; text-align: center; font-style: italic; }
+.m5-pair-grid { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.m5-pair-grid .matrix { margin: 0 auto; }
+.m5-pair-grid .weight-input { width: 56px; height: 56px; font-size: 20px; }
+.m5-result-panel { background: #fff; border-radius: 8px; padding: 10px; margin-top: 10px; font-size: 13px; }
+.m5-result-row { padding: 4px; border-bottom: 1px dashed #ccc; display: flex; justify-content: space-between; }
+.m5-result-row.ok { color: #155724; font-weight: bold; }
+.m5-result-row.bad { color: #721c24; }
+.m5-tempo { margin: 10px 0; }
+.m5-tempo button { padding: 8px 16px; margin-right: 5px; cursor: pointer; border: 2px solid #3498db; background: white; border-radius: 5px; font-size: 14px; }
+.m5-tempo button.sel { background: #3498db; color: white; }
+.m5-timer { font-size: 26px; font-weight: bold; text-align: center; padding: 8px; border-radius: 8px; background: #fff; border: 2px solid #e67e22; margin: 8px 0; }
+.m5-winner { padding: 15px; border-radius: 10px; text-align: center; font-size: 20px; font-weight: bold; margin-top: 15px; }
+.m5-winner.machine { background: #f8d7da; color: #721c24; border: 3px solid #dc3545; }
+.m5-winner.pair { background: #d4edda; color: #155724; border: 3px solid #28a745; }
+.m5-winner.draw { background: #fff3cd; color: #856404; border: 3px solid #ffc107; }
+.m5-note { font-size: 12px; color: #555; font-style: italic; margin-top: 6px; }
+.m5-feature-input { width: 100%; padding: 6px; border: 2px solid #3498db; border-radius: 5px; font-size: 13px; box-sizing: border-box; margin-top: 4px; }
+
+.m5-setup { background: #e3f2fd; border: 2px solid #3498db; border-radius: 10px; padding: 12px; margin-bottom: 15px; }
+.m5-letter-picker { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.m5-letter-choice { display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: #fff; border: 2px solid #bdc3c7; border-radius: 6px; font-size: 14px; user-select: none; }
+.m5-letter-choice.sel { border-color: #3498db; background: #d6eaf8; }
+.m5-letter-choice input[type="checkbox"] { cursor: pointer; margin: 0; }
+.m5-ans-toggle { display: inline-flex; align-items: center; gap: 3px; font-size: 12px; color: #555; }
+.m5-ans-btn {
+  padding: 2px 8px; margin: 0 2px; border: 2px solid #bdc3c7; background: #fff;
+  border-radius: 4px; font-size: 13px; font-weight: bold; cursor: pointer;
+  color: #555; min-width: 26px;
+}
+.m5-ans-btn.act-1 { background: #d4edda; border-color: #28a745; color: #155724; }
+.m5-ans-btn.act-0 { background: #f8d7da; border-color: #dc3545; color: #721c24; }
+.m5-ans-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.m5-ans-btn:hover:not(:disabled) { filter: brightness(0.95); }
+
+.m5-current-letter { text-align: center; background: #fff; border-radius: 8px; padding: 10px; margin: 10px 0; border: 2px solid #e67e22; }
+.m5-current-letter .cl-title { font-size: 13px; color: #555; }
+.m5-current-letter .cl-name { font-size: 22px; font-weight: bold; color: #e67e22; }
+.m5-current-letter .cl-answer { font-size: 13px; color: #333; margin-top: 4px; }
+.m5-letter-tabs { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 8px 0; }
+.m5-letter-tab { padding: 6px 10px; border: 2px solid #bdc3c7; background: #fff; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: bold; display: inline-flex; align-items: center; gap: 5px; }
+.m5-letter-tab.cur { border-color: #e67e22; background: #fff3cd; box-shadow: 0 0 0 3px rgba(230,126,34,0.25); }
+.m5-letter-tab .st { font-size: 14px; }
+.m5-letter-tab .st.ok { color: #28a745; }
+.m5-letter-tab .st.bad { color: #dc3545; }
+.m5-letter-tab .st.none { color: #95a5a6; }
+#m5-letter-grid td { width: 38px; height: 38px; font-size: 16px; cursor: default; }
+#m5-machine-weights td { cursor: default; }
+.m5-check-btn { padding: 8px 14px; margin: 4px; cursor: pointer; border: 2px solid #2980b9; background: #ecf0f1; border-radius: 5px; font-size: 14px; font-weight: bold; }
+.m5-check-btn:hover { background: #d6eaf8; }
+.m5-surrender-btn { padding: 8px 14px; margin: 4px; cursor: pointer; border: 2px solid #dc3545; background: #f8d7da; color: #721c24; border-radius: 5px; font-size: 14px; font-weight: bold; }
+.m5-surrender-btn:hover { background: #f5c6cb; }
+.m5-surrender-btn:disabled { opacity: 0.45; cursor: not-allowed; background: #ecf0f1; color: #95a5a6; border-color: #bdc3c7; }
+
+/* Кнопка «Сдаюсь» после победы машины превращается в «показать ходы» */
+.m5-surrender-btn.m5-reveal {
+  background: #3498db;
+  border-color: #2980b9;
+  color: #fff;
+  animation: m5Pulse 1.2s ease-in-out infinite;
+}
+.m5-surrender-btn.m5-reveal:hover {
+  background: #2980b9;
+}
+@keyframes m5Pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(52,152,219,0.55); }
+  50%      { box-shadow: 0 0 0 7px rgba(52,152,219,0); }
+}
+
+.m5-machine-task {
+  background: #fff; border-radius: 8px; padding: 8px 10px; margin: 8px 0;
+  font-size: 13px; color: #333; border-left: 4px solid #e67e22;
+}
+.m5-machine-task b { color: #c0392b; }
+
+.pause-toast { position: fixed; top: 20px; right: 20px; background: #ff9800; color: white; padding: 14px 20px; border-radius: 8px; font-size: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.25); z-index: 9999; display: none; max-width: 320px; }
+.pause-toast button { background: #fff; color: #e65100; border: none; border-radius: 4px; padding: 4px 8px; margin-left: 8px; cursor: pointer; font-weight: bold; }
+
+.js-error-banner { background: #f8d7da; color: #721c24; border: 3px solid #dc3545; padding: 12px; border-radius: 8px; margin: 10px 0; font-family: monospace; font-size: 13px; white-space: pre-wrap; }
 </style>
 </head>
 <body>
@@ -86,9 +243,13 @@ label { margin-right: 15px; font-size: 14px; }
 <button class="mode-btn active" onclick="switchMode(1)">Режим 1: Один нейрон</button>
 <button class="mode-btn" onclick="switchMode(2)">Режим 2: Слой нейронов</button>
 <button class="mode-btn" onclick="switchMode(3)">Режим 3: Сеть из двух слоёв</button>
+<button class="mode-btn" onclick="switchMode(4)">Режим 4: Обучение</button>
+<button class="mode-btn" onclick="switchMode(5)">Режим 5: Заезд «Смекалка»</button>
 </div>
 
-<!-- Режим 1 -->
+<div id="js-error-banner" class="js-error-banner" style="display:none;"></div>
+
+<!-- ============ РЕЖИМ 1 ============ -->
 <div id="mode1" class="mode active">
 <h2>Режим 1: Один нейрон</h2>
 
@@ -118,7 +279,7 @@ label { margin-right: 15px; font-size: 14px; }
 <div class="matrix-block">
 <h3>🎯 Порог и результат</h3>
 <div style="margin: 20px 0;">
-<label>Порог: <input type="number" class="threshold" id="threshold1" step="0.5" value="0.5"></label>
+<label>Порог: <input type="number" class="threshold" id="threshold1" step="1" value="0"></label>
 </div>
 <div id="result1" class="result-box" style="display: none;"></div>
 </div>
@@ -132,23 +293,18 @@ label { margin-right: 15px; font-size: 14px; }
 <div class="task-box">
 <h4>📝 Задания:</h4>
 <ol>
-<li><b>Задание 1:</b> Подбери веса (от −10 до +10) и порог так, чтобы нейрон активировался (выход = 1) на букву <b>C₁ {111,100,111}</b></li>
-<li><b>Задание 2:</b> Проверь, работает ли тот же нейрон для других начертаний C: <b>C₂ {110,100,110}</b> и <b>C₃ {011,010,011}</b></li>
-<li><b>Задание 3:</b> Подбери веса и порог так, чтобы нейрон:
-<ul>
-<li>Активировался (выход = 1) на букву <b>C₁ {111,100,111}</b></li>
-<li>Активировался (выход = 1) на букву <b>П₁ {111,101,101}</b></li>
-<li>НЕ активировался (выход = 0) на букву <b>T {111,010,010}</b></li>
-</ul>
-</li>
+<li><b>Задание 1:</b> Подбери веса и порог так, чтобы нейрон активировался (выход = 1) на букву <b>C₁ {111,100,111}</b> и молчал (выход = 0) на букву <b>T {111,010,010}</b>.</li>
+<li><b>Задание 2:</b> Проверь, работает ли тот же нейрон для других начертаний C: <b>C₂ {110,100,110}</b> и <b>C₃ {011,010,011}</b>.</li>
+<li><b>Задание 3:</b> Подбери веса и порог так, чтобы нейрон активировался на <b>C₁ {111,100,111}</b> и <b>П₁ {111,101,101}</b> и НЕ активировался на <b>T {111,010,010}</b>.</li>
 </ol>
 <div class="hint">
-<b>💡 Подсказка к заданию 3:</b> Посмотри на C₁ и П₁ — что у них общего, чего нет у T? Обрати внимание на левый и центральный столбцы (без верхней строки). Попробуй положительные веса для левого столбца и отрицательные для центрального.
+<b>💡 Подсказка:</b> клетки 4 и 7 (средняя и нижняя левая) и клетка 9 (нижняя правая) есть и у C₁, и у П₁, и нет у T — им подойдёт положительный вес. Клетка 5 (центр) есть только у T — ей подойдёт отрицательный вес. Попробуй.
+<br><b>Нумерация клеток:</b> 1 2 3 / 4 5 6 / 7 8 9.
 </div>
 </div>
 </div>
 
-<!-- Режим 2 -->
+<!-- ============ РЕЖИМ 2 ============ -->
 <div id="mode2" class="mode">
 <h2>Режим 2: Слой нейронов</h2>
 
@@ -200,7 +356,7 @@ label { margin-right: 15px; font-size: 14px; }
 </div>
 </div>
 
-<!-- Режим 3 -->
+<!-- ============ РЕЖИМ 3 ============ -->
 <div id="mode3" class="mode">
 <h2>Режим 3: Сеть из двух слоёв</h2>
 
@@ -250,7 +406,7 @@ label { margin-right: 15px; font-size: 14px; }
   <div style="font-size: 30px;">→</div>
   <div style="text-align: center;">
     <h4>Порог</h4>
-    <input type="number" class="threshold" id="threshold3_l2" step="0.5" value="0.5">
+    <input type="number" class="threshold" id="threshold3_l2" step="1" value="0">
     <div id="final_output_3" style="font-size: 28px; font-weight: bold; margin-top: 10px; color: #155724;">?</div>
   </div>
 </div>
@@ -278,582 +434,1613 @@ label { margin-right: 15px; font-size: 14px; }
 </div>
 </div>
 
+<!-- ============ РЕЖИМ 4 ============ -->
+<div id="mode4" class="mode">
+<h2>Режим 4: Обучение</h2>
+
+<div class="m4-layout">
+  <div>
+    <h3>Примеры для обучения</h3>
+    <div class="m4-examples">
+      <div class="m4-example" id="m4-ex-c1">
+        <div class="m4-ex-name">C₁ (ответ 1)</div>
+        <table class="matrix" id="m4-grid-c1"></table>
+      </div>
+      <div class="m4-example" id="m4-ex-t">
+        <div class="m4-ex-name">T (ответ 0)</div>
+        <table class="matrix" id="m4-grid-t"></table>
+      </div>
+    </div>
+    <div style="text-align:center; margin: 10px 0; color: #555;">Порядок: C₁ → T → C₁ → T → ...</div>
+
+    <h3>Текущее состояние</h3>
+    <div class="m4-state">
+      <div>Круг: <span id="m4-round">—</span></div>
+      <div>Ошибок в круге: <span id="m4-errors">0</span></div>
+      <div>Порог: <span id="m4-threshold">0</span></div>
+    </div>
+    <div style="text-align:center;">
+      <div style="font-size: 13px; color: #555;">Текущие веса (не редактируются вручную)</div>
+      <table class="matrix" id="m4-weights"></table>
+    </div>
+  </div>
+
+  <div>
+    <h3>Алгоритм (правило коррекции ошибки Розенблатта)</h3>
+    <div id="m4-algo" class="algo-panel"></div>
+
+    <div class="m4-controls">
+      <button id="m4-step-btn" class="m4-btn orange" onclick="m4Step()">Шаг</button>
+      <button class="m4-btn grey" onclick="m4Reset()">Сброс</button>
+    </div>
+
+    <div id="m4-input-area"></div>
+
+    <h3>Журнал шагов</h3>
+    <div style="max-height: 280px; overflow-y: auto; border: 1px solid #ccc; border-radius: 6px;">
+      <table class="log-table" id="m4-log">
+        <thead>
+          <tr><th>Круг</th><th>Пример</th><th>S</th><th>Порог</th><th>Выход</th><th>Верно?</th><th>Что меняем</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div id="m4-finish" class="m4-finish" style="display:none;"></div>
+  </div>
+</div>
+</div>
+
+<!-- ============ РЕЖИМ 5 ============ -->
+<div id="mode5" class="mode">
+<h2>Режим 5: Заезд «Смекалка»</h2>
+
+<div class="m5-setup">
+  <b>Выберите буквы и задайте ожидаемый выход для каждой:</b>
+  <div id="m5-letter-picker" class="m5-letter-picker"></div>
+  <div style="font-size:12px;color:#555;margin-top:6px;">
+    Поставьте галочку — буква участвует в заезде. Кнопками <b>1</b> / <b>0</b> задайте,
+    что нейрон должен выдать на эту букву: <b>1</b> — загореться, <b>0</b> — молчать.
+    Любую букву (включая «+») можно переопределить. Нужны хотя бы одна
+    буква с выходом 1 и одна с выходом 0. Лимит шагов и время подбираются автоматически
+    под размер задачи (больше букв — больше запас).
+  </div>
+</div>
+
+<div class="m5-layout">
+  <div class="m5-panel m5-machine">
+    <h3>Сторона машины</h3>
+    <div class="m5-tempo">
+      Темп на шаг:
+      <button class="m5-tempo-btn" data-tempo="15" onclick="m5SetTempo(15)">15 с</button>
+      <button class="m5-tempo-btn" data-tempo="30" onclick="m5SetTempo(30)">30 с</button>
+      <button class="m5-tempo-btn" data-tempo="60" onclick="m5SetTempo(60)">60 с</button>
+    </div>
+    <div>
+      <label><input type="checkbox" id="m5-random-order"> Случайный порядок примеров (для сильных)</label>
+    </div>
+    <div class="m5-timer" id="m5-timer">05:00</div>
+    <div class="m5-counters">
+      <div class="m5-counter"><div class="lbl">Шаг</div><div class="val" id="m5-m-step">0</div></div>
+      <div class="m5-counter"><div class="lbl">Поправки</div><div class="val" id="m5-m-corr">0</div></div>
+      <div class="m5-counter"><div class="lbl">Круг</div><div class="val" id="m5-m-round">1</div></div>
+    </div>
+    <div class="m5-machine-task" id="m5-machine-task"></div>
+    <div id="m5-machine-body">
+      <div class="m5-machine-hidden">Веса машины скрыты. Откроются, если пара победит или сдастся.</div>
+    </div>
+    <div class="m5-note">Машина исполнит алгоритм Розенблатта. Счётчики — единственное, что видно.</div>
+  </div>
+
+  <div class="m5-panel">
+    <h3>Сторона пары</h3>
+    <div class="m5-letter-tabs" id="m5-letter-tabs"></div>
+    <div class="m5-current-letter" id="m5-current-letter">
+      <div class="cl-title">Текущая буква</div>
+      <div class="cl-name" id="m5-current-name">—</div>
+      <div class="m5-letter-img"><table class="matrix" id="m5-letter-grid"></table></div>
+      <div class="cl-answer" id="m5-current-answer">—</div>
+    </div>
+    <div class="m5-pair-grid">
+      <div style="font-size:13px; color:#555;">Веса нейрона (редактируйте)</div>
+      <table class="matrix" id="m5-pair-weights"></table>
+      <label>Порог: <input type="number" class="threshold" id="m5-pair-threshold" step="1" value="0" style="font-size:22px; height:44px;"></label>
+    </div>
+    <div style="margin-top: 10px;">
+      <label style="font-size:13px;">Наш признак (на чём основан набор):</label>
+      <input type="text" id="m5-feature" class="m5-feature-input" placeholder="например: клетки 4,7,9 — плюс, клетка 5 — минус">
+    </div>
+    <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;">
+      <button class="m5-check-btn" onclick="m5CheckCurrent()">Проверить текущую</button>
+      <button class="m5-check-btn" onclick="m5NextLetter()">Следующая буква →</button>
+      <button class="m5-surrender-btn" id="m5-surrender-btn" onclick="m5Surrender()" disabled>Сдаюсь</button>
+    </div>
+    <div class="m5-counters" style="margin-top:10px;">
+      <div class="m5-counter"><div class="lbl">Проверок пары</div><div class="val" id="m5-p-checks">0</div></div>
+      <div class="m5-counter"><div class="lbl">Верных букв</div><div class="val" id="m5-p-correct">0/0</div></div>
+      <div class="m5-counter"><div class="lbl">Статус</div><div class="val" id="m5-p-status" style="font-size:14px;">—</div></div>
+    </div>
+    <div class="m5-result-panel" id="m5-pair-results">Проверка покажет результат для текущей буквы.</div>
+  </div>
+</div>
+
+<div class="controls">
+  <button class="calculate-btn" id="m5-start-btn" onclick="m5Start()">Старт</button>
+  <button class="example-btn" onclick="m5Reset()">Новый старт</button>
+  <button class="example-btn" onclick="m5StrongNewStart()">Новый старт со случайным порядком</button>
+</div>
+
+<div id="m5-winner-box"></div>
+<div id="m5-machine-history" style="display:none; margin-top:20px;">
+  <h3>История шагов машины</h3>
+  <div style="max-height: 320px; overflow-y:auto; border:1px solid #ccc; border-radius:6px;">
+    <table class="log-table" id="m5-machine-log">
+      <thead><tr><th>Круг</th><th>Пример</th><th>Ждём</th><th>S</th><th>Порог</th><th>Выход</th><th>Верно?</th><th>Что меняем</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<div class="pause-toast" id="pauseToast">
+  Сделай паузу: запиши вывод на бумаге.<button onclick="hidePause()">ок</button>
+</div>
+
 <script>
-/* ========== Общие функции ========== */
+/* ============================================================
+   ГЛОБАЛЬНЫЙ ПЕРЕХВАТ ОШИБОК
+   ============================================================ */
+function showJsError(msg) {
+  const b = document.getElementById('js-error-banner');
+  if (!b) return;
+  b.style.display = 'block';
+  b.textContent = 'Ошибка JS: ' + msg;
+}
+window.addEventListener('error', function(e) {
+  showJsError(e.message + ' (' + (e.filename || '') + ':' + (e.lineno || '') + ')');
+});
 
+/* ============================================================
+   ОБЩИЕ ФУНКЦИИ
+   ============================================================ */
 function createMatrix(tableId, rows, cols, editable, onClick, readonlyClass) {
-const table = document.getElementById(tableId);
-table.innerHTML = '';
-for (let i = 0; i < rows; i++) {
-const tr = document.createElement('tr');
-for (let j = 0; j < cols; j++) {
-const td = document.createElement('td');
-if (editable) {
-const input = document.createElement('input');
-input.type = 'number';
-input.className = 'weight-input';
-input.value = 0;
-input.min = '-10';
-input.max = '10';
-input.dataset.row = i;
-input.dataset.col = j;
-td.appendChild(input);
-} else {
-td.dataset.row = i;
-td.dataset.col = j;
-td.textContent = '0';
-td.className = 'off';
-if (readonlyClass) td.classList.add('readonly');
-if (onClick) td.onclick = onClick;
+  const table = document.getElementById(tableId);
+  if (!table) return;
+  table.innerHTML = '';
+  for (let i = 0; i < rows; i++) {
+    const tr = document.createElement('tr');
+    for (let j = 0; j < cols; j++) {
+      const td = document.createElement('td');
+      if (editable) {
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.className = 'weight-input';
+        input.value = 0;
+        input.min = '-10';
+        input.max = '10';
+        input.dataset.row = i;
+        input.dataset.col = j;
+        td.appendChild(input);
+      } else {
+        td.dataset.row = i;
+        td.dataset.col = j;
+        td.textContent = '0';
+        td.className = 'off';
+        if (readonlyClass) td.classList.add('readonly');
+        if (onClick) td.onclick = onClick;
+      }
+      tr.appendChild(td);
+    }
+    table.appendChild(tr);
+  }
 }
-tr.appendChild(td);
-}
-table.appendChild(tr);
-}
-}
-
 function getInputValues(tableId) {
-const table = document.getElementById(tableId);
-const values = [];
-for (let i = 0; i < 3; i++) {
-values[i] = [];
-for (let j = 0; j < 3; j++) {
-values[i][j] = parseInt(table.rows[i].cells[j].textContent);
+  const table = document.getElementById(tableId);
+  const values = [];
+  for (let i = 0; i < 3; i++) {
+    values[i] = [];
+    for (let j = 0; j < 3; j++) {
+      values[i][j] = parseInt(table.rows[i].cells[j].textContent) || 0;
+    }
+  }
+  return values;
 }
-}
-return values;
-}
-
 function getWeightValues(tableId) {
-const table = document.getElementById(tableId);
-const rows = table.rows.length;
-const cols = table.rows[0].cells.length;
-const weights = [];
-for (let i = 0; i < rows; i++) {
-weights[i] = [];
-for (let j = 0; j < cols; j++) {
-weights[i][j] = parseFloat(table.rows[i].cells[j].querySelector('input').value);
+  const table = document.getElementById(tableId);
+  const rows = table.rows.length;
+  const cols = table.rows[0].cells.length;
+  const weights = [];
+  for (let i = 0; i < rows; i++) {
+    weights[i] = [];
+    for (let j = 0; j < cols; j++) {
+      weights[i][j] = parseFloat(table.rows[i].cells[j].querySelector('input').value) || 0;
+    }
+  }
+  return weights;
 }
-}
-return weights;
-}
-
 function setInputValues(tableId, values) {
-const table = document.getElementById(tableId);
-for (let i = 0; i < 3; i++) {
-for (let j = 0; j < 3; j++) {
-table.rows[i].cells[j].textContent = values[i][j];
-table.rows[i].cells[j].className = values[i][j] ? 'on' : 'off';
+  const table = document.getElementById(tableId);
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 3; j++) {
+      table.rows[i].cells[j].textContent = values[i][j];
+      table.rows[i].cells[j].className = values[i][j] ? 'on' : 'off';
+    }
+  }
 }
-}
-}
-
 function toggleCell(td) {
-const val = parseInt(td.textContent);
-td.textContent = val ? '0' : '1';
-td.className = val ? 'off' : 'on';
+  const val = parseInt(td.textContent);
+  td.textContent = val ? '0' : '1';
+  td.className = val ? 'off' : 'on';
 }
 
+/* ============================================================
+   ПЕРЕКЛЮЧЕНИЕ РЕЖИМОВ
+   ============================================================ */
 function switchMode(mode) {
-document.querySelectorAll('.mode').forEach(m => m.classList.remove('active'));
-document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-document.getElementById('mode' + mode).classList.add('active');
-document.querySelectorAll('.mode-btn')[mode - 1].classList.add('active');
-if (mode === 2) setTimeout(drawConnectionsMode2, 100);
-if (mode === 3) {
-  setTimeout(() => {
-    drawInputWindows();
-    drawConnections3();
-  }, 100);
-}
+  try {
+    const modes = document.querySelectorAll('.mode');
+    for (let i = 0; i < modes.length; i++) modes[i].classList.remove('active');
+    const btns = document.querySelectorAll('.mode-btn');
+    for (let i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+    const target = document.getElementById('mode' + mode);
+    if (target) target.classList.add('active');
+    if (btns[mode - 1]) btns[mode - 1].classList.add('active');
+
+    if (mode === 2) setTimeout(drawConnectionsMode2, 100);
+    if (mode === 3) setTimeout(function(){ drawInputWindows(); drawConnections3(); }, 100);
+    if (mode === 4 && window.M4) window.M4.render();
+    if (mode === 5 && window.M5) window.M5.render();
+    updatePauseTimer(mode);
+  } catch (err) {
+    showJsError('switchMode: ' + err.message);
+  }
 }
 
-/* ========== Режим 1 ========== */
-
+/* ============================================================
+   РЕЖИМ 1
+   ============================================================ */
 function setInput1(values) { setInputValues('input1', values); }
-
 function calculate1() {
-const input = getInputValues('input1');
-const weights = getWeightValues('weights1');
-const threshold = parseFloat(document.getElementById('threshold1').value);
-const showSteps = document.getElementById('showSteps1').checked;
-
-let sum = 0;
-let steps = [];
-for (let i = 0; i < 3; i++) {
-for (let j = 0; j < 3; j++) {
-const term = input[i][j] * weights[i][j];
-sum += term;
-if (showSteps && term !== 0) {
-steps.push(`w${i*3+j+1}×x${i*3+j+1} = ${weights[i][j]}×${input[i][j]} = ${term}`);
-}
-}
-}
-
-const result = sum >= threshold ? 1 : 0;
-let html = `<h4>Результат вычисления</h4>`;
-html += `<div class="step"><b>Взвешенная сумма = ${sum}</b></div>`;
-html += `<div class="step"><b>Сравнение: ${sum} ≥ ${threshold} → выход = ${result}</b></div>`;
-if (showSteps && steps.length > 0) {
-html += '<div class="step"><b>Пошагово:</b></div>';
-steps.forEach(s => html += `<div class="step">${s}</div>`);
+  const input = getInputValues('input1');
+  const weights = getWeightValues('weights1');
+  const threshold = parseFloat(document.getElementById('threshold1').value);
+  const showSteps = document.getElementById('showSteps1').checked;
+  let sum = 0; let steps = [];
+  for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) {
+    const term = input[i][j] * weights[i][j];
+    sum += term;
+    if (showSteps && term !== 0) steps.push('w' + (i*3+j+1) + '×x' + (i*3+j+1) + ' = ' + weights[i][j] + '×' + input[i][j] + ' = ' + term);
+  }
+  const result = sum >= threshold ? 1 : 0;
+  let html = '<h4>Результат вычисления</h4>';
+  html += '<div class="step"><b>Взвешенная сумма S = ' + sum + '</b></div>';
+  html += '<div class="step"><b>Сравнение: ' + sum + ' ≥ ' + threshold + ' → выход = ' + result + '</b></div>';
+  if (showSteps && steps.length > 0) {
+    html += '<div class="step"><b>Пошагово:</b></div>';
+    steps.forEach(function(s){ html += '<div class="step">' + s + '</div>'; });
+  }
+  const rb = document.getElementById('result1');
+  rb.innerHTML = html; rb.style.display = 'block';
 }
 
-const resultBox = document.getElementById('result1');
-resultBox.innerHTML = html;
-resultBox.style.display = 'block';
-}
-
-/* ========== Режим 2 ========== */
-
+/* ============================================================
+   РЕЖИМ 2
+   ============================================================ */
 const NUM_NEURONS_2 = 3;
-const neuronDescriptions = [
-'Детектор левой вертикали',
-'Детектор центрального столбца',
-'Детектор нижней горизонтали'
-];
-
+const neuronDescriptions = ['Детектор левой вертикали', 'Детектор центрального столбца', 'Детектор нижней горизонтали'];
 const neuronConnections = [
-[[0,0], [1,0], [2,0]],
-[[0,1], [1,1], [2,1]],
-[[2,0], [2,1], [2,2]]
+  [[0,0], [1,0], [2,0]],
+  [[0,1], [1,1], [2,1]],
+  [[2,0], [2,1], [2,2]]
 ];
-
 function initMode2() {
-const container = document.getElementById('neurons2');
-container.innerHTML = '';
-for (let n = 0; n < NUM_NEURONS_2; n++) {
-const div = document.createElement('div');
-div.className = 'neuron-block';
-div.id = `neuron2_${n}`;
-div.innerHTML = `
-<div class="neuron-description">${neuronDescriptions[n]}</div>
-<h4>Нейрон ${n+1}</h4>
-<table class="matrix" id="weights2_${n}"></table>
-<label>Порог: <input type="number" class="threshold" id="threshold2_${n}" step="0.5" value="2.5"></label>
-`;
-container.appendChild(div);
-createMatrix(`weights2_${n}`, 3, 3, true);
+  const container = document.getElementById('neurons2');
+  if (!container) return;
+  container.innerHTML = '';
+  for (let n = 0; n < NUM_NEURONS_2; n++) {
+    const div = document.createElement('div');
+    div.className = 'neuron-block';
+    div.id = 'neuron2_' + n;
+    div.innerHTML = '<div class="neuron-description">' + neuronDescriptions[n] + '</div>' +
+      '<h4>Нейрон ' + (n+1) + '</h4>' +
+      '<table class="matrix" id="weights2_' + n + '"></table>' +
+      '<label>Порог: <input type="number" class="threshold" id="threshold2_' + n + '" step="1" value="2"></label>';
+    container.appendChild(div);
+    createMatrix('weights2_' + n, 3, 3, true);
+  }
 }
-}
-
 function drawConnectionsMode2() {
-const svg = document.getElementById('connections-svg-mode2');
-const inputTable = document.getElementById('input2');
-const neuronBlocks = document.querySelectorAll('#neurons2 .neuron-block');
-
-if (!inputTable || neuronBlocks.length === 0) return;
-
-const svgRect = svg.getBoundingClientRect();
-let paths = '';
-
-neuronBlocks.forEach((neuronBlock, n) => {
-const connections = neuronConnections[n];
-const weightTable = document.getElementById(`weights2_${n}`);
-
-connections.forEach(([row, col]) => {
-const inputCell = inputTable.rows[row].cells[col];
-const weightCell = weightTable.rows[row].cells[col];
-const weight = parseFloat(weightCell.querySelector('input').value);
-
-const inputRect = inputCell.getBoundingClientRect();
-const weightRect = weightCell.getBoundingClientRect();
-
-const x1 = inputRect.left + inputRect.width / 2 - svgRect.left;
-const y1 = inputRect.bottom - svgRect.top;
-const x2 = weightRect.left + weightRect.width / 2 - svgRect.left;
-const y2 = weightRect.top - svgRect.top;
-
-const color = weight > 0 ? '#27ae60' : (weight < 0 ? '#e74c3c' : '#bdc3c7');
-const strokeWidth = Math.min(Math.abs(weight) * 0.5 + 1, 5);
-
-paths += `<path d="M ${x1} ${y1} L ${x2} ${y2}" 
-stroke="${color}" stroke-width="${strokeWidth}" fill="none" 
-marker-end="url(#arrowhead2)" opacity="0.7"/>`;
-});
-});
-
-svg.innerHTML = svg.innerHTML.split('<path')[0] + paths;
+  const svg = document.getElementById('connections-svg-mode2');
+  const inputTable = document.getElementById('input2');
+  const neuronBlocks = document.querySelectorAll('#neurons2 .neuron-block');
+  if (!inputTable || !svg || neuronBlocks.length === 0) return;
+  const svgRect = svg.getBoundingClientRect();
+  let paths = '';
+  neuronBlocks.forEach(function(nb, n) {
+    const connections = neuronConnections[n];
+    const weightTable = document.getElementById('weights2_' + n);
+    connections.forEach(function(pair) {
+      const row = pair[0], col = pair[1];
+      const inputCell = inputTable.rows[row].cells[col];
+      const weightCell = weightTable.rows[row].cells[col];
+      const weight = parseFloat(weightCell.querySelector('input').value) || 0;
+      const ir = inputCell.getBoundingClientRect();
+      const wr = weightCell.getBoundingClientRect();
+      const x1 = ir.left + ir.width/2 - svgRect.left;
+      const y1 = ir.bottom - svgRect.top;
+      const x2 = wr.left + wr.width/2 - svgRect.left;
+      const y2 = wr.top - svgRect.top;
+      const color = weight > 0 ? '#27ae60' : (weight < 0 ? '#e74c3c' : '#bdc3c7');
+      const sw = Math.min(Math.abs(weight) * 0.5 + 1, 5);
+      paths += '<path d="M ' + x1 + ' ' + y1 + ' L ' + x2 + ' ' + y2 + '" stroke="' + color + '" stroke-width="' + sw + '" fill="none" marker-end="url(#arrowhead2)" opacity="0.7"/>';
+    });
+  });
+  const defs = svg.querySelector('defs');
+  svg.innerHTML = '';
+  if (defs) svg.appendChild(defs);
+  svg.innerHTML += paths;
 }
-
-function setInput2(values) {
-setInputValues('input2', values);
-setTimeout(drawConnectionsMode2, 50);
-}
-
+function setInput2(values) { setInputValues('input2', values); setTimeout(drawConnectionsMode2, 50); }
 function calculate2() {
-const input = getInputValues('input2');
-const showSteps = document.getElementById('showSteps2').checked;
-const outputs = [];
-let html = '<h4>Выходы нейронов:</h4>';
-
-for (let n = 0; n < NUM_NEURONS_2; n++) {
-const weights = getWeightValues(`weights2_${n}`);
-const threshold = parseFloat(document.getElementById(`threshold2_${n}`).value);
-let sum = 0;
-let steps = [];
-for (let i = 0; i < 3; i++) {
-for (let j = 0; j < 3; j++) {
-const term = input[i][j] * weights[i][j];
-sum += term;
-if (showSteps && term !== 0) {
-steps.push(`w${i*3+j+1}×x${i*3+j+1} = ${weights[i][j]}×${input[i][j]} = ${term}`);
-}
-}
-}
-const result = sum >= threshold ? 1 : 0;
-outputs.push(result);
-html += `<div class="step"><b>${neuronDescriptions[n]}:</b> Сумма = ${sum}, ${sum} ≥ ${threshold} → <b>${result}</b></div>`;
-if (showSteps && steps.length > 0) {
-html += '<div class="step">Пошагово:</div>';
-steps.forEach(s => html += `<div class="step">${s}</div>`);
-}
+  const input = getInputValues('input2');
+  const showSteps = document.getElementById('showSteps2').checked;
+  const outputs = [];
+  let html = '<h4>Выходы нейронов:</h4>';
+  for (let n = 0; n < NUM_NEURONS_2; n++) {
+    const weights = getWeightValues('weights2_' + n);
+    const threshold = parseFloat(document.getElementById('threshold2_' + n).value);
+    let sum = 0; let steps = [];
+    for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) {
+      const term = input[i][j] * weights[i][j];
+      sum += term;
+      if (showSteps && term !== 0) steps.push('w' + (i*3+j+1) + '×x' + (i*3+j+1) + ' = ' + weights[i][j] + '×' + input[i][j] + ' = ' + term);
+    }
+    const result = sum >= threshold ? 1 : 0;
+    outputs.push(result);
+    html += '<div class="step"><b>' + neuronDescriptions[n] + ':</b> Сумма = ' + sum + ', ' + sum + ' ≥ ' + threshold + ' → <b>' + result + '</b></div>';
+    if (showSteps && steps.length > 0) {
+      html += '<div class="step">Пошагово:</div>';
+      steps.forEach(function(s){ html += '<div class="step">' + s + '</div>'; });
+    }
+  }
+  html += '<div class="step" style="background:#fff3cd;border-left-color:#ffc107;"><b>Выход слоя: [' + outputs.join(', ') + ']</b></div>';
+  const rb = document.getElementById('result2');
+  rb.innerHTML = html; rb.style.display = 'block';
 }
 
-html += `<div class="step" style="background: #fff3cd; border-left-color: #ffc107;"><b>Выход слоя: [${outputs.join(', ')}]</b></div>`;
-const resultBox = document.getElementById('result2');
-resultBox.innerHTML = html;
-resultBox.style.display = 'block';
-}
-
-/* ========== Режим 3 (переделан) ========== */
-
-// Описание четырёх нейронов первого слоя: каждое окно 2×2
+/* ============================================================
+   РЕЖИМ 3
+   ============================================================ */
 const layer1Neurons3 = [
-{ name: 'СЗ', desc: 'Окно СЗ (верх-лево)', cells: [[0,0],[0,1],[1,0],[1,1]], color: '#e74c3c' },
-{ name: 'СВ', desc: 'Окно СВ (верх-право)', cells: [[0,1],[0,2],[1,1],[1,2]], color: '#3498db' },
-{ name: 'ЮВ', desc: 'Окно ЮВ (низ-право)', cells: [[1,1],[1,2],[2,1],[2,2]], color: '#27ae60' },
-{ name: 'ЮЗ', desc: 'Окно ЮЗ (низ-лево)', cells: [[1,0],[1,1],[2,0],[2,1]], color: '#f39c12' }
+  { name: 'СЗ', desc: 'Окно СЗ (верх-лево)', cells: [[0,0],[0,1],[1,0],[1,1]], color: '#e74c3c' },
+  { name: 'СВ', desc: 'Окно СВ (верх-право)', cells: [[0,1],[0,2],[1,1],[1,2]], color: '#3498db' },
+  { name: 'ЮВ', desc: 'Окно ЮВ (низ-право)', cells: [[1,1],[1,2],[2,1],[2,2]], color: '#27ae60' },
+  { name: 'ЮЗ', desc: 'Окно ЮЗ (низ-лево)', cells: [[1,0],[1,1],[2,0],[2,1]], color: '#f39c12' }
 ];
-
 const L2_DESC_3 = 'Детектор буквы C';
-
 function initMode3() {
-// Слой 1: 4 нейрона 2×2
-const l1 = document.getElementById('layer1_3');
-l1.innerHTML = '';
-for (let n = 0; n < 4; n++) {
-const div = document.createElement('div');
-div.className = 'neuron-block-sm';
-div.style.borderColor = layer1Neurons3[n].color;
-div.style.borderWidth = '3px';
-div.innerHTML = `
-<div class="neuron-description">${layer1Neurons3[n].desc}</div>
-<h4>Нейрон ${n+1} (${layer1Neurons3[n].name})</h4>
-<table class="matrix" id="weights3_l1_${n}"></table>
-<label style="font-size:12px;">Порог: <input type="number" class="threshold" id="threshold3_l1_${n}" step="0.5" value="0.5"></label>
-`;
-l1.appendChild(div);
-createMatrix(`weights3_l1_${n}`, 2, 2, true);
+  const l1 = document.getElementById('layer1_3');
+  if (!l1) return;
+  l1.innerHTML = '';
+  for (let n = 0; n < 4; n++) {
+    const div = document.createElement('div');
+    div.className = 'neuron-block-sm';
+    div.style.borderColor = layer1Neurons3[n].color;
+    div.style.borderWidth = '3px';
+    div.innerHTML = '<div class="neuron-description">' + layer1Neurons3[n].desc + '</div>' +
+      '<h4>Нейрон ' + (n+1) + ' (' + layer1Neurons3[n].name + ')</h4>' +
+      '<table class="matrix" id="weights3_l1_' + n + '"></table>' +
+      '<label style="font-size:12px;">Порог: <input type="number" class="threshold" id="threshold3_l1_' + n + '" step="1" value="1"></label>';
+    l1.appendChild(div);
+    createMatrix('weights3_l1_' + n, 2, 2, true);
+  }
+  createMatrix('l1_outputs_3', 2, 2, false, null, true);
+  createMatrix('l2_weights_3', 2, 2, true);
 }
-
-// Слой 2: 1 нейрон, принимает 4 сигнала, представленных как 2×2
-// Выход слоя 1 (read-only 2x2)
-createMatrix('l1_outputs_3', 2, 2, false, null, true);
-// Веса слоя 2 (editable 2x2)
-createMatrix('l2_weights_3', 2, 2, true);
-
-// Добавим описание для слоя 2
-const l2Container = document.getElementById('layer2_3');
-// Уже есть в HTML, просто убедимся, что порог и выход на месте
-}
-
 function drawInputWindows() {
-const svg = document.getElementById('window-overlay');
-const table = document.getElementById('input3');
-if (!table || !svg) return;
-
-// Устанавливаем размеры SVG равными размерам таблицы
-const tableRect = table.getBoundingClientRect();
-svg.setAttribute('width', tableRect.width);
-svg.setAttribute('height', tableRect.height);
-svg.setAttribute('viewBox', `0 0 ${tableRect.width} ${tableRect.height}`);
-
-// Очищаем SVG
-svg.innerHTML = '';
-
-// Функция для получения координат ячейки относительно таблицы
-function getCellRect(row, col) {
-const cell = table.rows[row].cells[col];
-const cellRect = cell.getBoundingClientRect();
-return {
-  left: cellRect.left - tableRect.left,
-  top: cellRect.top - tableRect.top,
-  width: cellRect.width,
-  height: cellRect.height
-};
+  const svg = document.getElementById('window-overlay');
+  const table = document.getElementById('input3');
+  if (!table || !svg) return;
+  const tr = table.getBoundingClientRect();
+  svg.setAttribute('width', tr.width); svg.setAttribute('height', tr.height);
+  svg.setAttribute('viewBox', '0 0 ' + tr.width + ' ' + tr.height);
+  svg.innerHTML = '';
+  function cellRect(r, c) {
+    const rect = table.rows[r].cells[c].getBoundingClientRect();
+    return { left: rect.left - tr.left, top: rect.top - tr.top, width: rect.width, height: rect.height };
+  }
+  layer1Neurons3.forEach(function(neuron) {
+    const rows = neuron.cells.map(function(c){return c[0];});
+    const cols = neuron.cells.map(function(c){return c[1];});
+    const minR = Math.min.apply(null, rows), maxR = Math.max.apply(null, rows);
+    const minC = Math.min.apply(null, cols), maxC = Math.max.apply(null, cols);
+    const tl = cellRect(minR, minC), br = cellRect(maxR, maxC);
+    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    rect.setAttribute('x', tl.left); rect.setAttribute('y', tl.top);
+    rect.setAttribute('width', br.left + br.width - tl.left);
+    rect.setAttribute('height', br.top + br.height - tl.top);
+    rect.setAttribute('fill', 'none'); rect.setAttribute('stroke', neuron.color);
+    rect.setAttribute('stroke-width', '4'); rect.setAttribute('rx', '6'); rect.setAttribute('opacity', '0.8');
+    svg.appendChild(rect);
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', tl.left + 5); text.setAttribute('y', tl.top + 20);
+    text.setAttribute('fill', neuron.color); text.setAttribute('font-size', '16'); text.setAttribute('font-weight', 'bold');
+    text.textContent = neuron.name;
+    svg.appendChild(text);
+  });
 }
-
-// Рисуем прямоугольники для каждого окна 2×2
-layer1Neurons3.forEach((neuron, idx) => {
-const cells = neuron.cells;
-// Находим границы окна: минимальный и максимальный row/col
-const rows = cells.map(c => c[0]);
-const cols = cells.map(c => c[1]);
-const minRow = Math.min(...rows);
-const maxRow = Math.max(...rows);
-const minCol = Math.min(...cols);
-const maxCol = Math.max(...cols);
-
-const topLeft = getCellRect(minRow, minCol);
-const bottomRight = getCellRect(maxRow, maxCol);
-
-const x = topLeft.left;
-const y = topLeft.top;
-const w = bottomRight.left + bottomRight.width - x;
-const h = bottomRight.top + bottomRight.height - y;
-
-// Рисуем прямоугольник с цветом нейрона
-const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-rect.setAttribute('x', x);
-rect.setAttribute('y', y);
-rect.setAttribute('width', w);
-rect.setAttribute('height', h);
-rect.setAttribute('fill', 'none');
-rect.setAttribute('stroke', neuron.color);
-rect.setAttribute('stroke-width', '4');
-rect.setAttribute('rx', '6');
-rect.setAttribute('opacity', '0.8');
-svg.appendChild(rect);
-
-// Добавляем подпись
-const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-text.setAttribute('x', x + 5);
-text.setAttribute('y', y + 20);
-text.setAttribute('fill', neuron.color);
-text.setAttribute('font-size', '16');
-text.setAttribute('font-weight', 'bold');
-text.textContent = neuron.name;
-svg.appendChild(text);
-});
-}
-
 function drawConnections3() {
-const svg = document.getElementById('connections-svg-mode3');
-const wrapper = document.querySelector('.mode3-wrapper');
-if (!svg || !wrapper) return;
-
-const wrapperRect = wrapper.getBoundingClientRect();
-svg.setAttribute('width', wrapperRect.width);
-svg.setAttribute('height', wrapperRect.height);
-svg.setAttribute('viewBox', `0 0 ${wrapperRect.width} ${wrapperRect.height}`);
-
-// Очищаем SVG, оставляя defs
-const defs = svg.querySelector('defs');
-svg.innerHTML = '';
-if (defs) svg.appendChild(defs);
-
-// Получаем элементы
-const l1Neurons = document.querySelectorAll('#layer1_3 .neuron-block-sm');
-const l1OutputsTable = document.getElementById('l1_outputs_3');
-const l2WeightsTable = document.getElementById('l2_weights_3');
-const finalOutputDiv = document.getElementById('final_output_3');
-
-if (l1Neurons.length !== 4 || !l1OutputsTable || !l2WeightsTable) return;
-
-// Рисуем стрелки от нейронов слоя 1 к соответствующим ячейкам в l1_outputs_3
-// Порядок ячеек в l1_outputs_3: [0][0]=СЗ, [0][1]=СВ, [1][0]=ЮЗ, [1][1]=ЮВ
-// Наши нейроны: 0=СЗ, 1=СВ, 2=ЮВ, 3=ЮЗ
-const mapping = [
-  { neuronIdx: 0, row: 0, col: 0 }, // СЗ -> [0][0]
-  { neuronIdx: 1, row: 0, col: 1 }, // СВ -> [0][1]
-  { neuronIdx: 2, row: 1, col: 1 }, // ЮВ -> [1][1]
-  { neuronIdx: 3, row: 1, col: 0 }  // ЮЗ -> [1][0]
-];
-
-mapping.forEach(({ neuronIdx, row, col }) => {
-  const neuronEl = l1Neurons[neuronIdx];
-  const targetCell = l1OutputsTable.rows[row].cells[col];
-
-  const neuronRect = neuronEl.getBoundingClientRect();
-  const targetRect = targetCell.getBoundingClientRect();
-
-  const x1 = neuronRect.left + neuronRect.width / 2 - wrapperRect.left;
-  const y1 = neuronRect.bottom - wrapperRect.top;
-  const x2 = targetRect.left + targetRect.width / 2 - wrapperRect.left;
-  const y2 = targetRect.top - wrapperRect.top;
-
-  const color = layer1Neurons3[neuronIdx].color;
-
-  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-  path.setAttribute('d', `M ${x1} ${y1} Q ${(x1+x2)/2} ${(y1+y2)/2} ${x2} ${y2}`);
-  path.setAttribute('stroke', color);
-  path.setAttribute('stroke-width', '3');
-  path.setAttribute('fill', 'none');
-  path.setAttribute('marker-end', 'url(#arrowhead3)');
-  path.setAttribute('opacity', '0.8');
-  svg.appendChild(path);
-});
-
-// Стрелка от l1_outputs_3 к l2_weights_3 (просто между таблицами)
-const l1OutRect = l1OutputsTable.getBoundingClientRect();
-const l2WeightRect = l2WeightsTable.getBoundingClientRect();
-
-const x1 = l1OutRect.right - wrapperRect.left;
-const y1 = l1OutRect.top + l1OutRect.height / 2 - wrapperRect.top;
-const x2 = l2WeightRect.left - wrapperRect.left;
-const y2 = l2WeightRect.top + l2WeightRect.height / 2 - wrapperRect.top;
-
-const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-arrow.setAttribute('d', `M ${x1} ${y1} L ${x2} ${y2}`);
-arrow.setAttribute('stroke', '#7f8c8d');
-arrow.setAttribute('stroke-width', '3');
-arrow.setAttribute('fill', 'none');
-arrow.setAttribute('marker-end', 'url(#arrowhead3)');
-svg.appendChild(arrow);
-
-// Стрелка от l2_weights_3 к final_output_3
-const finalRect = finalOutputDiv.getBoundingClientRect();
-const x3 = l2WeightRect.right - wrapperRect.left;
-const y3 = l2WeightRect.top + l2WeightRect.height / 2 - wrapperRect.top;
-const x4 = finalRect.left - wrapperRect.left;
-const y4 = finalRect.top + finalRect.height / 2 - wrapperRect.top;
-
-const arrow2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-arrow2.setAttribute('d', `M ${x3} ${y3} L ${x4} ${y4}`);
-arrow2.setAttribute('stroke', '#7f8c8d');
-arrow2.setAttribute('stroke-width', '3');
-arrow2.setAttribute('fill', 'none');
-arrow2.setAttribute('marker-end', 'url(#arrowhead3)');
-svg.appendChild(arrow2);
+  const svg = document.getElementById('connections-svg-mode3');
+  const wrapper = document.querySelector('.mode3-wrapper');
+  if (!svg || !wrapper) return;
+  const wr = wrapper.getBoundingClientRect();
+  svg.setAttribute('width', wr.width); svg.setAttribute('height', wr.height);
+  svg.setAttribute('viewBox', '0 0 ' + wr.width + ' ' + wr.height);
+  const defs = svg.querySelector('defs');
+  svg.innerHTML = '';
+  if (defs) svg.appendChild(defs);
+  const l1Neurons = document.querySelectorAll('#layer1_3 .neuron-block-sm');
+  const l1Out = document.getElementById('l1_outputs_3');
+  const l2W = document.getElementById('l2_weights_3');
+  const fin = document.getElementById('final_output_3');
+  if (l1Neurons.length !== 4 || !l1Out || !l2W) return;
+  const mapping = [
+    { n: 0, r: 0, c: 0 }, { n: 1, r: 0, c: 1 }, { n: 2, r: 1, c: 1 }, { n: 3, r: 1, c: 0 }
+  ];
+  mapping.forEach(function(m) {
+    const nr = l1Neurons[m.n].getBoundingClientRect();
+    const tr = l1Out.rows[m.r].cells[m.c].getBoundingClientRect();
+    const x1 = nr.left + nr.width/2 - wr.left;
+    const y1 = nr.bottom - wr.top;
+    const x2 = tr.left + tr.width/2 - wr.left;
+    const y2 = tr.top - wr.top;
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', 'M ' + x1 + ' ' + y1 + ' Q ' + ((x1+x2)/2) + ' ' + ((y1+y2)/2) + ' ' + x2 + ' ' + y2);
+    path.setAttribute('stroke', layer1Neurons3[m.n].color);
+    path.setAttribute('stroke-width', '3'); path.setAttribute('fill', 'none');
+    path.setAttribute('marker-end', 'url(#arrowhead3)'); path.setAttribute('opacity', '0.8');
+    svg.appendChild(path);
+  });
+  const l1r = l1Out.getBoundingClientRect(), l2r = l2W.getBoundingClientRect();
+  const a1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  a1.setAttribute('d', 'M ' + (l1r.right - wr.left) + ' ' + (l1r.top + l1r.height/2 - wr.top) + ' L ' + (l2r.left - wr.left) + ' ' + (l2r.top + l2r.height/2 - wr.top));
+  a1.setAttribute('stroke', '#7f8c8d'); a1.setAttribute('stroke-width', '3');
+  a1.setAttribute('fill', 'none'); a1.setAttribute('marker-end', 'url(#arrowhead3)');
+  svg.appendChild(a1);
+  if (fin) {
+    const fr = fin.getBoundingClientRect();
+    const a2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    a2.setAttribute('d', 'M ' + (l2r.right - wr.left) + ' ' + (l2r.top + l2r.height/2 - wr.top) + ' L ' + (fr.left - wr.left) + ' ' + (fr.top + fr.height/2 - wr.top));
+    a2.setAttribute('stroke', '#7f8c8d'); a2.setAttribute('stroke-width', '3');
+    a2.setAttribute('fill', 'none'); a2.setAttribute('marker-end', 'url(#arrowhead3)');
+    svg.appendChild(a2);
+  }
 }
-
 function setInput3(values) {
-setInputValues('input3', values);
-setTimeout(() => {
-  drawInputWindows();
-  drawConnections3();
-}, 50);
+  setInputValues('input3', values);
+  setTimeout(function(){ drawInputWindows(); drawConnections3(); }, 50);
 }
-
 function calculate3() {
-const input = getInputValues('input3');
-const showSteps = document.getElementById('showSteps3').checked;
-const l1_outputs = [];
-let html = '<h4>🔵 Слой 1:</h4>';
-
-// Соответствие позиций в весовой матрице 2×2 и клеток окна
-const mapping = [[0,0],[0,1],[1,0],[1,1]];
-
-for (let n = 0; n < 4; n++) {
-const weights = getWeightValues(`weights3_l1_${n}`); // 2×2
-const threshold = parseFloat(document.getElementById(`threshold3_l1_${n}`).value);
-const cells = layer1Neurons3[n].cells;
-let sum = 0;
-let steps = [];
-for (let k = 0; k < 4; k++) {
-const [wi, wj] = mapping[k];
-const [ri, cj] = cells[k];
-const term = input[ri][cj] * weights[wi][wj];
-sum += term;
-if (showSteps && term !== 0) {
-steps.push(`w${k+1}×x${ri*3+cj+1} = ${weights[wi][wj]}×${input[ri][cj]} = ${term}`);
-}
-}
-const result = sum >= threshold ? 1 : 0;
-l1_outputs.push(result);
-html += `<div class="step"><b>Нейрон ${n+1} (${layer1Neurons3[n].name}):</b> Сумма = ${sum}, ${sum} ≥ ${threshold} → <b>${result}</b></div>`;
-if (showSteps && steps.length > 0) {
-html += '<div class="step">Пошагово:</div>';
-steps.forEach(s => html += `<div class="step">${s}</div>`);
-}
-}
-
-// Заполняем таблицу l1_outputs_3
-// Порядок: [0][0]=СЗ (нейрон 0), [0][1]=СВ (нейрон 1), [1][0]=ЮЗ (нейрон 3), [1][1]=ЮВ (нейрон 2)
-const l1OutTable = document.getElementById('l1_outputs_3');
-l1OutTable.rows[0].cells[0].textContent = l1_outputs[0];
-l1OutTable.rows[0].cells[1].textContent = l1_outputs[1];
-l1OutTable.rows[1].cells[0].textContent = l1_outputs[3];
-l1OutTable.rows[1].cells[1].textContent = l1_outputs[2];
-// Обновляем классы для цветов (опционально)
-for (let i = 0; i < 2; i++) {
-  for (let j = 0; j < 2; j++) {
-    const cell = l1OutTable.rows[i].cells[j];
-    cell.className = cell.textContent === '1' ? 'on' : 'off';
+  const input = getInputValues('input3');
+  const showSteps = document.getElementById('showSteps3').checked;
+  const l1o = [];
+  let html = '<h4>Слой 1:</h4>';
+  const mapping = [[0,0],[0,1],[1,0],[1,1]];
+  for (let n = 0; n < 4; n++) {
+    const weights = getWeightValues('weights3_l1_' + n);
+    const threshold = parseFloat(document.getElementById('threshold3_l1_' + n).value);
+    const cells = layer1Neurons3[n].cells;
+    let sum = 0; let steps = [];
+    for (let k = 0; k < 4; k++) {
+      const wi = mapping[k][0], wj = mapping[k][1];
+      const ri = cells[k][0], cj = cells[k][1];
+      const term = input[ri][cj] * weights[wi][wj];
+      sum += term;
+      if (showSteps && term !== 0) steps.push('w' + (k+1) + '×x' + (ri*3+cj+1) + ' = ' + weights[wi][wj] + '×' + input[ri][cj] + ' = ' + term);
+    }
+    const result = sum >= threshold ? 1 : 0;
+    l1o.push(result);
+    html += '<div class="step"><b>Нейрон ' + (n+1) + ' (' + layer1Neurons3[n].name + '):</b> Сумма = ' + sum + ', ' + sum + ' ≥ ' + threshold + ' → <b>' + result + '</b></div>';
+    if (showSteps && steps.length > 0) {
+      html += '<div class="step">Пошагово:</div>';
+      steps.forEach(function(s){ html += '<div class="step">' + s + '</div>'; });
+    }
   }
-}
-
-html += `<div class="step" style="background: #e3f2fd; border-left-color: #3498db;"><b>Выход слоя 1 (2×2): [${l1_outputs[0]}, ${l1_outputs[1]}; ${l1_outputs[3]}, ${l1_outputs[2]}]</b></div>`;
-html += '<h4>🔴 Слой 2:</h4>';
-
-// Веса слоя 2 (2×2)
-const weights2 = getWeightValues('l2_weights_3');
-// Порядок весов: [0][0] для СЗ, [0][1] для СВ, [1][0] для ЮЗ, [1][1] для ЮВ
-const w00 = weights2[0][0]; // СЗ
-const w01 = weights2[0][1]; // СВ
-const w10 = weights2[1][0]; // ЮЗ
-const w11 = weights2[1][1]; // ЮВ
-
-// Собираем входы в порядке, соответствующем весам
-const inputsForL2 = [
-  l1_outputs[0], // СЗ
-  l1_outputs[1], // СВ
-  l1_outputs[3], // ЮЗ
-  l1_outputs[2]  // ЮВ
-];
-const weightList = [w00, w01, w10, w11];
-
-let sum2 = 0;
-let steps2 = [];
-for (let i = 0; i < 4; i++) {
-  const term = inputsForL2[i] * weightList[i];
-  sum2 += term;
-  if (showSteps && term !== 0) {
-    steps2.push(`w${i+1}×y${i+1} = ${weightList[i]}×${inputsForL2[i]} = ${term}`);
+  const l1Out = document.getElementById('l1_outputs_3');
+  l1Out.rows[0].cells[0].textContent = l1o[0];
+  l1Out.rows[0].cells[1].textContent = l1o[1];
+  l1Out.rows[1].cells[0].textContent = l1o[3];
+  l1Out.rows[1].cells[1].textContent = l1o[2];
+  for (let i = 0; i < 2; i++) for (let j = 0; j < 2; j++) {
+    const c = l1Out.rows[i].cells[j];
+    c.className = c.textContent === '1' ? 'on' : 'off';
   }
-}
-const threshold2 = parseFloat(document.getElementById('threshold3_l2').value);
-const result2 = sum2 >= threshold2 ? 1 : 0;
-
-html += `<div class="step"><b>${L2_DESC_3}:</b> Сумма = ${sum2}, ${sum2} ≥ ${threshold2} → <b>${result2}</b></div>`;
-if (showSteps && steps2.length > 0) {
-  html += '<div class="step">Пошагово:</div>';
-  steps2.forEach(s => html += `<div class="step">${s}</div>`);
-}
-html += `<div class="step" style="background: #d4edda; border-left-color: #28a745; font-size: 16px;"><b>Итоговый выход: [${result2}]</b></div>`;
-
-// Обновляем финальный выход на странице
-const finalOutDiv = document.getElementById('final_output_3');
-finalOutDiv.textContent = result2;
-finalOutDiv.style.color = result2 === 1 ? '#155724' : '#721c24';
-
-const resultBox = document.getElementById('result3');
-resultBox.innerHTML = html;
-resultBox.style.display = 'block';
-drawConnections3();
-}
-
-/* ========== Инициализация ========== */
-
-createMatrix('input1', 3, 3, false, function() { toggleCell(this); });
-createMatrix('weights1', 3, 3, true);
-createMatrix('input2', 3, 3, false, function() { toggleCell(this); });
-createMatrix('input3', 3, 3, false, function() { toggleCell(this); });
-initMode2();
-initMode3();
-
-// Первоначальная отрисовка для режима 3 (после загрузки)
-setTimeout(() => {
-  drawInputWindows();
+  html += '<div class="step" style="background:#e3f2fd;border-left-color:#3498db;"><b>Выход слоя 1 (2×2): [' + l1o[0] + ', ' + l1o[1] + '; ' + l1o[3] + ', ' + l1o[2] + ']</b></div>';
+  html += '<h4>Слой 2:</h4>';
+  const w2 = getWeightValues('l2_weights_3');
+  const inputsForL2 = [l1o[0], l1o[1], l1o[3], l1o[2]];
+  const weightList = [w2[0][0], w2[0][1], w2[1][0], w2[1][1]];
+  let sum2 = 0; let steps2 = [];
+  for (let i = 0; i < 4; i++) {
+    const term = inputsForL2[i] * weightList[i];
+    sum2 += term;
+    if (showSteps && term !== 0) steps2.push('w' + (i+1) + '×y' + (i+1) + ' = ' + weightList[i] + '×' + inputsForL2[i] + ' = ' + term);
+  }
+  const th2 = parseFloat(document.getElementById('threshold3_l2').value);
+  const res2 = sum2 >= th2 ? 1 : 0;
+  html += '<div class="step"><b>' + L2_DESC_3 + ':</b> Сумма = ' + sum2 + ', ' + sum2 + ' ≥ ' + th2 + ' → <b>' + res2 + '</b></div>';
+  if (showSteps && steps2.length > 0) {
+    html += '<div class="step">Пошагово:</div>';
+    steps2.forEach(function(s){ html += '<div class="step">' + s + '</div>'; });
+  }
+  html += '<div class="step" style="background:#d4edda;border-left-color:#28a745;font-size:16px;"><b>Итоговый выход: [' + res2 + ']</b></div>';
+  const fin = document.getElementById('final_output_3');
+  fin.textContent = res2;
+  fin.style.color = res2 === 1 ? '#155724' : '#721c24';
+  const rb = document.getElementById('result3');
+  rb.innerHTML = html; rb.style.display = 'block';
   drawConnections3();
-}, 200);
-
-// Обновление визуальных связей при изменении весов
-document.addEventListener('input', function(e) {
-if (e.target.id && e.target.id.startsWith('weights3_l2_')) drawConnections3();
-if (e.target.id && e.target.id.startsWith('weights2_')) drawConnectionsMode2();
-if (e.target.id && e.target.id.startsWith('weights3_l1_')) {
-  // Можно перерисовать соединения, если нужно
 }
+
+/* ============================================================
+   ОБЩИЕ ДАННЫЕ ДЛЯ РЕЖИМОВ 4 и 5
+   ============================================================ */
+const LETTERS = {
+  c1: { name: 'C₁', grid: [[1,1,1],[1,0,0],[1,1,1]], answer: 1 },
+  c2: { name: 'C₂', grid: [[1,1,0],[1,0,0],[1,1,0]], answer: 1 },
+  c3: { name: 'C₃', grid: [[0,1,1],[0,1,0],[0,1,1]], answer: 1 },
+  t:  { name: 'T',  grid: [[1,1,1],[0,1,0],[0,1,0]], answer: 0 },
+  p1: { name: 'П₁', grid: [[1,1,1],[1,0,1],[1,0,1]], answer: 1 },
+  p2: { name: 'П₂', grid: [[1,1,1],[1,0,1],[0,0,0]], answer: 0 }
+};
+const ALGO_LINES = [
+  '1. Запиши стартовые веса: все девять равны 0. Запиши порог: 0. Обнули счётчик ошибок.',
+  '2. Возьми очередной пример из списка (буква и её правильный ответ: 1 или 0).',
+  '3. Вычисли сумму S: для каждой ячейки, где стоит 1, возьми её вес; где стоит 0 — вес не учитывается. Сложи взятые веса. Это и есть S.',
+  '4. Сравни S с порогом: если S >= порога — выход нейрона равен 1; иначе выход равен 0.',
+  '5. Сравни выход нейрона с правильным ответом.',
+  '6. Выход совпал с ответом? Да — веса не трогаем. Нет, нужен был 1, а вышел 0 — прибавь 1 к весу каждой ячейки, где во входе стоит 1, уменьши порог на 1. Нет, нужен был 0, а вышел 1 — вычти 1 из веса каждой ячейки, где во входе стоит 1, увеличь порог на 1.',
+  '7. Остались необработанные примеры? Да — возьми следующий пример, переход к шагу 3. Нет — переход к шагу 8.',
+  '8. Ошибок в этом круге не было? Да — КОНЕЦ, нейрон обучен. Нет — обнули счётчик ошибок, переход к шагу 2 (новый круг).'
+];
+function computeS(grid, weights) {
+  let s = 0;
+  for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) if (grid[i][j]) s += weights[i][j];
+  return s;
+}
+function buildEmptyWeights() { return [[0,0,0],[0,0,0],[0,0,0]]; }
+function cloneWeights(w) { return [[w[0][0],w[0][1],w[0][2]],[w[1][0],w[1][1],w[1][2]],[w[2][0],w[2][1],w[2][2]]]; }
+
+/* ============================================================
+   РЕЖИМ 4: ОБУЧЕНИЕ
+   ============================================================ */
+const M4 = {
+  order: ['c1', 't'],
+  s: null,
+  init: function() {
+    this.s = {
+      step: 1, weights: buildEmptyWeights(), threshold: 0, round: 1, exampleIdx: 0,
+      errorsInRound: 0, currentS: null, currentOutput: null, awaiting: null,
+      sAttempts: 0, outAttempts: 0, log: [], pendingRow: null, finished: false,
+      correctBranch: null, extraChecks: [], transitioning: false
+    };
+    this.render();
+  },
+  reset: function() { this.init(); },
+  renderAlgorithm: function() {
+    const el = document.getElementById('m4-algo');
+    if (!el) return;
+    let html = '';
+    for (let i = 0; i < ALGO_LINES.length; i++) {
+      const n = i + 1;
+      const active = this.s && this.s.step === n && !this.s.finished;
+      html += '<div class="algo-line' + (active ? ' algo-active' : '') + '" id="m4-algo-line-' + n + '">' + ALGO_LINES[i] + '</div>';
+    }
+    el.innerHTML = html;
+  },
+  renderGrid: function(tableId, grid) {
+    const t = document.getElementById(tableId);
+    if (!t) return;
+    t.innerHTML = '';
+    for (let i = 0; i < 3; i++) {
+      const tr = document.createElement('tr');
+      for (let j = 0; j < 3; j++) {
+        const td = document.createElement('td');
+        td.textContent = grid[i][j];
+        td.className = grid[i][j] ? 'on' : 'off';
+        tr.appendChild(td);
+      }
+      t.appendChild(tr);
+    }
+  },
+  renderWeights: function() {
+    const t = document.getElementById('m4-weights');
+    if (!t) return;
+    t.innerHTML = '';
+    for (let i = 0; i < 3; i++) {
+      const tr = document.createElement('tr');
+      for (let j = 0; j < 3; j++) {
+        const td = document.createElement('td');
+        const w = this.s.weights[i][j];
+        td.textContent = w;
+        td.style.fontSize = '18px';
+        td.style.background = w > 0 ? '#d4edda' : (w < 0 ? '#f8d7da' : '#ecf0f1');
+        tr.appendChild(td);
+      }
+      t.appendChild(tr);
+    }
+  },
+  renderExamples: function() {
+    const cur = this.order[this.s.exampleIdx];
+    const e1 = document.getElementById('m4-ex-c1');
+    const e2 = document.getElementById('m4-ex-t');
+    if (e1) e1.classList.toggle('m4-current', cur === 'c1' && !this.s.finished);
+    if (e2) e2.classList.toggle('m4-current', cur === 't' && !this.s.finished);
+  },
+  renderState: function() {
+    const a = document.getElementById('m4-round');
+    const b = document.getElementById('m4-errors');
+    const c = document.getElementById('m4-threshold');
+    if (a) a.textContent = this.s.round;
+    if (b) b.textContent = this.s.errorsInRound;
+    if (c) c.textContent = this.s.threshold;
+  },
+  renderLog: function() {
+    const tbody = document.querySelector('#m4-log tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    for (let i = 0; i < this.s.log.length; i++) {
+      const row = this.s.log[i];
+      const tr = document.createElement('tr');
+      tr.innerHTML = '<td>' + row.round + '</td><td>' + row.example + '</td><td>' + row.s + '</td><td>' + row.threshold + '</td><td>' + row.output + '</td><td>' + row.correct + '</td><td>' + row.change + '</td>';
+      tbody.appendChild(tr);
+    }
+    const wrap = tbody.parentElement.parentElement;
+    if (wrap) wrap.scrollTop = wrap.scrollHeight;
+  },
+  renderInputArea: function() {
+    const el = document.getElementById('m4-input-area');
+    const st = this.s;
+    if (!el) return;
+    if (st.finished) { el.innerHTML = ''; return; }
+    if (st.step === 3 && st.awaiting === 'S') {
+      el.innerHTML =
+        '<div class="m4-answer-row">' +
+          '<b>Шаг 3. Введи S:</b>' +
+          '<input type="number" id="m4-s-input" step="1" value="" class="m4-answer-input">' +
+          '<span id="m4-s-indicator" class="m4-indicator">?</span>' +
+        '</div>' +
+        '<div style="margin-top:6px;"><button class="m4-btn blue" onclick="m4SubmitS()">Проверить S</button></div>' +
+        '<div id="m4-s-hint" class="m4-hint" style="display:none;"></div>';
+      const inp = document.getElementById('m4-s-input');
+      if (inp) inp.focus();
+    } else if (st.step === 4 && st.awaiting === 'output') {
+      el.innerHTML =
+        '<div class="m4-answer-row">' +
+          '<b>Шаг 4. Чему равен выход нейрона? (0 или 1)</b>' +
+          '<input type="number" id="m4-out-input" min="0" max="1" step="1" value="" class="m4-answer-input">' +
+          '<span id="m4-out-indicator" class="m4-indicator">?</span>' +
+        '</div>' +
+        '<div style="margin-top:6px;"><button class="m4-btn blue" onclick="m4SubmitOutput()">Проверить выход</button></div>' +
+        '<div id="m4-out-hint" class="m4-hint" style="display:none;"></div>';
+      const inp = document.getElementById('m4-out-input');
+      if (inp) inp.focus();
+    } else if (st.step === 6 && st.awaiting === 'branch') {
+      el.innerHTML =
+        '<div class="m4-branch-row">' +
+          '<b>Шаг 6. Выбери ветку:</b>' +
+          '<span id="m4-branch-indicator" class="m4-indicator">?</span>' +
+        '</div>' +
+        '<div class="m4-branch-buttons">' +
+          '<button class="m4-btn blue" onclick="m4ChooseBranch(\'ok\')">Совпало</button>' +
+          '<button class="m4-btn blue" onclick="m4ChooseBranch(\'need1\')">Нужен 1, вышел 0</button>' +
+          '<button class="m4-btn blue" onclick="m4ChooseBranch(\'need0\')">Нужен 0, вышел 1</button>' +
+        '</div>' +
+        '<div id="m4-branch-feedback" class="m4-feedback" style="display:none;"></div>';
+    } else {
+      el.innerHTML = '<div style="color:#555;">Нажми «Шаг», чтобы исполнить строку алгоритма.</div>';
+    }
+  },
+  renderFinish: function() {
+    const el = document.getElementById('m4-finish');
+    if (!el) return;
+    if (!this.s.finished) { el.style.display = 'none'; el.innerHTML = ''; return; }
+    el.style.display = 'block';
+    el.innerHTML = '<h3>Нейрон обучен! Круг без ошибок.</h3>' +
+      '<div>Финальные веса: клетки 4, 7, 9 = +1; клетка 5 = −1; остальные 0. Порог 0.</div>' +
+      '<div style="margin-top:10px;"><b>Проверить на другой букве:</b> ' +
+        '<button class="m4-btn purple m4-btn-narrow" onclick="m4ExtraCheck(\'p1\')">П₁</button>' +
+        '<button class="m4-btn purple m4-btn-narrow" onclick="m4ExtraCheck(\'c2\')">C₂</button>' +
+        '<button class="m4-btn purple m4-btn-narrow" onclick="m4ExtraCheck(\'c3\')">C₃</button>' +
+        '<button class="m4-btn purple m4-btn-narrow" onclick="m4ExtraCheck(\'p2\')">П₂</button>' +
+      '</div>' +
+      '<div id="m4-extra-result" style="margin-top:8px;"></div>' +
+      '<h4 style="margin-top:14px;">Эталон самопроверки</h4>' +
+      '<table class="reference-table">' +
+        '<thead><tr><th>N</th><th>Что произошло</th><th>Что изменилось</th></tr></thead>' +
+        '<tbody>' +
+          '<tr><td>1</td><td>C₁: S=0, порог=0, выход 1 — совпало.</td><td>—</td></tr>' +
+          '<tr><td>2</td><td>T: S=0, порог=0, выход 1 — ОШИБКА</td><td>веса клеток 1,2,3,5,8 = -1, порог = 1</td></tr>' +
+          '<tr><td>3</td><td>C₁: S=-4, порог=1, выход 0 — ОШИБКА</td><td>клетки 4,7,9 = +1; 5 = -1; порог = 0</td></tr>' +
+          '<tr><td>4</td><td>T: S=-1, выход 0 — совпало.</td><td>—</td></tr>' +
+          '<tr><td>5</td><td>C₁: S=3, выход 1 — совпало.</td><td>—</td></tr>' +
+          '<tr><td>6</td><td>T: S=-1, выход 0 — совпало. Круг без ошибок — нейрон обучен.</td><td>—</td></tr>' +
+        '</tbody>' +
+      '</table>';
+  },
+  render: function() {
+    try {
+      if (!this.s) this.init();
+      this.renderAlgorithm();
+      this.renderExamples();
+      this.renderState();
+      this.renderWeights();
+      this.renderGrid('m4-grid-c1', LETTERS.c1.grid);
+      this.renderGrid('m4-grid-t', LETTERS.t.grid);
+      this.renderLog();
+      this.renderInputArea();
+      this.renderFinish();
+      const btn = document.getElementById('m4-step-btn');
+      if (btn) btn.disabled = !!(this.s.awaiting || this.s.finished);
+    } catch (e) {
+      showJsError('M4.render: ' + e.message);
+    }
+  },
+  save: function() {
+    try {
+      localStorage.setItem('neuron_m4_last', JSON.stringify({
+        finished: this.s.finished, weights: this.s.weights, threshold: this.s.threshold,
+        rounds: this.s.round, logLength: this.s.log.length, extraChecks: this.s.extraChecks
+      }));
+    } catch (e) {}
+  },
+  step: function() {
+    const st = this.s;
+    if (st.finished || st.awaiting) return;
+    if (st.step === 1) {
+      st.weights = buildEmptyWeights();
+      st.threshold = 0;
+      st.errorsInRound = 0;
+      st.step = 2;
+    } else if (st.step === 2) {
+      const key = this.order[st.exampleIdx];
+      st.pendingRow = { round: st.round, example: LETTERS[key].name, s: null, threshold: null, output: null, correct: null, change: null };
+      st.step = 3;
+      st.awaiting = 'S';
+      st.sAttempts = 0;
+    } else if (st.step === 5) {
+      st.step = 6;
+      st.awaiting = 'branch';
+      const key = this.order[st.exampleIdx];
+      const ex = LETTERS[key];
+      st.correctBranch = (st.currentOutput === ex.answer) ? 'ok' : (ex.answer === 1 ? 'need1' : 'need0');
+    } else if (st.step === 7) {
+      if (st.exampleIdx + 1 < this.order.length) { st.exampleIdx++; st.step = 2; }
+      else { st.step = 8; }
+    } else if (st.step === 8) {
+      if (st.errorsInRound === 0) { st.finished = true; this.save(); }
+      else { st.round++; st.errorsInRound = 0; st.exampleIdx = 0; st.step = 2; }
+    }
+    this.render();
+  },
+  submitS: function() {
+    const st = this.s;
+    if (st.step !== 3 || st.awaiting !== 'S' || st.transitioning) return;
+    const key = this.order[st.exampleIdx];
+    const ex = LETTERS[key];
+    const correct = computeS(ex.grid, st.weights);
+    const inputEl = document.getElementById('m4-s-input');
+    const ind = document.getElementById('m4-s-indicator');
+    const hint = document.getElementById('m4-s-hint');
+    if (!inputEl || !ind || !hint) return;
+    const val = parseInt(inputEl.value);
+    if (isNaN(val)) {
+      ind.textContent = '✗'; ind.className = 'm4-indicator m4-bad';
+      inputEl.classList.remove('m4-ok'); inputEl.classList.add('m4-bad');
+      hint.style.display = 'block'; hint.className = 'm4-hint m4-bad';
+      hint.textContent = 'Введи число.'; inputEl.focus(); return;
+    }
+    if (val === correct) {
+      ind.textContent = '✓'; ind.className = 'm4-indicator m4-ok';
+      inputEl.classList.remove('m4-bad'); inputEl.classList.add('m4-ok');
+      hint.style.display = 'block'; hint.className = 'm4-hint m4-ok';
+      hint.textContent = 'Верно! S = ' + correct + '. Переходим дальше...';
+      st.transitioning = true; st.currentS = correct; st.pendingRow.s = correct;
+      const self = this;
+      setTimeout(function(){
+        st.transitioning = false; st.step = 4; st.awaiting = 'output'; st.outAttempts = 0;
+        self.render();
+      }, 900);
+    } else {
+      ind.textContent = '✗'; ind.className = 'm4-indicator m4-bad';
+      inputEl.classList.remove('m4-ok'); inputEl.classList.add('m4-bad');
+      hint.style.display = 'block'; hint.className = 'm4-hint m4-bad';
+      let extra = '';
+      if (st.sAttempts === 0) extra = ' Сложи веса клеток, где стоит 1 (клетки с 0 не учитываются).';
+      else if (st.sAttempts === 1) {
+        let parts = [];
+        for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) if (ex.grid[i][j]) parts.push('кл.' + (i*3+j+1) + '=' + st.weights[i][j]);
+        extra = ' Подсказка: ' + parts.join(', ') + '. Сложи эти числа.';
+      } else {
+        extra = ' Правильный ответ: S = ' + correct + '. Введи его.';
+      }
+      hint.textContent = 'Неверно. Попробуй ещё раз.' + extra;
+      st.sAttempts++; inputEl.focus(); inputEl.select();
+    }
+  },
+  submitOutput: function() {
+    const st = this.s;
+    if (st.step !== 4 || st.awaiting !== 'output' || st.transitioning) return;
+    const correctOut = st.currentS >= st.threshold ? 1 : 0;
+    const inputEl = document.getElementById('m4-out-input');
+    const ind = document.getElementById('m4-out-indicator');
+    const hint = document.getElementById('m4-out-hint');
+    if (!inputEl || !ind || !hint) return;
+    const val = parseInt(inputEl.value);
+    if (isNaN(val) || (val !== 0 && val !== 1)) {
+      ind.textContent = '✗'; ind.className = 'm4-indicator m4-bad';
+      inputEl.classList.remove('m4-ok'); inputEl.classList.add('m4-bad');
+      hint.style.display = 'block'; hint.className = 'm4-hint m4-bad';
+      hint.textContent = 'Введи 0 или 1.'; inputEl.focus(); return;
+    }
+    if (val === correctOut) {
+      ind.textContent = '✓'; ind.className = 'm4-indicator m4-ok';
+      inputEl.classList.remove('m4-bad'); inputEl.classList.add('m4-ok');
+      hint.style.display = 'block'; hint.className = 'm4-hint m4-ok';
+      hint.textContent = 'Верно! Выход = ' + correctOut + '.';
+      st.transitioning = true; st.currentOutput = correctOut;
+      st.pendingRow.threshold = st.threshold; st.pendingRow.output = correctOut;
+      const self = this;
+      setTimeout(function(){
+        st.transitioning = false; st.awaiting = null; st.step = 5; self.step();
+      }, 900);
+    } else {
+      ind.textContent = '✗'; ind.className = 'm4-indicator m4-bad';
+      inputEl.classList.remove('m4-ok'); inputEl.classList.add('m4-bad');
+      hint.style.display = 'block'; hint.className = 'm4-hint m4-bad';
+      let extra = '';
+      if (st.outAttempts === 0) extra = ' Сравни S и порог: если S ≥ порога — выход 1, иначе выход 0.';
+      else extra = ' Правильный ответ: ' + correctOut + '. Введи его.';
+      hint.textContent = 'Неверно. Попробуй ещё раз.' + extra;
+      st.outAttempts++; inputEl.focus(); inputEl.select();
+    }
+  },
+  chooseBranch: function(choice) {
+    const st = this.s;
+    if (st.step !== 6 || st.awaiting !== 'branch' || st.transitioning) return;
+    const correct = st.correctBranch;
+    const fb = document.getElementById('m4-branch-feedback');
+    const ind = document.getElementById('m4-branch-indicator');
+    if (!fb) return;
+    if (choice !== correct) {
+      if (ind) { ind.textContent = '✗'; ind.className = 'm4-indicator m4-bad'; }
+      fb.style.display = 'block'; fb.className = 'm4-feedback err';
+      let hint = '';
+      if (correct === 'ok') hint = 'Выход совпал с правильным ответом — веса не трогаем.';
+      else if (correct === 'need1') hint = 'Нужен был 1, а вышел 0 — прибавь 1 к весам клеток с 1 и уменьши порог на 1.';
+      else if (correct === 'need0') hint = 'Нужен был 0, а вышел 1 — вычти 1 из весов клеток с 1 и увеличь порог на 1.';
+      fb.textContent = 'Неверно. Попробуй другую ветку. ' + hint;
+      return;
+    }
+    const key = this.order[st.exampleIdx];
+    const ex = LETTERS[key];
+    const before = { w: cloneWeights(st.weights), t: st.threshold };
+    let changeMsg = '—';
+    if (correct === 'ok') { changeMsg = '— (веса не трогаем)'; }
+    else if (correct === 'need1') {
+      for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) if (ex.grid[i][j]) st.weights[i][j] += 1;
+      st.threshold -= 1; st.errorsInRound++;
+      changeMsg = 'нужен 1, вышел 0: +1 к весам клеток с 1, порог -1';
+    } else if (correct === 'need0') {
+      for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) if (ex.grid[i][j]) st.weights[i][j] -= 1;
+      st.threshold += 1; st.errorsInRound++;
+      changeMsg = 'нужен 0, вышел 1: -1 от весов клеток с 1, порог +1';
+    }
+    st.pendingRow.correct = correct === 'ok' ? 'да' : 'нет';
+    st.pendingRow.change = changeMsg;
+    st.log.push(st.pendingRow); st.pendingRow = null;
+    if (ind) { ind.textContent = '✓'; ind.className = 'm4-indicator m4-ok'; }
+    fb.style.display = 'block'; fb.className = 'm4-feedback ok';
+    fb.textContent = 'Верно! ' + changeMsg;
+    let diffs = [];
+    for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) {
+      if (before.w[i][j] !== st.weights[i][j]) diffs.push('кл.' + (i*3+j+1) + ': ' + before.w[i][j] + '->' + st.weights[i][j]);
+    }
+    if (before.t !== st.threshold) diffs.push('порог: ' + before.t + '->' + st.threshold);
+    if (diffs.length) fb.textContent += ' Изменения: ' + diffs.join('; ');
+    st.transitioning = true; st.awaiting = null; st.step = 7;
+    const self = this;
+    setTimeout(function(){ st.transitioning = false; self.render(); }, 1600);
+  },
+  extraCheck: function(key) {
+    const ex = LETTERS[key];
+    const s = computeS(ex.grid, this.s.weights);
+    const out = s >= this.s.threshold ? 1 : 0;
+    const ok = out === ex.answer;
+    const el = document.getElementById('m4-extra-result');
+    if (el) {
+      el.className = 'm4-feedback ' + (ok ? 'ok' : 'warn');
+      el.textContent = ex.name + ': S = ' + s + ', порог = ' + this.s.threshold + ', выход = ' + out + ', ожидалось ' + ex.answer + ' -> ' + (ok ? 'совпало' : 'не совпало');
+    }
+    this.s.extraChecks.push({ key: key, s: s, out: out, expected: ex.answer, ok: ok });
+    this.save();
+  }
+};
+window.M4 = M4;
+function m4Step() { M4.step(); }
+function m4Reset() { M4.reset(); }
+function m4SubmitS() { M4.submitS(); }
+function m4SubmitOutput() { M4.submitOutput(); }
+function m4ChooseBranch(c) { M4.chooseBranch(c); }
+function m4ExtraCheck(k) { M4.extraCheck(k); }
+
+/* ============================================================
+   РЕЖИМ 5: ЗАЕЗД «СМЕКАЛКА»
+   ============================================================ */
+const M5_LETTER_DEFS = {
+  c1:   { name: 'C₁', grid: [[1,1,1],[1,0,0],[1,1,1]], answer: 1 },
+  c2:   { name: 'C₂', grid: [[1,1,0],[1,0,0],[1,1,0]], answer: 1 },
+  c3:   { name: 'C₃', grid: [[0,1,1],[0,1,0],[0,1,1]], answer: 1 },
+  t:    { name: 'T',  grid: [[1,1,1],[0,1,0],[0,1,0]], answer: 0 },
+  p1:   { name: 'П₁', grid: [[1,1,1],[1,0,1],[1,0,1]], answer: 1 },
+  p2:   { name: 'П₂', grid: [[1,1,1],[1,0,1],[0,0,0]], answer: 0 },
+  plus: { name: '+',  grid: [[0,1,0],[1,1,1],[0,1,0]], answer: 0 }
+};
+const M5_LETTER_ORDER = ['c1','c2','c3','t','p1','p2','plus'];
+
+const M5 = {
+  tempo: 15,
+  timerId: null,
+  tickId: null,
+  remaining: 300,
+  stepLimit: 0,
+  started: false,
+  finished: false,
+  winner: null,
+  machine: null,
+  machineOrder: [],
+  machineTask: [],
+  selectedKeys: ['c2', 'p1', 't'],
+  answerOverrides: {},
+  currentIdx: 0,
+  pairStatus: {},
+  pairChecks: 0,
+  pairCorrect: 0,
+  _debounceId: null,
+  _pairMatrixInited: false,
+
+  init: function() {
+    this.machine = {
+      weights: buildEmptyWeights(), threshold: 0, round: 1, exampleIdx: 0,
+      errorsInRound: 0, corrections: 0, steps: 0, log: []
+    };
+    this.machineOrder = this.selectedKeys.slice();
+    this.machineTask = [];
+    this.pairChecks = 0;
+    this.pairCorrect = 0;
+    this.remaining = 300;
+    this.stepLimit = 0;
+    this.started = false;
+    this.finished = false;
+    this.winner = null;
+    this.machineRevealed = false;
+    this.currentIdx = 0;
+    this.pairStatus = {};
+  },
+
+  getAnswer: function(key) {
+    if (this.answerOverrides && Object.prototype.hasOwnProperty.call(this.answerOverrides, key)) {
+      return this.answerOverrides[key];
+    }
+    return M5_LETTER_DEFS[key].answer;
+  },
+
+  setAnswer: function(key, val) {
+    if (this.finished) this.reset();
+    if (this.started) return;
+    if (!this.answerOverrides) this.answerOverrides = {};
+    this.answerOverrides[key] = val;
+    this.renderSetup();
+    this.pairStatus = this.computePairStatus();
+    this.renderPairLetters();
+    this.renderCurrentLetter();
+    const correctEl = document.getElementById('m5-p-correct');
+    if (correctEl) {
+      let cnt = 0;
+      for (let k in this.pairStatus) if (this.pairStatus[k]) cnt++;
+      correctEl.textContent = cnt + '/' + this.selectedKeys.length;
+    }
+  },
+
+  toggleLetter: function(key, checked) {
+    if (this.finished) this.reset();
+    if (this.started) return;
+    const idx = this.selectedKeys.indexOf(key);
+    if (checked && idx < 0) this.selectedKeys.push(key);
+    if (!checked && idx >= 0) this.selectedKeys.splice(idx, 1);
+    this.selectedKeys.sort(function(a,b){
+      return M5_LETTER_ORDER.indexOf(a) - M5_LETTER_ORDER.indexOf(b);
+    });
+    if (this.currentIdx >= this.selectedKeys.length) this.currentIdx = 0;
+    this.renderSetup();
+    this.pairStatus = this.computePairStatus();
+    this.renderPairLetters();
+    this.renderCurrentLetter();
+    const correctEl = document.getElementById('m5-p-correct');
+    if (correctEl) {
+      let cnt = 0;
+      for (let k in this.pairStatus) if (this.pairStatus[k]) cnt++;
+      correctEl.textContent = cnt + '/' + this.selectedKeys.length;
+    }
+  },
+
+  renderSetup: function() {
+    const el = document.getElementById('m5-letter-picker');
+    if (!el) return;
+    let html = '';
+    for (let i = 0; i < M5_LETTER_ORDER.length; i++) {
+      const key = M5_LETTER_ORDER[i];
+      const def = M5_LETTER_DEFS[key];
+      const sel = this.selectedKeys.indexOf(key) >= 0;
+      const eff = this.getAnswer(key);
+      const disabled = this.started || this.finished;
+      const toggleDisabled = disabled || !sel;
+      html += '<div class="m5-letter-choice' + (sel ? ' sel' : '') + '">' +
+        '<label style="display:flex;align-items:center;gap:5px;cursor:pointer;margin:0;">' +
+          '<input type="checkbox" data-key="' + key + '" ' + (sel ? 'checked' : '') + ' ' +
+            (disabled ? 'disabled' : '') +
+            ' onchange="M5.toggleLetter(\'' + key + '\', this.checked)">' +
+          '<span style="min-width:28px;font-weight:bold;">' + def.name + '</span>' +
+        '</label>' +
+        '<span class="m5-ans-toggle">' +
+          'выход:' +
+          '<button type="button" class="m5-ans-btn' + (eff === 1 ? ' act-1' : '') + '" ' +
+            (toggleDisabled ? 'disabled' : '') +
+            ' onclick="m5SetAnswer(\'' + key + '\', 1)">1</button>' +
+          '<button type="button" class="m5-ans-btn' + (eff === 0 ? ' act-0' : '') + '" ' +
+            (toggleDisabled ? 'disabled' : '') +
+            ' onclick="m5SetAnswer(\'' + key + '\', 0)">0</button>' +
+        '</span>' +
+      '</div>';
+    }
+    el.innerHTML = html;
+  },
+
+  renderPairLetters: function() {
+    const el = document.getElementById('m5-letter-tabs');
+    if (!el) return;
+    let html = '';
+    for (let i = 0; i < this.selectedKeys.length; i++) {
+      const key = this.selectedKeys[i];
+      const def = M5_LETTER_DEFS[key];
+      const cur = i === this.currentIdx;
+      const status = this.pairStatus ? this.pairStatus[key] : undefined;
+      let stChar = '○', stCls = 'none';
+      if (status === true) { stChar = '✓'; stCls = 'ok'; }
+      else if (status === false) { stChar = '✗'; stCls = 'bad'; }
+      html += '<button class="m5-letter-tab' + (cur ? ' cur' : '') + '" onclick="m5SelectLetter(' + i + ')">' +
+        '<span>' + def.name + '</span>' +
+        '<span class="st ' + stCls + '">' + stChar + '</span>' +
+      '</button>';
+    }
+    el.innerHTML = html;
+  },
+
+  renderCurrentLetter: function() {
+    const keys = this.selectedKeys;
+    const nameEl = document.getElementById('m5-current-name');
+    const ansEl = document.getElementById('m5-current-answer');
+    const grid = document.getElementById('m5-letter-grid');
+    if (!nameEl || !ansEl || !grid) return;
+    if (keys.length === 0) {
+      nameEl.textContent = '—';
+      ansEl.textContent = 'Выберите хотя бы одну букву';
+      grid.innerHTML = '';
+      return;
+    }
+    if (this.currentIdx >= keys.length) this.currentIdx = 0;
+    const key = keys[this.currentIdx];
+    const def = M5_LETTER_DEFS[key];
+    const target = this.getAnswer(key);
+    nameEl.textContent = def.name;
+    ansEl.textContent = 'Ожидаемый выход: ' + target +
+      (target === 1 ? ' (должен загореться)' : ' (должен молчать)');
+    grid.innerHTML = '';
+    for (let i = 0; i < 3; i++) {
+      const tr = document.createElement('tr');
+      for (let j = 0; j < 3; j++) {
+        const td = document.createElement('td');
+        td.textContent = def.grid[i][j];
+        td.className = def.grid[i][j] ? 'on' : 'off';
+        tr.appendChild(td);
+      }
+      grid.appendChild(tr);
+    }
+  },
+
+  computePairStatus: function() {
+    const result = {};
+    if (!this.selectedKeys.length || !this._pairMatrixInited) return result;
+    const weights = getWeightValues('m5-pair-weights');
+    const threshold = parseFloat(document.getElementById('m5-pair-threshold').value) || 0;
+    for (let i = 0; i < this.selectedKeys.length; i++) {
+      const key = this.selectedKeys[i];
+      const def = M5_LETTER_DEFS[key];
+      const target = this.getAnswer(key);
+      const s = computeS(def.grid, weights);
+      const out = s >= threshold ? 1 : 0;
+      result[key] = (out === target);
+    }
+    return result;
+  },
+
+  updatePairStatuses: function() {
+    this.pairStatus = this.computePairStatus();
+    const correctEl = document.getElementById('m5-p-correct');
+    if (correctEl) {
+      let cnt = 0;
+      for (let k in this.pairStatus) if (this.pairStatus[k]) cnt++;
+      correctEl.textContent = cnt + '/' + this.selectedKeys.length;
+    }
+    let allOk = this.selectedKeys.length > 0;
+    for (let i = 0; i < this.selectedKeys.length; i++) {
+      if (!this.pairStatus[this.selectedKeys[i]]) { allOk = false; break; }
+    }
+    if (allOk && this.started && !this.finished) {
+      this.pairCorrect = this.selectedKeys.length;
+      this.finish('pair');
+    } else {
+      this.renderPairLetters();
+    }
+  },
+
+  attachPairListeners: function() {
+    const pw = document.getElementById('m5-pair-weights');
+    if (!pw) return;
+    const self = this;
+    const handler = function() {
+      if (self._debounceId) clearTimeout(self._debounceId);
+      self._debounceId = setTimeout(function() { self.updatePairStatuses(); }, 200);
+    };
+    pw.addEventListener('input', handler);
+    const th = document.getElementById('m5-pair-threshold');
+    if (th) th.addEventListener('input', handler);
+  },
+
+  selectLetter: function(idx) {
+    if (idx < 0 || idx >= this.selectedKeys.length) return;
+    this.currentIdx = idx;
+    this.renderPairLetters();
+    this.renderCurrentLetter();
+  },
+
+  nextLetter: function() {
+    if (!this.selectedKeys.length) return;
+    this.currentIdx = (this.currentIdx + 1) % this.selectedKeys.length;
+    this.renderPairLetters();
+    this.renderCurrentLetter();
+  },
+
+  checkCurrent: function() {
+    if (!this.selectedKeys.length) return;
+    const key = this.selectedKeys[this.currentIdx];
+    const def = M5_LETTER_DEFS[key];
+    const target = this.getAnswer(key);
+    const weights = getWeightValues('m5-pair-weights');
+    const threshold = parseFloat(document.getElementById('m5-pair-threshold').value) || 0;
+    const s = computeS(def.grid, weights);
+    const out = s >= threshold ? 1 : 0;
+    const ok = out === target;
+    this.pairChecks++;
+    const panel = document.getElementById('m5-pair-results');
+    if (panel) {
+      panel.innerHTML = '<div class="m5-result-row ' + (ok ? 'ok' : 'bad') + '">' +
+        '<span><b>' + def.name + '</b></span>' +
+        '<span>S = ' + s + ', порог = ' + threshold + ', выход = ' + out + ', ожидалось ' + target + ' → ' + (ok ? 'верно' : 'ошибка') + '</span>' +
+      '</div>';
+    }
+    const st = document.getElementById('m5-p-status');
+    if (st) st.textContent = ok ? 'Верно!' : 'Есть ошибки';
+    const checksEl = document.getElementById('m5-p-checks');
+    if (checksEl) checksEl.textContent = this.pairChecks;
+    this.updatePairStatuses();
+    if (!this.finished) this.render();
+  },
+
+  surrender: function() {
+    if (this.finished) {
+      /* партия окончена. Если победила машина — показываем её ходы и веса */
+      if (this.winner === 'machine' && !this.machineRevealed) {
+        this.machineRevealed = true;
+        this.render();
+      }
+      return;
+    }
+    if (!this.started) return;
+    this.finish('surrender');
+  },
+
+  setTempo: function(v) { if (this.started) return; this.tempo = v; this.render(); },
+
+  renderTimer: function() {
+    const m = Math.floor(this.remaining / 60);
+    const s = ('0' + (this.remaining % 60)).slice(-2);
+    const el = document.getElementById('m5-timer');
+    if (el) el.textContent = ('0' + m).slice(-2) + ':' + s;
+  },
+
+  renderMachineTask: function() {
+    const el = document.getElementById('m5-machine-task');
+    if (!el) return;
+    let items = [];
+    let label = '';
+    if (this.started || this.finished) {
+      items = (this.machineTask || []).map(function(t) {
+        return M5_LETTER_DEFS[t.key].name + '→' + t.target;
+      });
+      label = '<b>Задача машины:</b> ';
+    } else {
+      items = this.selectedKeys.map(function(k) {
+        return M5_LETTER_DEFS[k].name + '→' + M5.getAnswer(k);
+      });
+      label = '<b>Задача (предпросмотр):</b> ';
+    }
+    if (!items.length) {
+      el.innerHTML = '<span style="color:#888;">Выберите буквы и ответы — здесь появится задача.</span>';
+    } else {
+      let lim = '';
+      if (this.stepLimit > 0) {
+        lim = ' <span style="color:#555;">· Лимит: ' + this.stepLimit + ' шагов, ~' +
+              Math.round(this.stepLimit * this.tempo) + ' c</span>';
+      } else {
+        // предпросмотр лимита по текущему выбору
+        const previewLim = Math.max(20, 8 * this.selectedKeys.length);
+        lim = ' <span style="color:#888;">· Ожидаемый лимит: ' + previewLim + ' шагов</span>';
+      }
+      el.innerHTML = label + items.join(', ') + lim;
+    }
+  },
+
+  render: function() {
+    try {
+      if (!this.machine) this.init();
+      const tempoBtns = document.querySelectorAll('.m5-tempo-btn');
+      for (let i = 0; i < tempoBtns.length; i++) {
+        const b = tempoBtns[i];
+        b.classList.toggle('sel', parseInt(b.dataset.tempo) === this.tempo);
+      }
+      const els = {
+        step: document.getElementById('m5-m-step'),
+        corr: document.getElementById('m5-m-corr'),
+        round: document.getElementById('m5-m-round'),
+        checks: document.getElementById('m5-p-checks')
+      };
+      if (els.step) {
+        if (this.stepLimit > 0) {
+          els.step.innerHTML = this.machine.steps + ' <span class="lim">/ ' + this.stepLimit + '</span>';
+        } else {
+          els.step.textContent = this.machine.steps;
+        }
+      }
+      if (els.corr) els.corr.textContent = this.machine.corrections;
+      if (els.round) els.round.textContent = this.machine.round;
+      if (els.checks) els.checks.textContent = this.pairChecks;
+      this.renderTimer();
+      this.renderMachineTask();
+
+      const pw = document.getElementById('m5-pair-weights');
+      if (pw && !this._pairMatrixInited) {
+        createMatrix('m5-pair-weights', 3, 3, true);
+        this.attachPairListeners();
+        this._pairMatrixInited = true;
+      }
+
+      const sb = document.getElementById('m5-start-btn');
+      if (sb) sb.disabled = this.started || this.finished;
+
+      const machineWon = this.finished && this.winner === 'machine';
+      const sur = document.getElementById('m5-surrender-btn');
+      if (sur) {
+        if (machineWon && !this.machineRevealed) {
+          /* машина победила — кнопка «Сдаюсь» оживает и меняет цвет */
+          sur.disabled = false;
+          sur.title = 'Показать ходы и веса машины';
+          sur.classList.add('m5-reveal');
+        } else {
+          sur.disabled = !this.started || this.finished;
+          sur.title = '';
+          sur.classList.remove('m5-reveal');
+        }
+      }
+
+      const reveal = this.finished && (this.winner === 'pair' || this.winner === 'surrender' || this.machineRevealed);
+      const body = document.getElementById('m5-machine-body');
+      if (body) {
+        if (!reveal) {
+          let hint = 'Веса машины скрыты. Откроются, если пара победит или сдастся.';
+          if (machineWon && !this.machineRevealed) {
+            hint = 'Машина победила. Нажми «Сдаюсь», чтобы увидеть её ходы и веса.';
+          }
+          body.innerHTML = '<div class="m5-machine-hidden">' + hint + '</div>';
+        } else {
+          let html = '<div style="background:#fff;padding:12px;border-radius:8px;text-align:center;">';
+          html += '<div style="font-weight:bold;margin-bottom:8px;">Финальные веса машины</div>';
+          html += '<table class="matrix" id="m5-machine-weights" style="margin:0 auto;"></table>';
+          html += '<div style="margin-top:10px;">Порог: <b style="font-size:22px;color:#c0392b;">' + this.machine.threshold + '</b></div>';
+          html += '</div>';
+          body.innerHTML = html;
+          const wt = document.getElementById('m5-machine-weights');
+          if (wt) {
+            wt.innerHTML = '';
+            for (let i = 0; i < 3; i++) {
+              const tr = document.createElement('tr');
+              for (let j = 0; j < 3; j++) {
+                const td = document.createElement('td');
+                const w = this.machine.weights[i][j];
+                td.textContent = w;
+                td.style.fontSize = '18px';
+                td.style.cursor = 'default';
+                td.style.background = w > 0 ? '#d4edda' : (w < 0 ? '#f8d7da' : '#ecf0f1');
+                tr.appendChild(td);
+              }
+              wt.appendChild(tr);
+            }
+          }
+        }
+      }
+
+      const wb = document.getElementById('m5-winner-box');
+      if (wb) {
+        if (this.winner === 'machine') wb.innerHTML = '<div class="m5-winner machine">Победила машина.</div>';
+        else if (this.winner === 'pair') wb.innerHTML = '<div class="m5-winner pair">Победила пара!</div>';
+        else if (this.winner === 'draw') wb.innerHTML = '<div class="m5-winner draw">Ничья.</div>';
+        else if (this.winner === 'surrender') wb.innerHTML = '<div class="m5-winner machine">Пара сдалась. Победила машина.</div>';
+        else wb.innerHTML = '';
+      }
+
+      const hist = document.getElementById('m5-machine-history');
+      if (hist) {
+        if (reveal) {
+          hist.style.display = 'block';
+          const tbody = document.querySelector('#m5-machine-log tbody');
+          if (tbody) {
+            tbody.innerHTML = '';
+            for (let i = 0; i < this.machine.log.length; i++) {
+              const row = this.machine.log[i];
+              const tr = document.createElement('tr');
+              tr.innerHTML = '<td>' + row.round + '</td><td>' + row.example + '</td><td>' + (row.target !== undefined ? row.target : '') + '</td><td>' + row.s + '</td><td>' + row.threshold + '</td><td>' + row.output + '</td><td>' + row.correct + '</td><td>' + row.change + '</td>';
+              tbody.appendChild(tr);
+            }
+          }
+        } else {
+          hist.style.display = 'none';
+        }
+      }
+
+      this.renderSetup();
+      this.pairStatus = this.computePairStatus();
+      this.renderPairLetters();
+      this.renderCurrentLetter();
+
+      const correctEl = document.getElementById('m5-p-correct');
+      if (correctEl) {
+        let cnt = 0;
+        for (let k in this.pairStatus) if (this.pairStatus[k]) cnt++;
+        correctEl.textContent = cnt + '/' + this.selectedKeys.length;
+      }
+    } catch (e) {
+      showJsError('M5.render: ' + e.message);
+    }
+  },
+
+  start: function() {
+    if (this.started || this.finished) return;
+    if (this.selectedKeys.length === 0) {
+      alert('Выберите хотя бы одну букву.');
+      return;
+    }
+    let hasPos = false, hasNeg = false;
+    for (let i = 0; i < this.selectedKeys.length; i++) {
+      const a = this.getAnswer(this.selectedKeys[i]);
+      if (a === 1) hasPos = true;
+      if (a === 0) hasNeg = true;
+    }
+    if (!hasPos || !hasNeg) {
+      alert('Нужны хотя бы одна буква с ожидаемым выходом 1 и одна с ожидаемым выходом 0.');
+      return;
+    }
+    const taskSnapshot = this.selectedKeys.map(function(k) {
+      return { key: k, target: M5.getAnswer(k) };
+    });
+    const rand = document.getElementById('m5-random-order');
+    let order = this.selectedKeys.slice();
+    if (rand && rand.checked) {
+      for (let i = order.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const tmp = order[i]; order[i] = order[j]; order[j] = tmp;
+      }
+    }
+    this.init();
+    this.machineOrder = order;
+    this.machineTask = taskSnapshot;
+
+    // === АДАПТИВНЫЙ ЛИМИТ ШАГОВ И ВРЕМЕНИ ===
+    const numLetters = this.machineOrder.length;
+    this.stepLimit = Math.max(20, 8 * numLetters);
+    // таймер с запасом ~20% сверх теоретического максимума, но не больше 15 минут
+    this.remaining = Math.min(900, Math.max(300, Math.ceil(this.stepLimit * this.tempo * 1.2)));
+
+    this.started = true;
+    this.render();
+    const self = this;
+    this.timerId = setInterval(function() {
+      if (self.finished) return;
+      self.remaining--;
+      if (self.remaining <= 0) { self.remaining = 0; self.finish('draw'); }
+      self.renderTimer();
+    }, 1000);
+    this.tickId = setInterval(function() {
+      if (self.finished) return;
+      self.machineStep();
+      if (self.finished) return;
+      if (self.machine.steps >= self.stepLimit) self.finish('draw');
+    }, this.tempo * 1000);
+  },
+
+  machineStep: function() {
+    const m = this.machine;
+    const order = this.machineOrder;
+    const task = this.machineTask || [];
+    if (!order || order.length === 0) return;
+    if (m.exampleIdx >= order.length) {
+      if (m.errorsInRound === 0) { this.finish('machine'); return; }
+      m.round++; m.errorsInRound = 0; m.exampleIdx = 0;
+    }
+    const key = order[m.exampleIdx];
+    const ex = M5_LETTER_DEFS[key];
+    let target = ex.answer;
+    for (let i = 0; i < task.length; i++) {
+      if (task[i].key === key) { target = task[i].target; break; }
+    }
+    const s = computeS(ex.grid, m.weights);
+    const thresholdUsed = m.threshold;
+    const out = s >= thresholdUsed ? 1 : 0;
+    const correct = out === target;
+    let change = '—';
+    if (!correct) {
+      m.corrections++;
+      m.errorsInRound++;
+      if (target === 1) {
+        for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) if (ex.grid[i][j]) m.weights[i][j] += 1;
+        m.threshold -= 1;
+        change = 'нужен 1, вышел 0: +1 к весам клеток с 1, порог -1';
+      } else {
+        for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) if (ex.grid[i][j]) m.weights[i][j] -= 1;
+        m.threshold += 1;
+        change = 'нужен 0, вышел 1: -1 от весов клеток с 1, порог +1';
+      }
+    }
+    m.log.push({ round: m.round, example: ex.name, target: target, s: s, threshold: thresholdUsed, output: out, correct: correct ? 'да' : 'нет', change: change });
+    m.steps++;
+    m.exampleIdx++;
+    this.render();
+  },
+
+  finish: function(who) {
+    if (this.finished) return;
+    this.finished = true;
+    this.winner = who;
+    if (this.timerId) clearInterval(this.timerId);
+    if (this.tickId) clearInterval(this.tickId);
+    try {
+      localStorage.setItem('neuron_m5_last', JSON.stringify({
+        winner: who, tempo: this.tempo, order: this.machineOrder,
+        machine: { steps: this.machine.steps, corrections: this.machine.corrections, round: this.machine.round, weights: this.machine.weights, threshold: this.machine.threshold, logLength: this.machine.log.length },
+        pairChecks: this.pairChecks, pairCorrect: this.pairCorrect, remaining: this.remaining,
+        selected: this.selectedKeys, answerOverrides: this.answerOverrides,
+        machineTask: this.machineTask, stepLimit: this.stepLimit
+      }));
+    } catch (e) {}
+    this.render();
+  },
+
+  reset: function() {
+    if (this.timerId) clearInterval(this.timerId);
+    if (this.tickId) clearInterval(this.tickId);
+    this.init();
+    const t = document.getElementById('m5-pair-weights');
+    if (t) {
+      const inputs = t.querySelectorAll('input');
+      for (let i = 0; i < inputs.length; i++) inputs[i].value = 0;
+    }
+    const th = document.getElementById('m5-pair-threshold');
+    if (th) th.value = 0;
+    const feat = document.getElementById('m5-feature');
+    if (feat) feat.value = '';
+    const pr = document.getElementById('m5-pair-results');
+    if (pr) pr.textContent = 'Проверка покажет результат для текущей буквы.';
+    const ps = document.getElementById('m5-p-status');
+    if (ps) ps.textContent = '—';
+    this.pairStatus = {};
+    this.render();
+  },
+
+  strongNewStart: function() {
+    this.reset();
+    const r = document.getElementById('m5-random-order');
+    if (r) r.checked = true;
+  }
+};
+window.M5 = M5;
+function m5SetTempo(v) { M5.setTempo(v); }
+function m5Start() { M5.start(); }
+function m5CheckCurrent() { M5.checkCurrent(); }
+function m5NextLetter() { M5.nextLetter(); }
+function m5SelectLetter(i) { M5.selectLetter(i); }
+function m5Surrender() { M5.surrender(); }
+function m5SetAnswer(key, val) { M5.setAnswer(key, val); }
+function m5Reset() { M5.reset(); }
+function m5StrongNewStart() { M5.strongNewStart(); }
+function m5PairCheck() { M5.checkCurrent(); }
+
+/* ============================================================
+   ПАУЗА
+   ============================================================ */
+let pauseAccum = 0;
+let pauseInterval = null;
+let pauseShown = false;
+function updatePauseTimer(mode) {
+  if (mode === 1 || mode === 4) {
+    if (!pauseInterval) {
+      pauseInterval = setInterval(function() {
+        pauseAccum += 1;
+        if (pauseAccum >= 480 && !pauseShown) {
+          const t = document.getElementById('pauseToast');
+          if (t) t.style.display = 'block';
+          pauseShown = true;
+        }
+      }, 1000);
+    }
+  } else {
+    if (pauseInterval) { clearInterval(pauseInterval); pauseAccum = 0; }
+    pauseInterval = null;
+    pauseAccum = 0;
+  }
+}
+function hidePause() {
+  const t = document.getElementById('pauseToast');
+  if (t) t.style.display = 'none';
+}
+
+/* ============================================================
+   ИНИЦИАЛИЗАЦИЯ
+   ============================================================ */
+(function init() {
+  try {
+    createMatrix('input1', 3, 3, false, function() { toggleCell(this); });
+    createMatrix('weights1', 3, 3, true);
+    createMatrix('input2', 3, 3, false, function() { toggleCell(this); });
+    createMatrix('input3', 3, 3, false, function() { toggleCell(this); });
+    initMode2();
+    initMode3();
+    M4.init();
+    M5.init();
+    M5.render();
+    setTimeout(function() { drawInputWindows(); drawConnections3(); }, 200);
+  } catch (e) {
+    showJsError('init: ' + e.message);
+  }
+})();
+
+document.addEventListener('input', function(e) {
+  if (e.target && e.target.id && e.target.id.indexOf('weights2_') === 0) drawConnectionsMode2();
 });
 
 window.addEventListener('resize', function() {
-if (document.getElementById('mode2').classList.contains('active')) drawConnectionsMode2();
-if (document.getElementById('mode3').classList.contains('active')) {
-  drawInputWindows();
-  drawConnections3();
-}
+  const m2 = document.getElementById('mode2');
+  const m3 = document.getElementById('mode3');
+  if (m2 && m2.classList.contains('active')) drawConnectionsMode2();
+  if (m3 && m3.classList.contains('active')) { drawInputWindows(); drawConnections3(); }
 });
 </script>
 </body>

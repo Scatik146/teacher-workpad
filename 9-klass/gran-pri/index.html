@@ -1,9 +1,10 @@
-<!doctype html><html lang="ru"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Табло Гран-при Студии</title>
-<meta name="claude:viewport-fit-sides" content="cover">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;800&family=Barlow:wght@400;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>@font-face{font-family:"PT Mono";src:url("../../lib/drakon-graf/fonts/PTM55FT.ttf") format("truetype")}</style>
 <style>
 /* Layout: timing tower of a pit lane. Strip of race windows on top; left = current window (name, countdown, prompt, criterion); right = 9-car tower pilots tap. Single dark world on purpose. */
 :root{
@@ -17,14 +18,15 @@
   --pit-ink:#16130A;
   --flag:#E5322D;
   --ok:#5FD08A;
-  --f-display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
-  --f-body:"Barlow","Segoe UI",Arial,sans-serif;
-  --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  --f-display:"Oswald","Arial Narrow",Arial,sans-serif;
+  --f-body:"PT Sans","Segoe UI",Arial,sans-serif;
+  --f-mono:"PT Mono",ui-monospace,Consolas,monospace;
   color-scheme:dark;
 }
 html,body{height:100%}
-body{background:var(--asphalt);color:var(--chalk);font-family:var(--f-body);font-size:16px;line-height:1.35}
+body{margin:0;background:var(--asphalt);color:var(--chalk);font-family:var(--f-body);font-size:16px;line-height:1.35}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 button{font:inherit;color:inherit;cursor:pointer}
 button:focus-visible{outline:3px solid var(--pit);outline-offset:2px}
 .app{min-height:100%;display:flex;flex-direction:column;gap:14px;padding-block:14px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
@@ -124,6 +126,8 @@ button:focus-visible{outline:3px solid var(--pit);outline-offset:2px}
 .busy{font-family:var(--f-display);font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-size:14px}
 @media (prefers-reduced-motion:no-preference){.clock.warn{animation:blink 1s steps(2,start) infinite}@keyframes blink{to{opacity:.35}}}
 </style>
+</head>
+<body>
 
 <div class="app">
   <nav class="strip" id="strip" aria-label="Окна заезда"></nav>
@@ -136,7 +140,7 @@ button:focus-visible{outline:3px solid var(--pit);outline-offset:2px}
       </div>
       <div class="cols" aria-hidden="true"><span>№</span><span>ПС-1</span><span>ПС-2</span><span>ПС-3</span><span>ПС-4</span><span>★</span><span>Скор.</span><span>Итог</span></div>
       <div class="rows" id="rows"></div>
-      <div class="legend"><span>− = 1 · З = 2 · + = 3</span><span>Скорость: P1 = 3, P2 = 2, P3 = 1</span><span>CB = comeback, 1 очко</span><span>★ решает при равенстве</span></div>
+      <div class="legend"><span>− = 1 · ✓ = 2 · + = 3</span><span>Скорость: P1 = 3, P2 = 2, P3 = 1</span><span>CB = comeback, 1 очко</span><span>★ решает при равенстве</span></div>
     </section>
   </main>
   <footer class="foot">
@@ -187,7 +191,7 @@ const STAGES=[
 const END={id:'end',seg:'end',from:40,to:40,tag:'Финиш',name:'Заезд окончен',lead:'Спасибо, пилоты. Досье — на стол учителя.'};
 const SEGS=[['brief','Брифинг',0,3],['s0','Старт',3,7],['p1','ПС-1',7,12],['p2','ПС-2',12,17],['insp','Осмотр',17,19],['p3','ПС-3',19,25],['p4','ПС-4',25,30],['buf','Буфер',30,33],['fin','Финиш',33,40]];
 const PS=[['ПС-1','Дорисовка','стык невидим'],['ПС-2','Стиль','объект остался собой'],['ПС-3','Смешивание','видны обе, свет единый'],['ПС-4','Фон','объект на месте, фон сменился']];
-const VAL={m:1,z:2,p:3}, SYM={m:'−',z:'З',p:'+'};
+const VAL={m:1,z:2,p:3}, SYM={m:'−',z:'✓',p:'+'};
 const KEY='granprix-tablo-v1';
 const VOTE_STEP=13;
 
@@ -370,4 +374,5 @@ setInterval(tick,250);
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&S.start&&!wake){try{navigator.wakeLock&&navigator.wakeLock.request('screen').then(w=>wake=w).catch(()=>{})}catch(e){}}});
 </script>
 
-</body></html>
+</body>
+</html>

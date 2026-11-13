@@ -153,7 +153,7 @@ const LESSONS = [
     about: '«Тихий урок»-гонка: пилоты проходят пит-стопы по досье, темп задают окна заезда и табло зачётов на доске.',
     format: 'табло на доске, досье на парте · 40 минут',
     path: '9-klass/gran-pri/',
-    teacher: [{label:'Досье пилота', href:'dosye-pilota.html', kind:'print'}]
+    teacher: [{label:'Досье пилота', href:'dosye-pilota.html', kind:'print'}, {label:'Инвентарь гонки', href:'inventar.html', kind:'guide'}]
   },
 
   /* --- Информатика и математика --- */

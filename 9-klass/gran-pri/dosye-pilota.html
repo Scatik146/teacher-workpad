@@ -2,144 +2,368 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Гран-при Студии — досье пилота</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Досье пилота · Гран-при Студии</title>
+<style>@font-face{font-family:"PT Mono";src:url("../../lib/drakon-graf/fonts/PTM55FT.ttf") format("truetype")}</style>
+<style>@page{size:A4;margin:0}</style>
 <style>
-:root{--ink:#1d2126;--ink2:#5b5346;--line:#d9cfb9;--paper:#f6f1e6;--accent:#f2a93b}
-*{box-sizing:border-box}
-html,body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 "Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
-.bar{position:sticky;top:0;z-index:5;display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 16px;background:#1f2329;color:#eef1f4;border-bottom:3px solid var(--accent)}
-.bar a,.bar button{font:inherit;font-size:14px;color:#eef1f4;background:#272c33;border:1px solid #3a414a;border-radius:18px;padding:5px 12px;text-decoration:none;cursor:pointer}
-.bar button{background:var(--accent);color:#2a1d05;border-color:var(--accent);font-weight:700}
-.bar .t{flex:1;min-width:0;color:#a9b2bc;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.doc{max-width:860px;margin:20px auto 48px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:28px 34px}
-h1{font-size:28px;line-height:1.25;margin:0 0 12px}
-h2{font-size:21px;margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--line)}
-h3{font-size:17px;margin:20px 0 8px}
-p{margin:8px 0}
-table{border-collapse:collapse;width:100%;margin:10px 0;font-size:14.5px}
-th,td{border:1px solid #cfc5ae;padding:6px 8px;vertical-align:top;text-align:left}
-th{background:#f3ecdd}
-td:empty::after{content:"\00a0"}
-blockquote{margin:10px 0;padding:8px 14px;border-left:4px solid var(--accent);background:#fbf6ea}
-pre{white-space:pre-wrap;background:#f3ecdd;border-radius:8px;padding:10px 12px;font-size:14.5px}
-code{font-family:Consolas,"Courier New",monospace}
-ul,ol{padding-left:24px}
-li[data-checked]{list-style:none;margin-left:-20px}
-hr{border:0;border-top:1px dashed #b9a77f;margin:18px 0}
-a{color:#1f5fa8}
-@media (max-width:600px){.doc{padding:18px 16px;margin:10px 8px}table{font-size:13px}}
+:root{
+  --ink:#000;--paper:#fff;--grey:#e2e2e2;--mid:#9a9a9a;
+  --f-head:"Oswald","Arial Narrow",Arial,sans-serif;
+  --f-body:"PT Sans",Arial,sans-serif;
+  --f-mono:"PT Mono","Courier New",monospace;
+}
+*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+html,body{margin:0}
+body{background:#5b5f66;font-family:var(--f-body);color:var(--ink);font-size:10.4pt;line-height:1.28}
+
+/* screen toolbar */
+.bar{position:sticky;top:0;z-index:5;background:#1b1d21;color:#eee;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;padding:10px 16px;font:14px/1.35 Arial,sans-serif}
+.bar b{font-family:var(--f-head);letter-spacing:.06em;font-size:16px}
+.bar button{font:600 14px Arial,sans-serif;background:#ffc72c;color:#111;border:0;padding:8px 14px;cursor:pointer}
+.bar button.alt{background:transparent;color:#eee;border:1px solid #777}
+.bar span{color:#aaa;max-width:70ch}
+
+.pages{display:flex;flex-direction:column;align-items:center;gap:12mm;padding:12mm 0}
+.a4{width:210mm;height:297mm;overflow:hidden;background:var(--paper);box-shadow:0 2mm 6mm rgba(0,0,0,.35)}
+.page{transform:scale(1.41421);transform-origin:0 0;width:148mm;height:210mm;background:var(--paper);padding:8mm 8.5mm 9mm;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:2.6mm}
+
+.foot{position:absolute;left:8.5mm;right:8.5mm;bottom:3.5mm;display:flex;justify-content:space-between;font-family:var(--f-head);font-size:7pt;letter-spacing:.12em;color:#555;text-transform:uppercase}
+
+/* band */
+.band{display:grid;grid-template-columns:24mm 1fr;background:var(--ink);color:#fff;min-height:15mm}
+.band .n{display:flex;align-items:center;justify-content:center;font-family:var(--f-head);font-weight:700;font-size:23pt;line-height:1;border-right:.6mm solid #fff}
+.band .t{padding:2mm 3.5mm;display:flex;flex-direction:column;justify-content:center}
+.band h2{margin:0;font-family:var(--f-head);font-weight:700;font-size:17pt;line-height:1;letter-spacing:.04em;text-transform:uppercase}
+.band small{font-family:var(--f-head);font-weight:500;font-size:8.5pt;letter-spacing:.1em;text-transform:uppercase;margin-top:1mm;opacity:.85}
+
+.lbl{font-family:var(--f-head);font-weight:600;font-size:9.5pt;letter-spacing:.14em;text-transform:uppercase;border-left:1.6mm solid var(--ink);padding-left:2mm;line-height:1.1;margin-top:1mm}
+
+ol.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1.6mm}
+ol.steps li{display:grid;grid-template-columns:6mm 1fr 5mm;gap:2mm;align-items:start}
+ol.steps li>i{font-style:normal;font-family:var(--f-head);font-weight:700;font-size:10.5pt;background:var(--ink);color:#fff;text-align:center;line-height:5.2mm;height:5.2mm}
+ol.steps li>span{padding-top:.3mm}
+.cb{display:inline-block;width:4.2mm;height:4.2mm;border:.45mm solid var(--ink);flex:none;margin-top:.4mm}
+.note{font-size:9pt;color:#222;margin:-.6mm 0 0 8mm}
+.note em{font-style:normal;font-family:var(--f-mono);font-weight:700;background:var(--grey);padding:0 1mm}
+
+.prompt{background:var(--grey);padding:2.2mm 3mm 2.6mm;margin-left:8mm}
+.prompt small{display:block;font-family:var(--f-head);font-weight:600;font-size:7.5pt;letter-spacing:.16em;margin-bottom:.8mm}
+.prompt p{margin:0;font-family:var(--f-mono);font-size:10.6pt;line-height:1.3;font-weight:700}
+
+.check{border:.6mm solid var(--ink);padding:2mm 3mm;display:flex;flex-direction:column;gap:1.2mm}
+.check small{font-family:var(--f-head);font-weight:600;font-size:7.5pt;letter-spacing:.16em}
+.check div{display:grid;grid-template-columns:5.5mm 1fr;align-items:start;font-weight:700}
+
+.mark{display:flex;align-items:center;justify-content:space-between;border-bottom:.3mm solid var(--ink);padding:1mm 0 1.2mm}
+.mark span{font-size:9.5pt}
+.mark b{font-family:var(--f-head);font-weight:700;font-size:15pt;letter-spacing:.6em}
+
+.board{background:#bdbdbd;padding:1.8mm 3mm;font-weight:700;font-size:10pt}
+.board::before{content:"➜ К ДОСКЕ: ";font-family:var(--f-head);letter-spacing:.06em}
+
+.lap{background:var(--ink);color:#fff;padding:2.4mm 3mm 2.8mm;display:flex;flex-direction:column;gap:1.4mm;margin-top:auto}
+.lap h3{margin:0;font-family:var(--f-head);font-weight:600;font-size:10pt;letter-spacing:.1em;text-transform:uppercase;display:flex;justify-content:space-between;gap:3mm}
+.lap h3 span{font-weight:500;letter-spacing:.06em;font-size:8pt;opacity:.8;text-transform:none}
+.lap ol.steps li>i{background:#fff;color:var(--ink)}
+.lap .cb{border-color:#fff}
+.lap em{font-style:normal;font-family:var(--f-mono);font-weight:700;background:#fff;color:#000;padding:0 1mm}
+.lap+.lap{margin-top:0}
+.page[data-p="6"]{gap:2mm}
+.lap em,.note em{-webkit-box-decoration-break:clone;box-decoration-break:clone}
+
+.callout{border:.6mm solid var(--ink);padding:2mm 3mm;font-weight:700}
+.grey{background:var(--grey);padding:2mm 3mm}
+.grey small{display:block;font-family:var(--f-head);font-weight:600;font-size:7.5pt;letter-spacing:.16em;margin-bottom:.6mm}
+.lead{font-weight:700;font-size:11pt;margin:0}
+.sp{flex:1}
+
+table.score{border-collapse:collapse;width:100%}
+table.score th,table.score td{border:.3mm solid var(--ink);padding:1.2mm 2mm;text-align:center}
+table.score th{background:var(--ink);color:#fff;font-family:var(--f-head);font-weight:600;font-size:8pt;letter-spacing:.1em;text-transform:uppercase}
+table.score td:first-child{font-family:var(--f-head);font-weight:700;font-size:14pt;width:15mm}
+table.score td:nth-child(2){text-align:left}
+table.score td:last-child{font-weight:700;width:13mm}
+.facts p{margin:0 0 1mm}
+
+/* cover */
+.cover-top{background:var(--ink);color:#fff;padding:5mm 5mm 4.5mm}
+.cover-top h1{margin:0;font-family:var(--f-head);font-weight:700;font-size:30pt;line-height:.95;letter-spacing:.03em;text-transform:uppercase}
+.cover-top p{margin:1.6mm 0 0;font-family:var(--f-head);font-weight:500;font-size:9pt;letter-spacing:.16em;text-transform:uppercase}
+.stripes{height:3.2mm;display:grid;grid-template-rows:1.1mm 1mm 1.1mm}
+.stripes i:nth-child(1),.stripes i:nth-child(3){background:var(--ink)}
+.carno{display:grid;grid-template-columns:42mm 1fr;gap:4mm;align-items:center;margin-top:3mm}
+.carno .frame{height:34mm;border:1.4mm solid var(--ink)}
+.carno h2{margin:0;font-family:var(--f-head);font-weight:700;font-size:20pt;letter-spacing:.06em}
+.carno p{margin:1mm 0 0;font-size:9pt}
+.field{display:flex;flex-direction:column;gap:1mm;margin-top:2.5mm}
+.field small{font-family:var(--f-head);font-weight:600;font-size:8pt;letter-spacing:.16em}
+.field .ln{height:7mm;border-bottom:.35mm solid var(--ink);font-family:var(--f-head);font-size:14pt;display:flex;align-items:flex-end;padding-bottom:.6mm}
+.two{display:grid;grid-template-columns:1fr 1.3fr;gap:6mm}
+.total{margin-top:auto}
+.total h3{margin:0 0 1.5mm;font-family:var(--f-head);font-weight:700;font-size:12pt;letter-spacing:.1em}
+.total h3 span{font-family:var(--f-body);font-weight:400;font-size:8.5pt;letter-spacing:0;margin-left:2mm}
+.total table{border-collapse:collapse;width:100%;table-layout:fixed}
+.total th{background:var(--ink);color:#fff;font-family:var(--f-head);font-weight:600;font-size:8pt;letter-spacing:.1em;padding:1.4mm 1mm;border:.3mm solid var(--ink)}
+.total th small{display:block;font-weight:500;font-size:7pt;opacity:.8;letter-spacing:.04em}
+.total td{height:15mm;border:.45mm solid var(--ink)}
+.handed{display:flex;align-items:center;gap:2.5mm;font-family:var(--f-head);font-weight:600;font-size:10pt;letter-spacing:.1em;margin-top:3mm}
+
 @media print{
-  html,body{background:#fff}
+  body{background:#fff}
   .bar{display:none}
-  .doc{border:0;border-radius:0;margin:0;padding:0;max-width:none}
-  h2{break-after:avoid}
-  tr,blockquote,pre{break-inside:avoid}
-  a{color:inherit;text-decoration:none}
-  @page{size:A4;margin:14mm 14mm 16mm}
+  .pages{display:block;padding:0}
+  .a4{box-shadow:none;margin:0;break-after:page;page-break-after:always}
+  .pages>.a4:last-child{break-after:auto;page-break-after:auto}
 }
 </style>
 </head>
 <body>
-<div class="bar"><a href="../../dlya-uchitelya.html">← Для учителя</a><span class="t">Гран-при Студии — досье пилота</span><button type="button" onclick="window.print()">Печать</button></div>
-<main class="doc">
-<h1 id="гран-при-студии-досье-пилота">Гран-при Студии — досье пилота</h1>
-<h2 id="как-печатать-и-готовить">Как печатать и готовить</h2>
-<p>Досье — буклет А5 на 8 страниц: 2 листа А4, двусторонняя печать, сложить пополам, скрепить по сгибу. Нужно 9 одинаковых экземпляров.</p>
-<table><thead><tr><th>Лист А4</th><th>Лицевая сторона (слева · справа)</th><th>Оборот (слева · справа)</th></tr></thead><tbody><tr><td>Лист 1 (внешний)</td><td>стр. 8 · стр. 1</td><td>стр. 2 · стр. 7</td></tr><tr><td>Лист 2 (внутренний)</td><td>стр. 6 · стр. 3</td><td>стр. 4 · стр. 5</td></tr></tbody></table>
-<p><strong>Вёрстка под ч/б принтер.</strong> Шапка каждой страницы — чёрная полоса с крупным номером пит-стопа и окном времени. Зона «ОСНОВНАЯ ТРАССА» — белая, с толстой чёрной линией слева. Зона «ДОП. КРУГ ★» — инверсная (белый текст на чёрном). Промты — серый бокс, моноширинный жирный шрифт, пометка «ВВОДИ ТОЧНО». Чек-боксы ☐ — 7 мм. Никаких клетчатых рамок и градиентов.</p>
-<p><strong>До звонка:</strong> разложить досье по партам; впишите на стр. 6 способ обмена файлами в классе; положите R1–R3 в папку «РЕЗЕРВ»; откройте табло на доске.</p>
-<h2 id="стр-1-обложка-заявка-пилота">Стр. 1 · Обложка — заявка пилота</h2>
-<p><strong>ГРАН-ПРИ СТУДИИ</strong> <strong>ЗАЯВКА ПИЛОТА НА ЗАЕЗД</strong></p>
-<p><strong>№ БОЛИДА</strong> [ ____ ] — номер твоего рабочего места</p>
-<p>Фамилия пилота: ______________________</p>
-<p>Имя пилота: ______________________</p>
-<p><span style="white-space:pre-wrap">Класс: 9 ____        Дата заезда: ____ . ____ . ________</span></p>
-<p><strong>ИТОГ ЗАЕЗДА</strong> — перепиши с доски на финише</p>
-<table><thead><tr><th>Качество (из 12)</th><th>Скорость (из 3)</th><th>ВСЕГО</th><th>★ доп. круги</th></tr></thead><tbody><tr><td></td><td></td><td></td><td></td></tr></tbody></table>
-<p>Досье сдано ☐</p>
-<h2 id="стр-2-правила-заезда">Стр. 2 · Правила заезда</h2>
-<p><strong>Чертёж у всех один — болиды получатся разные. Так и должно быть.</strong></p>
-<p><strong>Трасса:</strong> Б-0 старт → Б-1 шины → Б-2 стиль → Б-3 два болида → Б-4 ночная трасса</p>
-<p><strong>Регламент — 4 правила</strong></p>
-<ol><li><p>Иди по шагам сверху вниз. Сделал шаг — поставь ☐.</p></li><li><p>После каждого пит-стопа сохраняй картинку себе — на следующем она понадобится.</p></li><li><p>Не успел — бери последнюю сохранённую картинку и едь дальше.</p></li><li><p>К доске — только после ПС-2 и после ПС-4. У доски — один пилот.</p></li></ol>
-<p><strong>Зачёт за пит-стоп</strong> — ставишь сам на доске</p>
-<table><thead><tr><th>Отметка</th><th>Что сделано</th><th>Очки</th></tr></thead><tbody><tr><td>−</td><td>промт введён, картинка сохранена</td><td>1</td></tr><tr><td>З</td><td>прошёл техосмотр (критерий на странице)</td><td>2</td></tr><tr><td>+</td><td>техосмотр + свой нюанс в промте</td><td>3</td></tr></tbody></table>
-<p><strong>Скорость:</strong> первые трое, кто отметил ПС-4, получают 3 · 2 · 1 очка. <strong>Comeback:</strong> отстал после ПС-2, но успел ПС-4 до конца окна — +1 за скорость. <strong>★ Доп. круг:</strong> для тех, кто едет быстрее. Не очки — решает при равенстве.</p>
-<p><strong>Минимальный зачёт:</strong> в каждом пит-стопе сделай шаги 1–2 и сохрани картинку. Это «−», порог пройден.</p>
-<h2 id="стр-3-старт-окно-37-мин">Стр. 3 · СТАРТ — окно 3–7 мин</h2>
-<p><strong>ОСНОВНАЯ ТРАССА</strong></p>
-<ol><li><p>Открой Алису → режим «Студия». ☐</p></li><li><p>Введи в чат промт №0 — точно, без изменений: ☐</p></li></ol>
-<pre><code>Красный гоночный болид стоит на пустом асфальте пит-лейна, вид сбоку, ясный день, справа свободное место, реалистичное фото</code></pre>
-<ol start="3"><li><p>Сохрани картинку себе. Это твой <strong>Б-0</strong>. ☐</p></li></ol>
-<p><strong>ПРОВЕРКА СТАРТА:</strong> ☐ болид целиком в кадре ☐ справа пустое место Не так? Сгенерируй ещё раз — одна попытка.</p>
-<p>У соседа болид другой? Всё верно: чертёж один, болиды разные.</p>
-<h2 id="стр-4-пит-стоп-1-дорисовка-окно-712-мин">Стр. 4 · ПИТ-СТОП 1 · ДОРИСОВКА — окно 7–12 мин</h2>
-<p><strong>ОСНОВНАЯ ТРАССА</strong></p>
-<ol><li><p>Вкладка «Изменить» → загрузи Б-0. ☐</p></li><li><p>Введи промт: ☐</p></li></ol>
-<pre><code>Добавь в правой части кадра стопку из четырёх гоночных шин на асфальте, тень как у болида</code></pre>
-<p>Хочешь «+»? Допиши в конец: <strong>, шины ______</strong> (твоя деталь: цвет, наклейки, грязь).</p>
-<ol start="3"><li><p>Сохрани картинку себе. Это <strong>Б-1</strong>. ☐</p></li></ol>
-<p><strong>ТЕХОСМОТР · 30 сек</strong> ☐ Стык невидим: шины стоят на асфальте и дают тень, а не «вклеены».</p>
-<p><span style="white-space:pre-wrap">Моя отметка за ПС-1 (обведи): <strong>−   З   +</strong></span></p>
-<p><strong>ДОП. КРУГ ★ «Невидимка»</strong> — Б-1 не меняется</p>
-<ol><li><p>«Изменить» → загрузи Б-1 → введи: <code>Удали стопку шин</code> ☐</p></li><li><p>Проверь: на месте шин чистый асфальт, следа нет. ☐ Вышло — ★</p></li></ol>
-<h2 id="стр-5-пит-стоп-2-стиль-окно-1217-мин">Стр. 5 · ПИТ-СТОП 2 · СТИЛЬ — окно 12–17 мин</h2>
-<p><strong>СТИЛИ СЕЗОНА</strong> — выбери один: акварели · комикса · пластилина · пиксель-арта</p>
-<p><strong>ОСНОВНАЯ ТРАССА</strong></p>
-<ol><li><p>Вкладка «Изменить» → загрузи Б-1. ☐</p></li><li><p>Введи промт, вставив свой стиль из списка: ☐</p></li></ol>
-<pre><code>Сделай в стиле [стиль], болид и шины остаются на своих местах</code></pre>
-<p>Хочешь «+»? Допиши в конец: <strong>, настроение — ______</strong> (одно слово).</p>
-<ol start="3"><li><p>Сохрани картинку себе. Это <strong>Б-2</strong>. ☐</p></li></ol>
-<p><strong>ТЕХОСМОТР · 30 сек</strong> ☐ Объект остался собой: та же форма болида, колёса и шины на месте. Стиль «рассыпался»? Возьми другой из списка и повтори шаг 2.</p>
-<p><span style="white-space:pre-wrap">Моя отметка за ПС-2 (обведи): <strong>−   З   +</strong></span></p>
-<p><strong>➜ К ДОСКЕ:</strong> отметь ПС-1 и ПС-2 (и ★, если есть). У доски — один пилот.</p>
-<p><strong>ДОП. КРУГ ★ «Два гаража»</strong> — Б-2 не меняется</p>
-<ol><li><p>«Изменить» → загрузи Б-1 → тот же промт со вторым стилем из списка. ☐</p></li><li><p>В каком стиле болид больше «остался собой»? Впиши: ____________ ☐ ★</p></li></ol>
-<h2 id="стр-6-техосмотр-пит-стоп-3-смешивание-окна-1719-и-1925-мин">Стр. 6 · ТЕХОСМОТР + ПИТ-СТОП 3 · СМЕШИВАНИЕ — окна 17–19 и 19–25 мин</h2>
-<p><strong>ТЕХОСМОТР ЭКИПАЖЕМ · 2 мин</strong></p>
-<ol><li><p>Экипаж — сосед по парте. Один? Присоединись третьим к ближайшей паре. ☐</p></li><li><p>Покажи соседу Б-1 и Б-2. Он вписывает сюда одну фразу: ☐ Стык ____________ (невидим / виден), болид ____________ (узнаётся / не узнаётся).</p></li><li><p>Подпись бортинженера: ____________ ☐</p></li></ol>
-<p><strong>ПИТ-СТОП 3 · ОСНОВНАЯ ТРАССА</strong></p>
-<ol><li><p>Возьми у соседа файл его Б-2 через: ______________ (впишет учитель до печати). ☐ В тройке — бери у того, кто справа. Файла нет — возьми R1, R2 или R3 из папки «РЕЗЕРВ».</p></li><li><p>Вкладка «Объединить» → картинка 1: твой Б-2, картинка 2: Б-2 соседа. ☐</p></li><li><p>Введи промт: ☐</p></li></ol>
-<pre><code>Поставь болид с первой картинки рядом с болидом со второй на одной трассе. Стиль и фон — от первой. Свет единый: солнце слева</code></pre>
-<p>Хочешь «+»? Допиши в конец: <strong>, от второй картинки возьми ______</strong>.</p>
-<ol start="4"><li><p>Сохрани картинку себе. Это <strong>Б-3</strong>. ☐</p></li></ol>
-<p><strong>ТЕХОСМОТР · 30 сек</strong> ☐ Видны обе картинки — оба болида в кадре. ☐ Свет единый — тени падают в одну сторону.</p>
-<p><span style="white-space:pre-wrap">Моя отметка за ПС-3 (обведи): <strong>−   З   +</strong></span></p>
-<p><strong>ДОП. КРУГ ★ «Обратная сборка»</strong> — Б-3 не меняется</p>
-<ol><li><p>«Объединить» → поменяй картинки местами, тот же промт. ☐</p></li><li><p>Что поменялось? Обведи: стиль · фон · свет ☐ ★</p></li></ol>
-<h2 id="стр-7-пит-стоп-4-фон-окно-2530-мин">Стр. 7 · ПИТ-СТОП 4 · ФОН — окно 25–30 мин</h2>
-<p><strong>ОСНОВНАЯ ТРАССА</strong></p>
-<ol><li><p>Вкладка «Изменить» → загрузи Б-3. ПС-3 не вышел — загрузи Б-2. ☐</p></li><li><p>Введи промт: ☐</p></li></ol>
-<pre><code>Замени фон на ночную трассу с огнями трибун, болиды не трогай</code></pre>
-<p>Хочешь «+»? Допиши в конец: <strong>, погода — ______</strong>.</p>
-<ol start="3"><li><p>Сохрани картинку себе. Это <strong>Б-4</strong> — твой финишный кадр. ☐</p></li></ol>
-<p><strong>ТЕХОСМОТР · 30 сек</strong> ☐ Болид на своём месте. ☐ Фон сменился целиком.</p>
-<p><span style="white-space:pre-wrap">Моя отметка за ПС-4 (обведи): <strong>−   З   +</strong></span></p>
-<p><strong>➜ К ДОСКЕ:</strong> отметь ПС-3 и ПС-4 (и ★). Кто отметил ПС-4 раньше — тот выше по скорости.</p>
-<p><strong>ДОП. КРУГ ★ «Три трассы»</strong> — Б-4 не меняется</p>
-<ol><li><p>«Изменить» → загрузи Б-3 → тот же промт, но замени «ночную трассу с огнями трибун» на два других фона: ☐ заснеженную трассу в горах · трассу в пустыне на закате · трассу в ночном городе</p></li><li><p>Лучший из трёх фонов — твой кадр для парада. ☐ ★</p></li></ol>
-<h2 id="стр-8-буфер-и-финиш-окна-3033-и-3340-мин">Стр. 8 · БУФЕР И ФИНИШ — окна 30–33 и 33–40 мин</h2>
-<p><strong>БУФЕР · 30–33 мин.</strong> Есть хвосты — доделай. Всё готово — бери бонус.</p>
-<p><strong>БОНУС ★ «До и после»</strong></p>
-<ol><li><p>Вкладка «Объединить» → картинка 1: Б-0, картинка 2: Б-4. ☐</p></li><li><p>Введи: <code>Раздели кадр пополам: слева первая картинка, справа вторая</code> ☐</p></li><li><p>Проверь: ☐ видны обе картинки. Вышло — ★</p></li></ol>
-<p><strong>БОНУС ★ «Смена эпохи»</strong></p>
-<ol><li><p>Вкладка «Изменить» → загрузи Б-4. ☐</p></li><li><p>Введи: <code>Сделай в стиле ______</code> — стиль не из списка сезона: старинной гравюры, граффити, мозаики. ☐</p></li><li><p>Проверь: ☐ объект остался собой. Вышло — ★</p></li></ol>
-<p><strong>ФИНИШ · 33–40 мин</strong></p>
-<ol><li><p>Перепиши свой итог с доски на обложку. ☐</p></li><li><p><strong>Парад:</strong> открой свой лучший кадр на весь экран, разверни экран к проходу, обойди класс. ☐</p></li><li><p>Лучший кадр урока (не свой): болид № ______. Подними руку, когда доска покажет этот номер. ☐</p></li><li><p>Сдай досье на стол учителя. ☐</p></li></ol>
-<h2 id="инвентарь-гонки-печатается-и-готовится-отдельно-от-досье">Инвентарь гонки — печатается и готовится отдельно от досье</h2>
-<p><strong>Табло для доски:</strong> <a href="index.html">Табло Гран-при Студии</a>. Откройте в браузере доски, нажмите «На весь экран». Со звонком — «Старт заезда», дальше окна, промты и критерии меняются сами. На последней минуте тапните номер лучшего кадра урока.</p>
-<p>Отметки табло хранятся в браузере доски: не закрывайте вкладку и не открывайте табло в приватном окне. «Пауза» внизу — на случай, если урок начался позже. Перед тем как делиться ссылкой с коллегами, откройте им доступ через «Поделиться».</p>
-<p><strong>Канал обмена файлами</strong> (для ПС-3): впишите его на стр. 6 до печати — сетевая папка или чат класса.</p>
-<p><strong>Резерв R1–R3 для одиночек.</strong> Сгенерируйте с вечера в Алисе → «Студия» (промт в чат), сохраните как JPEG/PNG с именами R1, R2, R3 и положите в папку «РЕЗЕРВ». Все три — болид сбоку на простом фоне, чтобы смешивание на ПС-3 сработало.</p>
-<p><strong>R1</strong></p>
-<pre><code>Синий гоночный болид стоит на пустом асфальте трассы, вид сбоку, ясный день, однотонный светлый фон, реалистичное фото</code></pre>
-<p><strong>R2</strong></p>
-<pre><code>Жёлтый гоночный болид на пустой трассе, вид сбоку, в стиле комикса, чёткие чёрные контуры, яркие цвета, простой фон</code></pre>
-<p><strong>R3</strong></p>
-<pre><code>Зелёный гоночный болид на пустой трассе, вид сбоку, в стиле акварели, мягкие цвета, светлый однотонный фон</code></pre>
-<p>Проверка каждого резерва: болид целиком в кадре, смотрит вбок, фон без деталей.</p>
+
+<div class="bar">
+  <a href="../../dlya-uchitelya.html" style="color:#ffc72c;text-decoration:none">← Для учителя</a>
+  <b>ДОСЬЕ ПИЛОТА</b>
+  <button type="button" id="mPrint">Печать на А4</button>
+  <span>8 листов А4 на пилота, нужно 9 экземпляров. В окне печати: поля — «Нет», масштаб — 100%, «Фон и графика» — включить.</span>
+</div>
+
+<main class="pages" id="pages">
+
+<!-- 1 COVER -->
+<div class="a4"><section class="page" data-p="1">
+  <div class="cover-top">
+    <h1>Гран-при<br>Студии</h1>
+    <p>Заявка пилота на заезд · дорисовка и смешивание</p>
+  </div>
+  <div class="stripes"><i></i><i></i><i></i></div>
+  <div class="carno">
+    <div class="frame"></div>
+    <div><h2>№ БОЛИДА</h2><p>Впиши номер своего рабочего места. С этим номером ты отмечаешься на доске.</p></div>
+  </div>
+  <div class="field"><small>ФАМИЛИЯ ПИЛОТА</small><div class="ln"></div></div>
+  <div class="field"><small>ИМЯ ПИЛОТА</small><div class="ln"></div></div>
+  <div class="two">
+    <div class="field"><small>КЛАСС</small><div class="ln">9&nbsp;</div></div>
+    <div class="field"><small>ДАТА ЗАЕЗДА</small><div class="ln"></div></div>
+  </div>
+  <div class="total">
+    <h3>ИТОГ ЗАЕЗДА<span>перепиши с доски на финише</span></h3>
+    <table>
+      <tr><th>КАЧЕСТВО<small>из 12</small></th><th>СКОРОСТЬ<small>из 3</small></th><th>ВСЕГО<small>&nbsp;</small></th><th>★ КРУГИ<small>&nbsp;</small></th></tr>
+      <tr><td></td><td></td><td></td><td></td></tr>
+    </table>
+    <div class="handed">ДОСЬЕ СДАНО <span class="cb"></span></div>
+  </div>
+  <div class="foot"><span>Гран-при Студии</span><span>стр. 1</span></div>
+</section></div>
+
+<!-- 2 RULES -->
+<div class="a4"><section class="page" data-p="2">
+  <div class="band"><div class="n">i</div><div class="t"><h2>Правила заезда</h2><small>Прочитай до старта · 0–3 мин</small></div></div>
+  <p class="lead">Чертёж у всех один — болиды получатся разные. Так и должно быть.</p>
+  <div class="grey"><small>ТРАССА</small><b>Б-0 старт → Б-1 шины → Б-2 стиль → Б-3 два болида → Б-4 ночная трасса</b></div>
+  <div class="lbl">Регламент · 4 правила</div>
+  <ol class="steps">
+    <li><i>1</i><span>Иди по шагам сверху вниз. Сделал шаг — поставь галочку.</span><span class="cb"></span></li>
+    <li><i>2</i><span>После каждого пит-стопа сохраняй картинку себе — на следующем она понадобится.</span><span class="cb"></span></li>
+    <li><i>3</i><span>Не успел — бери последнюю сохранённую картинку и едь дальше.</span><span class="cb"></span></li>
+    <li><i>4</i><span>К доске — только после ПС-2 и после ПС-4. У доски — один пилот.</span><span class="cb"></span></li>
+  </ol>
+  <div class="lbl">Зачёт за пит-стоп · ставишь сам на доске</div>
+  <table class="score">
+    <tr><th>Отметка</th><th style="text-align:left">Что сделано</th><th>Очки</th></tr>
+    <tr><td>−</td><td>промт введён, картинка сохранена</td><td>1</td></tr>
+    <tr><td>✓</td><td>прошёл техосмотр (критерий на странице)</td><td>2</td></tr>
+    <tr><td>+</td><td>техосмотр + свой нюанс в промте</td><td>3</td></tr>
+  </table>
+  <div class="facts">
+    <p><b>Скорость:</b> первые трое, кто отметил ПС-4, получают 3 · 2 · 1 очка.</p>
+    <p><b>Comeback:</b> отстал после ПС-2, но успел ПС-4 до конца окна — +1 за скорость.</p>
+    <p><b>★ Доп. круг:</b> для тех, кто едет быстрее. Не очки — решает при равенстве.</p>
+  </div>
+  <div class="callout">МИНИМАЛЬНЫЙ ЗАЧЁТ. В каждом пит-стопе сделай шаги 1–2 и сохрани картинку. Это «−», порог пройден.</div>
+  <div class="foot"><span>Гран-при Студии</span><span>стр. 2</span></div>
+</section></div>
+
+<!-- 3 START -->
+<div class="a4"><section class="page" data-p="3">
+  <div class="band"><div class="n">0</div><div class="t"><h2>Старт</h2><small>Окно 3–7 мин</small></div></div>
+  <div class="lbl">Основная трасса</div>
+  <ol class="steps">
+    <li><i>1</i><span>Открой Алису → режим «Студия».</span><span class="cb"></span></li>
+    <li><i>2</i><span>Введи в чат промт №0 — точно, без изменений:</span><span class="cb"></span></li>
+  </ol>
+  <div class="prompt"><small>ВВОДИ ТОЧНО · ПРОМТ №0</small><p>Красный гоночный болид стоит на пустом асфальте пит-лейна, вид сбоку, ясный день, справа свободное место, реалистичное фото</p></div>
+  <ol class="steps">
+    <li><i>3</i><span>Сохрани картинку себе. Это твой <b>Б-0</b>.</span><span class="cb"></span></li>
+  </ol>
+  <div class="check"><small>ПРОВЕРКА СТАРТА · 30 СЕК</small>
+    <div><span class="cb"></span><span>Болид целиком в кадре</span></div>
+    <div><span class="cb"></span><span>Справа пустое место</span></div>
+  </div>
+  <p style="margin:0">Не так? Сгенерируй ещё раз — одна попытка.</p>
+  <div class="sp"></div>
+  <div class="grey" style="text-align:center;padding:5mm 4mm"><b>У соседа болид другой? Всё верно:<br>чертёж один, болиды разные.</b></div>
+  <div class="foot"><span>Гран-при Студии</span><span>стр. 3</span></div>
+</section></div>
+
+<!-- 4 PS1 -->
+<div class="a4"><section class="page" data-p="4">
+  <div class="band"><div class="n">ПС 1</div><div class="t"><h2>Дорисовка</h2><small>Окно 7–12 мин</small></div></div>
+  <div class="lbl">Основная трасса</div>
+  <ol class="steps">
+    <li><i>1</i><span>Вкладка «Изменить» → загрузи Б-0.</span><span class="cb"></span></li>
+    <li><i>2</i><span>Введи промт:</span><span class="cb"></span></li>
+  </ol>
+  <div class="prompt"><small>ВВОДИ ТОЧНО</small><p>Добавь в правой части кадра стопку из четырёх гоночных шин на асфальте, тень как у болида</p></div>
+  <p class="note">Хочешь «+»? Допиши в конец: <em>, шины ______</em> — своя деталь: цвет, наклейки, грязь.</p>
+  <ol class="steps">
+    <li><i>3</i><span>Сохрани картинку себе. Это <b>Б-1</b>.</span><span class="cb"></span></li>
+  </ol>
+  <div class="check"><small>ТЕХОСМОТР · 30 СЕК</small>
+    <div><span class="cb"></span><span>Стык невидим: шины стоят на асфальте и дают тень, а не «вклеены»</span></div>
+  </div>
+  <div class="mark"><span>Моя отметка за ПС-1 (обведи):</span><b>− ✓ +</b></div>
+  <div class="lap">
+    <h3>Доп. круг ★ «Невидимка»<span>Б-1 не меняется</span></h3>
+    <ol class="steps">
+      <li><i>1</i><span>«Изменить» → загрузи Б-1 → введи: <em>Удали стопку шин</em></span><span class="cb"></span></li>
+      <li><i>2</i><span>Проверь: на месте шин чистый асфальт, следа нет. Вышло — ★</span><span class="cb"></span></li>
+    </ol>
+  </div>
+  <div class="foot"><span>Гран-при Студии</span><span>стр. 4</span></div>
+</section></div>
+
+<!-- 5 PS2 -->
+<div class="a4"><section class="page" data-p="5">
+  <div class="band"><div class="n">ПС 2</div><div class="t"><h2>Стиль</h2><small>Окно 12–17 мин</small></div></div>
+  <div class="callout"><span style="font-family:var(--f-head);font-weight:600;font-size:7.5pt;letter-spacing:.16em;display:block">СТИЛИ СЕЗОНА · ВЫБЕРИ ОДИН</span>акварели · комикса · пластилина · пиксель-арта</div>
+  <div class="lbl">Основная трасса</div>
+  <ol class="steps">
+    <li><i>1</i><span>Вкладка «Изменить» → загрузи Б-1.</span><span class="cb"></span></li>
+    <li><i>2</i><span>Введи промт, вставив свой стиль из списка:</span><span class="cb"></span></li>
+  </ol>
+  <div class="prompt"><small>ВВОДИ ТОЧНО</small><p>Сделай в стиле [стиль], болид и шины остаются на своих местах</p></div>
+  <p class="note">Хочешь «+»? Допиши в конец: <em>, настроение — ______</em> (одно слово).</p>
+  <ol class="steps">
+    <li><i>3</i><span>Сохрани картинку себе. Это <b>Б-2</b>.</span><span class="cb"></span></li>
+  </ol>
+  <div class="check"><small>ТЕХОСМОТР · 30 СЕК</small>
+    <div><span class="cb"></span><span>Объект остался собой: форма болида, колёса и шины на месте</span></div>
+  </div>
+  <p class="note" style="margin:0">Стиль «рассыпался»? Возьми другой из списка и повтори шаг 2.</p>
+  <div class="mark"><span>Моя отметка за ПС-2 (обведи):</span><b>− ✓ +</b></div>
+  <div class="board">отметь ПС-1 и ПС-2 (и ★, если есть).</div>
+  <div class="lap">
+    <h3>Доп. круг ★ «Два гаража»<span>Б-2 не меняется</span></h3>
+    <ol class="steps">
+      <li><i>1</i><span>«Изменить» → загрузи Б-1 → тот же промт со вторым стилем из списка.</span><span class="cb"></span></li>
+      <li><i>2</i><span>Где болид больше «остался собой»? Стиль: ______________</span><span class="cb"></span></li>
+    </ol>
+  </div>
+  <div class="foot"><span>Гран-при Студии</span><span>стр. 5</span></div>
+</section></div>
+
+<!-- 6 INSPECTION + PS3 -->
+<div class="a4"><section class="page" data-p="6">
+  <div class="band"><div class="n">ПС 3</div><div class="t"><h2>Осмотр + смешивание</h2><small>Окна 17–19 и 19–25 мин</small></div></div>
+  <div class="lbl">Техосмотр экипажем · 2 мин</div>
+  <ol class="steps">
+    <li><i>1</i><span>Экипаж — сосед по парте. Один? Встань третьим к ближайшей паре.</span><span class="cb"></span></li>
+    <li><i>2</i><span>Покажи соседу Б-1 и Б-2. Он пишет: стык ________ (невидим/виден), болид ________ (узнаётся/нет).</span><span class="cb"></span></li>
+    <li><i>3</i><span>Подпись бортинженера: ____________________</span><span class="cb"></span></li>
+  </ol>
+  <div class="lbl">Пит-стоп 3 · основная трасса</div>
+  <ol class="steps">
+    <li><i>1</i><span>Возьми у соседа файл его Б-2 через: ____________________</span><span class="cb"></span></li>
+  </ol>
+  <p class="note">В тройке — у того, кто справа. Файла нет — R1, R2 или R3 из папки «РЕЗЕРВ».</p>
+  <ol class="steps">
+    <li><i>2</i><span>Вкладка «Объединить» → картинка 1: твой Б-2, картинка 2: Б-2 соседа.</span><span class="cb"></span></li>
+    <li><i>3</i><span>Введи промт:</span><span class="cb"></span></li>
+  </ol>
+  <div class="prompt"><small>ВВОДИ ТОЧНО</small><p>Поставь болид с первой картинки рядом с болидом со второй на одной трассе. Стиль и фон — от первой. Свет единый: солнце слева</p></div>
+  <p class="note">Хочешь «+»? Допиши в конец: <em>, от второй картинки возьми ______</em></p>
+  <ol class="steps">
+    <li><i>4</i><span>Сохрани картинку себе. Это <b>Б-3</b>.</span><span class="cb"></span></li>
+  </ol>
+  <div class="check"><small>ТЕХОСМОТР · 30 СЕК</small>
+    <div><span class="cb"></span><span>Видны обе картинки — оба болида в кадре</span></div>
+    <div><span class="cb"></span><span>Свет единый — тени падают в одну сторону</span></div>
+  </div>
+  <div class="mark"><span>Моя отметка за ПС-3 (обведи):</span><b>− ✓ +</b></div>
+  <div class="lap">
+    <h3>Доп. круг ★ «Обратная сборка»<span>Б-3 не меняется</span></h3>
+    <ol class="steps">
+      <li><i>1</i><span>«Объединить» → поменяй картинки местами, тот же промт.</span><span class="cb"></span></li>
+      <li><i>2</i><span>Что поменялось? Обведи: стиль · фон · свет. Вышло — ★</span><span class="cb"></span></li>
+    </ol>
+  </div>
+  <div class="foot"><span>Гран-при Студии</span><span>стр. 6</span></div>
+</section></div>
+
+<!-- 7 PS4 -->
+<div class="a4"><section class="page" data-p="7">
+  <div class="band"><div class="n">ПС 4</div><div class="t"><h2>Фон</h2><small>Окно 25–30 мин</small></div></div>
+  <div class="lbl">Основная трасса</div>
+  <ol class="steps">
+    <li><i>1</i><span>Вкладка «Изменить» → загрузи Б-3. ПС-3 не вышел — загрузи Б-2.</span><span class="cb"></span></li>
+    <li><i>2</i><span>Введи промт:</span><span class="cb"></span></li>
+  </ol>
+  <div class="prompt"><small>ВВОДИ ТОЧНО</small><p>Замени фон на ночную трассу с огнями трибун, болиды не трогай</p></div>
+  <p class="note">Хочешь «+»? Допиши в конец: <em>, погода — ______</em></p>
+  <ol class="steps">
+    <li><i>3</i><span>Сохрани картинку себе. Это <b>Б-4</b> — твой финишный кадр.</span><span class="cb"></span></li>
+  </ol>
+  <div class="check"><small>ТЕХОСМОТР · 30 СЕК</small>
+    <div><span class="cb"></span><span>Болид на своём месте</span></div>
+    <div><span class="cb"></span><span>Фон сменился целиком</span></div>
+  </div>
+  <div class="mark"><span>Моя отметка за ПС-4 (обведи):</span><b>− ✓ +</b></div>
+  <div class="board">отметь ПС-3 и ПС-4 (и ★). Кто отметил ПС-4 раньше — тот выше по скорости.</div>
+  <div class="lap">
+    <h3>Доп. круг ★ «Три трассы»<span>Б-4 не меняется</span></h3>
+    <ol class="steps">
+      <li><i>1</i><span>«Изменить» → загрузи Б-3 → тот же промт, но вместо «ночную трассу с огнями трибун» — два других фона:</span><span class="cb"></span></li>
+      <li><i>2</i><span><em>заснеженную трассу в горах</em> · <em>трассу в пустыне на закате</em> · <em>трассу в ночном городе</em></span><span class="cb"></span></li>
+      <li><i>3</i><span>Лучший из трёх фонов — твой кадр для парада. Вышло — ★</span><span class="cb"></span></li>
+    </ol>
+  </div>
+  <div class="foot"><span>Гран-при Студии</span><span>стр. 7</span></div>
+</section></div>
+
+<!-- 8 BUFFER + FINISH -->
+<div class="a4"><section class="page" data-p="8">
+  <div class="band"><div class="n">★</div><div class="t"><h2>Буфер и финиш</h2><small>Окна 30–33 и 33–40 мин</small></div></div>
+  <p style="margin:0"><b>Буфер · 30–33 мин.</b> Есть хвосты — доделай и отметься. Всё готово — бери бонус.</p>
+  <div class="lap" style="margin-top:0">
+    <h3>Бонус ★ «До и после»</h3>
+    <ol class="steps">
+      <li><i>1</i><span>«Объединить» → картинка 1: Б-0, картинка 2: Б-4.</span><span class="cb"></span></li>
+      <li><i>2</i><span>Введи: <em>Раздели кадр пополам: слева первая картинка, справа вторая</em></span><span class="cb"></span></li>
+      <li><i>3</i><span>Проверь: видны обе картинки. Вышло — ★</span><span class="cb"></span></li>
+    </ol>
+  </div>
+  <div class="lap">
+    <h3>Бонус ★ «Смена эпохи»</h3>
+    <ol class="steps">
+      <li><i>1</i><span>«Изменить» → загрузи Б-4.</span><span class="cb"></span></li>
+      <li><i>2</i><span>Введи: <em>Сделай в стиле ______</em> — не из списка сезона: старинной гравюры, граффити, мозаики.</span><span class="cb"></span></li>
+      <li><i>3</i><span>Проверь: объект остался собой. Вышло — ★</span><span class="cb"></span></li>
+    </ol>
+  </div>
+  <div class="lbl">Финиш · 33–40 мин</div>
+  <ol class="steps">
+    <li><i>1</i><span>Перепиши свой итог с доски на обложку.</span><span class="cb"></span></li>
+    <li><i>2</i><span><b>Парад:</b> открой лучший кадр на весь экран, разверни экран к проходу, обойди класс.</span><span class="cb"></span></li>
+    <li><i>3</i><span>Лучший кадр урока (не свой): болид № ______. Подними руку, когда доска покажет этот номер.</span><span class="cb"></span></li>
+    <li><i>4</i><span>Сдай досье на стол учителя.</span><span class="cb"></span></li>
+  </ol>
+  <div class="foot"><span>Гран-при Студии</span><span>стр. 8</span></div>
+</section></div>
 
 </main>
+
+<script>document.getElementById('mPrint').onclick=()=>window.print();</script>
 </body>
 </html>
