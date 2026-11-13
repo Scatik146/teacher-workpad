@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Задание 003 (учитель): после урока — строка в план</title>
+<style>
+  :root { --bg:#f6f1e6; --ink:#2b2620; --mut:#6b6254; --line:#d9cfbd; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.45 system-ui, sans-serif; }
+  .wrap { max-width:1180px; margin:0 auto; padding:20px 16px 40px; }
+  h1 { font-size:22px; margin:0 0 4px; } h2 { font-size:18px; margin:24px 0 6px; }
+  p.sub { margin:0 0 8px; color:var(--mut); }
+  pre { background:#fff; border:1px solid var(--line); border-radius:8px; padding:10px; font-size:13px; max-height:260px; overflow:auto; white-space:pre-wrap; margin:0; }
+  button { font:inherit; padding:6px 12px; border:1px solid var(--line); border-radius:8px; background:#fff; cursor:pointer; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Задание 003 · исполнитель — учитель</h1>
+  <p class="sub">Описание и «готово, когда» — в <code>003-uchitel-posle-uroka.md</code> рядом.</p>
+
+  <h2>1. Прочитать схему: что делать после каждого урока (5 минут)</h2>
+  <div id="s1"></div>
+
+  <h2>2. Собрать свою схему: как я задаю и проверяю домашнее задание</h2>
+  <p class="sub">Двойной щелчок по блоку — вписать текст, правая кнопка — меню, кнопки сверху добавляют блоки.
+    Пишите как есть, со всеми «потом забываю» — по этой схеме решим, что отдать приложению или помощнику.
+    Схема сохраняется в этом браузере.</p>
+  <div id="s2"></div>
+  <p><button id="copy">Скопировать схему для Claude</button> <small id="msg"></small></p>
+  <pre id="out"></pre>
+</div>
+<script src="../../../lib/drakonwidget/drakonwidget.js"></script>
+<script src="../../../lib/drakongen/drakongen.js"></script>
+<script src="../../../lib/drakon-shema/drakon-shema.js"></script>
+<script>
+/*схема*/
+const s1 = {
+  nazvanie: 'После урока',
+  shagi: [
+    'Открыть plan/ своего курса (prog-5-7.md, rpz-10.md …)',
+    { vopros: 'Урок прошёл по плану?',
+      da: ['Поставить дату в строке урока'],
+      net: ['Исправить тему строки или вставить новую строку', 'Сдвинуть номера ниже, если урок добавлен'] },
+    { vopros: 'Было домашнее задание?',
+      da: ['Вписать ДЗ в строку одной фразой'],
+      net: [] },
+    { vopros: 'Остались материалы (файл, доска, фото доски без детей)?',
+      da: ['Положить в chernoviki/ или прислать в чат', 'В строке плана — флаг 📝'],
+      net: [] },
+    'Коммит: «План: <курс>, урок N»'
+  ]
+};
+DrakonShema.pokazat(document.getElementById('s1'), s1, { knopki: true });
+
+/*заготовка*/
+const s2 = {
+  nazvanie: 'Домашнее задание',
+  shagi: [
+    'Придумать ДЗ',
+    { vopros: '…', da: ['…'], net: ['…'] },
+    '…',
+    'Проверить ДЗ',
+    '…'
+  ]
+};
+const out = document.getElementById('out');
+const d2 = DrakonShema.pokazat(document.getElementById('s2'), s2, {
+  rezhim: 'sborka', klyuch: 'zadanie-003-dz',
+  razreshit: ['dejstvie', 'vopros', 'vybor', 'cikl', 'kommentarij'],
+  izmenenie: sh => { out.textContent = JSON.stringify(sh, null, 2); }
+});
+d2.ready.then(() => { out.textContent = JSON.stringify(d2.poluchit(), null, 2); });
+document.getElementById('copy').onclick = () => {
+  const t = out.textContent;
+  const ok = () => { document.getElementById('msg').textContent = 'Скопировано — вставьте в чат.'; };
+  try { navigator.clipboard.writeText(t).then(ok, () => { window.prompt('Скопируйте:', t); }); }
+  catch (e) { window.prompt('Скопируйте:', t); }
+};
+</script>
+</body>
+</html>

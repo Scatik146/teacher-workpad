@@ -34,7 +34,7 @@ def kind(control, practice, given=''):
     return 'теория'
 
 def week(n, total):
-    per = {34: 1, 35: 1, 68: 2, 69: 2, 136: 4}.get(total)
+    per = {16: 1, 17: 1, 34: 1, 35: 1, 68: 2, 69: 2, 136: 4}.get(total)  # 17 ч — полгода, 1 урок в неделю
     return str(math.ceil(n / per)) if per else '—'
 
 FLAG_NOTE = ('Колонка «урок»: ссылка на папку урока и флаг — ✅ готово, ✏️ требует правки, 📝 черновик, '
