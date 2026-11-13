@@ -1,0 +1,1060 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Диетологи</title>
+<style>
+:root{
+  --bg:#f5f3ee; --card:#ffffff; --ink:#1d2229; --muted:#5b6470; --line:#e1dccf;
+  --accent:#2a63d4; --accent-2:#1d4ea8; --accent-bg:#e7efff;
+  --ok:#24914f; --ok-bg:#e2f4e9; --warn:#c98a00; --warn-bg:#fff3cc; --bad:#d13c36; --bad-bg:#fde3e1;
+  --ban:#9aa1aa; --shadow:0 2px 8px rgba(30,35,45,.08);
+}
+*{box-sizing:border-box}
+html{font-size:19px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.35;-webkit-tap-highlight-color:transparent}
+button{font:inherit;cursor:pointer;border:0}
+.wrap{max-width:1180px;margin:0 auto;padding:0 18px 140px}
+
+/* шапка */
+.top{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:2px solid var(--line)}
+.top-in{max-width:1180px;margin:0 auto;padding:10px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:800;font-size:1.25rem;letter-spacing:.2px}
+.badge{background:var(--ink);color:#fff;border-radius:999px;padding:4px 12px;font-weight:700;font-size:.85rem}
+.badge.demo{background:#8a3fd1}
+.who{margin-left:auto;display:flex;align-items:center;gap:8px;font-weight:700}
+.who .ava-s{font-size:1.6rem}
+.steps{max-width:1180px;margin:0 auto;padding:0 18px 10px;display:flex;gap:6px;overflow-x:auto}
+.step{flex:1 0 auto;min-width:110px;padding:9px 10px;border-radius:12px;background:#ebe7de;color:var(--muted);font-weight:700;font-size:.9rem;text-align:center;white-space:nowrap}
+.step.on{background:var(--accent);color:#fff}
+.step.can{background:#fff;color:var(--ink);box-shadow:var(--shadow)}
+.step:disabled{cursor:default;opacity:.55}
+
+h1{font-size:2rem;margin:18px 0 6px}
+h2{font-size:1.45rem;margin:22px 0 10px}
+.lead{color:var(--muted);margin:0 0 14px;font-size:1.05rem}
+
+/* кнопки */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:58px;padding:12px 24px;border-radius:16px;font-weight:800;font-size:1.1rem;background:var(--accent);color:#fff;box-shadow:var(--shadow)}
+.btn:hover{background:var(--accent-2)}
+.btn.ghost{background:#fff;color:var(--ink);border:2px solid var(--line)}
+.btn.ghost:hover{background:#f0ede6}
+.btn.warn{background:#fff;color:var(--bad);border:2px solid var(--bad)}
+.btn:disabled{background:#c9ced6;color:#fff;box-shadow:none;cursor:not-allowed;border:0}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+
+/* старт */
+.start{text-align:center;padding-top:30px}
+.start .big-em{font-size:4.5rem}
+.start h1{font-size:2.6rem}
+.pairs{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:820px;margin:24px auto}
+.pair-btn{background:#fff;border:3px solid var(--line);border-radius:22px;padding:22px 10px;font-size:1.5rem;font-weight:800;box-shadow:var(--shadow)}
+.pair-btn:hover{border-color:var(--accent)}
+.pair-btn small{display:block;font-size:.85rem;color:var(--muted);font-weight:600;margin-top:4px}
+.start-extra{margin-top:26px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.linkish{background:none;color:var(--muted);text-decoration:underline;font-size:.9rem;min-height:auto;padding:6px}
+
+/* карточка клиента */
+.hero{display:flex;gap:20px;align-items:center;background:#fff;border-radius:24px;padding:20px 24px;box-shadow:var(--shadow);margin-top:18px}
+.ava{font-size:5rem;line-height:1;background:var(--accent-bg);border-radius:24px;padding:10px 14px}
+.hero h1{margin:0 0 6px}
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
+.fact{background:#fff;border-radius:18px;padding:14px 16px;box-shadow:var(--shadow)}
+.fact .k{color:var(--muted);font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+.fact .v{font-size:1.3rem;font-weight:800;margin-top:4px}
+.fact.hi{background:#fff8e6;border:2px solid #f0d27a}
+.exam{margin-top:14px;background:#fff3cc;border:2px solid #f0d27a;border-radius:18px;padding:16px 20px;font-size:1.1rem;display:flex;gap:14px;align-items:flex-start}
+.exam .em{font-size:2rem}
+.norms{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.norm{background:#fff;border-radius:18px;padding:16px;text-align:center;box-shadow:var(--shadow);border-top:6px solid var(--accent)}
+.norm .k{font-weight:800;color:var(--muted)}
+.norm .v{font-size:2rem;font-weight:900;margin:4px 0 0}
+.norm .u{color:var(--muted);font-weight:700}
+.note{color:var(--muted);font-size:.9rem;margin-top:8px}
+.actions{margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between}
+
+/* блюда */
+.legend{display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:.9rem;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.dish{position:relative;background:#fff;border:3px solid transparent;border-radius:20px;padding:14px;box-shadow:var(--shadow);cursor:pointer;display:flex;flex-direction:column;gap:4px;min-height:170px;user-select:none}
+.dish:hover{border-color:#c9d8f7}
+.dish.sel{border-color:var(--accent);background:#f4f8ff}
+.dish .em{font-size:2.4rem;line-height:1}
+.dish .nm{font-weight:800;font-size:1.02rem}
+.dish .sz{color:var(--muted);font-size:.88rem;font-weight:600}
+.dish .nut{font-size:.85rem;color:var(--ink);background:#f3f1ec;border-radius:10px;padding:4px 8px;margin-top:2px}
+.dish .tags{font-size:1.1rem;letter-spacing:2px;min-height:1.3em}
+.dish .check{position:absolute;top:10px;right:12px;background:var(--accent);color:#fff;border-radius:999px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-weight:900}
+.dish.ban{cursor:not-allowed;background:#eeece7;box-shadow:none;opacity:.75}
+.dish.ban .em,.dish.ban .nm{filter:grayscale(1);color:var(--ban)}
+.dish .banlbl{position:absolute;top:10px;right:10px;background:var(--bad);color:#fff;border-radius:10px;padding:3px 9px;font-size:.78rem;font-weight:800}
+.por{display:flex;gap:6px;margin-top:6px}
+.por button{flex:1;min-width:0;padding:0 2px;font-size:.95rem;min-height:44px;border-radius:12px;background:#fff;border:2px solid var(--line);font-weight:800}
+.por button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.por button.rm{flex:0 0 40px;color:var(--bad);border-color:#f3c2bf}
+
+/* нижняя панель */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:15;background:#fff;border-top:2px solid var(--line);box-shadow:0 -4px 14px rgba(0,0,0,.06)}
+.dock-in{max-width:1180px;margin:0 auto;padding:10px 18px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.meters{display:flex;gap:10px;flex:1;min-width:320px}
+.meter{flex:1;min-width:70px}
+.meter .k{font-size:.78rem;font-weight:800;color:var(--muted)}
+.meter .v{font-size:.92rem;font-weight:800;white-space:nowrap}
+.meter .tr{margin-top:4px}
+.meter .fl{height:100%;background:var(--accent);border-radius:6px}
+.count{font-weight:800;white-space:nowrap}
+.mlegend{flex-basis:100%;display:flex;gap:16px;flex-wrap:wrap;font-size:.85rem;font-weight:700;color:var(--muted)}
+.mlegend i{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:5px}
+.mlegend .cur{color:var(--ink)}
+.mlegend .tk{margin-left:auto}
+.mlegend .tick-ic{width:3px;height:14px;background:var(--ink);border-radius:2px}
+.tr.st{position:relative;display:flex;height:12px;overflow:visible;background:#ece9e2;border-radius:6px}
+.tr.st .seg{height:100%}
+.tr.st .seg:first-child{border-radius:6px 0 0 6px}
+.tr.st .tick{position:absolute;top:-3px;bottom:-3px;width:3px;background:var(--ink);border-radius:2px;margin-left:-1px}
+.mswatch{display:inline-block;width:14px;height:34px;border-radius:6px;vertical-align:-4px;margin-right:12px}
+.count.low{color:var(--bad)}
+
+/* сводка */
+.bars{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;background:#fff;border-radius:24px;padding:22px;box-shadow:var(--shadow)}
+.bar{display:flex;flex-direction:column;align-items:center;text-align:center}
+.bar .val{font-weight:900;font-size:1.25rem}
+.bar .of{color:var(--muted);font-size:.85rem;font-weight:700;margin-bottom:8px}
+.track{position:relative;width:76px;height:280px;background:#efece5;border-radius:16px;overflow:hidden}
+.track .fill{position:absolute;left:0;right:0;bottom:0;border-radius:12px 12px 0 0}
+.track .nline{position:absolute;left:-4px;right:-4px;height:0;border-top:3px dashed var(--ink)}
+.track .nlbl{position:absolute;right:2px;font-size:.7rem;font-weight:800;background:var(--ink);color:#fff;border-radius:6px;padding:0 4px;transform:translateY(-120%)}
+.bar .nm{font-weight:900;font-size:1.1rem;margin-top:10px}
+.pill{display:inline-block;border-radius:999px;padding:3px 12px;font-weight:800;font-size:.9rem;margin-top:6px}
+.lv-ok{background:var(--ok)} .lv-warn{background:var(--warn)} .lv-bad{background:var(--bad)}
+.pill.lv-ok{background:var(--ok-bg);color:var(--ok)} .pill.lv-warn{background:var(--warn-bg);color:#8a5f00} .pill.lv-bad{background:var(--bad-bg);color:var(--bad)}
+.keys{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;color:var(--muted);font-size:.9rem;font-weight:600}
+.keys i{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:5px}
+.extra{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.extra .fact .v{font-size:1.15rem}
+
+/* вердикт */
+.verdict{display:grid;grid-template-columns:1.6fr 1fr;gap:16px;margin-top:10px}
+.diag{background:#fff;border-radius:24px;padding:20px 22px;box-shadow:var(--shadow)}
+.diag-h{display:flex;gap:14px;align-items:center;margin-bottom:12px}
+.diag-h .em{font-size:3rem}
+.diag-h h2{margin:0}
+.hint{border-radius:18px;padding:14px 16px;margin-top:10px;font-size:1.08rem;display:flex;gap:12px;align-items:flex-start}
+.hint .ic{font-size:1.6rem;line-height:1.2}
+.hint.h-bad{background:var(--bad-bg)} .hint.h-warn{background:var(--warn-bg)} .hint.h-data{background:#eef1f6} .hint.h-ok{background:var(--ok-bg);font-size:1.2rem;font-weight:700}
+.score{background:#fff;border-radius:24px;padding:20px;box-shadow:var(--shadow);text-align:center}
+.score .pct{font-size:4.6rem;font-weight:900;line-height:1;margin:6px 0}
+.score .lbl{color:var(--muted);font-weight:800}
+.score .n{font-size:1.4rem;font-weight:900;margin-top:12px}
+.minis{display:flex;flex-direction:column;gap:6px;margin-top:14px;text-align:left}
+.mini{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:.95rem;padding:6px 10px;border-radius:10px}
+.att{margin-top:12px;color:var(--muted);font-weight:700;font-size:.92rem}
+.ref{background:#fff;border-radius:24px;padding:20px 22px;box-shadow:var(--shadow);margin-top:16px;border:3px dashed #b9c9ee}
+.ref-meals{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.ref-meal{background:#f6f8fd;border-radius:16px;padding:12px 14px}
+.ref-meal h3{margin:0 0 8px}
+.ref-meal li{margin:4px 0}
+.ref-meal ul{padding-left:0;list-style:none;margin:0}
+table.cmp{width:100%;border-collapse:collapse;margin-top:14px;font-size:.98rem}
+table.cmp th,table.cmp td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:right}
+table.cmp th:first-child,table.cmp td:first-child{text-align:left}
+
+/* модалка */
+.modal{position:fixed;inset:0;background:rgba(20,24,30,.55);z-index:50;display:flex;align-items:center;justify-content:center;padding:18px}
+.modal-box{background:#fff;border-radius:24px;padding:26px;max-width:520px;width:100%;box-shadow:0 10px 40px rgba(0,0,0,.25)}
+.modal-box h2{margin-top:0}
+.modal-box p{font-size:1.08rem}
+.toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 20px;border-radius:14px;font-weight:700;z-index:60;max-width:90%;text-align:center}
+
+@media (max-width:900px){
+  html{font-size:17px}
+  .facts{grid-template-columns:repeat(2,1fr)}
+  .norms{grid-template-columns:repeat(3,1fr)}
+  .verdict{grid-template-columns:1fr}
+  .ref-meals{grid-template-columns:1fr}
+  .track{width:54px;height:220px}
+  .bars{gap:8px;padding:14px}
+}
+@media (max-width:560px){
+  .pairs{grid-template-columns:repeat(2,1fr)}
+  .norms{grid-template-columns:repeat(2,1fr)}
+  .extra{grid-template-columns:1fr}
+  .track{width:40px;height:190px}
+  .bar .val{font-size:1rem}
+  .meters{min-width:100%;gap:6px}
+  .meter{min-width:0}
+  .meter .k{font-size:.66rem;overflow:hidden;text-overflow:ellipsis}
+  .meter .v{font-size:.72rem}
+  .dock-in{gap:8px;padding:8px 12px}
+  .mlegend{font-size:.72rem;gap:8px}
+  .mlegend .tk{display:none}
+  .dock .btn{min-height:48px;padding:8px 16px}
+  .count{flex:1;font-size:.9rem}
+}
+
+/* ---------- режим учителя (слайды) ---------- */
+.deck{min-height:100vh;display:flex;flex-direction:column;background:#fbfaf6}
+.deck-top{display:flex;align-items:center;gap:12px;padding:10px 24px;border-bottom:2px solid var(--line);flex-wrap:wrap}
+.deck-stage{font-weight:800;color:var(--accent);font-size:1rem}
+.deck-cnt{margin-left:auto;font-weight:800;color:var(--muted)}
+.deck-top .btn{min-height:44px;padding:6px 14px;font-size:.9rem}
+.slide{flex:1;max-width:1240px;width:100%;margin:0 auto;padding:34px 32px 20px}
+.slide h1{font-size:3rem;line-height:1.1;margin:0 0 20px}
+.slide .big{font-size:1.65rem;line-height:1.4}
+.slide .mid{font-size:1.3rem;line-height:1.45}
+.slide .hero-em{font-size:7rem;line-height:1;margin:10px 0 18px}
+.slide .muted{color:var(--muted)}
+.s-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:10px}
+.s-cards.two{grid-template-columns:repeat(2,1fr)}
+.s-card{background:#fff;border-radius:24px;padding:22px 24px;box-shadow:var(--shadow);font-size:1.25rem;line-height:1.4}
+.s-card .em{font-size:3rem;line-height:1}
+.s-card h3{font-size:1.6rem;margin:8px 0 6px}
+.s-num{font-size:3.4rem;font-weight:900;line-height:1.05}
+.s-sub{color:var(--muted);font-weight:700;font-size:1.05rem}
+.split{display:flex;height:74px;border-radius:18px;overflow:hidden;margin-top:12px;font-weight:900;font-size:1.3rem;color:#fff}
+.split div{display:flex;align-items:center;justify-content:center}
+.s-quote{background:#fff3cc;border:3px solid #f0d27a;border-radius:24px;padding:26px 30px;font-size:1.8rem;line-height:1.4;display:flex;gap:18px}
+.s-q{background:var(--accent);color:#fff;border-radius:24px;padding:22px 28px;font-size:1.9rem;font-weight:800;margin-top:18px}
+.s-list{font-size:1.5rem;line-height:1.5;padding-left:1.2em;margin:10px 0}
+.s-list li{margin:8px 0}
+.s-time{display:grid;grid-template-columns:auto 1fr;gap:10px 18px;font-size:1.3rem;align-items:center}
+.s-time .t{font-weight:900;background:#fff;border-radius:12px;padding:8px 14px;box-shadow:var(--shadow);white-space:nowrap}
+.s-time .stop{background:#fff3cc;border-radius:12px;padding:8px 14px}
+.s-table{width:100%;border-collapse:collapse;font-size:1.3rem;background:#fff;border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}
+.s-table th,.s-table td{border:2px solid var(--line);padding:12px 14px;text-align:left}
+.s-table th{background:#f0ede6}
+.chips3{display:flex;gap:14px;flex-wrap:wrap;margin:12px 0 22px}
+.chips3 span{border-radius:999px;padding:10px 20px;font-size:1.3rem;font-weight:800}
+.deck-notes{background:#fff8e1;border-top:3px solid #f0d27a;padding:16px 24px 18px;font-size:1.02rem;line-height:1.5}
+.deck-notes-in{max-width:1240px;margin:0 auto}
+.deck-notes b{color:#7a5300}
+.deck-notes ul{margin:6px 0;padding-left:1.2em}
+.deck-nav{display:flex;justify-content:space-between;gap:12px;padding:12px 24px 18px;max-width:1240px;width:100%;margin:0 auto}
+.deck-nav .btn{min-width:150px}
+.deck-hint{color:var(--muted);font-size:.85rem;align-self:center;text-align:center}
+@media (max-width:900px){
+  .slide h1{font-size:2.1rem}
+  .slide .big{font-size:1.3rem}
+  .s-cards,.s-cards.two{grid-template-columns:1fr}
+  .s-quote{font-size:1.3rem}
+  .s-q{font-size:1.35rem}
+  .s-list{font-size:1.2rem}
+  .s-time{font-size:1.05rem}
+  .s-table{font-size:1rem}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* =====================================================================
+   «ДИЕТОЛОГИ» — приложение к вводному уроку модуля
+   «Основы рационального питания», Труд (Технология), 6 класс.
+   Один файл, работает офлайн, без сети и зависимостей.
+   ===================================================================== */
+
+/* ---------- НОРМЫ (зафиксированы, не пересматривать) ----------
+   МР 2.3.1.0253-21, 11–14 лет. Тренировка: +10% к калорийности и БЖУ
+   (округление до целых). Жидкость: 30 мл × вес, при тренировке +600 мл
+   (середина диапазона 500–700). Это ОБЩАЯ жидкость: супы, чай, молоко,
+   компот, влага продуктов. */
+const BASE_NORMS = {
+  m: {kcal:2500, p:75, f:83, c:365},
+  f: {kcal:2300, p:69, f:77, c:334}
+};
+const FLUID_PER_KG = 30, FLUID_TRAINING = 600;
+const SUGAR_LIMIT = 0.10;          // добавленный сахар ≤10% калорийности
+const ANIMAL_MIN = 0.60;           // животный белок ≥60% от общего
+/* Игровые пороги — НЕ нормативы: ≤10% норма, 10–20% лёгкое, >20% значительное */
+const LV_OK = 10, LV_WARN = 20;
+
+const EXAM_PHRASE = "Сегодня у тебя контрольная. Мозг тратит много энергии на концентрацию — добавь в завтрак кашу или цельнозерновой хлеб, чтобы энергия держалась ровно всю работу, без спада к середине.";
+
+/* ---------- БАЗА БЛЮД ----------
+   Значения блюд приблизительные: ориентир — порции школьной столовой.
+   Поля: p — белок, pa — из него животный, f — жиры, c — углеводы (г),
+   w — жидкость (мл), s — добавленный сахар (г), cx — сложные углеводы,
+   ing — ингредиенты для «не любит». Калории считаются из БЖУ (4/9/4).
+   Метки: «сладкое» — s ≥ 8 г; «животный белок» — pa ≥ половины белка. */
+const DISHES = [
+  // ЗАВТРАК
+  {id:"b1", meal:"b", em:"🥣", name:"Каша овсяная на молоке", size:"250 г", p:9, pa:5, f:9, c:42, w:180, s:6, cx:true, ing:["oat","milk"]},
+  {id:"b2", meal:"b", em:"🥣", name:"Каша гречневая на молоке", size:"250 г", p:11, pa:5, f:8, c:45, w:170, s:4, cx:true, ing:["milk"]},
+  {id:"b3", meal:"b", em:"🥪", name:"Бутерброд с сыром (цельнозерн. хлеб)", size:"1 шт., 80 г", p:10, pa:6, f:10, c:25, w:15, s:1, cx:true, ing:[]},
+  {id:"b4", meal:"b", em:"🍞", name:"Хлеб цельнозерновой с маслом", size:"2 куска, 60 г", p:4, pa:0.3, f:8, c:26, w:12, s:1, cx:true, ing:[]},
+  {id:"b5", meal:"b", em:"🥚", name:"Яйца варёные", size:"2 шт.", p:13, pa:13, f:11, c:1, w:75, s:0, cx:false, ing:[]},
+  {id:"b6", meal:"b", em:"🧆", name:"Сырники со сметаной", size:"150 г", p:20, pa:18, f:14, c:30, w:60, s:10, cx:false, ing:["tvorog"]},
+  {id:"b7", meal:"b", em:"🥄", name:"Творог со сметаной", size:"150 г", p:22, pa:22, f:14, c:6, w:100, s:2, cx:false, ing:["tvorog"]},
+  {id:"b8", meal:"b", em:"☕", name:"Какао с молоком", size:"200 мл", p:7, pa:6, f:6, c:24, w:175, s:14, cx:false, ing:["milk"]},
+  {id:"b9", meal:"b", em:"🍵", name:"Чай с сахаром", size:"200 мл", p:0, pa:0, f:0, c:10, w:200, s:10, cx:false, ing:[]},
+  {id:"b10",meal:"b", em:"🥞", name:"Блинчики со сгущёнкой", size:"2 шт.", p:8, pa:5, f:10, c:50, w:40, s:22, cx:false, ing:["milk"]},
+  {id:"b11",meal:"b", em:"🍌", name:"Банан", size:"1 шт.", p:1.5, pa:0, f:0.5, c:23, w:75, s:0, cx:false, ing:[]},
+  {id:"b12",meal:"b", em:"💧", name:"Вода питьевая", size:"200 мл", p:0, pa:0, f:0, c:0, w:200, s:0, cx:false, ing:[]},
+  // ОБЕД
+  {id:"l1", meal:"l", em:"🍜", name:"Суп куриный с лапшой", size:"250 мл", p:8, pa:6, f:5, c:14, w:220, s:0, cx:false, ing:["chicken"]},
+  {id:"l2", meal:"l", em:"🍲", name:"Борщ со сметаной", size:"250 мл", p:4, pa:2, f:7, c:13, w:220, s:2, cx:false, ing:[]},
+  {id:"l3", meal:"l", em:"🥣", name:"Суп гороховый", size:"250 мл", p:9, pa:2, f:5, c:22, w:200, s:0, cx:false, ing:[]},
+  {id:"l4", meal:"l", em:"🍖", name:"Котлета куриная", size:"100 г", p:17, pa:16, f:12, c:8, w:55, s:0, cx:false, ing:["chicken"]},
+  {id:"l5", meal:"l", em:"🐟", name:"Рыба запечённая (минтай)", size:"100 г", p:17, pa:17, f:5, c:3, w:70, s:0, cx:false, ing:["fish"]},
+  {id:"l6", meal:"l", em:"🥘", name:"Гуляш из говядины", size:"100 г", p:16, pa:16, f:13, c:4, w:60, s:0, cx:false, ing:[]},
+  {id:"l7", meal:"l", em:"🥔", name:"Пюре картофельное", size:"200 г", p:4, pa:1, f:7, c:30, w:150, s:0, cx:true, ing:[]},
+  {id:"l8", meal:"l", em:"🌰", name:"Гречка отварная", size:"180 г", p:7, pa:0, f:4, c:38, w:110, s:0, cx:true, ing:[]},
+  {id:"l9", meal:"l", em:"🍝", name:"Макароны отварные", size:"180 г", p:7, pa:0, f:4, c:42, w:100, s:0, cx:true, ing:[]},
+  {id:"l10",meal:"l", em:"🥗", name:"Салат из капусты с маслом", size:"100 г", p:1.5, pa:0, f:5, c:6, w:85, s:0, cx:false, ing:[]},
+  {id:"l11",meal:"l", em:"🍞", name:"Хлеб ржаной", size:"2 куска, 60 г", p:4, pa:0, f:1, c:24, w:25, s:0, cx:true, ing:[]},
+  {id:"l12",meal:"l", em:"🧃", name:"Компот из сухофруктов", size:"200 мл", p:0.5, pa:0, f:0, c:24, w:185, s:16, cx:false, ing:[]},
+  {id:"l13",meal:"l", em:"💧", name:"Вода питьевая", size:"200 мл", p:0, pa:0, f:0, c:0, w:200, s:0, cx:false, ing:[]},
+  // УЖИН
+  {id:"d1", meal:"d", em:"🍰", name:"Запеканка творожная", size:"150 г", p:20, pa:19, f:9, c:25, w:75, s:10, cx:false, ing:["tvorog"]},
+  {id:"d2", meal:"d", em:"🍗", name:"Курица запечённая", size:"100 г", p:22, pa:22, f:10, c:0, w:60, s:0, cx:false, ing:["chicken"]},
+  {id:"d3", meal:"d", em:"🐟", name:"Тефтели рыбные", size:"100 г", p:13, pa:12, f:8, c:8, w:60, s:0, cx:false, ing:["fish"]},
+  {id:"d4", meal:"d", em:"🍛", name:"Плов с говядиной", size:"200 г", p:14, pa:11, f:14, c:46, w:90, s:0, cx:true, ing:[]},
+  {id:"d5", meal:"d", em:"🍚", name:"Рис отварной", size:"180 г", p:4, pa:0, f:2, c:50, w:100, s:0, cx:true, ing:[]},
+  {id:"d6", meal:"d", em:"🥕", name:"Овощное рагу", size:"200 г", p:4, pa:0, f:8, c:20, w:160, s:0, cx:false, ing:[]},
+  {id:"d7", meal:"d", em:"🍳", name:"Омлет", size:"150 г", p:14, pa:14, f:16, c:3, w:100, s:0, cx:false, ing:["milk"]},
+  {id:"d8", meal:"d", em:"🫘", name:"Чечевица тушёная", size:"150 г", p:12, pa:0, f:3, c:30, w:90, s:0, cx:true, ing:[]},
+  {id:"d9", meal:"d", em:"🥛", name:"Кефир", size:"200 мл", p:6, pa:6, f:5, c:8, w:180, s:0, cx:false, ing:[]},
+  {id:"d10",meal:"d", em:"🍞", name:"Хлеб цельнозерновой", size:"2 куска, 50 г", p:4, pa:0, f:1, c:22, w:15, s:0, cx:true, ing:[]},
+  {id:"d11",meal:"d", em:"🍪", name:"Сладкий чай с печеньем", size:"200 мл + 40 г", p:3, pa:0, f:8, c:32, w:200, s:22, cx:false, ing:[]},
+  {id:"d12",meal:"d", em:"🍎", name:"Яблоко", size:"1 шт.", p:0.5, pa:0, f:0.4, c:14, w:130, s:0, cx:false, ing:[]},
+  {id:"d13",meal:"d", em:"💧", name:"Вода питьевая", size:"200 мл", p:0, pa:0, f:0, c:0, w:200, s:0, cx:false, ing:[]}
+];
+const DB = {}; DISHES.forEach(d => { d.kcal = Math.round(4*d.p + 9*d.f + 4*d.c); DB[d.id] = d; });
+const isSweet  = d => d.s >= 8;
+const isAnimal = d => d.p >= 5 && d.pa >= d.p/2;
+const isPlant  = d => d.p >= 5 && !isAnimal(d);
+
+const MEALS = [{k:"b", t:"Завтрак", em:"🌅"}, {k:"l", t:"Обед", em:"☀️"}, {k:"d", t:"Ужин", em:"🌙"}];
+/* Цвет каждого приёма пищи — одинаковый на полосах нижней панели и в заголовке экрана */
+const MEAL_COL = {b:"#f0a032", l:"#2b9a8c", d:"#7d5fd6"};
+const MIN_DISHES = 3;
+const PORTIONS = [0.5, 1, 1.5];
+
+const DISLIKES = {
+  fish:   {t:"рыба",           acc:"рыбу",          em:"🐟"},
+  tvorog: {t:"творог",         acc:"творог",        em:"🥄"},
+  milk:   {t:"молоко",         acc:"молоко",        em:"🥛"},
+  oat:    {t:"каша овсяная",   acc:"овсяную кашу",  em:"🥣"},
+  chicken:{t:"мясо курицы",    acc:"курицу",        em:"🍗"}
+};
+const NAMES = {
+  m:["Артём","Миша","Кирилл","Даня","Максим","Егор","Тимур","Лёва","Ваня","Саша"],
+  f:["Аня","Маша","Соня","Вика","Полина","Алиса","Даша","Ева","Катя","Лиза"]
+};
+const AVATARS = {m:["👦","🧒🏻","👦🏽","👦🏼"], f:["👧","👧🏻","👧🏽","👧🏼"]};
+
+/* ---------- ГЕНЕРАЦИЯ КЛИЕНТА ----------
+   Баланс полов. Устройства между собой не связаны (офлайн, без сервера),
+   поэтому общий счётчик генераций невозможен. Решение: пара выбирает свой
+   номер на старте. Пара 1 — всегда мальчик, пара 2 — всегда девочка,
+   пары 3 и 4 — честный рандом. Так в группе гарантированно ≥1 М и ≥1 Д.
+   При перегенерации пол пар 1 и 2 сохраняется. */
+const rnd = (a,b) => a + Math.floor(Math.random()*(b-a+1));
+const pick = arr => arr[Math.floor(Math.random()*arr.length)];
+
+function isBanned(d, cl){ return d.ing.some(i => cl.dislikes.includes(i)); }
+
+function dislikesOk(dislikes){
+  const cl = {dislikes};
+  const ok = DISHES.filter(d => !isBanned(d, cl));
+  const animal = ok.filter(isAnimal).length;
+  const complex = ok.filter(d => d.cx).length;
+  const bfComplex = ok.filter(d => d.meal==="b" && d.cx).length;
+  // ≥3 источника животного белка, ≥2 каши/гарнира со сложными углеводами (и ≥2 в завтраке — для контрольной)
+  return animal >= 3 && complex >= 2 && bfComplex >= 2;
+}
+
+function genClient(pair, avoidName){
+  const sex = pair===1 ? "m" : pair===2 ? "f" : (Math.random()<0.5 ? "m" : "f");
+  let name; do { name = pick(NAMES[sex]); } while (name===avoidName);
+  let dislikes;
+  do {
+    const keys = Object.keys(DISLIKES).sort(() => Math.random()-0.5);
+    dislikes = keys.slice(0, Math.random()<0.5 ? 1 : 2);
+  } while (!dislikesOk(dislikes));
+  return {
+    sex, name, ava: pick(AVATARS[sex]), age: 12,
+    height: rnd(140,160), weight: rnd(35,50),
+    activity: Math.random()<0.5 ? "low" : "high",
+    training: Math.random()<0.5, exam: Math.random()<0.5,
+    dislikes
+  };
+}
+const DEMO_CLIENT = {sex:"m", name:"Артём", ava:"👦", age:12, height:152, weight:41, activity:"high", training:true, exam:true, dislikes:["fish","tvorog"]};
+
+function norms(cl){
+  const b = BASE_NORMS[cl.sex], k = cl.training ? 1.1 : 1;
+  return {
+    kcal: Math.round(b.kcal*k), p: Math.round(b.p*k), f: Math.round(b.f*k), c: Math.round(b.c*k),
+    w: cl.weight*FLUID_PER_KG + (cl.training ? FLUID_TRAINING : 0)
+  };
+}
+
+/* ---------- ПОДСЧЁТ ---------- */
+function totals(menu){
+  const t = {kcal:0,p:0,f:0,c:0,w:0,s:0,pa:0};
+  for (const m in menu) for (const id in menu[m]) {
+    const d = DB[id], k = menu[m][id];
+    t.kcal += d.kcal*k; t.p += d.p*k; t.f += d.f*k; t.c += d.c*k; t.w += d.w*k; t.s += d.s*k; t.pa += d.pa*k;
+  }
+  return t;
+}
+const PARAMS = [
+  {k:"kcal", t:"Калории", u:"ккал"},
+  {k:"p",    t:"Белки",   u:"г"},
+  {k:"f",    t:"Жиры",    u:"г"},
+  {k:"c",    t:"Углеводы",u:"г"},
+  {k:"w",    t:"Жидкость",u:"мл"}
+];
+function level(devPct){ const a = Math.abs(devPct); return a <= LV_OK ? "ok" : a <= LV_WARN ? "warn" : "bad"; }
+
+function evaluate(menu, cl){
+  const n = norms(cl), t = totals(menu);
+  const rows = PARAMS.map(P => {
+    const got = Math.round(t[P.k]), dev = Math.round((t[P.k]-n[P.k])/n[P.k]*100);
+    return {...P, got, norm:n[P.k], dev, lv:level(dev)};
+  });
+  /* % попадания: каждый параметр даёт 100 баллов минус 2 за каждый процент отклонения (не меньше 0), среднее по пяти */
+  const pct = Math.round(rows.reduce((s,r) => s + Math.max(0, 100-2*Math.abs(r.dev)), 0) / rows.length);
+  const inRange = rows.filter(r => r.lv !== "bad").length;           // «норма» или «лёгкое»
+  const sugarShare = t.kcal ? (t.s*4)/n.kcal : 0;                     // доля калорий из сладкого от дневной нормы
+  const animalShare = t.p ? t.pa/t.p : 0;
+  const bfComplex = Object.keys(menu.b||{}).some(id => DB[id].cx);
+  return {rows, pct, inRange, t, n, sugarShare, animalShare, bfComplex};
+}
+
+/* ---------- ДИАГНОЗ ДИЕТОЛОГА ----------
+   Тексты П1–П6 финальные (из брифа). Подставлены имя, числа и род глагола
+   по полу клиента (выпил/выпила и т. п.). Лимит — 2–3 подсказки,
+   приоритет — по величине отклонения. */
+function diagnose(ev, cl){
+  const N = cl.name, g = (m,f) => cl.sex==="m" ? m : f;
+  const r = Object.fromEntries(ev.rows.map(x => [x.k, x]));
+  const out = [];
+  const wRatio = ev.t.w / ev.n.w, kRatio = ev.t.kcal / ev.n.kcal;
+
+  if (wRatio < 0.8) out.push({code:"П1", sev:1-wRatio, cls:"h-bad", ic:"💧",
+    text:`${N}, за день ты ${g("выпил","выпила")} мало жидкости — всего ${r.w.got} мл вместо твоих ${r.w.norm} мл. К обеду ты уже ${g("был вялым","была вялой")}, потому что тело теряло воду. Добавь стакан воды на завтрак и тарелку супа в обед — и сил хватит до самого вечера.`});
+  if (ev.sugarShare > SUGAR_LIMIT) out.push({code:"П2", sev:(ev.sugarShare-SUGAR_LIMIT)/SUGAR_LIMIT*0.5+0.1, cls:"h-warn", ic:"🍬",
+    text:`${N}, быстрые углеводы (шоколад, печенье, сладкий чай) дали тебе резкий скачок энергии утром — и такой же резкий спад к обеду. На контрольной это значит: первые 20 минут ты бодришься, потом проваливаешься. Замени часть сладкого на кашу или цельнозерновой хлеб — энергия будет равномерной.`});
+  if (cl.exam && !ev.bfComplex) out.push({code:"П3", sev:0.35, cls:"h-warn", ic:"📝",
+    text:`${N}, сегодня у тебя контрольная, а на завтрак нет ни каши, ни хлеба, ни макарон. Без сложных углеводов мозг получает энергию короткими порциями — к середине работы тебе будет сложно сосредоточиться. Добавь кашу или бутерброд с цельнозерновым хлебом.`});
+  if (ev.t.p > 0 && ev.animalShare < ANIMAL_MIN) out.push({code:"П4", sev:(ANIMAL_MIN-ev.animalShare)/ANIMAL_MIN+0.1, cls:"h-warn", ic:"🥩",
+    text:`${N}, белка за день хватает, но больше половины — растительного (орехи, бобовые). Растительный белок усваивается хуже, и тебе не хватает строительного материала для мышц после тренировки. Сделай животные источники основными в обеде и ужине — мясо, рыба, яйца или творог.`});
+  if (kRatio > 1.15) out.push({code:"П5", sev:kRatio-1, cls:"h-bad", ic:"⚖️",
+    text:`${N}, за день ты ${g("получил","получила")} на ${Math.round(ev.t.kcal-ev.n.kcal)} ккал больше нормы. Лишняя энергия не делает тебя сильнее — тело откладывает её про запас, и к вечеру ты чувствуешь тяжесть, а не бодрость. Уменьши порции в обеде или замени одно жирное блюдо на овощное.`});
+  if (kRatio < 0.85) out.push({code:"П6", sev:1-kRatio, cls:"h-bad", ic:"🔋",
+    text:`${N}, за день ты ${g("недополучил","недополучила")} ${Math.round(ev.n.kcal-ev.t.kcal)} ккал. Этого хватит, чтобы к тренировке у тебя уже не было сил, а к вечеру — только хотелось спать. Добавь сложные углеводы в обед (гарнир) или белок в ужин (творог, рыба).`});
+
+  out.sort((a,b) => b.sev - a.sev);
+  const hints = out.slice(0, 3);
+
+  // Только числа, без оценок: если подсказок меньше двух, добавляем факты по самым большим отклонениям
+  const covered = new Set();
+  hints.forEach(h => { if (h.code==="П1") covered.add("w"); if (h.code==="П5"||h.code==="П6") covered.add("kcal"); });
+  const facts = ev.rows.filter(x => x.lv!=="ok" && !covered.has(x.k)).sort((a,b) => Math.abs(b.dev)-Math.abs(a.dev));
+  while (hints.length < 2 && facts.length) {
+    const x = facts.shift();
+    hints.push({code:"data", cls:"h-data", ic:"📊",
+      text:`${x.t}: ${fmt(x.got)} ${x.u} при норме ${fmt(x.norm)} ${x.u} — ${x.dev>0?"больше":"меньше"} на ${Math.abs(x.dev)}%.`});
+  }
+
+  const clean = out.length===0 && ev.rows.every(x => x.lv==="ok");
+  if (clean) return {clean:true, hints:[{code:"ok", cls:"h-ok", ic:"🏆", text:praise(cl)}]};
+  return {clean:false, hints};
+}
+
+function praise(cl){
+  const N = cl.name, g = (m,f) => cl.sex==="m" ? m : f;
+  const list = [
+    `${N}, день прошёл ровно: сил хватило и на уроки, и на прогулку. Меню — в самый раз!`,
+    `${N}, всё сошлось: и энергии, и воды, и строительного материала для мышц — ровно столько, сколько нужно. Отличная работа!`,
+    `${N}, к вечеру ты ${g("бодрый","бодрая")} и не ${g("голодный","голодная")} — значит, рацион собран точно. Так держать!`,
+    `${N}, сегодня всё в меру и ничего лишнего. Молодцы, диетологи!`
+  ];
+  if (cl.exam && cl.training) list.push(`${N}, ты отлично ${g("подобрал","подобрала")} меню — энергии хватило на всю контрольную и тренировку. Так держать!`);
+  else if (cl.exam) list.push(`${N}, ты отлично ${g("подобрал","подобрала")} меню — энергии хватило на всю контрольную. Так держать!`);
+  if (cl.training) list.push(`${N}, после тренировки мышцам хватило белка, а голове — энергии. Отличный выбор!`);
+  return pick(list);
+}
+
+/* ---------- ЭТАЛОН ----------
+   Не таблица готовых рационов: эталон собирается автоматически из той же
+   базы блюд жадным алгоритмом (пошаговое улучшение). На каждом шаге
+   пробуем добавить/убрать блюдо или сменить порцию и берём ход, который
+   сильнее всего приближает рацион к нормам клиента. Учитываются «не любит»,
+   контрольная (сложные углеводы в завтрак), сахар ≤10%, животный белок ≥60%,
+   3–6 блюд в каждом приёме пищи. */
+function refCost(menu, cl, n){
+  const t = totals(menu);
+  let c = 0;
+  c += 2*((t.kcal-n.kcal)/n.kcal)**2;
+  c += ((t.p-n.p)/n.p)**2 + ((t.f-n.f)/n.f)**2 + ((t.c-n.c)/n.c)**2 + ((t.w-n.w)/n.w)**2;
+  for (const m of ["b","l","d"]) {
+    const cnt = Object.keys(menu[m]).length;
+    if (cnt < MIN_DISHES) c += 3*(MIN_DISHES-cnt);
+    if (cnt > 6) c += 3*(cnt-6);
+    c += 0.002*cnt;
+  }
+  const sugar = (t.s*4)/n.kcal; if (sugar > SUGAR_LIMIT*0.9) c += (sugar-SUGAR_LIMIT*0.9)*20;
+  if (t.p > 0) { const a = t.pa/t.p; if (a < 0.62) c += (0.62-a)*10; }
+  if (cl.exam && !Object.keys(menu.b).some(id => DB[id].cx)) c += 2;
+  return c;
+}
+function buildReference(cl){
+  const n = norms(cl), menu = {b:{}, l:{}, d:{}};
+  const elig = {b:[], l:[], d:[]};
+  DISHES.forEach(d => { if (!isBanned(d, cl)) elig[d.meal].push(d.id); });
+  const set = (m,id,p) => { if (p===0) delete menu[m][id]; else menu[m][id] = p; };
+  let cur = refCost(menu, cl, n);
+  for (let it = 0; it < 400; it++) {
+    let best = null, bc = cur;
+    for (const m of ["b","l","d"]) for (const id of elig[m]) {
+      const old = menu[m][id] || 0;
+      for (const p of [0, ...PORTIONS]) {
+        if (p === old) continue;
+        set(m,id,p);
+        const c = refCost(menu, cl, n);
+        if (c < bc - 1e-9) { bc = c; best = [m,id,p]; }
+      }
+      set(m,id,old);
+    }
+    if (!best) break;
+    set(...best); cur = bc;
+  }
+  return menu;
+}
+
+/* ---------- УТИЛИТЫ ---------- */
+const fmt = x => Math.round(x).toLocaleString("ru-RU");
+const fmtP = p => p===0.5 ? "×0,5" : p===1.5 ? "×1,5" : "×1";
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const menuKey = menu => ["b","l","d"].map(m => Object.keys(menu[m]).sort().map(id => id+":"+menu[m][id]).join(",")).join("|");
+const mealValid = (menu,m) => Object.keys(menu[m]).length >= MIN_DISHES;
+const allValid = menu => ["b","l","d"].every(m => mealValid(menu,m));
+const dislikeList = cl => cl.dislikes.map(k => DISLIKES[k].acc).join(", ");
+
+
+/* =====================================================================
+   РЕЖИМ УЧИТЕЛЯ — слайды урока по канве (вместо отдельной презентации).
+   Заметки для учителя по умолчанию скрыты (проектор), открываются кнопкой
+   «Заметки» или клавишей N. Листать: ← → / пробел. Выход: Esc.
+   ===================================================================== */
+const SLIDES = [
+  {stage:"Этап 1 · Активация · 2 мин",
+   body:`<div class="hero-em">🍽️</div><h1>Что вы сегодня ели на обед?</h1><p class="big muted">Честно, без приукрашивания</p>`,
+   notes:`Записать 3–4 ответа на доску столбиком <b>«Наши обеды»</b> — не стирать до конца урока.
+   <ul><li>«Кто наелся до вечера? А кто к шестому уроку уже голодный?»</li>
+   <li>«Ваш обед был правильный? Почему вы так решили?»</li></ul>
+   <b>Точка импровизации (а).</b> «Ничего не ел» → спад энергии к середине дня. Булочка и сок → «вкусно, но быстро снова голодный» — мостик к сложным углеводам. Суп и второе → «а суп — это еда или питьё?» — мостик к жидкости. Еду вслух «плохой» не называть.`},
+  {stage:"Этап 2 · Проблема · 4 мин",
+   body:`<div class="hero-em">🧒</div><h1>Знакомьтесь: ваш первый клиент</h1>
+   <p class="big">Что ему съесть сегодня?<br>И как понять, что ему хватит?</p>
+   <div class="row" style="margin-top:24px"><button class="btn" data-act="deck-demo">🎬 Открыть демо-клиента</button></div>`,
+   notes:`Открыть демо-клиента. Сначала читать только карточку (рост, вес, тренировка, контрольная, «не любит»), числа нормы пока не комментировать.
+   <ul><li>Дети 30–40 секунд предлагают меню «на глаз» — записать 3–4 блюда.</li>
+   <li>Потом нормы: «Ему нужно 2750 ккал, 83 г белка, около 1,8 л жидкости. Наше меню туда попадает?» Дети не знают — это и есть проблема.</li>
+   <li>«Чем этот клиент отличается от вас?» «Если бы это была девочка того же роста — меню было бы тем же?»</li></ul>
+   Если прозвучит «а почему мальчику больше?» — точка (б), заметки к слайду «Калории».`},
+  {stage:"Этап 2 · Задача урока",
+   body:`<div class="hero-em">🩺</div><h1>Сегодня вы — диетологи</h1>
+   <p class="big">Каждой паре придёт свой клиент.<br>Соберите ему меню на день так, чтобы приложение сказало: <b>норма</b>.</p>
+   <div class="s-q">Побеждает не самый быстрый, а самый точный</div>`,
+   notes:`Сформулировать своими словами. Дальше — теория: пять чисел и два правила, всё на демо-клиенте и на «Наших обедах» с доски. Справа на доске выписать пять параметров: калории, Б, Ж, У, жидкость.`},
+  {stage:"Этап 3 · Теория · Калории",
+   body:`<h1>⚡ Калории — это топливо</h1>
+   <p class="mid muted">Сколько энергии даёт еда. Норма на день для 11–14 лет:</p>
+   <div class="s-cards two">
+     <div class="s-card"><div class="s-sub">мальчик</div><div class="s-num">2 500 ккал</div></div>
+     <div class="s-card"><div class="s-sub">девочка</div><div class="s-num">2 300 ккал</div></div>
+   </div>
+   <div class="s-cards two" style="margin-top:18px">
+     <div class="s-card"><div class="em">⚽</div><h3>Тренировка сегодня</h3>+10% к калориям: 2 750 / 2 530</div>
+     <div class="s-card"><div class="em">🪪</div><h3>На карточке клиента</h3>одно число — уже с учётом пола и тренировки</div>
+   </div>`,
+   notes:`<ul><li>«Почему у нашего клиента не 2500, а 2750?»</li>
+   <li>«Что будет, если долго есть меньше нормы? А больше?» — мостик к подсказкам «недоедание» и «переедание».</li></ul>
+   <b>Точка импровизации (б) — «мальчикам можно больше есть».</b> Не поправлять сразу, вернуть вопрос: «А правда, почему? От чего зависит, сколько энергии нужно?» Вывести на: у мальчиков в этом возрасте обычно больше мышц, а мышцы тратят энергию даже в покое. Норма — среднее для группы, а не «разрешение». Контрпример: девочке с тренировкой нужно 2530 ккал, мальчику без тренировки — 2500. «Значит, решает не только пол. А что ещё?» — активность.`},
+  {stage:"Этап 3 · Теория · Б, Ж, У",
+   body:`<h1>Из чего состоит топливо</h1>
+   <div class="s-cards">
+     <div class="s-card"><div class="em">🧱</div><h3>Белки</h3>строительный материал для мышц и роста<div class="s-num" style="font-size:2.4rem;margin-top:8px">75 / 69 г</div><div class="s-sub">мальчик / девочка</div></div>
+     <div class="s-card"><div class="em">🔋</div><h3>Жиры</h3>запас энергии и материал для клеток<div class="s-num" style="font-size:2.4rem;margin-top:8px">83 / 77 г</div><div class="s-sub">мальчик / девочка</div></div>
+     <div class="s-card"><div class="em">⛽</div><h3>Углеводы</h3>главное топливо<div class="s-num" style="font-size:2.4rem;margin-top:8px">365 / 334 г</div><div class="s-sub">мальчик / девочка</div></div>
+   </div>
+   <p class="mid" style="margin:22px 0 0"><b>Из каждых 100 калорий:</b></p>
+   <div class="split"><div style="width:13%;background:#c0504d;flex-direction:column;line-height:1.1">13<small style="font-size:.8rem">белки</small></div><div style="width:30%;background:#e3a21a">30 — жиры</div><div style="width:57%;background:#3a7bd5">57 — углеводы</div></div>`,
+   notes:`<ul><li>«Найдите белок в наших обедах. А сложные углеводы там есть?»</li>
+   <li>«Белка в граммах в пять раз меньше, чем углеводов. Значит, он не важен?»</li></ul>
+   Тренировка добавляет +10% и к БЖУ — у демо-клиента 83 / 91 / 402 г.`},
+  {stage:"Этап 3 · Теория · Два правила",
+   body:`<h1>Два правила диетолога</h1>
+   <div class="s-cards two">
+     <div class="s-card"><div class="em">🥩</div><h3>Животный белок — 60–70%</h3>от всего белка за день: мясо, рыба, яйца, молочное. Он усваивается полнее.</div>
+     <div class="s-card"><div class="em">🍬</div><h3>Сладкого — не больше 10%</h3>всех калорий за день: сахар в чае, какао, компоте, выпечке.</div>
+   </div>
+   <div class="s-cards two" style="margin-top:18px">
+     <div class="s-card"><div class="em">🌾</div><h3>Сложные углеводы</h3>каша, цельнозерновой хлеб, макароны — горят медленно и ровно</div>
+     <div class="s-card"><div class="em">🎆</div><h3>Быстрые углеводы</h3>сладкое — вспыхивает и быстро гаснет</div>
+   </div>`,
+   notes:`Эти значки дети увидят на карточках блюд: 🌾 сложные углеводы, 🍬 сладкое, 🥩 животный белок, 🌱 растительный белок. Доли сладкого и животного белка приложение показывает на экране «Сводка дня».`},
+  {stage:"Этап 3 · Теория · Жидкость",
+   body:`<h1>💧 Жидкость: 30 мл на каждый кг веса</h1>
+   <div class="s-card" style="font-size:1.6rem">Демо-клиент: <b>41 кг × 30 мл = 1 230 мл</b><br>+ тренировка <b>600 мл</b> = <b style="color:var(--accent)">1 830 мл</b></div>
+   <p class="mid" style="margin-top:22px">Считается <b>вся</b> жидкость, не только чистая вода:</p>
+   <div class="chips3"><span style="background:#e7efff">💧 вода</span><span style="background:#e7efff">🍵 чай</span><span style="background:#e7efff">🥛 молоко, кефир</span><span style="background:#e7efff">🧃 компот</span><span style="background:#e7efff">🍲 суп</span></div>
+   <div class="s-q">Суп — это еда или питьё?</div>`,
+   notes:`Ответ: и то и другое. Приложение считает жидкость каждого блюда (у карточки — значок 💧 и миллилитры): суп ~200 мл, каша на молоке ~170–180 мл. Вода питьевая есть в каждом приёме пищи. Норма — 30 мл/кг, при тренировке в приложении +600 мл (середина диапазона 500–700).`},
+  {stage:"Этап 3 · Теория · Контрольная",
+   body:`<h1>📝 Если сегодня контрольная</h1>
+   <div class="s-quote"><span style="font-size:3rem">📝</span><div>${EXAM_PHRASE}</div></div>
+   <p class="big" style="margin-top:24px">Числа нормы не меняются — меняется <b>выбор блюд в завтрак</b>.</p>`,
+   notes:`«У кого сегодня была контрольная? Что вы ели на завтрак?» Это единственная связь контрольной с едой, которую даём — без «съешь и сдашь».`},
+  {stage:"Этап 4 · Как играем · 3 мин",
+   body:`<h1>🎮 Правила игры</h1>
+   <ol class="s-list">
+     <li>В каждом приёме пищи — <b>минимум 3 блюда</b>. Порция ×0,5 / ×1 / ×1,5.</li>
+     <li>Клиента можно сменить <b>1 раз</b> — вернуть прежнего нельзя.</li>
+     <li>Меню можно исправлять и смотреть вердикт снова — <b>засчитывается лучшая попытка</b>.</li>
+     <li>Эталон — только после того, как результат записан на доске.</li>
+     <li>Роли: <b>оператор</b> держит устройство, <b>аналитик</b> следит за карточкой и сводкой. На стоп-кадре — меняетесь.</li>
+   </ol>
+   <div class="row" style="margin-top:14px"><button class="btn" data-act="deck-demo">🎬 Показать на демо-клиенте</button></div>`,
+   notes:`На демо-клиенте быстро пройти: экран 1 (карточка: «не любит» и контрольная — ловушки) → завтрак (добавить 1–2 блюда, показать, как растут цветные полосы внизу: каждый цвет — свой приём пищи) → сводка → вердикт. Кнопку «Показать эталон» не нажимать. Проверочный вопрос: «Сколько раз можно поменять клиента? Когда смотрим эталон?»`},
+  {stage:"Этап 4 · Светофор и таблица",
+   body:`<h1>🚦 Как читать вердикт</h1>
+   <div class="chips3"><span class="pill lv-ok" style="font-size:1.3rem">норма — до 10%</span><span class="pill lv-warn" style="font-size:1.3rem">лёгкое отклонение — 10–20%</span><span class="pill lv-bad" style="font-size:1.3rem">значительное — больше 20%</span></div>
+   <p class="mid">Что пишем в таблицу на доске:</p>
+   <table class="s-table"><tr><th>Пара</th><th>Клиент: пол, особенности</th><th>В норме, из 5</th><th>% попадания</th><th>№ лучшей попытки</th></tr>
+   <tr><td>1</td><td></td><td></td><td></td><td></td></tr><tr><td>2</td><td></td><td></td><td></td><td></td></tr><tr><td>3</td><td></td><td></td><td></td><td></td></tr><tr><td>4</td><td></td><td></td><td></td><td></td></tr></table>`,
+   notes:`«В норме, из 5» — это число на экране вердикта под процентом (норма + лёгкое отклонение). Критерий урока: у всех 4 пар ≥3 из 5. % попадания: каждый параметр даёт 100 баллов минус 2 за каждый процент отклонения. Раздать устройства, пары выбирают на старте свой номер (пара 1 — всегда мальчик, пара 2 — всегда девочка).`},
+  {stage:"Этап 5 · Практикум · 18 мин",
+   body:`<h1>🍳 Собираем меню</h1>
+   <div class="s-time">
+     <span class="t">15–21</span><span><b>Клиент + завтрак.</b> Оставить или сменить клиента — решите за минуту.</span>
+     <span class="t">21–22</span><span class="stop"><b>Стоп-кадр 1:</b> клиента — в таблицу. «Нашему клиенту ___, поэтому в завтрак мы ___». Смена ролей.</span>
+     <span class="t">22–27</span><span><b>Обед</b></span>
+     <span class="t">27–28</span><span class="stop"><b>Стоп-кадр 2:</b> откройте «Сводку дня». «У нас мало ___ — значит, в ужин ___». Смена ролей.</span>
+     <span class="t">28–33</span><span><b>Ужин + вердикт.</b> Исправляйте, лучшую попытку — в таблицу.</span>
+   </div>`,
+   notes:`Слайд можно держать на проекторе весь практикум.
+   <ul><li>Блок А: проверить баланс клиентов, первыми обойти пары с контрольной. «Что в карточке самое важное для завтрака?»</li>
+   <li>Стоп-кадр 1: отметить, кто связал выбор с параметром клиента — первая точка для критерия.</li>
+   <li>Блок Б: «Почему это блюдо, а не другое?» «Сколько калорий осталось на ужин?» «Где у вас животный белок?»</li>
+   <li>Блок В: к 31:00 у каждой пары хотя бы один вердикт. «Что вам сказал диетолог? Согласны? Что меняете?»</li></ul>
+   <b>Точка импровизации (в) — трудный клиент.</b> «Не любит» закрывает главные источники белка, контрольная + не любит кашу, большой вес + тренировка. Остановить класс на минуту, пара зачитывает карточку: «Что бы вы сделали на их месте?» Решает пара-владелец.`},
+  {stage:"Этап 6 · Защита · 5 мин",
+   body:`<h1>🎤 Защита меню</h1>
+   <ol class="s-list">
+     <li>Наш клиент — ___ <span class="muted">(кто он, главная особенность)</span></li>
+     <li>Самым трудным было ___</li>
+     <li><b>Мы выбрали ___, потому что у клиента ___</b></li>
+     <li>Вердикт: ___ из 5 в норме, ___%</li>
+   </ol>
+   <div class="s-q">Почему у пар такие разные калории? Кто-то ошибся?</div>`,
+   notes:`До минуты на пару, пункт 3 — обязательный (связка «выбор → параметр клиента», отметить для критерия). Сравнение: нет, клиенты разные — пол, тренировка, вес. Потом одна пара (лучшая или с самым трудным клиентом) открывает эталон и поворачивает экран к классу. «Чем эталон похож на ваше меню? Чем отличается?» Если время поджимает — оставить только пункт 3.`},
+  {stage:"Этап 7 · Рефлексия · 2 мин",
+   body:`<h1>🔁 Рефлексия</h1>
+   <div class="s-q">Что вы изменили, чтобы попасть в норму?</div>
+   <div class="s-q" style="background:#fff;color:var(--ink);border:3px solid var(--accent)">Вы теперь диетологи. Что бы вы поменяли в наших обедах?</div>`,
+   notes:`Каждой паре по очереди. Осознанный ответ называет параметр и действие: «было мало жидкости — добавили воду в ужин».
+   <ul><li>«Ничего не меняли, сразу попали» → «А что вы учли с самого начала?»</li>
+   <li>«Просто тыкали, пока не стало зелёным» → «Какая подсказка помогла больше всего?»</li></ul>
+   <b>Отметка по критерию:</b> все 4 пары — ≥3 из 5 в норме или с лёгким отклонением; хотя бы одна вербализация выбора со ссылкой на параметр клиента; на «Что вы изменили?» каждая пара назвала параметр и действие.`}
+];
+let deck = {open:false, i:0, notes:false};
+
+function vDeck(){
+  const sl = SLIDES[deck.i], last = SLIDES.length-1;
+  return `<div class="deck">
+    <div class="deck-top">
+      <span class="brand">🥗 Диетологи</span>
+      <span class="deck-stage">${sl.stage}</span>
+      <span class="deck-cnt">${deck.i+1} / ${SLIDES.length}</span>
+      <button class="btn ghost" data-act="deck-notes">${deck.notes ? "Скрыть заметки" : "🗒 Заметки"}</button>
+      <button class="btn ghost" data-act="deck-close">✕ Выйти</button>
+    </div>
+    <div class="slide">${sl.body}</div>
+    ${deck.notes ? `<div class="deck-notes"><div class="deck-notes-in"><b>Для учителя.</b> ${sl.notes}</div></div>` : ""}
+    <div class="deck-nav">
+      <button class="btn ghost" data-act="deck-prev" ${deck.i===0?"disabled":""}>← Назад</button>
+      <span class="deck-hint">Стрелки ← → или пробел · N — заметки · Esc — выход</span>
+      <button class="btn" data-act="deck-next" ${deck.i===last?"disabled":""}>Дальше →</button>
+    </div>
+  </div>`;
+}
+function deckMove(d){ const ni = Math.max(0, Math.min(SLIDES.length-1, deck.i+d)); if (ni!==deck.i){ deck.i = ni; render(); window.scrollTo(0,0); } }
+
+/* ===================================================================== */
+/*                               ИНТЕРФЕЙС                               */
+/* ===================================================================== */
+const LS_KEY = "dietologi_v1";
+let S = null;          // состояние сессии
+let modal = null;      // {title, text, ok, okText, cancelText}
+let toastT = null;
+
+/* Сохранение — только чтобы случайная перезагрузка страницы не дала
+   «бесплатную» перегенерацию и не стёрла меню. Демо не сохраняется. */
+function save(){ try { if (S && S.mode==="pair") localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch(e){} }
+function loadSaved(){ try { const t = localStorage.getItem(LS_KEY); return t ? JSON.parse(t) : null; } catch(e){ return null; } }
+function clearSaved(){ try { localStorage.removeItem(LS_KEY); } catch(e){} }
+
+function newSession(mode, pair){
+  return {
+    mode, pair, client: mode==="demo" ? {...DEMO_CLIENT} : genClient(pair),
+    regenUsed: false, step: 0, menu: {b:{}, l:{}, d:{}},
+    attempts: 0, lastKey: null, best: null, last: null, showRef: false
+  };
+}
+
+const STEPS = ["Клиент","Завтрак","Обед","Ужин","Сводка","Вердикт"];
+
+function canGo(i){
+  if (!S) return false;
+  if (i <= 3) return true;
+  return allValid(S.menu);
+}
+function go(i){
+  if (!canGo(i)) { if (i>=4) toast("Сначала соберите все три приёма пищи — минимум по 3 блюда"); return; }
+  if (i === 5) runVerdict();
+  S.step = i; S.showRef = false; save(); render(); window.scrollTo(0,0);
+}
+function runVerdict(){
+  const key = menuKey(S.menu);
+  const ev = evaluate(S.menu, S.client);
+  if (key !== S.lastKey) {
+    S.attempts += 1; S.lastKey = key;
+    const dg = diagnose(ev, S.client);
+    S.last = {pct:ev.pct, inRange:ev.inRange, attempt:S.attempts, hints:dg.hints, clean:dg.clean};
+    if (!S.best || ev.pct > S.best.pct || (ev.pct===S.best.pct && ev.inRange > S.best.inRange))
+      S.best = {pct:ev.pct, inRange:ev.inRange, attempt:S.attempts};
+  }
+}
+
+function toast(t){
+  clearTimeout(toastT);
+  let el = document.querySelector(".toast");
+  if (!el) { el = document.createElement("div"); el.className = "toast"; document.body.appendChild(el); }
+  el.textContent = t;
+  toastT = setTimeout(() => el.remove(), 2600);
+}
+function ask(title, text, okText, ok, cancelText="Отмена"){ modal = {title, text, okText, ok, cancelText}; render(); }
+
+/* ---------- ЭКРАНЫ ---------- */
+function vStart(){
+  const saved = loadSaved();
+  return `<div class="wrap start">
+    <div class="big-em">🥗</div>
+    <h1>Диетологи</h1>
+    <p class="lead">Вам придёт клиент. Соберите ему меню на день — завтрак, обед и ужин.<br>Приложение проверит, попали ли вы в его норму.</p>
+    ${saved && saved.client ? `<div class="row" style="justify-content:center;margin:18px 0">
+      <button class="btn" data-act="resume">▶ Продолжить: пара ${saved.pair}, клиент ${esc(saved.client.name)}</button></div>` : ""}
+    <h2>Выберите номер вашей пары</h2>
+    <div class="pairs">
+      ${[1,2,3,4].map(p => `<button class="pair-btn" data-act="pair" data-pair="${p}">Пара ${p}<small>начать</small></button>`).join("")}
+    </div>
+    <div class="start-extra">
+      <button class="btn ghost" data-act="demo">🎬 Демо-клиент (для учителя, на проектор)</button>
+      ${saved ? `<button class="linkish" data-act="reset">Сбросить устройство для нового урока</button>` : ""}
+    </div>
+  </div>`;
+}
+
+function vHeader(){
+  const cl = S.client;
+  return `<div class="top">
+    <div class="top-in">
+      <span class="brand">🥗 Диетологи</span>
+      ${S.mode==="demo" ? `<span class="badge demo">ДЕМО</span>` : `<span class="badge">Пара ${S.pair}</span>`}
+      <span class="who"><span class="ava-s">${cl.ava}</span>${esc(cl.name)}</span>
+      <button class="btn ghost" style="min-height:44px;padding:6px 14px;font-size:.9rem" data-act="home">⌂ В начало</button>
+    </div>
+    <div class="steps">
+      ${STEPS.map((s,i) => `<button class="step ${i===S.step?"on":canGo(i)?"can":""}" data-act="go" data-i="${i}" ${canGo(i)?"":"disabled"}>${i+1}. ${s}</button>`).join("")}
+    </div>
+  </div>`;
+}
+
+function vClient(){
+  const cl = S.client, n = norms(cl);
+  const act = cl.activity==="high" ? "высокая" : "низкая";
+  return `<div class="wrap">
+    <div class="hero">
+      <div class="ava">${cl.ava}</div>
+      <div>
+        <h1>${esc(cl.name)}</h1>
+        <div class="lead" style="margin:0">${cl.sex==="m"?"мальчик":"девочка"} · ${cl.age} лет · рост ${cl.height} см · вес ${cl.weight} кг</div>
+      </div>
+    </div>
+    <div class="facts">
+      <div class="fact"><div class="k">Активность</div><div class="v">${cl.activity==="high"?"🏃":"🚶"} ${act}</div></div>
+      <div class="fact ${cl.training?"hi":""}"><div class="k">Тренировка сегодня</div><div class="v">${cl.training?"⚽ да":"— нет"}</div></div>
+      <div class="fact ${cl.exam?"hi":""}"><div class="k">Контрольная сегодня</div><div class="v">${cl.exam?"📝 да":"— нет"}</div></div>
+      <div class="fact hi"><div class="k">Не любит</div><div class="v">${cl.dislikes.map(k => DISLIKES[k].em+" "+DISLIKES[k].t).join(", ")}</div></div>
+    </div>
+    ${cl.exam ? `<div class="exam"><span class="em">📝</span><div>${EXAM_PHRASE}</div></div>` : ""}
+    <h2>Норма клиента на день</h2>
+    <div class="norms">
+      <div class="norm"><div class="k">Калории</div><div class="v">${fmt(n.kcal)}</div><div class="u">ккал</div></div>
+      <div class="norm"><div class="k">Белки</div><div class="v">${n.p}</div><div class="u">г</div></div>
+      <div class="norm"><div class="k">Жиры</div><div class="v">${n.f}</div><div class="u">г</div></div>
+      <div class="norm"><div class="k">Углеводы</div><div class="v">${n.c}</div><div class="u">г</div></div>
+      <div class="norm"><div class="k">Жидкость</div><div class="v">${fmt(n.w)}</div><div class="u">мл</div></div>
+    </div>
+    <div class="note">${cl.training ? "Сегодня тренировка — норма калорий и БЖУ уже увеличена на 10%, жидкости добавлено 600 мл. " : ""}Жидкость — это всё, что пьём и едим жидкого: вода, чай, молоко, компот, суп.</div>
+    <div class="actions">
+      ${S.mode==="pair" ? (S.regenUsed
+        ? `<button class="btn ghost" disabled>🔄 Клиента уже меняли</button>`
+        : `<button class="btn warn" data-act="regen">🔄 Сменить клиента (1 раз)</button>`) : `<span></span>`}
+      <button class="btn" data-act="go" data-i="1">Собрать завтрак →</button>
+    </div>
+  </div>`;
+}
+
+/* Полоса в нижней панели складывается из трёх частей: вклад завтрака, обеда и ужина.
+   Шкала до 125% нормы, риска — сама норма. */
+function stackTrack(k, pm, n){
+  const MAXR = 1.25; let acc = 0, segs = "";
+  for (const M of MEALS) {
+    const w = pm[M.k][k] / n[k] / MAXR * 100;
+    const ww = Math.max(0, Math.min(w, 100 - acc));
+    if (ww > 0) segs += `<div class="seg" style="width:${ww}%;background:${MEAL_COL[M.k]}" title="${M.t}: ${fmt(pm[M.k][k])}"></div>`;
+    acc += ww;
+  }
+  return `<div class="tr st">${segs}<i class="tick" style="left:${100/MAXR}%"></i></div>`;
+}
+function vDock(m){
+  const n = norms(S.client), t = totals(S.menu);
+  const pm = {b:totals({b:S.menu.b}), l:totals({l:S.menu.l}), d:totals({d:S.menu.d})};
+  const cnt = Object.keys(S.menu[m]).length;
+  const idx = {b:1,l:2,d:3}[m];
+  const nextLbl = {b:"Обед →", l:"Ужин →", d:"Сводка дня →"}[m];
+  return `<div class="dock"><div class="dock-in">
+    <div class="mlegend">
+      ${MEALS.map(M => `<span class="${M.k===m?"cur":""}"><i style="background:${MEAL_COL[M.k]}"></i>${M.t}: ${fmt(pm[M.k].kcal)} ккал</span>`).join("")}
+      <span class="tk"><i class="tick-ic"></i>норма</span>
+    </div>
+    <div class="meters">
+      ${PARAMS.map(P => `<div class="meter"><div class="k">${P.t}</div>
+        <div class="v">${fmt(t[P.k])} / ${fmt(n[P.k])}</div>
+        ${stackTrack(P.k, pm, n)}</div>`).join("")}
+    </div>
+    <span class="count ${cnt<MIN_DISHES?"low":""}">Выбрано: ${cnt} ${cnt<MIN_DISHES?`(нужно ≥${MIN_DISHES})`:"✓"}</span>
+    <button class="btn ghost" data-act="go" data-i="${idx-1}">←</button>
+    <button class="btn" data-act="next" data-m="${m}" ${cnt<MIN_DISHES?"disabled":""}>${nextLbl}</button>
+  </div></div>`;
+}
+
+function vMeal(m){
+  const meal = MEALS.find(x => x.k===m), cl = S.client;
+  const examNote = (m==="b" && cl.exam) ? `<div class="exam" style="margin-bottom:12px"><span class="em">📝</span><div>${EXAM_PHRASE}</div></div>` : "";
+  const cards = DISHES.filter(d => d.meal===m).map(d => {
+    const ban = isBanned(d, cl), por = S.menu[m][d.id];
+    const tags = [d.cx?"🌾":"", isSweet(d)?"🍬":"", isAnimal(d)?"🥩":"", isPlant(d)?"🌱":""].join("");
+    return `<div class="dish ${ban?"ban":""} ${por?"sel":""}" data-act="${ban?"banned":"pickd"}" data-id="${d.id}">
+      ${ban ? `<span class="banlbl">не любит</span>` : por ? `<span class="check">✓</span>` : ""}
+      <div class="em">${d.em}</div>
+      <div class="nm">${esc(d.name)}</div>
+      <div class="sz">${d.size} · ${d.kcal} ккал</div>
+      <div class="nut">Б ${fmt(d.p)} · Ж ${fmt(d.f)} · У ${fmt(d.c)} · 💧${d.w}${d.s?` · сахар ${d.s}`:""}</div>
+      <div class="tags">${tags}</div>
+      ${por ? `<div class="por">${PORTIONS.map(p => `<button class="${p===por?"on":""}" data-act="por" data-id="${d.id}" data-p="${p}">${fmtP(p)}</button>`).join("")}
+        <button class="rm" data-act="rm" data-id="${d.id}" title="Убрать">✕</button></div>` : ""}
+    </div>`;
+  }).join("");
+  return `<div class="wrap">
+    <h1><span class="mswatch" style="background:${MEAL_COL[m]}"></span>${meal.em} ${meal.t}</h1>
+    <p class="lead">Нажмите на блюдо, чтобы добавить. Минимум ${MIN_DISHES} блюда. Порцию можно сделать меньше (×0,5) или больше (×1,5).</p>
+    ${examNote}
+    <div class="legend"><span>🌾 сложные углеводы</span><span>🍬 сладкое</span><span>🥩 животный белок</span><span>🌱 растительный белок</span><span>💧 жидкость, мл</span></div>
+    <div class="grid">${cards}</div>
+  </div>${vDock(m)}`;
+}
+
+function barHTML(r){
+  const MAXR = 1.5, ratio = r.got / r.norm;
+  const h = Math.min(ratio, MAXR) / MAXR * 100, nl = 100 - 100/MAXR;
+  const sign = r.dev > 0 ? "+" : r.dev < 0 ? "−" : "±";
+  return `<div class="bar">
+    <div class="val">${fmt(r.got)}</div>
+    <div class="of">из ${fmt(r.norm)} ${r.u}</div>
+    <div class="track">
+      <div class="fill lv-${r.lv}" style="height:${h}%"></div>
+      <div class="nline" style="top:${nl}%"></div><span class="nlbl" style="top:${nl}%">норма</span>
+    </div>
+    <div class="nm">${r.t}</div>
+    <span class="pill lv-${r.lv}">${sign}${Math.abs(r.dev)}%</span>
+  </div>`;
+}
+
+function vSummary(){
+  const ev = evaluate(S.menu, S.client);
+  const sugarPct = Math.round(ev.sugarShare*100), animalPct = Math.round(ev.animalShare*100);
+  return `<div class="wrap">
+    <h1>📊 Сводка дня</h1>
+    <p class="lead">Пунктир — норма клиента. Посмотрите, где перебор, а где не хватает — до вердикта ещё можно всё исправить.</p>
+    <div class="bars">${ev.rows.map(barHTML).join("")}</div>
+    <div class="keys">
+      <span><i class="lv-ok"></i>норма: отклонение до 10%</span>
+      <span><i class="lv-warn"></i>лёгкое отклонение: 10–20%</span>
+      <span><i class="lv-bad"></i>значительное: больше 20%</span>
+    </div>
+    <div class="extra">
+      <div class="fact"><div class="k">🍬 Калории из сладкого</div><div class="v">${sugarPct}% от нормы калорий <span style="color:var(--muted);font-weight:600">(предел — 10%)</span></div></div>
+      <div class="fact"><div class="k">🥩 Животный белок</div><div class="v">${animalPct}% всего белка <span style="color:var(--muted);font-weight:600">(нужно 60–70%)</span></div></div>
+    </div>
+    <div class="actions">
+      <button class="btn ghost" data-act="go" data-i="3">← Ужин</button>
+      <button class="btn" data-act="go" data-i="5">Получить вердикт →</button>
+    </div>
+  </div>`;
+}
+
+function vVerdict(){
+  const ev = evaluate(S.menu, S.client), L = S.last, cl = S.client;
+  const cls = L.clean ? "lv-ok" : ev.inRange >= 3 ? "lv-warn" : "lv-bad";
+  return `<div class="wrap">
+    <h1>🩺 Вердикт</h1>
+    <div class="verdict">
+      <div class="diag">
+        <div class="diag-h"><span class="em">${cl.ava}</span><h2>Диагноз диетолога</h2></div>
+        ${L.hints.map(h => `<div class="hint ${h.cls}"><span class="ic">${h.ic}</span><div>${esc(h.text)}</div></div>`).join("")}
+      </div>
+      <div class="score">
+        <div class="lbl">Попадание в норму</div>
+        <div class="pct" style="color:var(--${cls==="lv-ok"?"ok":cls==="lv-warn"?"warn":"bad"})">${L.pct}%</div>
+        <div class="n">${L.inRange} из 5</div>
+        <div class="lbl">в норме или с лёгким отклонением</div>
+        <div class="minis">
+          ${ev.rows.map(r => `<div class="mini pill lv-${r.lv}" style="margin:0"><span>${r.t}</span><span>${r.dev>0?"+":r.dev<0?"−":"±"}${Math.abs(r.dev)}%</span></div>`).join("")}
+        </div>
+        ${S.mode==="pair" ? `<div class="att">Попытка № ${L.attempt}${S.best ? ` · лучшая: ${S.best.pct}%, ${S.best.inRange} из 5 (попытка № ${S.best.attempt})` : ""}</div>` : ""}
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn ghost" data-act="rebuild">↩ Пересобрать меню</button>
+      <button class="btn" data-act="ref">${S.showRef ? "Скрыть эталон" : "👀 Показать эталон"}</button>
+    </div>
+    ${S.showRef ? vReference() : ""}
+  </div>`;
+}
+
+function vReference(){
+  const cl = S.client;
+  if (!S._ref || S._refFor !== JSON.stringify(cl)) { S._ref = buildReference(cl); S._refFor = JSON.stringify(cl); }
+  const ref = S._ref, evR = evaluate(ref, cl), evU = evaluate(S.menu, cl);
+  return `<div class="ref">
+    <h2 style="margin-top:0">👀 Эталон — ${evR.pct}% попадания</h2>
+    <p class="lead">Собран из тех же блюд, с учётом «не любит»${cl.exam?" и контрольной":""}. Это один из возможных вариантов, не единственный правильный.</p>
+    <div class="ref-meals">
+      ${MEALS.map(M => `<div class="ref-meal"><h3>${M.em} ${M.t}</h3><ul>
+        ${Object.keys(ref[M.k]).map(id => `<li>${DB[id].em} ${esc(DB[id].name)} <b>${fmtP(ref[M.k][id])}</b></li>`).join("")}
+      </ul></div>`).join("")}
+    </div>
+    <table class="cmp">
+      <tr><th></th><th>Норма</th><th>Эталон</th><th>Ваше меню</th></tr>
+      ${evR.rows.map((r,i) => `<tr><td><b>${r.t}</b>, ${r.u}</td><td>${fmt(r.norm)}</td>
+        <td><span class="pill lv-${r.lv}" style="margin:0">${fmt(r.got)}</span></td>
+        <td><span class="pill lv-${evU.rows[i].lv}" style="margin:0">${fmt(evU.rows[i].got)}</span></td></tr>`).join("")}
+    </table>
+  </div>`;
+}
+
+function vModal(){
+  if (!modal) return "";
+  return `<div class="modal"><div class="modal-box">
+    <h2>${modal.title}</h2><p>${modal.text}</p>
+    <div class="row" style="justify-content:flex-end">
+      <button class="btn ghost" data-act="m-cancel">${modal.cancelText}</button>
+      <button class="btn" data-act="m-ok">${modal.okText}</button>
+    </div></div></div>`;
+}
+
+function render(){
+  const app = document.getElementById("app");
+  if (deck.open) { app.innerHTML = vDeck(); return; }
+  if (!S) { app.innerHTML = vStart() + vModal(); return; }
+  let body = "";
+  switch (S.step) {
+    case 0: body = vClient(); break;
+    case 1: body = vMeal("b"); break;
+    case 2: body = vMeal("l"); break;
+    case 3: body = vMeal("d"); break;
+    case 4: body = vSummary(); break;
+    case 5: body = vVerdict(); break;
+  }
+  app.innerHTML = vHeader() + body + vModal();
+}
+
+/* ---------- ДЕЙСТВИЯ ---------- */
+function onClick(e){
+  const el = e.target.closest("[data-act]");
+  if (!el) return;
+  const a = el.dataset.act;
+  const mealOf = () => ["b","l","d"][S.step-1];
+
+  if (a === "m-cancel") { modal = null; render(); return; }
+  if (a === "m-ok") { const f = modal.ok; modal = null; f(); return; }
+
+  if (a === "pair") {
+    const p = +el.dataset.pair, saved = loadSaved();
+    const start = () => { S = newSession("pair", p); save(); render(); window.scrollTo(0,0); };
+    if (saved && saved.client) ask("Начать заново?", `На этом устройстве уже есть клиент ${esc(saved.client.name)} (пара ${saved.pair}). Если начать заново, он и меню пропадут.`, "Начать заново", start);
+    else start();
+    return;
+  }
+  if (a === "resume") { S = loadSaved(); S.showRef = false; render(); return; }
+  if (a === "demo") { S = newSession("demo"); render(); return; }
+  if (a === "deck-open") { deck.open = true; render(); window.scrollTo(0,0); return; }
+  if (a === "deck-close") { deck.open = false; render(); return; }
+  if (a === "deck-next") { deckMove(1); return; }
+  if (a === "deck-prev") { deckMove(-1); return; }
+  if (a === "deck-notes") { deck.notes = !deck.notes; render(); return; }
+  if (a === "deck-demo") { deck.open = false; if (!S || S.mode!=="demo") S = newSession("demo"); S.step = 0; render(); window.scrollTo(0,0); return; }
+  if (a === "reset") { ask("Сбросить устройство?", "Клиент и меню на этом устройстве будут удалены. Делайте так только перед новым уроком.", "Сбросить", () => { clearSaved(); S = null; render(); }); return; }
+  if (a === "home") { S = null; render(); return; }
+  if (a === "go") { go(+el.dataset.i); return; }
+
+  if (a === "regen") {
+    const hasMenu = Object.values(S.menu).some(m => Object.keys(m).length);
+    ask("Сменить клиента?", `Сменить можно только <b>один раз</b>, и вернуть ${esc(S.client.name)} будет нельзя.${hasMenu?" Собранное меню удалится.":""}`, "Да, сменить", () => {
+      S.client = genClient(S.pair, S.client.name);
+      S.regenUsed = true; S.menu = {b:{},l:{},d:{}}; S.attempts = 0; S.best = null; S.last = null; S.lastKey = null;
+      save(); render();
+    });
+    return;
+  }
+  if (a === "banned") { toast(`${S.client.name} это не ест — выберите другое блюдо`); return; }
+  if (a === "pickd") { const m = mealOf(), id = el.dataset.id; if (!S.menu[m][id]) { S.menu[m][id] = 1; save(); render(); } return; }
+  if (a === "por") { e.stopPropagation(); S.menu[mealOf()][el.dataset.id] = +el.dataset.p; save(); render(); return; }
+  if (a === "rm") { e.stopPropagation(); delete S.menu[mealOf()][el.dataset.id]; save(); render(); return; }
+  if (a === "next") { const m = el.dataset.m; if (!mealValid(S.menu, m)) return; go({b:2,l:3,d:4}[m]); return; }
+  if (a === "rebuild") { go(1); return; }
+  if (a === "ref") {
+    if (S.showRef) { S.showRef = false; render(); return; }
+    const open = () => { S.showRef = true; render(); setTimeout(() => { const r = document.querySelector(".ref"); if (r) r.scrollIntoView({behavior:"smooth"}); }, 50); };
+    if (S.mode === "pair") ask("Открыть эталон?", "Сначала запишите свой лучший результат в таблицу на доске. После эталона пересобирать меню уже неинтересно 🙂", "Записали — открыть", open);
+    else open();
+    return;
+  }
+}
+
+if (typeof document !== "undefined") {
+  document.addEventListener("click", onClick);
+  document.addEventListener("keydown", e => {
+    /* Режим учителя открывается и закрывается скрытой комбинацией Ctrl+` (в русской раскладке Ctrl+Ё) — кнопки на экране нет, чтобы дети не заходили в слайды */
+    if (e.ctrlKey && (e.code === "Backquote" || e.key === "`" || e.key === "ё" || e.key === "Ё")) {
+      e.preventDefault(); modal = null; deck.open = !deck.open; render(); window.scrollTo(0,0); return;
+    }
+    if (!deck.open || modal) return;
+    if (["ArrowRight","PageDown"," "].includes(e.key)) { e.preventDefault(); deckMove(1); }
+    else if (["ArrowLeft","PageUp"].includes(e.key)) { e.preventDefault(); deckMove(-1); }
+    else if (e.key==="n" || e.key==="N" || e.key==="т" || e.key==="Т") { deck.notes = !deck.notes; render(); }
+    else if (e.key==="Escape") { deck.open = false; render(); }
+  });
+  render();
+}
+</script>
+</body>
+</html>

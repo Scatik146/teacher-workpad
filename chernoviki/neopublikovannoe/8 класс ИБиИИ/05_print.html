@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Цифровые двойники в промышленности — раздаточный материал (8 класс)</title>
+<style>
+  @page { size: A4; margin: 12mm; }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+    color: #000000;
+  }
+
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11pt;
+    line-height: 1.3;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .page {
+    width: 186mm;
+    max-width: 186mm;
+    margin: 0 auto;
+  }
+
+  .p1 { page-break-after: always; break-after: page; }
+  .p2 { page-break-after: always; break-after: page; }
+  .p3 { page-break-after: auto; break-after: auto; }
+
+  h1 {
+    font-size: 16pt;
+    line-height: 1.15;
+    margin: 0 0 3mm 0;
+  }
+
+  h2 {
+    font-size: 14pt;
+    line-height: 1.15;
+    margin: 3.5mm 0 1.5mm 0;
+  }
+
+  p { margin: 0 0 1.6mm 0; }
+
+  /* ================= СТРАНИЦА 1 ================= */
+
+  table { border-collapse: collapse; }
+
+  table.decision {
+    width: 100%;
+    table-layout: fixed;
+    border: 0.3mm solid #000;
+    margin: 0 0 1.2mm 0;
+    page-break-inside: avoid;
+  }
+
+  table.decision th,
+  table.decision td {
+    border: 0.3mm solid #000;
+    padding: 1.3mm 2mm;
+    font-size: 10.5pt;
+    line-height: 1.2;
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  table.decision th { font-weight: bold; }
+
+  table.tel {
+    width: 120mm;
+    table-layout: fixed;
+    border: 0.3mm solid #000;
+    page-break-inside: avoid;
+  }
+
+  table.tel th,
+  table.tel td {
+    border: 0.3mm solid #000;
+    padding: 0.85mm 2mm;
+    font-size: 10.5pt;
+    line-height: 1.1;
+    text-align: left;
+    font-weight: normal;
+  }
+
+  table.tel th { font-weight: bold; }
+
+  .col-day  { width: 22mm; }
+  .col-temp { width: 49mm; }
+  .col-vib  { width: 49mm; }
+
+  .legend {
+    font-size: 9.5pt;
+    margin: 0 0 1.2mm 0;
+  }
+
+  /* ================= СТРАНИЦА 2 ================= */
+
+  .p2 {
+    font-size: 10pt;
+    line-height: 1.08;
+  }
+
+  .p2 h1 {
+    font-size: 12.5pt;
+    margin: 0 0 0.6mm 0;
+  }
+
+  .p2 h1.gap { margin-top: 1.6mm; }
+
+  .p2 p { margin: 0 0 0.45mm 0; }
+
+  .sub {
+    font-style: italic;
+    margin: 0 0 0.8mm 0;
+  }
+
+  .steps p {
+    margin: 0 0 0.35mm 0;
+    padding-left: 6.5mm;
+    text-indent: -6.5mm;
+  }
+
+  .mk { display: inline-block; width: 6.5mm; text-indent: 0; }
+
+  .note { font-style: italic; }
+
+  .blank30 {
+    height: 26mm;
+  }
+
+  /* ================= СТРАНИЦА 3 ================= */
+
+  .board {
+    display: flex;
+    align-items: flex-start;
+    height: 180mm;
+    margin-top: 3mm;
+  }
+
+  .labels {
+    position: relative;
+    height: 180mm;
+    flex: 0 0 7.5mm;
+    width: 7.5mm;
+  }
+
+  .labels span {
+    position: absolute;
+    font-size: 6.5pt;
+    line-height: 1;
+    white-space: nowrap;
+    transform: translateY(50%);
+  }
+
+  .labels.left span  { right: 0.8mm; }
+  .labels.right span { left: 0.8mm; }
+
+  .grid {
+    flex: 0 0 170mm;
+    width: 170mm;
+    height: 180mm;
+    border: 0.3mm solid #000;
+    box-sizing: border-box;
+    position: relative;
+    background: #fff;
+  }
+
+  .grid svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .scale-note {
+    margin: 1mm 0 0 7.5mm;
+    font-size: 7.5pt;
+    line-height: 1.15;
+  }
+
+  .days {
+    margin-left: 7.5mm;
+    width: 170mm;
+    display: flex;
+    padding-top: 0.8mm;
+  }
+
+  .days span {
+    flex: 1 1 0;
+    text-align: center;
+    font-size: 8pt;
+    line-height: 1;
+  }
+
+  .ref {
+    margin-top: 3.5mm;
+  }
+
+  .ref h2 {
+    font-size: 13pt;
+    margin: 0 0 1.8mm 0;
+  }
+
+  .ref-row {
+    display: flex;
+    gap: 8mm;
+  }
+
+  .ref-item { width: 36mm; }
+
+  .mini {
+    position: relative;
+    width: 36mm;
+    height: 36mm;
+    border: 0.3mm solid #000;
+    background-image:
+      linear-gradient(to right, #a0a0a0 0.2mm, transparent 0.2mm),
+      linear-gradient(to bottom, #a0a0a0 0.2mm, transparent 0.2mm);
+    background-size: 6mm 100%, 100% 6mm;
+    background-repeat: repeat, repeat;
+    background-position: 0 0, 0 0;
+  }
+
+  .dot {
+    position: absolute;
+    width: 2.4mm;
+    height: 2.4mm;
+    border-radius: 50%;
+    background: #000;
+    transform: translate(-50%, -50%);
+  }
+
+  .ln {
+    position: absolute;
+    height: 0.45mm;
+    background: #000;
+    transform-origin: 0 50%;
+  }
+
+  .cap {
+    margin-top: 1.2mm;
+    font-size: 8pt;
+    text-align: center;
+  }
+
+  /* экранное отображение листов (на печать не влияет) */
+  @media screen {
+    body { background: #f0f0f0; padding: 8mm 0; }
+    .page {
+      background: #fff;
+      padding: 12mm;
+      width: 210mm;
+      max-width: 210mm;
+      margin-bottom: 8mm;
+      box-shadow: 0 0 2mm rgba(0,0,0,0.25);
+    }
+    .page:last-child { margin-bottom: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= СТРАНИЦА 1 ================= -->
+<div class="page p1">
+
+  <h1>ПОБУДЬ ДВОЙНИКОМ</h1>
+
+  <p>На фрезерном станке с ЧПУ ведётся мониторинг состояния подшипника шпинделя. Частота вращения шпинделя — 6 000 об/мин; основной режим — черновое фрезерование стали 45. Подшипник шпинделя отработал 8 200 часов из расчётного ресурса 10 000 часов. Последняя замена смазки — 2 месяца назад.</p>
+
+  <p><b>75 °C — порог планового обслуживания, а не поломки.</b> Двойник экономит не на аварии, а на дешёвой плановой замене вместо дорогого простоя.</p>
+
+  <h2>Таблица решений</h2>
+
+  <table class="decision">
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">T &lt; 75 °C</th>
+      <th scope="col">T ≥ 75 °C</th>
+    </tr>
+    <tr>
+      <th scope="row">V &lt; 3,5 мм/с</th>
+      <td>наблюдение (действий не требуется)</td>
+      <td>обслуживание</td>
+    </tr>
+    <tr>
+      <th scope="row">V ≥ 3,5 мм/с</th>
+      <td>обслуживание</td>
+      <td><b>замена</b></td>
+    </tr>
+  </table>
+
+  <p class="legend">T — температура, °C; V — вибрация, мм/с.</p>
+
+  <p>„Обслуживание“ — смазать, подтянуть, проверить на следующей остановке. „Замена“ — менять подшипник.</p>
+
+  <p>В некоторые дни на станке шли партии с тяжёлым черновым резанием. Тяжёлый режим повышает вибрацию, но за один день не успевает заметно поднять температуру подшипника.</p>
+
+  <h2>Таблица телеметрии за 14 дней</h2>
+
+  <table class="tel">
+    <tr>
+      <th class="col-day">День</th>
+      <th class="col-temp">Температура, °C</th>
+      <th class="col-vib">Вибрация, мм/с</th>
+    </tr>
+    <tr><td>1</td><td>61,8</td><td>1,6</td></tr>
+    <tr><td>2</td><td>63,0</td><td>1,8</td></tr>
+    <tr><td>3</td><td>63,0</td><td>1,7</td></tr>
+    <tr><td>4</td><td>63,8</td><td>2,0</td></tr>
+    <tr><td>5</td><td>65,1</td><td>1,9</td></tr>
+    <tr><td>6</td><td>65,0</td><td>2,2</td></tr>
+    <tr><td>7</td><td>66,7</td><td>2,3</td></tr>
+    <tr><td>8</td><td>66,8</td><td>4,3</td></tr>
+    <tr><td>9</td><td>68,2</td><td>2,4</td></tr>
+    <tr><td>10</td><td>68,1</td><td>2,6</td></tr>
+    <tr><td>11</td><td>69,6</td><td>2,9</td></tr>
+    <tr><td>12</td><td>69,8</td><td>4,1</td></tr>
+    <tr><td>13</td><td>71,0</td><td>3,0</td></tr>
+    <tr><td>14</td><td>71,6</td><td>3,2</td></tr>
+  </table>
+
+</div>
+
+<!-- ================= СТРАНИЦА 2 ================= -->
+<div class="page p2">
+
+  <h1>Уровень 1. „Диспетчер“ (4 мин)</h1>
+  <p class="sub">Это подготовка к прогнозу: сам прогноз ты построишь в уровне 2.</p>
+
+  <p>1. Пройди по столбцу „Температура“ от дня 1 до дня 14. Растёт ли она каждый день? Подчеркни дни, когда она понизилась или осталась прежней. Если бы ты смотрел только на один такой день — какой вывод сделал бы? А если на все 14 дней — меняется ли вывод?</p>
+
+  <p>2. Найди день, когда температура впервые достигла 65 °C или выше.</p>
+
+  <p>3. Найди в столбце „Вибрация“ дни, которые резко выбиваются из ряда соседних значений. Прочитай последнюю строку легенды и определи: это дефект подшипника, сбой датчика или режим работы?</p>
+
+  <h1 class="gap">Уровень 2. „Инженер прогноза“ (10 мин) — две группы точек, две прямые, один вывод</h1>
+
+  <p>4. Отметь на листе все 14 точек температуры (первый цвет) и все 14 точек вибрации (второй цвет). Точку ставь в центре клетки дня t.</p>
+
+  <p>5. Построй через каждую группу точек наилучшую прямую: двигай линейку, пока прямая не пройдёт как можно ближе к как можно большему числу точек, а точек выше и ниже не станет примерно поровну. Точки, лежащие далеко от остальных, прямая не должна „ловить“ — она описывает общий ход данных. Сверься с картинкой-эталоном на планшете. Продли обе прямые до дня 20.</p>
+
+  <p>6. Проведи горизонтальные линии порогов: 75 °C (по левой шкале) и 3,5 мм/с (по правой). Визуально определи: на какой день каждая из твоих прямых пересекает свой порог?</p>
+
+  <p>7. Твоя прямая — это график функции y = k·t + b, где t — день, y — значение. Найди коэффициенты и сделай прогноз:</p>
+
+  <div class="steps">
+    <p><span class="mk">(a)</span> выбери на своей прямой две точки там, где она проходит точно через пересечение линий сетки; если прямая не проходит точно через узел — выбери ближайший узел. Чем дальше точки друг от друга, тем точнее будет коэффициент. Отметь их кружком ○ и подпиши координаты: (t₁; y₁) и (t₂; y₂). Точки берутся с твоей прямой, а не из таблицы; если случайно совпали с табличными — это нормально, главное, что ты брал их с прямой;</p>
+    <p><span class="mk">(b)</span> найди коэффициент наклона: k = (y₂ − y₁)/(t₂ − t₁);</p>
+    <p><span class="mk">(c)</span> найди второй коэффициент: b = y₁ − k·t₁;</p>
+    <p><span class="mk">(d)</span> подставь в формулу y = k·t + b значение порога (y = 75 для температуры, y = 3,5 для вибрации) и найди день: t = (порог − b)/k;</p>
+    <p><span class="mk">(e)</span> округли t ВВЕРХ до целого дня — остановку назначают на целый день, а не на дробную часть;</p>
+    <p><span class="mk">(f)</span> сверь расчёт с чертежом: расчётный день и место пересечения прямой с линией порога должны совпасть с точностью до 1 дня. Разошлись сильнее — проверь прямую и чтение точек.</p>
+  </div>
+
+  <p>Повтори шаги (a)–(f) для второго канала.</p>
+
+  <p>8. Прочитай со своих прямых значения температуры и вибрации для трёх дней — 17, 19, 20 — и сведи их в таблицу решений. В какой день впервые наступает состояние „замена“? Какой канал вошёл в зону обслуживания раньше — вибрация или температура?</p>
+
+  <p>9. Ты — ИИ-агент. Напиши директору рекомендацию из двух предложений: что делать, когда и почему — со ссылкой на оба канала, а не на один. <span class="note">(Помни: настоящий ИИ анализирует тысячи подшипников и спектры вибраций — сегодня ты упрощённо проиграл его роль.)</span></p>
+
+  <div class="blank30"></div>
+
+  <h1 class="gap">Уровень 3. „Инженер-сомневающийся“ ★ (по желанию, отчёт не обязателен)</h1>
+
+  <p>10. По твоей таблице решений вибрация вошла в зону обслуживания раньше температуры. Если у тебя вибрация вошла в зону раньше — ответь: почему в реальности вибрация предупреждает о дефекте первой? (Подсказка в легенде.) Если одновременно или позже — пропусти, это допустимый результат.</p>
+
+  <p>11. Для самых быстрых (письменный ответ): что „предсказывает“ прямая, проведённая через два выброса?</p>
+
+  <p>12. А если выброс — не режим и не сбой, а подделка? Как убедиться, что датчику можно верить? (Подумай: соседние датчики, повторное измерение, канал передачи.)</p>
+
+</div>
+
+<!-- ================= СТРАНИЦА 3 ================= -->
+<div class="page p3">
+
+  <h1>Лист для построений</h1>
+
+  <div class="board">
+
+    <div class="labels left">
+      <span style="bottom:0mm">60</span>
+      <span style="bottom:9mm">61</span>
+      <span style="bottom:18mm">62</span>
+      <span style="bottom:27mm">63</span>
+      <span style="bottom:36mm">64</span>
+      <span style="bottom:45mm">65</span>
+      <span style="bottom:54mm">66</span>
+      <span style="bottom:63mm">67</span>
+      <span style="bottom:72mm">68</span>
+      <span style="bottom:81mm">69</span>
+      <span style="bottom:90mm">70</span>
+      <span style="bottom:99mm">71</span>
+      <span style="bottom:108mm">72</span>
+      <span style="bottom:117mm">73</span>
+      <span style="bottom:126mm">74</span>
+      <span style="bottom:135mm">75</span>
+      <span style="bottom:144mm">76</span>
+      <span style="bottom:153mm">77</span>
+      <span style="bottom:162mm">78</span>
+      <span style="bottom:171mm">79</span>
+      <span style="bottom:180mm">80</span>
+    </div>
+
+    <div class="grid">
+      <svg viewBox="0 0 170 180" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <!-- дни: чёрные вертикальные линии через 8,5 мм -->
+          <pattern id="dayGrid" width="8.5" height="180" patternUnits="userSpaceOnUse">
+            <path d="M 8.5 0 L 8.5 180" fill="none" stroke="#000000" stroke-width="0.22"/>
+          </pattern>
+
+          <!-- температура: синие горизонтальные линии через 4,5 мм (0,5 °C) -->
+          <pattern id="tempGrid" width="170" height="4.5" patternUnits="userSpaceOnUse">
+            <path d="M 0 4.5 L 170 4.5" fill="none" stroke="#2b5db8" stroke-width="0.22"/>
+          </pattern>
+
+          <!-- вибрация: красные горизонтальные линии через 6 мм (0,1 мм/с) -->
+          <pattern id="vibGrid" width="170" height="6" patternUnits="userSpaceOnUse">
+            <path d="M 0 6 L 170 6" fill="none" stroke="#c62828" stroke-width="0.32"/>
+          </pattern>
+        </defs>
+
+        <rect width="170" height="180" fill="#ffffff"/>
+
+        <!-- дни -->
+        <rect width="170" height="180" fill="url(#dayGrid)"/>
+
+        <!-- температура -->
+        <rect width="170" height="180" fill="url(#tempGrid)"/>
+
+        <!-- вибрация -->
+        <rect width="170" height="180" fill="url(#vibGrid)"/>
+      </svg>
+    </div>
+
+    <div class="labels right">
+      <span style="bottom:0mm">1,5</span>
+      <span style="bottom:30mm">2,0</span>
+      <span style="bottom:60mm">2,5</span>
+      <span style="bottom:90mm">3,0</span>
+      <span style="bottom:120mm">3,5</span>
+      <span style="bottom:150mm">4,0</span>
+      <span style="bottom:180mm">4,5</span>
+    </div>
+
+  </div>
+
+  <div class="scale-note">
+    Синие линии — температура (0,5 °C), красные — вибрация (0,1 мм/с), чёрные вертикальные — дни.
+    Обе шкалы одной физической высоты (180 мм), но с разным числом клеток: T — 40 клеток, V — 30 клеток.
+  </div>
+
+  <div class="days">
+    <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+    <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+    <span>11</span><span>12</span><span>13</span><span>14</span><span>15</span>
+    <span>16</span><span>17</span><span>18</span><span>19</span><span>20</span>
+  </div>
+
+  <div class="ref">
+    <h2>Картинка-эталон: как проводить прямую</h2>
+
+    <div class="ref-row">
+
+      <!-- 1. Правильно: 4 точки точно на прямой, остальные примерно поровну -->
+      <div class="ref-item">
+        <div class="mini">
+          <div class="ln" style="left:2mm; top:29.8mm; width:40mm; transform:rotate(-36.87deg);"></div>
+
+          <div class="dot" style="left:6mm;  top:26.8mm;"></div>
+          <div class="dot" style="left:12mm; top:22.3mm;"></div>
+          <div class="dot" style="left:18mm; top:17.8mm;"></div>
+          <div class="dot" style="left:27mm; top:11.05mm;"></div>
+
+          <div class="dot" style="left:9mm;  top:23.2mm;"></div>
+          <div class="dot" style="left:15mm; top:20.8mm;"></div>
+          <div class="dot" style="left:23mm; top:12.8mm;"></div>
+          <div class="dot" style="left:31mm; top:8.8mm;"></div>
+        </div>
+        <div class="cap">Правильно</div>
+      </div>
+
+      <!-- 2. Неправильно: в данных явный рост, а прямая почти горизонтальна -->
+      <div class="ref-item">
+        <div class="mini">
+          <div class="ln" style="left:3mm; top:22mm; width:30.27mm; transform:rotate(-7.6deg);"></div>
+          <div class="dot" style="left:6mm;  top:28mm;"></div>
+          <div class="dot" style="left:10mm; top:24mm;"></div>
+          <div class="dot" style="left:14mm; top:20mm;"></div>
+          <div class="dot" style="left:18mm; top:16mm;"></div>
+          <div class="dot" style="left:22mm; top:12mm;"></div>
+          <div class="dot" style="left:26mm; top:8mm;"></div>
+          <div class="dot" style="left:30mm; top:4mm;"></div>
+        </div>
+        <div class="cap">Неправильно</div>
+      </div>
+
+      <!-- 3. Неправильно: горизонтальная прямая при растущих данных -->
+      <div class="ref-item">
+        <div class="mini">
+          <div class="ln" style="left:2mm; top:18mm; width:32mm; transform:rotate(0deg);"></div>
+          <div class="dot" style="left:6mm;  top:28mm;"></div>
+          <div class="dot" style="left:10mm; top:25mm;"></div>
+          <div class="dot" style="left:14mm; top:22mm;"></div>
+          <div class="dot" style="left:18mm; top:18mm;"></div>
+          <div class="dot" style="left:22mm; top:14mm;"></div>
+          <div class="dot" style="left:26mm; top:10mm;"></div>
+          <div class="dot" style="left:30mm; top:6mm;"></div>
+        </div>
+        <div class="cap">Неправильно</div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

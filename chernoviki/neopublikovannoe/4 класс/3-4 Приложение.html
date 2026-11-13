@@ -1,0 +1,239 @@
+<!-- 
+ШПАРГАЛКА УЧИТЕЛЯ (CyberSecurity Lesson 4th Grade)
+========================================================================
+1. СОХРАНЕНИЕ: Убедитесь, что файл сохранён в кодировке UTF-8.
+2. ЗАПУСК: Откройте файл в браузере. Нажмите F11 (полноэкранный режим).
+3. СБРОС: Нажмите F5 для перезагрузки и сброса прогресса (всё в памяти).
+4. ПОРЯДОК УРОКА: 
+   - Вступление: "Мы учимся на чужих ошибках, чтобы не делать своих".
+   - Прохождение 5 демо-карточек вместе с классом.
+   - Развилка: обсуждение, почему "Сам разберусь" — это ловушка.
+   - Самостоятельное прохождение карточек 6-11.
+   - Экран F3 (ловушка с подменой ссылки).
+   - Финальный тест (5 вопросов).
+5. ОБЕЩАНИЕ УЧИТЕЛЯ: "Я не ругаю за ошибки в симуляции. Это безопасное пространство. Я не пересказываю твои ответы другим".
+6. КЛЮЧЕВОЙ ПРИНЦИП: "Ты не виноват — виноват тот, кто обманывает. Всегда говори взрослому, которому доверяешь".
+========================================================================
+-->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Кибербезопасность: 4 класс</title>
+<style>
+:root{--bg:#000;--frame:#2c2c2e;--scr:#1c1c1e;--bub:#2c2c2e;--usr:#0a84ff;--txt:#fff;--sec:#8e8e93;--dan:#ff453a;--suc:#30d158}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;padding:0;background:#111;display:flex;justify-content:center;align-items:center;min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:var(--txt)}
+.phone{width:380px;height:750px;background:var(--bg);border-radius:45px;border:8px solid var(--frame);position:relative;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.8),inset 0 0 10px rgba(255,255,255,.1);display:flex;flex-direction:column}
+.island{width:120px;height:35px;background:#000;border-radius:20px;position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:100}
+.status-bar{height:50px;padding:15px 25px 0;display:flex;justify-content:space-between;font-size:14px;font-weight:600;z-index:90}
+.screen{flex:1;display:flex;flex-direction:column;background:var(--scr);overflow:hidden}
+.chat{flex:1;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
+.chat::-webkit-scrollbar{width:4px}.chat::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
+.msg{max-width:85%;padding:12px 16px;border-radius:20px;border-bottom-left-radius:6px;background:var(--bub);font-size:15px;line-height:1.4;animation:pop .3s ease;position:relative}
+.msg.usr{align-self:flex-end;background:var(--usr);border-bottom-left-radius:20px;border-bottom-right-radius:6px}
+.msg-h{font-size:13px;color:var(--sec);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.sender{color:#ffd60a !important;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,0.8);letter-spacing:0.3px}
+.msg-t{font-size:11px;opacity:.7;margin-left:auto}
+.frag{display:inline}.frag.dng{cursor:pointer;border-radius:4px;transition:background .2s}.frag.dng:hover{background:rgba(255,255,255,0.1)}.frag.dng.pulse{animation:pulse 1.5s infinite;background:rgba(255,69,58,0.15)}.frag.tapped{background:rgba(48,209,88,0.3);border-bottom:2px solid var(--suc);cursor:default}
+.ctrl{padding:16px;background:rgba(28,28,30,.95);border-top:1px solid #333;display:flex;flex-direction:column;gap:10px;min-height:140px;backdrop-filter:blur(10px)}
+.btn{width:100%;padding:14px;border:none;border-radius:14px;font-size:16px;font-weight:600;cursor:pointer;transition:transform .1s,opacity .2s;display:flex;justify-content:center;align-items:center;gap:8px}
+.btn:active{transform:scale(.96)}.btn-p{background:var(--usr);color:#fff}.btn-d{background:rgba(255,69,58,.2);color:var(--dan);border:1px solid var(--dan)}.btn-s{background:rgba(48,209,88,.2);color:var(--suc);border:1px solid var(--suc)}.btn-2{background:#3a3a3c;color:#fff}.btn:disabled{opacity:.5;cursor:not-allowed}
+.exp{background:rgba(0,0,0,.8);position:absolute;top:0;left:0;right:0;bottom:0;z-index:200;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:30px;text-align:center;opacity:0;pointer-events:none;transition:opacity .3s}
+.exp.act{opacity:1;pointer-events:all}.exp-box{background:#2c2c2e;border-radius:20px;padding:24px;width:100%;border:1px solid #444;animation:pop .3s ease}
+.trust{margin-top:16px;padding-top:16px;border-top:1px solid #444;color:var(--suc);font-size:14px;font-weight:600;line-height:1.4}
+@keyframes pop{from{opacity:0;transform:translateY(20px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,69,58,.4)}50%{box-shadow:0 0 0 8px rgba(255,69,58,0)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.shake{animation:shake .4s ease}.hid{display:none!important}.tc{text-align:center}.mb{margin-bottom:8px}.ttl{font-size:22px;font-weight:700;margin-bottom:8px}.sub{color:var(--sec);font-size:15px;margin-bottom:20px}
+.topt{text-align:left;justify-content:flex-start;margin-bottom:8px;background:#3a3a3c}.topt.cor{background:rgba(48,209,88,.3);border:1px solid var(--suc)}.topt.wrn{background:rgba(255,69,58,.3);border:1px solid var(--dan)}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="island"></div>
+  <div class="status-bar"><span>9:41</span><span>📶 🔋</span></div>
+  <div class="screen">
+    <div class="chat" id="chat"></div>
+    <div class="ctrl" id="ctrl"></div>
+  </div>
+  <div class="exp" id="exp">
+    <div class="exp-box">
+      <div class="ttl" id="expT">Разбор</div>
+      <div id="expTx" style="font-size:16px;line-height:1.5;margin-bottom:10px"></div>
+      <div id="expTr" class="trust hid">Ты не виноват — виноват тот, кто обманывает. Скажи взрослому, которому доверяешь.</div>
+      <button class="btn btn-p" style="margin-top:20px" onclick="app.nxt()">Далее</button>
+    </div>
+  </div>
+</div>
+<script>
+const C=[
+{id:1,av:"🎁",snd:"Призовой бот",tm:"14:32",segs:[{t:"Твой приз утверждён! Пришли "},{t:"код",f:1},{t:", который тебе сейчас придёт в сообщение, — через час сгорит"}],d:1,e:"Код из сообщения — это ключ от твоего аккаунта. Никто не раздаёт призы за код.",tr:0},
+{id:2,av:"⚠️",snd:"Модерация",tm:"14:35",segs:[{t:"На твой аккаунт поступила жалоба. Если не ответишь "},{t:"за 10 минут",f:1},{t:", "},{t:"удалим сегодня",f:1},{t:" вместе со всеми скинами"}],d:1,e:"Настоящая модерация не ставит таймер. Спешка и угроза — приём, чтобы ты не успел подумать.",tr:1},
+{id:3,av:"🛠️",snd:"Поддержка",tm:"14:38",segs:[{t:"Здравствуй! Это "},{t:"служба поддержки",f:1},{t:". Заметили странный вход, помогу защитить. Пришли "},{t:"код",f:1},{t:", который придёт"}],d:1,e:"Флаг 1: Поддержка отвечает, только когда ты сам написал. Если «поддержка» пришла сама — это вор в костюме.",tr:1},
+{id:4,av:"👦",snd:"Тимур",tm:"14:40",segs:[{t:"Привет, это Тимур. Его взломали, я с другого. Мне "},{t:"код из СМС",f:1},{t:" надо, без него не восстановится"}],d:1,e:"Если друг просит код — позвони ему или спроси вживую. Взломанный аккаунт рассылает такие сообщения.",tr:0},
+{id:5,av:"🎮",snd:"Сервер",tm:"14:42",segs:[{t:"Чтобы попасть на сервер, "},{t:"🔑 Войти через игру",f:1,btn:1}],d:1,e:"Флаг 2: Кнопка «Войти через…» — это уже передача ключа. Входи только внутри самого приложения игры.",tr:0},
+{id:6,av:"🚨",snd:"Контроль",tm:"15:01",segs:[{t:"На тебя жалоба, ты в списке нарушителей. Родителям "},{t:"не говори",f:1},{t:" — я сам всё решу"}],d:1,e:"Флаг 4: «Никому не говори» — самый громкий сигнал: вору нужно, чтобы взрослые не увидели.",tr:1},
+{id:7,mode:"act",av:"🎧",snd:"Игрок",tm:"15:05",segs:[{t:"Я тут "},{t:"админ сервера",f:1},{t:" — "},{t:"донат закину или админку дам",f:1},{t:", только "},{t:"никому",f:1}],d:1,actions:["Забрать донат 🎁","Отказаться, молчать 🤐","Отказаться, сказать взрослому 🗣️"],correct:2,why:[{t:"Обещают подарок или деньги",ok:1},{t:"Пугают и торопят",ok:0},{t:"Просят код или доступ",ok:0},{t:"Просто хотят подружиться",ok:0}],e:"«Админ» не раздаёт админку незнакомцам. «Только никому» — сигнал, что от тебя хотят спрятать что-то плохое.",tr:1},
+{id:8,mode:"act",av:"👤",snd:"Незнакомец",tm:"15:10",segs:[{t:"Дам 500, дашь мессенджер на недельку. Родителям "},{t:"не говори",f:1},{t:" — не поймут. Делать ничего не надо"}],d:1,actions:["Согласиться, 500₽ же 💰","Отказаться и молчать 🤐","Отказаться, сказать взрослому 🗣️"],correct:2,why:[{t:"Просят никому не говорить",ok:1},{t:"Пугают и торопят",ok:0},{t:"Обещают подарок или деньги",ok:0},{t:"Просто дружелюбное сообщение",ok:0}],e:"Из твоего аккаунта будут обманывать других. Нормальная работа не начинается со слов «никому не говорить».",tr:1},
+{id:9,av:"📦",snd:"Файл",tm:"15:15",segs:[{t:"Скинул мод, просто "},{t:"открой файл",f:1},{t:" — сам установится, там всё чисто"}],d:1,e:"Файл от незнакомца — это вирус в подарок. Никогда не открывай файлы от тех, кого не знаешь вживую.",tr:0},
+{id:10,av:"👩",snd:"Мама",tm:"15:20",segs:[{t:"Заеду за тобой в 18:30"}],d:0,e:"Обычное сообщение. Нет ни кода, ни спешки, ни просьбы молчать. Не всё подозрительное — опасно.",tr:0},
+{id:11,av:"🙂",snd:"Незнакомец",tm:"15:22",segs:[{t:"Смотри, какой мем нашёл 😂😂😂"}],d:0,e:"Мем без ссылок и просьб. Признак опасности — не «незнакомец», а просьба, код или спешка.",tr:0},
+{id:12,av:"👥",snd:"Клан",tm:"15:30",segs:[{t:"Заходи, только "},{t:"никому",f:1}],d:1,e:"Резерв",tr:1},
+{id:13,av:"⚠️",snd:"Модер",tm:"15:35",segs:[{t:"Не ответишь — "},{t:"удалим",f:1}],d:1,e:"Резерв",tr:1},
+{id:14,av:"👧",snd:"Сестра",tm:"15:40",segs:[{t:"Одолжи аккаунт"}],d:0,e:"Резерв",tr:0},
+{id:15,av:"👦",snd:"Однокл",tm:"15:45",segs:[{t:"Сфоткай экран"}],d:0,e:"Резерв",tr:0},
+{id:16,av:"💬",snd:"Чат",tm:"15:50",segs:[{t:"Авторизуйся "},{t:"тут",f:1}],d:1,e:"Резерв",tr:1},
+{id:17,av:"🎥",snd:"Блогер",tm:"15:55",segs:[{t:"Активируй по "},{t:"ссылке",f:1}],d:1,e:"Резерв",tr:1},
+{id:18,av:"💰",snd:"Трейдер",tm:"16:00",segs:[{t:"Проверка на "},{t:"жадность",f:1}],d:1,e:"Резерв",tr:1}
+];
+const TQ=[
+{q:"Служба поддержки просит код из СМС",a:["Мошенник","Нормальная практика","Нужно помочь","Это шутка"],c:0},
+{q:"Кнопка «Войти через…» в подозрительном сообщении",a:["Удобно","Передача ключа","Безопасно","Требование игры"],c:1},
+{q:"Фраза «Никому не рассказывай»",a:["Секрет дружбы","Самый громкий сигнал опасности","Нормальная просьба","Игровая механика"],c:1},
+{q:"Ты перешёл по ссылке и понял, что ошибся",a:["Сказать взрослому","Быстро закрыть и молчать","Попробовать ещё раз","Удалить браузер"],c:0},
+{q:"Сообщение торопит: «Осталось 10 минут!»",a:["Признак обмана","Забота о времени","Стандартная процедура","Причина поторопиться"],c:0}
+];
+
+const app={
+st:'start',idx:0,score:0,actStep:0,selAct:-1,
+init(){this.render()},
+render(){
+const ch=document.getElementById('chat'),ct=document.getElementById('ctrl');
+ch.innerHTML='';ct.innerHTML='';
+if(this.st==='start'){
+this.addMsg('sys','Привет! Сегодня мы научимся замечать ловушки в интернете. Ты готов?');
+ct.innerHTML='<button class="btn btn-p" onclick="app.st=\'demo\';app.idx=0;app.render()">Начать урок</button>';
+}else if(this.st==='demo'||this.st==='indep'){
+const c=C[this.idx];
+this.addMsg(c.av,c.snd,c.tm,c.segs);
+if(c.mode==='act'){
+this.actStep=1;this.selAct=-1;
+ct.innerHTML=c.actions.map((a,i)=>`<button class="btn btn-2" onclick="app.pickAct(${i})">${a}</button>`).join('');
+}else{
+ct.innerHTML=`<button class="btn btn-d" onclick="app.pickBin(1)">Опасно</button><button class="btn btn-s" onclick="app.pickBin(0)">Безопасно</button>`;
+}
+}else if(this.st==='fork'){
+this.addMsg('sys','Демо окончено. Что делать, если сообщение подозрительное?');
+const opts=["Сказать взрослому 🗣️","Сам разберусь 💪"].sort(()=>Math.random()-.5);
+ct.innerHTML=opts.map(o=>`<button class="btn btn-2" onclick="app.forkChoice('${o}')">${o}</button>`).join('');
+}else if(this.st==='f3'){
+this.addMsg('👦','Друг','15:25',[{t:"Глянь, бесплатные монеты тут: "},{t:"game.com",f:1,link:1}]);
+ct.innerHTML=`<button class="btn btn-d" onclick="app.f3Choice(0)">Открыть ссылку</button><button class="btn btn-s" onclick="app.f3Choice(1)">Сначала посмотреть</button>`;
+}else if(this.st==='test'){
+if(this.idx<5){
+const q=TQ[this.idx];
+this.addMsg('sys',`Вопрос ${this.idx+1}/5: ${q.q}`);
+ct.innerHTML=q.a.map((a,i)=>`<button class="btn btn-2 topt" onclick="app.pickTest(${i})">${a}</button>`).join('');
+}else{this.st='final';this.render();}
+}else if(this.st==='final'){
+let rank="Стажёр";if(this.score>=5)rank="Эксперт 🔒";else if(this.score>=3)rank="Знаток 🛡️";
+this.addMsg('sys',`Тест завершён! Результат: ${this.score}/5. Звание: ${rank}`);
+this.addMsg('sys','Запомни правило: Стоп → Подумай → Проверь → Действуй.');
+this.addMsg('sys','И главное: Ты не виноват — виноват тот, кто обманывает.');
+ct.innerHTML='<button class="btn btn-p" onclick="location.reload()">Пройти ещё раз</button>';
+}
+},
+addMsg(av,snd,tm,segs){
+const ch=document.getElementById('chat');
+const isSys=av==='sys';
+const div=document.createElement('div');
+div.className='msg'+(isSys?'':' usr');
+if(!isSys){
+let h=`<div class="msg-h"><span>${av}</span><span class="sender">${snd}</span><span class="msg-t">${tm}</span></div>`;
+let txt=segs.map((s,i)=>{
+if(s.btn)return ` <span class="frag dng" onclick="app.tapFrag(this)">${s.t}</span> `;
+if(s.link)return ` <span class="frag dng" style="color:#0a84ff;text-decoration:underline" onclick="app.tapFrag(this)">${s.t}</span> `;
+if(s.f)return `<span class="frag dng" onclick="app.tapFrag(this)">${s.t}</span>`;
+return s.t;
+}).join('');
+div.innerHTML=h+`<div>${txt}</div>`;
+}else{
+div.innerHTML=`<div>${snd}</div>`;
+}
+ch.appendChild(div);ch.scrollTop=ch.scrollHeight;
+},
+pickBin(d){
+const c=C[this.idx];
+if(d===c.d){
+if(c.d===1){
+document.querySelectorAll('.frag.dng').forEach(f=>f.classList.add('pulse'));
+this.addMsg('sys','Найди и нажми на подозрительный фрагмент текста.');
+}else{
+this.showExp(c);
+}
+}else{
+document.getElementById('ctrl').classList.add('shake');
+setTimeout(()=>document.getElementById('ctrl').classList.remove('shake'),400);
+this.addMsg('sys','Подумай ещё раз. Внимательно прочти сообщение.');
+}
+},
+tapFrag(el){
+if(!el.classList.contains('dng'))return;
+el.classList.remove('pulse','dng');el.classList.add('tapped');
+this.showExp(C[this.idx]);
+},
+pickAct(i){
+this.selAct=i;
+const c=C[this.idx];
+if(i===c.correct){
+this.actStep=2;
+const ct=document.getElementById('ctrl');
+ct.innerHTML='<div class="sub tc">Почему это правильный выбор?</div>'+c.why.map((w,j)=>`<button class="btn btn-2 topt" onclick="app.pickWhy(${j})">${w.t}</button>`).join('');
+}else{
+this.addMsg('sys','Этот вариант может быть опасен. Попробуй другой.');
+}
+},
+pickWhy(i){
+const c=C[this.idx];
+if(c.why[i].ok){
+this.showExp(c);
+}else{
+this.addMsg('sys','Не совсем так. Подумай, что именно является главным сигналом опасности.');
+}
+},
+showExp(c){
+document.getElementById('expTx').textContent=c.e;
+document.getElementById('expTr').classList.toggle('hid',!c.tr);
+document.getElementById('exp').classList.add('act');
+},
+nxt(){
+document.getElementById('exp').classList.remove('act');
+const isLast=this.idx===10;
+if(this.st==='demo'){
+if(isLast){this.st='fork';}
+else{this.idx++;this.render();}
+}else if(this.st==='indep'){
+if(isLast){this.st='f3';}
+else{this.idx++;this.render();}
+}else if(this.st==='f3'||this.st==='test'){
+this.st='test';this.idx=0;this.render();
+}
+},
+forkChoice(o){
+if(o.includes('Сам')){
+this.addMsg('sys','Именно этого он и ждёт! Мошенники надеются, что ты будешь действовать втайне.');
+const ct=document.getElementById('ctrl');
+ct.innerHTML='<button class="btn btn-p" onclick="app.st=\'indep\';app.idx=5;app.render()">Выбрать ещё раз (правильно)</button>';
+}else{
+this.st='indep';this.idx=5;this.render();
+}
+},
+f3Choice(i){
+if(i===0){
+this.addMsg('sys','⚠️ Это ловушка! Ссылка выглядит как game.com, но ведёт на game-free.com, чтобы украсть данные.');
+}else{
+this.addMsg('sys','Верно! Сначала проверь ссылку. Наведи на неё (или зажми), чтобы увидеть настоящий адрес.');
+}
+setTimeout(()=>{this.st='test';this.idx=0;this.render();},2000);
+},
+pickTest(i){
+if(i===TQ[this.idx].c)this.score++;
+this.idx++;this.render();
+}
+};
+app.init();
+</script>
+</body>
+</html>

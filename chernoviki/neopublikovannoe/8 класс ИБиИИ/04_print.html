@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Карточки Jigsaw — ИИ в спорте (3 листа A4)</title>
+<style>
+  :root{
+    --ink:#1a1a2e; --muted:#5a5a72;
+    --blue:#1b4fa0; --blue-bg:#eef4fd;
+    --green:#1e7a46; --green-bg:#edf8f1;
+    --red:#b03a2e; --red-bg:#fdf1ef;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:Georgia,'Times New Roman',serif; color:var(--ink); background:#d9dde3;}
+  .screen-note{
+    max-width:210mm; margin:10px auto; padding:10px 14px;
+    font-family:Arial,Helvetica,sans-serif; font-size:13px;
+    background:#fff3c4; border:1px solid #e0c33f; border-radius:8px;
+  }
+  .screen-note b{color:#7a5c00;}
+  .page{
+    width:297mm; min-height:210mm; margin:12px auto;
+    background:#fff; padding:12mm 14mm;
+    display:flex; flex-direction:column;
+    box-shadow:0 2px 8px rgba(0,0,0,.25);
+  }
+  .page-head{
+    display:flex; justify-content:space-between; align-items:baseline;
+    border-bottom:3px solid var(--ink); padding-bottom:6px; margin-bottom:10px;
+  }
+  .page-head .letter{
+    font-family:Arial,Helvetica,sans-serif; font-weight:bold;
+    font-size:34px; padding:2px 14px; border-radius:8px; color:#fff;
+  }
+  .card-A .letter{background:var(--blue);}
+  .card-B .letter{background:var(--green);}
+  .card-C .letter{background:var(--red);}
+  .page-head .label{
+    font-family:Arial,Helvetica,sans-serif; font-size:13px; color:var(--muted);
+  }
+  h1{font-size:23px; line-height:1.25; margin-bottom:4px;}
+  .card-A h1{color:var(--blue);} .card-B h1{color:var(--green);} .card-C h1{color:var(--red);}
+  .subtitle{
+    font-family:Arial,Helvetica,sans-serif; font-size:12.5px; color:var(--muted);
+    margin-bottom:12px;
+  }
+  .case{
+    font-size:15.5px; line-height:1.5; padding:10px 12px;
+    border-radius:8px; margin-bottom:12px;
+  }
+  .card-A .case{background:var(--blue-bg);}
+  .card-B .case{background:var(--green-bg);}
+  .card-C .case{background:var(--red-bg);}
+  .case .q{
+    display:block; margin-top:8px; font-weight:bold; font-size:15px;
+  }
+  .lens{border:2px solid var(--ink); border-radius:8px; padding:10px 12px; margin-bottom:12px;}
+  .lens h2{font-family:Arial,Helvetica,sans-serif; font-size:14px; margin-bottom:8px;}
+  .lens-row{display:flex; gap:10px; margin-bottom:8px;}
+  .lens-box{
+    flex:1; border:1.5px solid var(--muted); border-radius:6px; padding:6px 8px;
+    font-family:Arial,Helvetica,sans-serif; font-size:12px; color:var(--muted);
+  }
+  .lens-box pre{
+    font-family:Georgia,serif; font-size:14px; color:var(--ink);
+    min-height:52px; margin-top:4px; white-space:pre-wrap;
+    border-bottom:1px dotted #999; line-height:1.7;
+  }
+  .lens-box b{font-size:12.5px; color:var(--ink);}
+  .terms{
+    background:#f5f5f7; border-radius:8px; padding:9px 12px; margin-bottom:12px;
+    font-family:Arial,Helvetica,sans-serif; font-size:12.5px; line-height:1.55;
+  }
+  .terms b{font-size:12.5px;}
+  .challenge{
+    border-left:4px solid #e0a800; background:#fffaea; padding:8px 12px;
+    margin-bottom:12px; font-size:13.5px; line-height:1.5;
+  }
+  .challenge b{font-family:Arial,Helvetica,sans-serif; font-size:12.5px;}
+  .role{
+    font-family:Arial,Helvetica,sans-serif; font-size:12.5px;
+    padding:7px 10px; border:1.5px dashed var(--muted); border-radius:6px;
+    margin-bottom:12px;
+  }
+  .source{
+    margin-top:auto; border-top:1.5px solid #bbb; padding-top:7px;
+    font-family:Arial,Helvetica,sans-serif; font-size:11.5px; color:var(--muted);
+    font-style:italic;
+  }
+  @page{size:A4 landscape; margin:0;}
+  @media print{
+    body{background:#fff;}
+    .screen-note{display:none;}
+    .page{box-shadow:none; margin:0; width:100%; min-height:auto;
+      page-break-after:always;}
+    .page:last-child{page-break-after:auto;}
+  }
+</style>
+</head>
+<body>
+
+<div class="screen-note">
+  <b>Экранная подсказка (в печать не попадёт):</b> Файл → Печать (Ctrl+P). Ориентация — альбомная, масштаб — 100% (не «вписать»), поля — по умолчанию. На выходе — ровно 3 листа, по одному на группу. Выдайте карточку группе лицом вниз и попросите не показывать соседям до доклада.
+</div>
+
+<!-- КАРТОЧКА А -->
+<section class="page card-A">
+  <div class="page-head">
+    <span class="letter">А</span>
+    <span class="label">Кейс-карточка · Урок «ИИ в спорте» · Группа 1</span>
+  </div>
+  <h1>Технический сбой: система молчит в самый нужный момент</h1>
+  <p class="subtitle">Чем видит? Камеры и чип. Что видит? 29 точек на теле. Сегодня — «где ломается?»</p>
+
+  <div class="case">
+    Чемпионат мира — 2026, матч «Швейцария — Катар». Судья назначил пенальти, и все ждали проверки:
+    привычного графика офсайда на экранах стадиона не появилось. Журналисты и болельщики остались
+    без объяснения — система не показала ничего. Через несколько часов ФИФА официально признала:
+    произошёл <b>технический сбой</b>. Решение осталось в силе, но доверие к «чёрному ящику»,
+    который не объясняет свои ответы, пошатнулось.
+    <span class="q">Главный вопрос кейса: что страшнее для доверия — ошибка системы или её молчание?</span>
+  </div>
+
+  <div class="lens">
+    <h2>Линза: прогоните кейс через четыре вопроса</h2>
+    <div class="lens-row">
+      <div class="lens-box"><b>Что видит?</b><pre></pre></div>
+      <div class="lens-box"><b>Чем видит?</b><pre></pre></div>
+    </div>
+    <div class="lens-row">
+      <div class="lens-box"><b>Где ломается?</b> — письменно, одна фраза:<pre></pre></div>
+      <div class="lens-box"><b>Кому принадлежат данные?</b><pre></pre></div>
+    </div>
+  </div>
+
+  <div class="role">
+    <b>Роли:</b> спикер — проговаривает доклад (45 сек), таймкипер — следит за временем,
+    скептик — ищет слабые места в выводах. Письменно — только «Где ломается?».
+  </div>
+
+  <div class="challenge">
+    <b>Для скептика (задание со звёздочкой):</b> система сломалась целиком. Что надёжнее —
+    чтобы при сбое решение принимал человек, или чтобы решение вообще не принималось? Одно предложение.
+  </div>
+
+  <div class="terms">
+    <b>Напоминание терминов:</b><br>
+    <b>SAOT</b> — полуавтоматическая система офсайда: камеры строят 29 точек на теле игрока,
+    чип в мяче даёт точку мяча, линию и решение готовит машина, а подтверждает видеоарбитр.
+    «Полу» — потому что последнее слово за человеком.<br>
+    <b>VAR</b> — видеопомощник арбитра: смотрит повторы и подсказывает судье на поле.<br>
+    <b>Чип в мяче</b> — датчик внутри мяча, передаёт положение мяча 500 раз в секунду (500 Гц).
+  </div>
+
+  <div class="source">Источник: Sport-Express, 2026.</div>
+</section>
+
+<!-- КАРТОЧКА Б -->
+<section class="page card-B">
+  <div class="page-head">
+    <span class="letter">Б</span>
+    <span class="label">Кейс-карточка · Урок «ИИ в спорте» · Группа 2</span>
+  </div>
+  <h1>Человек в контуре: кнопка, которую нажали не вовремя</h1>
+  <p class="subtitle">Даже безошибочная машина ломается, если рядом с ней стоит человек. Сегодня — «где ломается?»</p>
+
+  <div class="case">
+    Уимблдон — 2025. На центральном корте теннисный матч решал электронный судья — линии смотрят
+    камеры и алгоритм, крики «аут» давно отменили. В решающий момент — на гейм-пойнте — система
+    молчит: игрока оставили без ответа. Расследование показало: сотрудник турнира <b>вручную
+    отключил систему</b>. Организаторы тут же запретили ручное отключение. Директор турнира
+    Салли Болтон объяснила (пересказ): «Работа системы требует участия человека — это не
+    искусственный интеллект».
+    <span class="q">Главный вопрос кейса: кто точка отказа в этой истории — машина или человек рядом с ней?</span>
+  </div>
+
+  <div class="lens">
+    <h2>Линза: прогоните кейс через четыре вопроса</h2>
+    <div class="lens-row">
+      <div class="lens-box"><b>Что видит?</b><pre></pre></div>
+      <div class="lens-box"><b>Чем видит?</b><pre></pre></div>
+    </div>
+    <div class="lens-row">
+      <div class="lens-box"><b>Где ломается?</b> — письменно, одна фраза:<pre></pre></div>
+      <div class="lens-box"><b>Кому принадлежат данные?</b><pre></pre></div>
+    </div>
+  </div>
+
+  <div class="role">
+    <b>Роли:</b> спикер — проговаривает доклад (45 сек), таймкипер — следит за временем,
+    скептик — ищет слабые места в выводах. Письменно — только «Где ломается?».
+  </div>
+
+  <div class="challenge">
+    <b>Для скептика (задание со звёздочкой):</b> кто отвечает за ошибку — разработчик системы,
+    оператор, который её отключил, или организатор, разрешивший кнопку? Выберите одного и обоснуйте.
+  </div>
+
+  <div class="terms">
+    <b>Напоминание терминов:</b><br>
+    <b>VAR</b> — видеопомощник арбитра: смотрит повторы и подсказывает судье на поле.<br>
+    <b>Чип в мяче</b> — датчик внутри мяча, передаёт положение мяча 500 раз в секунду (500 Гц).<br>
+    <b>SAOT</b> — полуавтоматическая система офсайда: «полу» — потому что решение подтверждает
+    человек (видеоарбитр). Этот кейс — о второй половине слова «полу».
+  </div>
+
+  <div class="source">Источник: BBC Sport / Wimbledon, 2025.</div>
+</section>
+
+<!-- КАРТОЧКА В -->
+<section class="page card-C">
+  <div class="page-head">
+    <span class="letter">В</span>
+    <span class="label">Кейс-карточка · Урок «ИИ в спорте» · Группа 3</span>
+  </div>
+  <h1>Невидимое касание: ИИ прав — и никто не хочет его слушать</h1>
+  <p class="subtitle">Касание, которого не видит даже замедленный повтор. Сегодня — «где ломается?»</p>
+
+  <div class="case">
+    Португалия — Хорватия, 1/16 финала чемпионата мира — 2026 (Торонто, 3 июля). 103-я минута:
+    Гвардиол забивает, счёт меняется. Но за секунду до удара мяч едва заметно чиркнул по причёске
+    Матановича — на повторе касание <b>не видно вообще</b>. Чип в мяче (Connected Ball) зафиксировал
+    всплеск сигнала: офсайд пересчитали с момента касания — гол отменили правильно.
+    Матанович после матча: «Я почувствовал лёгкое касание по волосам… судья сказал: у них есть
+    чип в мяче — было лёгкое прикосновение, и поэтому это был офсайд». Капитан Лука Модрич решение
+    раскритиковал: в повторе команда касания не увидела.
+    <span class="q">Главный вопрос кейса: как поверить решению, которое никто не может увидеть своими глазами?</span>
+  </div>
+
+  <div class="lens">
+    <h2>Линза: прогоните кейс через четыре вопроса</h2>
+    <div class="lens-row">
+      <div class="lens-box"><b>Что видит?</b><pre></pre></div>
+      <div class="lens-box"><b>Чем видит?</b><pre></pre></div>
+    </div>
+    <div class="lens-row">
+      <div class="lens-box"><b>Где ломается?</b> — письменно, одна фраза:<pre></pre></div>
+      <div class="lens-box"><b>Кому принадлежат данные?</b><pre></pre></div>
+    </div>
+  </div>
+
+  <div class="role">
+    <b>Роли:</b> спикер — проговаривает доклад (45 сек), таймкипер — следит за временем,
+    скептик — ищет слабые места в выводах. Письменно — только «Где ломается?».
+  </div>
+
+  <div class="challenge">
+    <b>Для скептика (задание со звёздочкой):</b> камера обновляет картинку 50 раз в секунду,
+    чип — 500 раз в секунду. Посчитайте, во сколько раз чип «видит» мяч чаще, и объясните,
+    почему камера могла не заметить касание, а чип — заметил.
+  </div>
+
+  <div class="terms">
+    <b>Напоминание терминов:</b><br>
+    <b>Чип в мяче (Connected Ball)</b> — датчик внутри мяча: положение мяча 500 раз в секунду
+    (500 Гц). Камеры SAOT — 29 точек на теле игрока, 50 кадров в секунду (50 Гц).<br>
+    <b>VAR</b> — видеопомощник арбитра: смотрит повторы и подсказывает судье на поле.<br>
+    <b>SAOT</b> — полуавтоматическая система офсайда: линию и решение готовит машина,
+    подтверждает человек.
+  </div>
+
+  <div class="source">Источник: РИА Новости Спорт, 03.07.2026.</div>
+</section>
+
+</body>
+</html>

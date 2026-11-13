@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Раздаточный материал — Обработка естественного языка</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: white;
+            color: #333;
+            font-size: 9pt;
+            line-height: 1.3;
+        }
+
+        .page {
+            width: 210mm;
+            height: 297mm;
+            padding: 8mm;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 {
+            font-size: 14pt;
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 3mm;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 2mm;
+        }
+
+        h2 {
+            font-size: 10pt;
+            color: #667eea;
+            margin: 2mm 0 1mm 0;
+        }
+
+        h3 {
+            font-size: 9pt;
+            margin: 1mm 0;
+        }
+
+        .student-info {
+            display: flex;
+            gap: 3mm;
+            margin-bottom: 2mm;
+            font-size: 8pt;
+        }
+
+        .student-info div {
+            flex: 1;
+        }
+
+        .line {
+            border-bottom: 1px solid #999;
+            display: inline-block;
+            width: 50mm;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1mm 0;
+            font-size: 8pt;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            padding: 1.5mm;
+            text-align: left;
+            font-weight: 600;
+            border: 1px solid #5568d3;
+        }
+
+        td {
+            padding: 1.5mm;
+            border: 1px solid #ddd;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9ff;
+        }
+
+        .task-number {
+            font-weight: 600;
+            color: #667eea;
+            width: 5mm;
+            text-align: center;
+        }
+
+        .field-name {
+            font-weight: 600;
+            width: 28mm;
+        }
+
+        .cards-row {
+            display: flex;
+            gap: 2mm;
+            margin: 2mm 0;
+        }
+
+        .card {
+            flex: 1;
+            border: 2px solid;
+            padding: 2mm;
+            border-radius: 1.5mm;
+        }
+
+        .card-basic {
+            border-color: #28a745;
+            background: #f8fff9;
+        }
+
+        .card-advanced {
+            border-color: #dc3545;
+            background: #fff8f8;
+        }
+
+        .card-header {
+            font-size: 9pt;
+            font-weight: 600;
+            margin-bottom: 1mm;
+            padding-bottom: 0.5mm;
+            border-bottom: 1px solid;
+        }
+
+        .card-basic .card-header {
+            color: #28a745;
+            border-color: #28a745;
+        }
+
+        .card-advanced .card-header {
+            color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .template-box {
+            background: white;
+            border: 1px dashed #667eea;
+            padding: 1.5mm;
+            margin: 1mm 0;
+            font-family: 'Courier New', monospace;
+            font-size: 8pt;
+        }
+
+        .blank {
+            display: inline-block;
+            border-bottom: 1px dotted #667eea;
+            min-width: 20mm;
+            margin: 0 1mm;
+        }
+
+        .requirements {
+            margin: 1mm 0;
+            padding-left: 3mm;
+            font-size: 8pt;
+        }
+
+        .requirements li {
+            margin: 0.5mm 0;
+        }
+
+        .additional-task {
+            background: #e7f3ff;
+            border-left: 2px solid #667eea;
+            padding: 1mm;
+            margin-top: 1mm;
+            font-size: 7pt;
+        }
+
+        .note {
+            background: #fff3cd;
+            border-left: 2px solid #ffc107;
+            padding: 1.5mm;
+            margin: 1mm 0;
+            font-size: 7pt;
+        }
+
+        .scheme-container {
+            display: flex;
+            gap: 2mm;
+            margin: 2mm 0;
+        }
+
+        .scheme-box {
+            flex: 1;
+            background: #f8f9ff;
+            border: 1px solid #667eea;
+            padding: 2mm;
+            border-radius: 1.5mm;
+        }
+
+        .scheme-step {
+            display: flex;
+            align-items: center;
+            margin: 1mm 0;
+            padding: 1mm;
+            background: white;
+            border-radius: 1mm;
+            border-left: 2px solid #667eea;
+        }
+
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 4mm;
+            height: 4mm;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 7pt;
+            margin-right: 1.5mm;
+            flex-shrink: 0;
+        }
+
+        .step-title {
+            font-weight: 600;
+            font-size: 8pt;
+            color: #667eea;
+        }
+
+        .step-description {
+            font-size: 7pt;
+            color: #666;
+        }
+
+        .terms-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1.5mm;
+            margin: 1.5mm 0;
+        }
+
+        .term-card {
+            background: white;
+            border: 1px solid #667eea;
+            padding: 1.5mm;
+            border-radius: 1mm;
+        }
+
+        .term-name {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 8pt;
+            margin-bottom: 0.3mm;
+        }
+
+        .term-definition {
+            font-size: 7pt;
+            color: #555;
+        }
+
+        .formula-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5mm;
+            border-radius: 1.5mm;
+            text-align: center;
+            font-size: 8pt;
+            font-weight: 600;
+            margin: 1mm 0;
+        }
+
+        .safety-rules {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 2mm;
+            margin: 2mm 0;
+            border-radius: 1.5mm;
+            font-size: 8pt;
+        }
+
+        .safety-rules strong {
+            color: #856404;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .page {
+                width: 100%;
+                height: 100vh;
+                padding: 5mm;
+            }
+
+            @page {
+                size: A4;
+                margin: 5mm;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <h1>Рабочая карта урока: Обработка естественного языка</h1>
+        
+        <div class="student-info">
+            <div>ФИО: <span class="line"></span></div>
+            <div>Класс: <span class="line" style="width: 15mm;"></span></div>
+            <div>Дата: <span class="line" style="width: 15mm;"></span></div>
+        </div>
+
+        <div class="safety-rules">
+            <strong>⚠️ Правила безопасности:</strong> Не вводим личные данные. Используем только обезличенные запросы. Всегда проверяем факты из ответов ИИ!
+        </div>
+
+        <h2>Практическая работа с ИИ</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th class="task-number">№</th>
+                    <th class="field-name">Поле</th>
+                    <th>Что записать</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="task-number">1</td>
+                    <td class="field-name">Мой промпт</td>
+                    <td>Полный текст запроса к нейросети</td>
+                </tr>
+                <tr>
+                    <td class="task-number">2</td>
+                    <td class="field-name">Сервис</td>
+                    <td>GigaChat / YandexGPT (подчеркните)</td>
+                </tr>
+                <tr>
+                    <td class="task-number">3</td>
+                    <td class="field-name">Ответ модели</td>
+                    <td>2–3 предложения из ответа</td>
+                </tr>
+                <tr>
+                    <td class="task-number">4</td>
+                    <td class="field-name">Факт для проверки</td>
+                    <td>Один факт, дату или имя для перепроверки</td>
+                </tr>
+                <tr>
+                    <td class="task-number">5</td>
+                    <td class="field-name">Источник проверки</td>
+                    <td>Ссылка или название источника</td>
+                </tr>
+                <tr>
+                    <td class="task-number">6</td>
+                    <td class="field-name">Результат</td>
+                    <td>Подтвердился / ошибочный (галлюцинация)</td>
+                </tr>
+                <tr>
+                    <td class="task-number">7</td>
+                    <td class="field-name">Вывод</td>
+                    <td>Полезный / галлюцинация / много «воды»</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="note">
+            <strong>Базовый:</strong> строки 1–4 обязательны, 5–7 по желанию. <strong>Повышенный:</strong> все строки + анализ нарушений ограничений.
+        </div>
+
+        <h2>Карточки для дифференциации</h2>
+
+        <div class="cards-row">
+            <div class="card card-basic">
+                <div class="card-header">🟢 Базовый уровень</div>
+                <h3>Используй шаблон:</h3>
+                <div class="template-box">
+                    Объясни тему <span class="blank"></span> для <span class="blank"></span> в формате <span class="blank"></span>
+                </div>
+                <div class="additional-task">
+                    <strong>Доп.:</strong> Отправь запрос без аудитории и формата. Сравни ответы.
+                </div>
+            </div>
+
+            <div class="card card-advanced">
+                <div class="card-header">🔴 Повышенный уровень</div>
+                <h3>Промпт с 4+ ограничениями:</h3>
+                <div class="formula-box">[Действие] + [Тема] + [Аудитория] + [Формат] + [Ограничения]</div>
+                <ul class="requirements">
+                    <li>Укажи роль для ИИ</li>
+                    <li>Запрети определённые слова</li>
+                    <li>Ограничь объём 50 словами</li>
+                </ul>
+                <div class="additional-task">
+                    <strong>Доп.:</strong> Модель нарушила ограничения? Есть ли предвзятость?
+                </div>
+            </div>
+        </div>
+
+        <h2>Схема-опорка: Как работает ИИ</h2>
+
+        <div class="scheme-container">
+            <div class="scheme-box">
+                <h3>Как ИИ читает текст (NLP)</h3>
+                <div class="scheme-step">
+                    <div class="step-number">1</div>
+                    <div>
+                        <div class="step-title">Токенизация</div>
+                        <div class="step-description">«Нейросеть» → «Нейро» + «сеть»</div>
+                    </div>
+                </div>
+                <div class="scheme-step">
+                    <div class="step-number">2</div>
+                    <div>
+                        <div class="step-title">Лемматизация</div>
+                        <div class="step-description">«бежал» → «бежать»</div>
+                    </div>
+                </div>
+                <div class="scheme-step">
+                    <div class="step-number">3</div>
+                    <div>
+                        <div class="step-title">Векторизация</div>
+                        <div class="step-description">Слова → числа (координаты смысла)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="scheme-box">
+                <h3>Три этапа обучения LLM</h3>
+                <div class="scheme-step">
+                    <div class="step-number">1</div>
+                    <div>
+                        <div class="step-title">Pre-train</div>
+                        <div class="step-description">Читает интернет, учит язык</div>
+                    </div>
+                </div>
+                <div class="scheme-step">
+                    <div class="step-number">2</div>
+                    <div>
+                        <div class="step-title">Fine-tune</div>
+                        <div class="step-description">Учится понимать инструкции</div>
+                    </div>
+                </div>
+                <div class="scheme-step">
+                    <div class="step-number">3</div>
+                    <div>
+                        <div class="step-title">RLHF</div>
+                        <div class="step-description">Люди оценивают ответы</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3>Ключевые термины</h3>
+        <div class="terms-grid">
+            <div class="term-card">
+                <div class="term-name">Токен</div>
+                <div class="term-definition">Кусочек слова или символ</div>
+            </div>
+            <div class="term-card">
+                <div class="term-name">Промпт</div>
+                <div class="term-definition">Запрос к нейросети</div>
+            </div>
+            <div class="term-card">
+                <div class="term-name">Галлюцинация</div>
+                <div class="term-definition">Ложные факты от ИИ</div>
+            </div>
+            <div class="term-card">
+                <div class="term-name">Трансформер</div>
+                <div class="term-definition">Архитектура LLM</div>
+            </div>
+            <div class="term-card">
+                <div class="term-name">Векторизация</div>
+                <div class="term-definition">Слова → числа</div>
+            </div>
+            <div class="term-card">
+                <div class="term-name">RLHF</div>
+                <div class="term-definition">Обучение с оценкой людей</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

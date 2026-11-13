@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Чертёж: Пошаговое построение</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, Helvetica, sans-serif; background: #f4f4f4; color: #111; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+  
+  header {
+    background: #2c3e50; color: #fff; padding: 10px 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 16px; height: 50px; flex-shrink: 0;
+  }
+  #stage-counter { font-weight: bold; color: #f1c40f; }
+
+  main {
+    flex: 1; display: flex; position: relative; background: #fff; overflow: hidden;
+  }
+  
+  #sheet-area {
+    flex: 2; display: flex; justify-content: center; align-items: center;
+    background: #e8e8e8; padding: 20px; position: relative;
+  }
+  #a4-sheet {
+    background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    aspect-ratio: 297 / 210; height: 95%; width: auto; position: relative;
+  }
+  #a4-sheet svg { width: 100%; height: 100%; display: block; }
+
+  #sidebar {
+    flex: 1; padding: 30px; background: #fff; border-left: 2px solid #ddd;
+    display: flex; flex-direction: column; justify-content: center;
+    font-size: 18px; line-height: 1.5; overflow-y: auto;
+  }
+  .sidebar-title { font-size: 22px; font-weight: bold; margin-bottom: 15px; color: #2c3e50; }
+  .sidebar-text { margin-bottom: 15px; }
+  .highlight { color: #E0301E; font-weight: bold; }
+  .closeup-svg { width: 100%; border: 1px dashed #ccc; background: #fafafa; margin-top: 10px; }
+
+  footer {
+    background: #fff; border-top: 1px solid #ccc; padding: 15px 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    height: 70px; flex-shrink: 0;
+  }
+  .controls { display: flex; gap: 10px; }
+  button {
+    padding: 10px 20px; font-size: 16px; cursor: pointer;
+    background: #3498db; color: #fff; border: none; border-radius: 4px;
+    font-family: inherit; transition: background 0.2s;
+  }
+  button:hover { background: #2980b9; }
+  button:disabled { background: #bdc3c7; cursor: not-allowed; }
+  button.secondary { background: #95a5a6; }
+  button.secondary:hover { background: #7f8c8d; }
+
+  /* Анимация черчения */
+  .draw-path {
+    fill: none; stroke: #111; stroke-width: 0.7;
+  }
+  .draw-text { opacity: 0; transition: opacity 0.5s ease; }
+  .draw-text.visible { opacity: 1; }
+  .thin-line { stroke-width: 0.35; }
+
+  .step-element { display: none; }
+  .step-element.show { display: block; }
+</style>
+</head>
+<body>
+
+<header>
+  <div id="stage-title">Титул</div>
+  <div id="stage-counter">1 / 18</div>
+</header>
+
+<main id="main-area">
+  <div id="sheet-area">
+    <div id="a4-sheet">
+      <svg viewBox="0 0 297 210" id="main-svg" xmlns="http://www.w3.org/2000/svg">
+        <g id="base-sheet">
+          <rect x="20" y="5" width="272" height="200" fill="none" stroke="#111" stroke-width="0.7" />
+          <text x="146" y="16" text-anchor="middle" font-size="4.5" font-weight="bold" fill="#111">Практическая работа. Чертёж детали «Пластинка». 6 класс</text>
+          <text x="146" y="27" text-anchor="middle" font-size="3.5" fill="#111">Фамилия, имя ______________________  Класс ____  Дата __________</text>
+          <text x="146" y="36" text-anchor="middle" font-size="2.6" fill="#666666">Отмеряй от рамки, а не от края листа</text>
+        </g>
+        <g id="drawing-layer"></g>
+      </svg>
+    </div>
+  </div>
+  <div id="sidebar">
+    <div id="sidebar-content"></div>
+  </div>
+</main>
+
+<footer>
+  <div class="hint" style="font-size: 14px; color: #666;">← Назад | Пробел/→ Далее | F Полный экран | R Сброс</div>
+  <div class="controls">
+    <button class="secondary" onclick="prevStage()">◀ Назад</button>
+    <button onclick="advance()">Далее ▶</button>
+    <button class="secondary" onclick="showFullDrawing()">Весь чертёж</button>
+    <button class="secondary" onclick="resetStage()">Сброс</button>
+  </div>
+</footer>
+
+<script>
+const SPEC = {
+  лист: { w: 297, h: 210 },
+  рамка: { left: 20, right: 292, top: 5, bottom: 205 },
+  деталь: { x: 50, y: 145, w: 120, h: 70 },
+  фаска: { dx: 20, dy: 20 },
+  отверстие: { cx: 110, cy: 110, r: 25, writeAs: 'Ø50' },
+  размеры: { длина: { y: 155 }, высота: { x: 180 }, фаска: { y: 65 }, диаметр: { angle: 45 } }
+};
+
+const partTop = SPEC.деталь.y - SPEC.деталь.h;
+const partRight = SPEC.деталь.x + SPEC.деталь.w;
+
+// Генератор SVG-строки эталона для переиспользования
+function getEtalonSVGString() {
+  return `
+    <path d="M 50 145 L 170 145 L 170 75 L 70 75 L 50 95 Z" fill="none" stroke="#111" stroke-width="0.7" />
+    <circle cx="110" cy="110" r="25" fill="none" stroke="#111" stroke-width="0.7" />
+    <line x1="78" y1="110" x2="142" y2="110" stroke="#111" stroke-width="0.35" stroke-dasharray="6 1.5 0.5 1.5" />
+    <line x1="110" y1="78" x2="110" y2="142" stroke="#111" stroke-width="0.35" stroke-dasharray="6 1.5 0.5 1.5" />
+    <line x1="50" y1="145" x2="50" y2="157.5" stroke="#111" stroke-width="0.35" /><line x1="170" y1="145" x2="170" y2="157.5" stroke="#111" stroke-width="0.35" />
+    <line x1="50" y1="155" x2="170" y2="155" stroke="#111" stroke-width="0.35" />
+    <path d="M 50 155 l 5 -1.5 l 0 3 z" fill="#111" /><path d="M 170 155 l -5 -1.5 l 0 3 z" fill="#111" />
+    <text x="110" y="153.5" text-anchor="middle" font-size="5" fill="#111">120</text>
+    <line x1="170" y1="75" x2="181.5" y2="75" stroke="#111" stroke-width="0.35" /><line x1="170" y1="145" x2="181.5" y2="145" stroke="#111" stroke-width="0.35" />
+    <line x1="180" y1="75" x2="180" y2="145" stroke="#111" stroke-width="0.35" />
+    <path d="M 180 75 l -1.5 5 l 3 0 z" fill="#111" /><path d="M 180 145 l -1.5 -5 l 3 0 z" fill="#111" />
+    <text x="178" y="114" text-anchor="middle" font-size="5" fill="#111" transform="rotate(-90 178 114)">70</text>
+    <line x1="50" y1="95" x2="50" y2="62.5" stroke="#111" stroke-width="0.35" /><line x1="70" y1="75" x2="70" y2="62.5" stroke="#111" stroke-width="0.35" />
+    <line x1="50" y1="65" x2="70" y2="65" stroke="#111" stroke-width="0.35" />
+    <path d="M 50 65 l 5 -1.5 l 0 3 z" fill="#111" /><path d="M 70 65 l -5 -1.5 l 0 3 z" fill="#111" />
+    <text x="60" y="63.5" text-anchor="middle" font-size="5" fill="#111">20</text>
+    <line x1="92.3" y1="92.3" x2="101" y2="101" stroke="#111" stroke-width="0.35" /><line x1="109" y1="109" x2="127.7" y2="127.7" stroke="#111" stroke-width="0.35" />
+    <path d="M 92.3 92.3 L 96.37 95.31 L 95.31 96.37 Z" fill="#111" />
+    <path d="M 127.7 127.7 L 123.64 124.70 L 124.70 123.64 Z" fill="#111" />
+    <rect x="96" y="96" width="16" height="8" fill="#fff" />
+    <text x="104" y="102" text-anchor="middle" font-size="5" fill="#111">Ø50</text>
+  `;
+}
+
+const stages = [
+  { id: 'S0', title: 'Титул', sidebar: `<div class="sidebar-title">Чертёж. Геометрическое черчение</div><div class="sidebar-text">Как из картинки получается документ</div><div style="font-size:14px; color:#666; margin-top:20px;">Труд (технология), 6 класс</div>`, sheetMode: 'empty' },
+  {
+    id: 'S1', title: 'Загадка про деталь',
+    sidebar: `<div class="sidebar-text" id="s1-text">На что похожа эта деталь?</div><div class="sidebar-text highlight" id="s1-answer" style="display:none;">На SIM-карту. Форма та же — а значит, размеры важны.</div>`,
+    sheetMode: 'custom', customSvg: `<path d="M 50 145 L 170 145 L 170 75 L 70 75 L 50 95 Z" fill="none" stroke="#111" stroke-width="0.35" />`,
+    clicksNeeded: 1,
+    clickAction: () => { document.getElementById('s1-answer').style.display = 'block'; }
+  },
+  {
+    id: 'S2', title: 'Эскиз против чертежа',
+    sidebar: `<div style="display:flex; gap:15px; margin-bottom:15px;">
+      <div style="flex:1; border:1px solid #ccc; padding:10px;">
+        <div style="font-weight:bold; margin-bottom:5px; font-size:16px;">ЭСКИЗ</div>
+        <svg viewBox="40 60 140 100" style="width:100%;"><path d="M 50 145 L 170 145 L 170 78 L 72 75 L 48 95 Z" fill="none" stroke="#111" stroke-width="0.5"/><text x="110" y="160" font-size="4" text-anchor="middle">12 см</text><text x="175" y="110" font-size="4">7 см</text><circle cx="110" cy="110" r="25" fill="none" stroke="#111" stroke-width="0.5"/><text x="110" y="112" font-size="4" text-anchor="middle">3 см</text></svg>
+      </div>
+      <div style="flex:1; border:1px solid #111; padding:10px; background:#fff;">
+        <div style="font-weight:bold; margin-bottom:5px; font-size:16px;">ЧЕРТЁЖ</div>
+        <svg viewBox="0 0 297 210" style="width:100%; border:1px solid #eee;">${getEtalonSVGString()}</svg>
+      </div>
+    </div><div class="sidebar-text">Один и тот же предмет. Справа — то, что примет любой мастер.</div>`,
+    sheetMode: 'etalon'
+  },
+  { id: 'S3', title: 'Три отличия', sidebar: `<div class="sidebar-title">Чем чертёж отличается от эскиза</div><div class="sidebar-text"><div style="margin-bottom:10px;">1. Инструменты — эскиз от руки, чертёж по линейке и циркулем</div><div style="margin-bottom:10px;">2. Точность — эскиз на глаз, чертёж в миллиметрах</div><div>3. Линии — в эскизе все одинаковые, в чертеже у каждой своя работа</div></div>`, sheetMode: 'empty' },
+  {
+    id: 'S4', title: 'Какие бывают линии',
+    sidebar: `<div class="sidebar-title">Три линии, которые нам сегодня нужны</div><div style="margin-bottom:15px; display:flex; align-items:center; gap:15px;"><svg width="40" height="10"><line x1="0" y1="5" x2="40" y2="5" stroke="#111" stroke-width="2.5"/></svg><div><b>Сплошная толстая</b><br><span style="font-size:14px; color:#666;">контур детали и рамка (0.7 мм)</span></div></div><div style="margin-bottom:15px; display:flex; align-items:center; gap:15px;"><svg width="40" height="10"><line x1="0" y1="5" x2="40" y2="5" stroke="#111" stroke-width="1"/></svg><div><b>Сплошная тонкая</b><br><span style="font-size:14px; color:#666;">размерные и выносные линии (0.35 мм)</span></div></div><div style="margin-bottom:15px; display:flex; align-items:center; gap:15px;"><svg width="40" height="10"><line x1="0" y1="5" x2="40" y2="5" stroke="#111" stroke-width="1" stroke-dasharray="6 1.5 0.5 1.5"/></svg><div><b>Штрихпунктирная</b><br><span style="font-size:14px; color:#666;">оси отверстия</span></div></div><div style="font-size:14px; color:#666; margin-top:20px;">Разные линии мы рисуем одним карандашом — силой нажима.</div>`,
+    sheetMode: 'etalon'
+  },
+  {
+    id: 'S5', title: 'Нажим',
+    sidebar: `<div class="sidebar-text">С расстояния вытянутой руки видно только главное: контур и отверстие. Размеры — тонкие.</div><div class="sidebar-text highlight" id="s5-hint" style="display:none; cursor:pointer;">(Кликни, чтобы увидеть неправильный вариант, где всё одинаково жирно — так читается плохо)</div>`,
+    sheetMode: 'etalon',
+    clicksNeeded: 2,
+    clickAction: function(n) {
+      const hint = document.getElementById('s5-hint');
+      hint.style.display = 'block';
+      if (n === 1) {
+        hint.textContent = 'Правильный вариант: контур и отверстие толще размеров, а размерные линии — тонкие.';
+      } else {
+        const paths = document.querySelectorAll('#drawing-layer path, #drawing-layer line, #drawing-layer circle');
+        paths.forEach(p => p.style.strokeWidth = '1.5');
+        hint.textContent = 'Так читается плохо. Нажми "Сброс", чтобы вернуть правильный нажим!';
+      }
+    }
+  },
+  {
+    id: 'S6', title: 'Правила размеров',
+    sidebar: `<div class="sidebar-title">Как ставить размеры</div><div style="font-size:16px; line-height:1.6;"><div style="margin-bottom:8px;">• Размерная линия — параллельно отрезку, на 10 мм от контура</div><div style="margin-bottom:8px;">• Выносные линии — перпендикулярно, выходят за стрелки</div><div style="margin-bottom:8px;">• На концах размерной линии — стрелки</div><div style="margin-bottom:8px;">• Число — НАД размерной линией</div><div style="margin-bottom:15px;">• Миллиметры по умолчанию: буквы „мм" не пишем</div><div style="background:#fee; color:#c00; padding:10px; border-radius:4px; font-weight:bold;">Так нельзя:</div><div style="font-size:14px; color:#c00; text-decoration:line-through; margin-top:5px;">число под линией | 120 мм | размерная линия прошла сквозь деталь</div></div>`,
+    sheetMode: 'etalon'
+  },
+  {
+    id: 'S7', title: 'Главный секрет урока',
+    sidebar: `<div class="sidebar-title" style="color:#E0301E;">Самая частая ошибка первого чертежа</div><div style="background:#f9f9f9; padding:15px; border-left:4px solid #E0301E; margin-bottom:15px;"><svg width="100%" height="240" viewBox="0 0 100 60" style="min-width:340px;"><line x1="10" y1="50" x2="90" y2="50" stroke="#111" stroke-width="1"/><line x1="10" y1="45" x2="10" y2="55" stroke="#111" stroke-width="1"/><text x="10" y="40" font-size="8" text-anchor="middle">0</text><line x1="60" y1="45" x2="60" y2="55" stroke="#E0301E" stroke-width="2"/><text x="60" y="40" font-size="8" text-anchor="middle" fill="#E0301E">25</text><circle cx="60" cy="20" r="3" fill="#E0301E"/><line x1="60" y1="20" x2="60" y2="45" stroke="#E0301E" stroke-width="1" stroke-dasharray="2,2"/><text x="60" y="12" font-size="6" text-anchor="middle" fill="#E0301E">25 мм = радиус</text></svg><div style="margin-top:10px;">Отверстие Ø50 мм. Циркуль мы ставим на 25 мм — это радиус, половинка. А на чертеже пишем 50, потому что Ø означает весь диаметр.</div></div><div class="highlight" style="font-size:24px; text-align:center; margin:20px 0;">Раствор 25 мм → пишем Ø50</div><div style="font-size:14px; color:#666;">Знак Ø — это кружок с косой чертой. Нарисуй его сначала на черновике.</div>`,
+    sheetMode: 'etalon'
+  },
+  {
+    id: 'S8', title: 'Техника безопасности и порядок работы',
+    sidebar: `<div style="display:flex; gap:20px;"><div style="flex:1;"><div class="sidebar-title">Циркуль — инструмент острый</div><ul style="font-size:15px; line-height:1.6; padding-left:20px;"><li>Передавай тупым концом вперёд</li><li>Проверь, что игла и грифель закреплены винтом</li><li>Иглу ставь в отмеченную точку и не дави</li><li>Держи за головку и вращай циркуль — лист не крути</li></ul></div><div style="flex:1;"><div class="sidebar-title">Порядок такой</div><div style="font-size:18px; font-weight:bold; color:#2c3e50; line-height:1.8;">1 Габарит<br>2 Фаска<br>3 Оси<br>4 Отверстие<br>5 Размеры<br>6 Обводка и сверка</div></div></div><div class="highlight" style="margin-top:20px; text-align:center;">У тебя на парте лист с рамкой. Все отмеры — ОТ РАМКИ, не от края.</div>`,
+    sheetMode: 'empty'
+  },
+  // ЭТАПЫ ПОСТРОЕНИЯ
+  {
+    id: 'B1', title: 'Этап 1. Габарит',
+    sidebar: `<div class="sidebar-text">Поставь точку: 30 мм от левой рамки и 60 мм от нижней. Это левый нижний угол детали. Отложи от неё вправо 120 мм и вверх 70 мм, дострой прямоугольник.</div><div style="margin-top:20px; font-size:14px; color:#666; background:#f9f9f9; padding:10px;">Линейку прижимай всей ладонью. Линию веди слева направо. Не дави.</div>`,
+    sheetMode: 'build',
+    buildSteps: [
+      `<line x1="50" y1="145" x2="170" y2="145" class="draw-path" />`,
+      `<line x1="170" y1="145" x2="170" y2="75" class="draw-path" />`,
+      `<line x1="170" y1="75" x2="50" y2="75" class="draw-path" />`,
+      `<line x1="50" y1="75" x2="50" y2="145" class="draw-path" />`
+    ]
+  },
+  {
+    id: 'B2', title: 'Этап 2. Фаска',
+    sidebar: `<div class="sidebar-text">В верхнем левом углу отмерь 20 мм вправо по верхней стороне и 20 мм вниз по левой. Соедини точки — фаска готова.</div><div style="margin-top:20px; font-size:14px; color:#666; background:#f9f9f9; padding:10px;">20 мм и 20 мм — равные отрезки, поэтому угол сам получился 45°. Транспортир не нужен.</div>`,
+    sheetMode: 'build',
+    buildSteps: [
+      '<!--instant--><rect x="49.4" y="74.4" width="21.2" height="1.4" fill="#fff" stroke="none"></rect>',
+      '<!--instant--><rect x="49.4" y="74.4" width="1.4" height="21.2" fill="#fff" stroke="none"></rect>',
+      `<line x1="50" y1="95" x2="70" y2="75" class="draw-path" />`
+    ]
+  },
+  {
+    id: 'B3', title: 'Этап 3. Оси отверстия',
+    sidebar: `<div class="sidebar-text">От левой стороны детали отмерь 60 мм, от нижней — 35 мм. Поставь точку-центр. Проведи через неё штрихпунктирные оси, они выходят за будущее отверстие на 4 мм.</div><div style="margin-top:20px; font-size:14px; color:#666; background:#f9f9f9; padding:10px;">35 мм — это ровно половина высоты детали: 70 ÷ 2 = 35. Значит отверстие по центру.</div>`,
+    sheetMode: 'build',
+    buildSteps: [
+      `<circle cx="110" cy="110" r="1.5" fill="#E0301E" class="draw-path" style="stroke:none;" />`,
+      `<line x1="78" y1="110" x2="142" y2="110" stroke="#111" stroke-width="0.35" stroke-dasharray="6 1.5 0.5 1.5" class="draw-path" />`,
+      `<line x1="110" y1="78" x2="110" y2="142" stroke="#111" stroke-width="0.35" stroke-dasharray="6 1.5 0.5 1.5" class="draw-path" />`
+    ]
+  },
+  {
+    id: 'B4', title: 'Этап 4. Отверстие',
+    sidebar: `<div class="sidebar-text">Выставь раствор циркуля 25 мм по линейке. Иглу — в центр. Держи за головку и вращай циркуль, а не лист.</div><div class="highlight" style="text-align:center; margin:15px 0; font-size:20px;">Раствор 25 мм → пишем Ø50</div><svg class="closeup-svg" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg"><rect width="50" height="50" fill="#fff"/><line x1="0" y1="25" x2="50" y2="25" stroke="#111" stroke-width="0.5" stroke-dasharray="4,2"/><line x1="25" y1="0" x2="25" y2="50" stroke="#111" stroke-width="0.5" stroke-dasharray="4,2"/><circle cx="25" cy="25" r="2" fill="#E0301E"/><circle cx="25" cy="25" r="25" fill="none" stroke="#E0301E" stroke-width="1.5"/><line x1="25" y1="25" x2="50" y2="25" stroke="#E0301E" stroke-width="1"/><text x="37" y="23" font-size="6" fill="#E0301E">25 мм</text><text x="37" y="32" font-size="5" fill="#666">= радиус</text></svg>`,
+    sheetMode: 'build',
+    buildSteps: [
+      `<circle cx="110" cy="110" r="25" fill="none" stroke="#111" stroke-width="0.7" class="draw-path" />`
+    ]
+  },
+  {
+    id: 'B5', title: 'Этап 5. Размеры',
+    sidebar: `<div class="sidebar-text">Тонкие линии, слабый нажим. Ставим по порядку: 120 снизу, 70 справа, 20 сверху на фаске, Ø50 через центр.</div><svg class="closeup-svg" viewBox="0 0 40 25" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="25" fill="#fff"/><line x1="10" y1="20" x2="10" y2="0" stroke="#111" stroke-width="0.35"/><line x1="30" y1="20" x2="30" y2="0" stroke="#111" stroke-width="0.35"/><line x1="10" y1="5" x2="30" y2="5" stroke="#111" stroke-width="0.35"/><text x="20" y="4" font-size="5" text-anchor="middle" fill="#111">20</text><text x="20" y="24" font-size="4" fill="#666" text-anchor="middle">Продли линию</text></svg><svg class="closeup-svg" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" fill="#fff"/><circle cx="20" cy="20" r="17.6" fill="none" stroke="#111" stroke-width="0.7"/><line x1="2.4" y1="37.6" x2="8" y2="32" stroke="#111" stroke-width="0.35"/><line x1="32" y1="8" x2="37.6" y2="2.4" stroke="#111" stroke-width="0.35"/><rect x="14" y="14" width="12" height="8" fill="#fff"/><text x="20" y="20" font-size="5" text-anchor="middle" fill="#111">Ø50</text><text x="20" y="38" font-size="4" fill="#666" text-anchor="middle">Число внутри</text></svg><div style="margin-top:10px; font-size:14px; color:#666;">Ярусом дальше от контура ставят больший размер. Если успели: 60 и 35 до центра.</div>`,
+    sheetMode: 'build',
+    buildSteps: [
+      `<line x1="50" y1="145" x2="50" y2="157.5" class="draw-path thin-line" /><line x1="170" y1="145" x2="170" y2="157.5" class="draw-path thin-line" />`,
+      `<line x1="50" y1="155" x2="170" y2="155" class="draw-path thin-line" />`,
+      `<path d="M 50 155 l 5 -1.5 l 0 3 z" fill="#E0301E" stroke="none" class="draw-path" /><path d="M 170 155 l -5 -1.5 l 0 3 z" fill="#E0301E" stroke="none" class="draw-path" />`,
+      `<text x="110" y="153.5" text-anchor="middle" font-size="5" fill="#111" class="draw-text">120</text>`,
+      
+      `<line x1="170" y1="75" x2="181.5" y2="75" class="draw-path thin-line" /><line x1="170" y1="145" x2="181.5" y2="145" class="draw-path thin-line" />`,
+      `<line x1="180" y1="75" x2="180" y2="145" class="draw-path thin-line" />`,
+      `<path d="M 180 75 l -1.5 5 l 3 0 z" fill="#E0301E" stroke="none" class="draw-path" /><path d="M 180 145 l -1.5 -5 l 3 0 z" fill="#E0301E" stroke="none" class="draw-path" />`,
+      `<text x="178" y="114" text-anchor="middle" font-size="5" fill="#111" transform="rotate(-90 178 114)" class="draw-text">70</text>`,
+      
+      `<line x1="50" y1="95" x2="50" y2="62.5" class="draw-path thin-line" /><line x1="70" y1="75" x2="70" y2="62.5" class="draw-path thin-line" />`,
+      `<line x1="50" y1="65" x2="70" y2="65" class="draw-path thin-line" />`,
+      `<path d="M 50 65 l 5 -1.5 l 0 3 z" fill="#E0301E" stroke="none" class="draw-path" /><path d="M 70 65 l -5 -1.5 l 0 3 z" fill="#E0301E" stroke="none" class="draw-path" />`,
+      `<text x="60" y="63.5" text-anchor="middle" font-size="5" fill="#111" class="draw-text">20</text>`,
+      
+      `<line x1="92.3" y1="92.3" x2="101" y2="101" class="draw-path thin-line" /><line x1="109" y1="109" x2="127.7" y2="127.7" class="draw-path thin-line" />`,
+      `<path d="M 92.3 92.3 L 96.37 95.31 L 95.31 96.37 Z" fill="#E0301E" stroke="none" class="draw-path" />`,
+      `<path d="M 127.7 127.7 L 123.64 124.70 L 124.70 123.64 Z" fill="#E0301E" stroke="none" class="draw-path" />`,
+      `<rect x="96" y="96" width="16" height="8" fill="#fff" class="draw-path" style="stroke:none;" />`,
+      `<text x="104" y="102" text-anchor="middle" font-size="5" fill="#111" class="draw-text">Ø50</text>`
+    ]
+  },
+  {
+    id: 'B6', title: 'Этап 6. Обводка и сверка',
+    sidebar: `<div class="sidebar-text">Контур и окружность обведи сильнее — они должны быть толще размеров. Оси и размерные линии остаются тонкими. Сверься с эталоном.</div>`,
+    sheetMode: 'build',
+    buildSteps: [
+      `<path d="M 50 145 L 170 145 L 170 75 L 70 75 L 50 95 Z" fill="none" stroke="#111" stroke-width="1.2" class="draw-path" />`,
+      `<circle cx="110" cy="110" r="25" fill="none" stroke="#111" stroke-width="1.2" class="draw-path" />`
+    ]
+  },
+  { id: 'Z1', title: 'Эталон 1:1', sidebar: `<div class="sidebar-title" style="text-align:center;">Готовый чертёж. Сверься.</div>`, sheetMode: 'etalon' },
+  {
+    id: 'Z2', title: 'Чек-лист',
+    sidebar: `<div class="sidebar-title">Проверь себя</div><ul style="font-size:16px; line-height:1.6; padding-left:20px; margin-bottom:20px;"><li>Контур жирнее размеров — видно с вытянутой руки</li><li>Оси отверстия штрихпунктиром и торчат за окружность</li><li>Написано Ø50, а не R50 и не «50 мм»</li><li>Окружность замкнута без ступеньки — раствор не сбился</li><li>Ничего лишнего не стёрто: выносные и оси на месте</li></ul><div class="highlight" style="font-size:18px; border-top:1px solid #ccc; padding-top:15px;">Что было труднее: линейка или циркуль?</div>`,
+    sheetMode: 'etalon'
+  },
+  {
+    id: 'Z3', title: 'А теперь наоборот',
+    sidebar: `<div style="display:flex; gap:20px; align-items:center;"><div style="flex:1; border:1px solid #111; padding:10px;"><div style="font-weight:bold; margin-bottom:5px;">ЧЕРТЁЖ</div><svg viewBox="40 60 140 100" style="width:100%;"><path d="M 50 145 L 170 145 L 170 75 L 70 75 L 50 95 Z" fill="none" stroke="#111" stroke-width="1"/><circle cx="110" cy="110" r="25" fill="none" stroke="#111" stroke-width="1"/></svg></div><div style="flex:1; border:1px solid #ccc; padding:10px;"><div style="font-weight:bold; margin-bottom:5px;">ЭСКИЗ</div><svg viewBox="40 60 140 100" style="width:100%;"><path d="M 48 146 L 172 144 L 168 76 L 72 74 L 52 96 Z" fill="none" stroke="#111" stroke-width="0.5"/><circle cx="110" cy="110" r="24" fill="none" stroke="#111" stroke-width="0.5"/></svg></div></div><div class="sidebar-text" style="margin-top:20px; text-align:center; font-size:18px;">Ты умеешь и так, и так. Теперь знай, где что применять.</div>`,
+    sheetMode: 'etalon'
+  }
+];
+
+let currentStage = 0;
+let isFullDrawing = false;
+let clickProgress = 0;
+
+// ПРАВКА №1, шаг 1: склейка buildSteps от начала до текущего экрана включительно
+function cumulativeBuildSteps(index) {
+  let all = [];
+  for (let i = 0; i <= index; i++) {
+    const st = stages[i];
+    if (st.sheetMode === 'build' && Array.isArray(st.buildSteps)) {
+      st.buildSteps.forEach(s => all.push(s));
+    }
+  }
+  return all;
+}
+
+function renderStage(index) {
+  if (index < 0) index = 0;
+  if (index >= stages.length) index = stages.length - 1;
+  currentStage = index;
+  const stage = stages[index];
+
+  clickProgress = 0;
+
+  document.getElementById('stage-title').textContent = stage.title;
+  document.getElementById('stage-counter').textContent = `${index + 1} / ${stages.length}`;
+  document.getElementById('sidebar-content').innerHTML = stage.sidebar;
+
+  const drawingLayer = document.getElementById('drawing-layer');
+  drawingLayer.innerHTML = '';
+
+  if (isFullDrawing) {
+    renderFullEtalon(drawingLayer);
+    if (stage.id === 'S7') addS7Caption(drawingLayer);
+    return;
+  }
+
+  if (stage.sheetMode === 'etalon') {
+    renderFullEtalon(drawingLayer);
+    if (stage.id === 'S7') addS7Caption(drawingLayer);
+  } else if (stage.sheetMode === 'custom') {
+    drawingLayer.innerHTML = stage.customSvg;
+  } else if (stage.sheetMode === 'build') {
+    // ПРАВКА №1, шаг 2: считаем все шаги от начала до текущего, показываем прошлые сразу
+    const cur = Array.isArray(stage.buildSteps) ? stage.buildSteps : [];
+    const all = cumulativeBuildSteps(index);
+    const prev = all.length - cur.length;
+
+    const parser = new DOMParser();
+    all.forEach((svgString, i) => {
+      const isInstant = svgString.indexOf('<!--instant-->') === 0;
+      const cleanSvg = isInstant ? svgString.substring('<!--instant-->'.length) : svgString;
+      const doc = parser.parseFromString(`<svg xmlns="http://www.w3.org/2000/svg">${cleanSvg}</svg>`, "image/svg+xml");
+      const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      g.setAttribute("class", "step-element");
+      g.setAttribute("id", "step-" + i);
+      if (isInstant) g.setAttribute("data-instant", "1");
+
+      for (let node of doc.documentElement.childNodes) {
+        g.appendChild(doc.importNode(node, true));
+      }
+
+      // ПРАВКА A: прошлые шаги сразу финальным чёрным
+      if (i < prev && !isInstant) {
+        g.querySelectorAll('.draw-path').forEach(p => {
+          const originalFill = p.getAttribute('fill') || 'none';
+          const originalStroke = p.getAttribute('stroke') || p.style.stroke || '';
+          if (originalFill === '#fff') return;
+          if (originalStroke !== 'none' && p.style.stroke !== 'none') {
+            p.style.stroke = '#111';
+          }
+          if (originalFill === '#E0301E') p.style.fill = '#111';
+          else if (originalFill !== 'none') p.style.fill = originalFill;
+        });
+      }
+
+      if (i < prev || isInstant) {
+        g.classList.add('show');
+        // тексты прошлых шагов сразу видимы
+        g.querySelectorAll('.draw-text').forEach(t => t.classList.add('visible'));
+      }
+
+      drawingLayer.appendChild(g);
+    });
+
+    animateBuildSteps(all.length, prev);
+  }
+}
+
+function renderFullEtalon(container) {
+  container.innerHTML = getEtalonSVGString();
+  const paths = container.querySelectorAll('path, line, circle, text');
+  paths.forEach(p => {
+    p.style.opacity = '1';
+    p.style.strokeDashoffset = '0';
+  });
+}
+
+function addS7Caption(container) {
+  const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  text.setAttribute("x", "110");
+  text.setAttribute("y", "180");
+  text.setAttribute("text-anchor", "middle");
+  text.setAttribute("font-size", "5.5");
+  text.setAttribute("fill", "#E0301E");
+  text.textContent = "Ø50 на бумаге = 25 на циркуле";
+  container.appendChild(text);
+}
+
+function animateBuildSteps(totalSteps, startIndex) {
+  let step = startIndex || 0;
+  const elements = document.querySelectorAll('#drawing-layer .step-element');
+
+  function showNext() {
+    while (step < totalSteps) {
+      const el = elements[step];
+      if (!el) { step++; continue; }
+
+      // ПРАВКА №1, шаг 2 + ПРАВКА №2: мгновенные шаги (белые маски B2) — без анимации
+      if (el.getAttribute('data-instant') === '1') {
+        step++;
+        continue;
+      }
+
+      el.classList.add('show');
+
+      const drawPaths = el.querySelectorAll('.draw-path');
+      drawPaths.forEach(p => {
+        const originalFill = p.getAttribute('fill') || 'none';
+        const originalStroke = p.getAttribute('stroke') || p.style.stroke || '';
+
+        // ПРАВКА №1, шаг 3: не перекрашивать и не анимировать белые фигуры
+        if (originalFill === '#fff') return;
+
+        // не трогать фигуры без обводки
+        if (originalStroke === 'none' || p.style.stroke === 'none') {
+          if (originalFill === '#E0301E') {
+            p.style.fill = '#E0301E';
+            setTimeout(() => { p.style.fill = '#111'; }, 1400);
+          }
+          return;
+        }
+
+        p.setAttribute('data-original-fill', originalFill);
+        p.style.stroke = '#E0301E';
+        if (originalFill && originalFill !== 'none') {
+          p.style.fill = '#E0301E';
+        }
+
+        void p.getBoundingClientRect();
+
+        const len = p.getTotalLength ? Math.ceil(p.getTotalLength()) : 1000;
+        p.style.strokeDasharray = len;
+        p.style.strokeDashoffset = len;
+        p.style.transition = 'none';
+
+        requestAnimationFrame(() => {
+          p.style.transition = 'stroke-dashoffset 0.9s linear, stroke 0.5s ease 0.9s, fill 0.5s ease 0.9s';
+          p.style.strokeDashoffset = '0';
+        });
+
+        setTimeout(() => {
+          p.style.stroke = '#111';
+          p.style.fill = originalFill === '#E0301E' ? '#111' : originalFill;
+        }, 1400);
+      });
+
+      const drawTexts = el.querySelectorAll('.draw-text');
+      drawTexts.forEach(t => {
+        setTimeout(() => t.classList.add('visible'), 900);
+      });
+
+      step++;
+      if (step < totalSteps) {
+        setTimeout(showNext, 1500);
+      }
+      return;
+    }
+  }
+
+  setTimeout(showNext, 300);
+}
+
+// ПРАВКА №4: единая точка входа для клика, кнопки «Далее» и клавиш Space/→
+function advance() {
+  const stage = stages[currentStage];
+  const needed = stage.clicksNeeded || (stage.clickAction ? 1 : 0);
+  if (stage.clickAction && clickProgress < needed) {
+    clickProgress++;
+    stage.clickAction(clickProgress);
+    return;
+  }
+  nextStage();
+}
+
+function nextStage() {
+  if (currentStage < stages.length - 1) {
+    isFullDrawing = false;
+    renderStage(currentStage + 1);
+  }
+}
+
+function prevStage() {
+  if (currentStage > 0) {
+    isFullDrawing = false;
+    renderStage(currentStage - 1);
+  }
+}
+
+function resetStage() {
+  // ПРАВКА №3: на S5 «Сброс» возвращает сам экран S5 в исходное состояние, а не уводит на S0
+  if (stages[currentStage] && stages[currentStage].id === 'S5' && clickProgress > 0) {
+    isFullDrawing = false;
+    renderStage(currentStage);
+    return;
+  }
+  isFullDrawing = false;
+  renderStage(0);
+}
+
+function showFullDrawing() {
+  isFullDrawing = true;
+  renderStage(currentStage);
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); advance(); } 
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); prevStage(); } 
+  else if (e.key === 'f' || e.key === 'F') {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  } else if (e.key === 'r' || e.key === 'R') { resetStage(); }
+});
+
+document.getElementById('main-area').addEventListener('click', (e) => {
+  if (e.target.tagName === 'BUTTON') return;
+  advance();
+});
+
+renderStage(0);
+</script>
+<!-- ПРАВКИ: 1) viewBox B4/B5, 2) S5 мягкий сброс, 3) S7 подпись без mm -->
+</body>
+</html>

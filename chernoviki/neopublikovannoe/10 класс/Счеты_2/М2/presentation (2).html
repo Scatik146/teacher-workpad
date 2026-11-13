@@ -1,0 +1,1213 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Быстрые вычисления — урок</title>
+<style>
+:root {
+  --ink: #141414; --bg: #fbf8f2; --card: #ffffff; --line: #d9d1c2; --muted: #555;
+  --blue: #1d4ed8; --teal: #0f766e; --green: #15803d; --green-bg: #e3f4e8; --red: #b42318; --red-bg: #fde8e6;
+  --amber: #9a5b00; --amber-bg: #fff3d6; --grey: #6b6b6b; --grey-bg: #ecebe8;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; height: 100%; overflow: hidden; }
+body { background: var(--bg); color: var(--ink); font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: clamp(14px, 1.2vw + .3vh, 30px); line-height: 1.3; }
+button { font: inherit; touch-action: manipulation; }
+.deck { position: fixed; inset: 0 0 3.4em 0; }
+.screen { position: absolute; inset: 0; padding: 1.1em 1.6em .6em; display: none; flex-direction: column; gap: .7em; }
+.screen.active { display: flex; }
+.screen h1 { margin: 0; font-size: 2.1em; line-height: 1.1; letter-spacing: -.01em; }
+.screen h1 .sub { font-size: .55em; color: var(--muted); font-weight: 600; margin-left: .6em; }
+.foot { margin-top: auto; text-align: center; font-size: 1.35em; font-weight: 800; padding: .35em .8em; border-top: 3px solid var(--ink); }
+.card { background: var(--card); border: 2px solid var(--line); border-radius: .8em; padding: .8em 1em; min-width: 0; min-height: 0; }
+.btn { font-weight: 700; padding: .45em .95em; border-radius: .55em; border: 2px solid var(--blue); background: #fff; color: var(--blue); cursor: pointer; min-height: 2.5em; }
+.btn:hover { background: #eef3ff; }
+.btn:active { transform: translateY(1px); }
+.btn.solid { background: var(--blue); color: #fff; }
+.btn.teal { border-color: var(--teal); color: var(--teal); }
+.btn.teal.solid { background: var(--teal); color: #fff; }
+.btn.grey { border-color: var(--grey); color: #333; }
+.btn:disabled { opacity: .4; cursor: default; }
+.seg { display: inline-flex; border: 2px solid var(--blue); border-radius: .6em; overflow: hidden; }
+.seg button { font-weight: 700; padding: .4em .8em; border: 0; background: #fff; color: var(--blue); cursor: pointer; min-height: 2.3em; }
+.seg button[aria-pressed="true"] { background: var(--blue); color: #fff; }
+.num { font-variant-numeric: tabular-nums; }
+.ok { color: var(--green); font-weight: 800; }
+.bad { color: var(--red); font-weight: 800; }
+
+/* навигация */
+nav.bar { position: fixed; left: 0; right: 0; bottom: 0; height: 3.4em; display: flex; align-items: center; justify-content: center; gap: .6em;
+  background: #fff; border-top: 2px solid var(--line); padding: 0 1em; }
+nav.bar .dots { display: flex; gap: .4em; }
+nav.bar .dot { min-width: 2.4em; height: 2.4em; border-radius: 1.2em; border: 2px solid var(--line); background: #fff; font-weight: 800; cursor: pointer; color: var(--muted); }
+nav.bar .dot[aria-current="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+nav.bar .fs { position: absolute; right: 1em; }
+nav.bar .nm { position: absolute; left: 1em; color: var(--muted); font-weight: 600; font-size: .85em; }
+
+/* ---------- Экран 1 ---------- */
+#s1 .grid { flex: 1; display: grid; grid-template-columns: 1.15fr 1fr; gap: 1.2em; min-height: 0; }
+#s1 .scheme { display: flex; flex-direction: column; gap: .5em; }
+#s1 .scheme svg { width: 100%; height: auto; max-height: 40%; }
+.nl-tick { stroke: var(--ink); stroke-width: 3; }
+.nl-line { stroke: var(--ink); stroke-width: 4; }
+.nl-lbl { font: 800 34px system-ui, sans-serif; fill: var(--ink); text-anchor: middle; }
+.nl-lbl.round { fill: var(--blue); }
+.nl-arc { fill: none; stroke: var(--teal); stroke-width: 4; }
+.nl-d { font: 800 28px system-ui, sans-serif; fill: var(--teal); text-anchor: middle; }
+.reveal { opacity: 0; transition: opacity .35s; }
+.reveal.on { opacity: 1; }
+.eq { font-size: 1.9em; font-weight: 800; font-variant-numeric: tabular-nums; }
+.eq .d { color: var(--teal); }
+.eq .r { color: var(--blue); }
+#s1 .trap h2 { margin: 0 0 .4em; font-size: 1.5em; }
+#s1 .trap .big { font-size: 2.6em; font-weight: 900; text-align: center; margin: .1em 0 .3em; }
+#s1 .trap .big .q { color: var(--red); }
+.trap-row { display: flex; gap: .6em; flex-wrap: wrap; margin-bottom: .5em; }
+.out { border-radius: .6em; padding: .55em .8em; margin-top: .45em; font-size: 1.05em; }
+.out .line { font-variant-numeric: tabular-nums; }
+.out.warn { background: var(--amber-bg); border: 2px solid #e4b45a; }
+.out.good { background: var(--green-bg); border: 2px solid #8fcf9f; }
+.out.badbg { background: var(--red-bg); border: 2px solid #ef9a92; }
+.out .verdict { font-weight: 900; font-size: 1.15em; margin-top: .2em; }
+
+/* ---------- Экран 2 ---------- */
+#s2 .top { display: flex; align-items: center; gap: 1em; flex-wrap: wrap; }
+#s2 .top h1 { margin-right: auto; }
+#s2 { gap: .45em; }
+#s2 h1 { font-size: 1.75em; white-space: nowrap; }
+#s2 .abaci { flex: 1.05; display: grid; grid-template-columns: 1fr 1fr; gap: 2em; min-height: 0; }
+#s2 .abaci > div { display: flex; min-height: 0; }
+#s2 .abacus { font-size: .85em; gap: .25em; }
+#s2 .abacus-head { flex-direction: row; gap: 1em; align-items: baseline; }
+#s2 .abacus-number { font-size: 1.7em; }
+#s2 .abacus-foot { flex-direction: row; justify-content: center; flex-wrap: wrap; }
+#s2 .abacus-msg { order: 2; min-height: 0; }
+#s2 .caption { text-align: center; font-weight: 800; font-size: 1.05em; color: var(--teal); }
+#s2 .work { flex: 1; display: grid; grid-template-columns: 1fr 1.2fr; gap: 1em; min-height: 0; }
+#s2 .panel { font-size: .8em; }
+#s2 .out { margin-top: .1em; padding: .35em .7em; }
+#s2 .out .verdict { display: inline; font-size: 1em; margin-left: .6em; }
+#s2 .panel .btn { padding: .35em .7em; min-height: 2.3em; }
+#s2 table.algo td { font-size: 1.02em; padding: .08em .5em; }
+table.algo { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+table.algo th { text-align: left; font-size: .85em; color: var(--muted); border-bottom: 3px solid var(--ink); padding: .2em .5em; }
+table.algo td { padding: .18em .5em; border-bottom: 1px solid var(--line); font-size: 1.12em; font-weight: 700; }
+table.algo tr.row { cursor: pointer; }
+table.algo tr.take td { background: var(--green-bg); }
+table.algo tr.take td.act { color: var(--green); }
+table.algo tr.drop td { background: var(--grey-bg); color: #8a8a8a; }
+table.algo tr.drop td.v { text-decoration: line-through; text-decoration-thickness: 3px; text-decoration-color: var(--red); }
+table.algo td.warn { color: var(--red); }
+table.algo td .small { font-size: .7em; font-weight: 600; color: var(--muted); }
+.tablewrap { overflow: auto; }
+#s2 .panel { display: flex; flex-direction: column; gap: .35em; overflow: auto; }
+#s2 .panel .row { display: flex; gap: .45em; flex-wrap: wrap; align-items: center; }
+#s2 select { font: inherit; font-weight: 700; padding: .35em .5em; border: 2px solid var(--ink); border-radius: .5em; min-height: 2.5em; }
+.result { font-size: 1.15em; font-weight: 800; font-variant-numeric: tabular-nums; padding: .35em .6em; border: 2px dashed var(--ink); border-radius: .5em; min-height: 2.2em; }
+.status { font-weight: 700; color: var(--amber); min-height: 1.3em; font-size: .95em; }
+
+/* заставка-хук */
+.splash { position: absolute; inset: 0; background: rgba(18, 18, 18, .97); display: flex; align-items: center; justify-content: center; z-index: 20; cursor: pointer; padding: 4vw; }
+.splash .box { max-width: 62em; color: #fff; font-size: 1.55em; line-height: 1.45; }
+.splash .box p { margin: 0 0 .8em; }
+.splash .who { color: #f3c77a; font-weight: 800; letter-spacing: .02em; font-size: .8em; text-transform: uppercase; }
+.splash .timer { height: .3em; background: #f3c77a; border-radius: .2em; width: 100%; transform-origin: left; }
+.splash .close { color: #bbb; font-size: .65em; margin-top: .6em; }
+
+/* ---------- Экран 3 ---------- */
+#s3 .top { display: flex; align-items: center; gap: 1em; flex-wrap: wrap; }
+#s3 .top h1 { margin-right: auto; }
+.ribbon { display: flex; align-items: center; gap: .35em; font-size: 2.1em; font-weight: 900; flex-wrap: wrap; font-variant-numeric: tabular-nums; }
+.ribbon .bit { display: inline-flex; align-items: center; justify-content: center; width: 1.25em; height: 1.4em; border: 3px solid var(--ink); border-radius: .2em; background: #fff; }
+.ribbon .bit.cur { background: var(--amber-bg); border-color: var(--amber); box-shadow: 0 0 0 4px #f3c77a; }
+.ribbon .bit.one { color: var(--green); }
+.ribbon .bit.zero { color: #8a8a8a; }
+.ribbon .two { font-size: .6em; align-self: flex-end; margin-bottom: .2em; }
+.ribbon .sum { color: var(--blue); }
+#s3 .work { flex: 1; display: grid; grid-template-columns: 1.45fr 1fr; gap: 1em; min-height: 0; }
+#s3 .panel { display: flex; flex-direction: column; gap: .55em; overflow: auto; }
+#s3 .acc { font-size: 1.4em; font-weight: 900; font-variant-numeric: tabular-nums; padding: .4em .6em; border: 3px solid var(--green); border-radius: .5em; background: var(--green-bg); word-break: break-all; }
+#s3 .count { font-size: 1.05em; font-weight: 700; }
+#s3 .reserve { border-top: 2px dashed var(--line); padding-top: .5em; font-size: .9em; }
+#s3 .reserve input { font: inherit; width: 6.5em; padding: .3em .4em; border: 2px solid #888; border-radius: .4em; min-height: 2.2em; }
+#s3 td .pw { font-size: .7em; font-weight: 600; color: var(--muted); margin-left: .4em; }
+.ribbon .lbl { font-size: .55em; font-weight: 700; color: var(--muted); }
+.ribbon .bit.unk { color: #bbb; }
+.ribbon .hint { font-size: .5em; font-weight: 700; color: var(--muted); }
+
+/* ---------- Экран 4 ---------- */
+#s4 .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2em; }
+#s4 .cols h2 { margin: 0 0 .3em; font-size: 1.35em; }
+#s4 .cols p { margin: 0; font-size: 1.05em; }
+#s4 .inrow { display: flex; gap: .6em; align-items: center; flex-wrap: wrap; }
+#s4 input.big { font: inherit; font-size: 1.8em; font-weight: 800; width: 7em; padding: .15em .4em; border: 3px solid var(--ink); border-radius: .4em; font-variant-numeric: tabular-nums; }
+#s4 .chips { display: flex; gap: .4em; flex-wrap: wrap; }
+#s4 .chip { font-weight: 700; padding: .25em .7em; border-radius: 1em; border: 2px solid var(--line); background: #fff; cursor: pointer; min-height: 2.2em; font-variant-numeric: tabular-nums; }
+#s4 .res { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2em; flex: 1; min-height: 0; }
+#s4 .res .card { display: flex; flex-direction: column; justify-content: center; }
+#s4 .chain { font-size: 1.6em; font-weight: 700; font-variant-numeric: tabular-nums; word-break: break-word; }
+#s4 .rem { font-size: 3em; font-weight: 900; margin-top: .1em; }
+#s4 .rem.nine { color: var(--blue); }
+#s4 .rem.eleven { color: var(--teal); }
+
+@media (max-aspect-ratio: 4/3) {
+  #s1 .grid, #s2 .work, #s3 .work { grid-template-columns: 1fr; overflow: auto; }
+}
+/* ---- Счёты (общий стиль компонента) ---- */
+.abacus { display: flex; flex-direction: column; align-items: center; gap: .4em; min-width: 0; min-height: 0; width: 100%; }
+.abacus-head { display: flex; flex-direction: column; align-items: center; }
+.abacus-foot { display: flex; flex-direction: column; align-items: center; gap: .3em; width: 100%; }
+.abacus-title { font-weight: 700; font-size: 1.05em; color: var(--ink, #1a1a1a); }
+.abacus-number { font-size: 2em; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: .02em;
+  color: var(--ink, #1a1a1a); line-height: 1.1; min-height: 1.1em; }
+.abacus-number.hidden { visibility: hidden; }
+.abacus-svg { width: 100%; height: auto; max-height: 100%; display: block; touch-action: manipulation; user-select: none; -webkit-user-select: none; flex: 1 1 auto; min-height: 0; }
+.abacus[data-mode="live"] .abacus-svg { touch-action: none; }
+.ab-frame { fill: #7a4a23; stroke: #4a2a10; stroke-width: 3; }
+.ab-inner { fill: #f3e6cf; stroke: #5a3516; stroke-width: 2; }
+.ab-wire { stroke: #8d8d8d; stroke-width: 3; }
+.ab-bead { transition: transform .24s ease; }
+.ab-bead-body { fill: #e9b56b; stroke: #8a5520; stroke-width: 2; }
+.ab-bead.dark .ab-bead-body { fill: #3b2414; stroke: #1c0f06; }
+.ab-bead-shine { fill: rgba(255,255,255,.45); }
+.ab-bead.dark .ab-bead-shine { fill: rgba(255,255,255,.25); }
+.ab-bead.flash .ab-bead-body { stroke: #d6336c; stroke-width: 4; }
+.abacus[data-mode="live"] .ab-bead { cursor: grab; }
+.ab-bead.grab { cursor: grabbing; }
+.ab-bead.grab .ab-bead-body { stroke: #1d4ed8; stroke-width: 4; }
+.abacus-msg { min-height: 1.4em; font-size: .95em; font-weight: 600; text-align: center; }
+.abacus-msg.err { color: #b42318; }
+.abacus-msg.note { color: #9a5b00; }
+.abacus-controls { display: flex; flex-wrap: wrap; gap: .4em; justify-content: center; }
+.ab-btn { font: inherit; font-size: 1em; font-weight: 700; padding: .45em .9em; border-radius: .5em; border: 2px solid #1d4ed8;
+  background: #fff; color: #1d4ed8; cursor: pointer; min-height: 2.6em; touch-action: manipulation; }
+.ab-btn:hover { background: #eef3ff; }
+.ab-btn:active { transform: translateY(1px); }
+.ab-btn.ab-double { background: #1d4ed8; color: #fff; }
+.ab-btn.ab-halve { background: #0f766e; border-color: #0f766e; color: #fff; }
+.ab-btn.ab-clear { border-color: #6b6b6b; color: #444; }
+.ab-input { font: inherit; font-size: 1em; width: 7.5em; padding: .4em .5em; border: 2px solid #888; border-radius: .5em; min-height: 2.6em; }
+@media (prefers-reduced-motion: reduce) { .ab-bead { transition: none; } }
+
+.ab-addn { display: inline-flex; gap: .3em; align-items: center; }
+.ab-input.ab-amount { width: 5.2em; text-align: center; font-weight: 700; }
+.ab-btn.ab-plus, .ab-btn.ab-minus { border-color: #9a5b00; color: #9a5b00; }
+
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+<!-- ================= ЭКРАН 1 ================= -->
+<section class="screen" id="s1" aria-label="Экран 1">
+  <h1>n² = (n−d)(n+d) + d²</h1>
+  <div class="grid">
+    <div class="card scheme">
+      <svg viewBox="0 0 900 230" aria-label="Сдвинь к круглому: 44, 47, 50">
+        <line x1="40" y1="150" x2="860" y2="150" class="nl-line"/>
+        <g id="nl-ticks"></g>
+        <g class="reveal" id="r1">
+          <path d="M450 120 Q 300 30 180 120" class="nl-arc"/>
+          <path d="M450 120 Q 600 30 720 120" class="nl-arc"/>
+          <text x="315" y="60" class="nl-d">−3</text>
+          <text x="585" y="60" class="nl-d">+3</text>
+        </g>
+      </svg>
+      <div class="eq">47² <span class="reveal" id="r2">= <span class="r">44</span> · <span class="r">50</span> <span class="d">+ 3²</span></span></div>
+      <div class="eq reveal" id="r3">&nbsp;&nbsp;&nbsp;&nbsp;= 2200 <span class="d">+ 9</span></div>
+      <div class="eq reveal" id="r4">&nbsp;&nbsp;&nbsp;&nbsp;= 2209</div>
+      <div class="row" style="display:flex;gap:.6em;margin-top:auto">
+        <button class="btn solid" id="s1next" type="button">Следующий шаг</button>
+        <button class="btn grey" id="s1reset" type="button">Сначала</button>
+      </div>
+    </div>
+    <div class="card trap">
+      <h2>Ловушка</h2>
+      <div class="big"><span class="q">2029</span> — это 2209 или нет?</div>
+      <div class="trap-row">
+        <button class="btn solid" id="trap9" type="button">Проверить девяткой</button>
+        <button class="btn teal solid" id="trap11" type="button">Проверить одиннадцаткой</button>
+      </div>
+      <div class="out warn" id="trap9out" hidden>
+        <div class="line">2209: 2 + 2 + 0 + 9 = 13 → 4</div>
+        <div class="line">2029: 2 + 0 + 2 + 9 = 13 → 4</div>
+        <div class="verdict">Девятка даёт 4 и у 2209, и у 2029 — НЕ различает</div>
+      </div>
+      <div class="out good" id="trap11out" hidden>
+        <div class="line">2209: 9 − 0 + 2 − 2 = 9</div>
+        <div class="line">2029: 9 − 2 + 0 − 2 = 5</div>
+        <div class="verdict">9 против 5 — ловит!</div>
+      </div>
+    </div>
+  </div>
+  <div class="foot">Один фильтр слеп. Два — видят.</div>
+</section>
+
+<!-- ================= ЭКРАН 2 ================= -->
+<section class="screen" id="s2" aria-label="Экран 2">
+  <div class="top">
+    <h1 id="s2title">Без таблицы умножения</h1>
+    <div class="seg" role="group" aria-label="Режим счётов">
+      <button type="button" data-mode="buttons" aria-pressed="true">Кнопочный</button>
+      <button type="button" data-mode="live" aria-pressed="false">Живые счёты</button>
+    </div>
+    <button class="btn grey" id="hookAgain" type="button" title="Показать историю ещё раз">История</button>
+  </div>
+  <div class="abaci">
+    <div id="abLeft"></div>
+    <div id="abRight"></div>
+  </div>
+  <div class="caption">Завтра — у каждого настоящие счёты. Сегодня — тренировка.</div>
+  <div class="work">
+    <div class="card tablewrap">
+      <table class="algo" id="ptable">
+        <thead><tr><th>Удвоить</th><th>Уполовинить</th><th>Берём?</th><th>Действие</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="card panel">
+      <div class="row">
+        <select id="pex" aria-label="Пример">
+          <option value="127,89">127 × 89 (учитель)</option>
+          <option value="152,43">152 × 43</option>
+          <option value="268,31">268 × 31</option>
+          <option value="179,56">179 × 56</option>
+        </select>
+        <button class="btn solid" id="pstart" type="button">Начать</button>
+        <button class="btn grey" id="p41" type="button">Ловушка: 41</button>
+      </div>
+      <div class="row">
+        <button class="btn" id="precord" type="button">Записать строку</button>
+        <button class="btn" id="pstep" type="button">Шаг целиком</button>
+        <button class="btn" id="pmark" type="button">Зачеркнуть по правилу</button>
+      </div>
+      <div class="row">
+        <button class="btn solid" id="psum" type="button">Сумма оставшихся</button>
+        <button class="btn" id="p9" type="button">Проверить девяткой</button>
+        <button class="btn teal" id="p11" type="button">Проверить одиннадцаткой</button>
+      </div>
+      <div class="result num" id="psumout" aria-live="polite"></div>
+      <div id="pcheck" aria-live="polite"></div>
+      <div class="status" id="pstatus" aria-live="polite"></div>
+    </div>
+  </div>
+  <div class="splash" id="splash" hidden>
+    <div class="box">
+      <p class="who">Я. И. Перельман, «Занимательная арифметика»</p>
+      <p>«В книге Перельмана „Занимательная арифметика“ описан случай: опытный счетовод на обычных счётах соревновался с вычислителем на механической машине — и выходил вперёд. Машина считала быстрее, но счетовод делал меньше шагов. Сегодня вы посчитаете, как тот счетовод. А потом увидите, что компьютер делает те же шаги».</p>
+      <div class="timer" id="splashTimer"></div>
+      <div class="close">Коснитесь, чтобы продолжить</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ЭКРАН 3 ================= -->
+<section class="screen" id="s3" aria-label="Экран 3">
+  <div class="top">
+    <h1 id="s3title">5¹³ — сколько умножений?</h1>
+    <select id="qex" aria-label="Пример" style="font:inherit;font-weight:700;padding:.35em .5em;border:2px solid var(--ink);border-radius:.5em;min-height:2.5em">
+      <option value="5,13">5¹³ (учитель)</option>
+      <option value="2,10">2¹⁰</option>
+      <option value="3,7">3⁷</option>
+      <option value="6,5">6⁵</option>
+    </select>
+    <button class="btn grey" id="qstart" type="button">Сначала</button>
+  </div>
+  <div class="ribbon" id="ribbon"></div>
+  <div class="work">
+    <div class="card tablewrap">
+      <table class="algo" id="qtable">
+        <thead><tr><th>В квадрат</th><th>Показатель пополам</th><th>Берём?</th><th>Действие</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="card panel">
+      <div style="display:flex;gap:.45em;flex-wrap:wrap">
+        <button class="btn solid" id="qacc" type="button">В накопитель</button>
+        <button class="btn grey" id="qskip" type="button">Зачеркнуть</button>
+        <button class="btn" id="qnext" type="button">Следующий квадрат</button>
+      </div>
+      <div class="status" id="qstatus" aria-live="polite"></div>
+      <div>Накопитель:</div>
+      <div class="acc" id="qaccout">___</div>
+      <div class="count" id="qcount"></div>
+      <div class="reserve">
+        <b>Резерв:</b> a<sup>n</sup>, n =
+        <input id="rn" type="text" inputmode="numeric" value="100" aria-label="Показатель">
+        <button class="btn" id="rgo" type="button">Посчитать</button>
+        <div id="rout" class="num" style="margin-top:.35em;font-weight:700"></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot" id="s3foot">В лоб: 12 умножений. Через квадрирование: 5.</div>
+</section>
+
+<!-- ================= ЭКРАН 4 ================= -->
+<section class="screen" id="s4" aria-label="Экран 4">
+  <h1>9 = 10 − 1, 11 = 10 + 1 — это важно</h1>
+  <div class="cols">
+    <div class="card"><h2 style="color:var(--blue)">Проверка 9: сумма цифр → остаток</h2>
+      <p>Складываем цифры, пока не останется одна. Девятка — это остаток 0.</p></div>
+    <div class="card"><h2 style="color:var(--teal)">Проверка 11: чередование знаков → остаток</h2>
+      <p>С последней цифры: плюс, минус, плюс… Отрицательное — добавляем 11.</p></div>
+  </div>
+  <div class="inrow">
+    <input class="big" id="cin" type="text" inputmode="numeric" value="3364" aria-label="Число для проверки">
+    <button class="btn solid" id="cgo" type="button" style="font-size:1.2em">Проверить обеими</button>
+    <div class="chips" id="chips"></div>
+  </div>
+  <div class="res">
+    <div class="card"><div class="chain" id="c9chain"></div><div class="rem nine" id="c9rem"></div></div>
+    <div class="card"><div class="chain" id="c11chain"></div><div class="rem eleven" id="c11rem"></div></div>
+  </div>
+  <div class="foot">Почему это работает — на информатике, буквально через пару уроков.</div>
+</section>
+</div>
+
+<nav class="bar" aria-label="Навигация">
+  <span class="nm" id="nm"></span>
+  <button class="btn" id="prev" type="button">◀ Назад</button>
+  <div class="dots" id="dots"></div>
+  <button class="btn solid" id="next" type="button">Вперёд ▶</button>
+  <button class="btn grey fs" id="fs" type="button">Во весь экран</button>
+</nav>
+
+<script>
+/* ============================================================
+   РУССКИЕ СЧЁТЫ — общий компонент (один и тот же код в schety.html
+   и в presentation.html).
+   Часть 1. ЯДРО: чистые функции, ничего не знают про экран.
+   Часть 2. ВИД: рисует счёты в SVG, кнопки, перетаскивание.
+   Часть 3. УПРАВЛЕНИЕ ИЗВНЕ: postMessage.
+   ============================================================ */
+(function (global) {
+  'use strict';
+
+  /* ---------------- Часть 1. ЯДРО ---------------- */
+  // Состояние — массив цифр, digits[0] — единицы, digits[k] — 10^k.
+  // На каждой проволоке 10 костяшек; отложено столько, сколько цифра.
+  // Все операции возвращают {ok, digits, steps, error, remainder}.
+  // steps — цепочка промежуточных состояний (для показа переноса по шагам).
+
+  function OverflowError(msg) { this.message = msg; }
+
+  function fromNumber(n, size) {
+    var d = [];
+    for (var i = 0; i < size; i++) { d.push(n % 10); n = Math.floor(n / 10); }
+    return d;
+  }
+  function toNumber(d) {
+    var n = 0;
+    for (var i = d.length - 1; i >= 0; i--) n = n * 10 + d[i];
+    return n;
+  }
+  function maxValue(size) { return Math.pow(10, size) - 1; }
+  function snap(d, wire, note) { return { digits: d.slice(), wire: wire, note: note || '' }; }
+
+  // Прибавить k (1..10) костяшек на проволоку pos. Честный перенос:
+  // если не помещается — +1 на следующей проволоке и снимаем (10 − k) здесь.
+  function addAt(d, pos, k, steps) {
+    if (k <= 0) return;
+    if (pos >= d.length) throw new OverflowError('Не хватает проволок на счётах');
+    if (d[pos] + k <= 9) {
+      d[pos] += k;
+      steps.push(snap(d, pos, '+' + k));
+      return;
+    }
+    addAt(d, pos + 1, 1, steps);            // перенос в старший разряд
+    d[pos] = d[pos] + k - 10;               // снимаем 10 − k
+    steps.push(snap(d, pos, '+' + k + ' = +10 − ' + (10 - k)));
+  }
+
+  // Снять k (1..10) костяшек с проволоки pos. Честный заём из старшего разряда.
+  function subAt(d, pos, k, steps) {
+    if (k <= 0) return;
+    if (pos >= d.length) throw new OverflowError('Меньше нуля счёты не умеют');
+    if (d[pos] >= k) {
+      d[pos] -= k;
+      steps.push(snap(d, pos, '−' + k));
+      return;
+    }
+    subAt(d, pos + 1, 1, steps);            // занимаем десяток
+    d[pos] = d[pos] + 10 - k;
+    steps.push(snap(d, pos, '−' + k + ' = −10 + ' + (10 - k)));
+  }
+
+  function run(digits, fn) {
+    var d = digits.slice(), steps = [];
+    try {
+      var extra = fn(d, steps) || {};
+      return { ok: true, digits: d, steps: steps, remainder: extra.remainder || 0, error: null };
+    } catch (e) {
+      if (e instanceof OverflowError) return { ok: false, digits: digits.slice(), steps: [], remainder: 0, error: e.message };
+      throw e;
+    }
+  }
+
+  function fail(digits, msg) { return { ok: false, digits: digits.slice(), steps: [], remainder: 0, error: msg }; }
+  function checkN(digits, n) {
+    if (typeof n !== 'number' || !isFinite(n) || n < 0 || Math.floor(n) !== n) return fail(digits, 'Нужно целое число от 0');
+    if (n > maxValue(digits.length)) return fail(digits, 'Слишком большое число для этих счётов');
+    return null;
+  }
+
+  var Core = {
+    fromNumber: fromNumber,
+    toNumber: toNumber,
+    maxValue: maxValue,
+
+    inc: function (digits) { return run(digits, function (d, s) { addAt(d, 0, 1, s); }); },
+
+    // Прибавить число: разряд за разрядом сверху вниз, как на настоящих счётах.
+    // Перенос уходит в уже обработанный старший разряд — это верно.
+    add: function (digits, n) {
+      var bad = checkN(digits, n); if (bad) return bad;
+      if (toNumber(digits) + n > maxValue(digits.length)) return fail(digits, 'Не хватает проволок: ' + toNumber(digits) + ' + ' + n + ' не помещается');
+      return run(digits, function (d, s) {
+        var k = fromNumber(n, d.length);
+        for (var i = d.length - 1; i >= 0; i--) addAt(d, i, k[i], s);
+      });
+    },
+
+    // Отнять число: разряд за разрядом сверху вниз, с честным заёмом.
+    sub: function (digits, n) {
+      var bad = checkN(digits, n); if (bad) return bad;
+      if (n > toNumber(digits)) return fail(digits, 'Меньше нуля счёты не умеют: ' + toNumber(digits) + ' − ' + n);
+      return run(digits, function (d, s) {
+        var k = fromNumber(n, d.length);
+        for (var i = d.length - 1; i >= 0; i--) subAt(d, i, k[i], s);
+      });
+    },
+    dec: function (digits) { return run(digits, function (d, s) { subAt(d, 0, 1, s); }); },
+
+    // Удвоить = прибавить число к самому себе, проволока за проволокой,
+    // сверху вниз (перенос уходит в уже удвоенный старший разряд — так верно).
+    double: function (digits) {
+      return run(digits, function (d, s) {
+        var orig = d.slice();
+        for (var i = d.length - 1; i >= 0; i--) addAt(d, i, orig[i], s);
+      });
+    },
+
+    // Уполовинить = честная половина каждого разряда сверху вниз.
+    // Нечётный разряд отдаёт «пятёрку» в младший. Остаток единиц — забываем.
+    halve: function (digits) {
+      return run(digits, function (d, s) {
+        var carry = 0;
+        for (var i = d.length - 1; i >= 0; i--) {
+          var v = d[i], half = Math.floor(v / 2);
+          subAt(d, i, v - half, s);
+          if (carry) addAt(d, i, 5, s);       // half ≤ 4, значит до 9 — без переноса
+          carry = v % 2;
+        }
+        return { remainder: carry };
+      });
+    },
+
+    set: function (digits, n) {
+      n = Number(n);
+      if (!isFinite(n) || n < 0 || Math.floor(n) !== n) {
+        return { ok: false, digits: digits.slice(), steps: [], remainder: 0, error: 'Нужно целое число от 0' };
+      }
+      if (n > maxValue(digits.length)) {
+        return { ok: false, digits: digits.slice(), steps: [], remainder: 0, error: 'Не хватает проволок: максимум ' + maxValue(digits.length) };
+      }
+      var target = fromNumber(n, digits.length), d = digits.slice(), steps = [];
+      for (var i = d.length - 1; i >= 0; i--) {
+        if (d[i] !== target[i]) { d[i] = target[i]; steps.push(snap(d, i, '')); }
+      }
+      return { ok: true, digits: d, steps: steps, remainder: 0, error: null };
+    },
+
+    clear: function (digits) { return Core.set(digits, 0); },
+
+    // Перетаскивание: на проволоке pos стало target костяшек (0..10).
+    // target = 10 — проволока переполнилась: честный перенос.
+    setWire: function (digits, pos, target) {
+      return run(digits, function (d, s) {
+        var delta = target - d[pos];
+        if (delta > 0) addAt(d, pos, delta, s);
+        else if (delta < 0) subAt(d, pos, -delta, s);
+      });
+    }
+  };
+
+  /* ---------------- Часть 2. ВИД ---------------- */
+  var SVGNS = 'http://www.w3.org/2000/svg';
+  var BW = 40, BH = 50, GAP = 4.2 * 40, PAD = 26, ROW = 66;
+  var registry = {};
+  var reduceMotion = global.matchMedia && global.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function el(tag, attrs, parent) {
+    var e = document.createElementNS(SVGNS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function h(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function fmt(n) { var s = String(n); return s.length < 5 ? s : s.replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+
+  var LABELS = { double: 'Удвоить', halve: 'Уполовинить', inc: '+1', dec: '−1', clear: 'Сброс' };
+  function parseNum(s) { s = String(s == null ? '' : s).replace(/\s/g, ''); return /^\d+$/.test(s) ? Number(s) : NaN; }
+
+  function Abacus(container, opts) {
+    opts = opts || {};
+    var self = this;
+    this.id = opts.id || ('abacus' + Object.keys(registry).length);
+    this.size = opts.wires || 7;
+    this.digits = fromNumber(opts.value || 0, this.size);
+    this.mode = opts.mode === 'live' ? 'live' : 'buttons';
+    this.stepMs = opts.stepMs != null ? opts.stepMs : 280;
+    this.showNumber = opts.showNumber !== false;
+    this.queue = Promise.resolve();
+    this.busy = 0;
+    this.listeners = [];
+    registry[this.id] = this;
+
+    var root = h('div', 'abacus');
+    root.dataset.mode = this.mode;
+    this.root = root;
+    var head = h('div', 'abacus-head');
+    if (opts.title) head.appendChild(h('div', 'abacus-title', opts.title));
+    this.numberEl = h('div', 'abacus-number', '0');
+    if (!this.showNumber) this.numberEl.classList.add('hidden');
+    head.appendChild(this.numberEl);
+    root.appendChild(head);
+
+    // SVG
+    var L = 10 * BW + GAP;
+    this.xL = PAD + 18;
+    this.xR = this.xL + L;
+    var W = this.xR + 18 + PAD, H = PAD * 2 + this.size * ROW;
+    var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, class: 'abacus-svg', role: 'img',
+      'aria-label': 'Русские счёты' });
+    this.svg = svg;
+    el('rect', { x: 4, y: 4, width: W - 8, height: H - 8, rx: 16, class: 'ab-frame' }, svg);
+    el('rect', { x: PAD, y: PAD - 6, width: W - 2 * PAD, height: H - 2 * PAD + 12, rx: 6, class: 'ab-inner' }, svg);
+
+    this.beads = [];
+    for (var w = 0; w < this.size; w++) {
+      var row = this.size - 1 - w;            // старший разряд — сверху
+      var cy = PAD + row * ROW + ROW / 2;
+      el('line', { x1: PAD, y1: cy, x2: W - PAD, y2: cy, class: 'ab-wire' }, svg);
+      var wireBeads = [];
+      for (var j = 0; j < 10; j++) {
+        var g = el('g', { class: 'ab-bead' + (j === 4 || j === 5 ? ' dark' : ''), 'data-w': w, 'data-j': j }, svg);
+        el('rect', { x: 0, y: cy - BH / 2, width: BW - 3, height: BH, rx: 17, class: 'ab-bead-body' }, g);
+        el('rect', { x: 6, y: cy - BH / 2 + 6, width: BW - 15, height: 8, rx: 4, class: 'ab-bead-shine' }, g);
+        wireBeads.push(g);
+      }
+      this.beads.push(wireBeads);
+    }
+    root.appendChild(svg);
+
+    var foot = h('div', 'abacus-foot');
+    this.msgEl = h('div', 'abacus-msg');
+    this.msgEl.setAttribute('aria-live', 'polite');
+    foot.appendChild(this.msgEl);
+    root.appendChild(foot);
+
+    // Кнопки компонента
+    var controls = opts.controls || ['double', 'halve', 'clear'];
+    if (controls.length) {
+      var bar = h('div', 'abacus-controls');
+      controls.forEach(function (c) {
+        if (c === 'set') {
+          var inp = h('input', 'ab-input');
+          inp.type = 'text'; inp.inputMode = 'numeric'; inp.placeholder = 'число';
+          inp.setAttribute('aria-label', 'Число для счётов');
+          var b = h('button', 'ab-btn', 'Установить');
+          b.type = 'button';
+          var go = function () { self.command('set', inp.value.replace(/\s/g, '')); };
+          b.addEventListener('click', go);
+          inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') go(); });
+          bar.appendChild(inp); bar.appendChild(b);
+          return;
+        }
+        if (c === 'addn') {
+          var grp = h('span', 'ab-addn');
+          var plus = h('button', 'ab-btn ab-plus', '+ число');
+          var amt = h('input', 'ab-input ab-amount');
+          amt.type = 'text'; amt.inputMode = 'numeric'; amt.value = '1';
+          amt.setAttribute('aria-label', 'Сколько прибавить или отнять');
+          var minus = h('button', 'ab-btn ab-minus', '− число');
+          plus.type = minus.type = 'button';
+          plus.addEventListener('click', function () { self.command('add', amt.value); });
+          minus.addEventListener('click', function () { self.command('sub', amt.value); });
+          grp.appendChild(plus); grp.appendChild(amt); grp.appendChild(minus);
+          bar.appendChild(grp);
+          return;
+        }
+        var btn = h('button', 'ab-btn ab-' + c, LABELS[c]);
+        btn.type = 'button';
+        btn.addEventListener('click', function () { self.command(c); });
+        bar.appendChild(btn);
+      });
+      foot.appendChild(bar);
+    }
+
+    container.appendChild(root);
+    this.render(this.digits, true);
+    this.setupDrag();
+  }
+
+  Abacus.prototype.value = function () { return toNumber(this.digits); };
+
+  Abacus.prototype.beadX = function (j, v) {
+    return j < v ? this.xL + j * BW : this.xR - (10 - j) * BW;
+  };
+
+  Abacus.prototype.render = function (digits, instant, wireHint) {
+    for (var w = 0; w < this.size; w++) {
+      var v = digits[w];
+      for (var j = 0; j < 10; j++) {
+        var g = this.beads[w][j];
+        g.style.transition = (instant || reduceMotion) ? 'none' : '';
+        g.style.transform = 'translate(' + this.beadX(j, v) + 'px,0)';
+        g.classList.toggle('counted', j < v);
+      }
+    }
+    if (wireHint != null) {
+      var flash = this.beads[wireHint];
+      flash.forEach(function (g) { g.classList.add('flash'); });
+      setTimeout(function () { flash.forEach(function (g) { g.classList.remove('flash'); }); }, 260);
+    }
+    this.numberEl.textContent = fmt(toNumber(digits));
+  };
+
+  Abacus.prototype.say = function (text, kind) {
+    var m = this.msgEl;
+    m.textContent = text || '';
+    m.className = 'abacus-msg' + (kind ? ' ' + kind : '');
+    clearTimeout(this._msgT);
+    if (text) this._msgT = setTimeout(function () { m.textContent = ''; }, 4500);
+  };
+
+  Abacus.prototype.on = function (fn) { this.listeners.push(fn); };
+  Abacus.prototype.emit = function () {
+    var self = this, v = this.value();
+    this.listeners.forEach(function (fn) { fn(v, self); });
+    var msg = { type: 'abacus:state', id: this.id, value: v, busy: this.busy > 0 };
+    try { (global.parent !== global ? global.parent : global).postMessage(msg, '*'); } catch (e) {}
+  };
+
+  // Проиграть шаги ядра по одному
+  Abacus.prototype.play = function (res) {
+    var self = this;
+    if (!res.ok) return Promise.resolve(res);
+    var steps = res.steps, i = 0, ms = reduceMotion ? 0 : this.stepMs;
+    return new Promise(function (resolve) {
+      function next() {
+        if (i >= steps.length) { self.digits = res.digits.slice(); self.render(self.digits, false); resolve(res); return; }
+        var s = steps[i++];
+        self.render(s.digits, false, s.wire);
+        if (ms) setTimeout(next, ms); else next();
+      }
+      next();
+    });
+  };
+
+  // Единая точка входа: кнопки, перетаскивание, postMessage
+  Abacus.prototype.command = function (cmd, value) {
+    var self = this;
+    var p = this.queue.then(function () {
+      self.busy++;
+      var res;
+      switch (cmd) {
+        case 'set': res = Core.set(self.digits, value); break;
+        case 'clear': res = Core.clear(self.digits); break;
+        case 'double':
+          res = Core.double(self.digits);
+          if (!res.ok) res.error = 'Не хватает проволок: ' + fmt(self.value()) + ' × 2 не помещается';
+          break;
+        case 'halve': res = Core.halve(self.digits); break;
+        case 'inc': res = Core.inc(self.digits); break;
+        case 'add': res = Core.add(self.digits, typeof value === 'number' ? value : parseNum(value == null || value === '' ? 1 : value)); break;
+        case 'sub': res = Core.sub(self.digits, typeof value === 'number' ? value : parseNum(value == null || value === '' ? 1 : value)); break;
+        case 'dec': res = Core.dec(self.digits); break;
+        case 'wire': res = Core.setWire(self.digits, value.wire, value.target); break;
+        case 'mode': self.setMode(value); res = { ok: true, digits: self.digits, steps: [] }; break;
+        case 'number': self.toggleNumber(value); res = { ok: true, digits: self.digits, steps: [] }; break;
+        case 'get': res = { ok: true, digits: self.digits, steps: [] }; break;
+        default: res = { ok: false, digits: self.digits, steps: [], error: 'Неизвестная команда' };
+      }
+      if (!res.ok) { self.say(res.error, 'err'); self.busy--; self.render(self.digits, false); return res; }
+      return self.play(res).then(function () {
+        self.busy--;
+        if (cmd === 'halve' && res.remainder) self.say('Остаток 1 — делим нацело, остаток забываем', 'note');
+        else if ((cmd === 'add' || cmd === 'sub') && res.steps.length) self.say('', '');
+        else if (cmd !== 'get' && cmd !== 'mode' && cmd !== 'number') self.say('');
+        self.emit();
+        return res;
+      });
+    });
+    this.queue = p.catch(function () {});
+    return p;
+  };
+
+  Abacus.prototype.setMode = function (mode) {
+    this.mode = mode === 'live' ? 'live' : 'buttons';
+    this.root.dataset.mode = this.mode;
+  };
+  Abacus.prototype.toggleNumber = function (show) {
+    this.showNumber = show == null ? !this.showNumber : !!show;
+    this.numberEl.classList.toggle('hidden', !this.showNumber);
+  };
+
+  // Живые счёты: взялся за костяшку — едет вся группа до края
+  Abacus.prototype.setupDrag = function () {
+    var self = this, drag = null;
+    function svgX(evt) {
+      var pt = self.svg.createSVGPoint();
+      pt.x = evt.clientX; pt.y = evt.clientY;
+      return pt.matrixTransform(self.svg.getScreenCTM().inverse()).x;
+    }
+    this.svg.addEventListener('pointerdown', function (e) {
+      if (self.mode !== 'live' || self.busy) return;
+      var g = e.target.closest && e.target.closest('.ab-bead');
+      if (!g) return;
+      var w = +g.getAttribute('data-w'), j = +g.getAttribute('data-j'), v = self.digits[w];
+      var group = [], dir;
+      if (j >= v) { dir = -1; for (var k = v; k <= j; k++) group.push(k); }   // тянем влево — откладываем
+      else { dir = 1; for (var k2 = j; k2 < v; k2++) group.push(k2); }        // тянем вправо — убираем
+      drag = { w: w, j: j, v: v, dir: dir, group: group, x0: svgX(e), dx: 0, t0: Date.now() };
+      group.forEach(function (k) { self.beads[w][k].style.transition = 'none'; self.beads[w][k].classList.add('grab'); });
+      self.svg.setPointerCapture(e.pointerId);
+      e.preventDefault();
+    });
+    this.svg.addEventListener('pointermove', function (e) {
+      if (!drag) return;
+      var dx = svgX(e) - drag.x0;
+      dx = drag.dir < 0 ? Math.max(-GAP, Math.min(0, dx)) : Math.min(GAP, Math.max(0, dx));
+      drag.dx = dx;
+      drag.group.forEach(function (k) {
+        self.beads[drag.w][k].style.transform = 'translate(' + (self.beadX(k, drag.v) + dx) + 'px,0)';
+      });
+    });
+    function end() {
+      if (!drag) return;
+      var d = drag; drag = null;
+      d.group.forEach(function (k) { self.beads[d.w][k].classList.remove('grab'); self.beads[d.w][k].style.transition = ''; });
+      var tap = Math.abs(d.dx) < 6 && Date.now() - d.t0 < 400;
+      if (tap || Math.abs(d.dx) > GAP * 0.35) {
+        var target = d.dir < 0 ? d.j + 1 : d.j;
+        self.command('wire', { wire: d.w, target: target });
+      } else self.render(self.digits, false);
+    }
+    this.svg.addEventListener('pointerup', end);
+    this.svg.addEventListener('pointercancel', end);
+  };
+
+  /* ---------------- Часть 3. УПРАВЛЕНИЕ ЧЕРЕЗ postMessage ----------------
+     Команда:  {type:'abacus', id:'left'|'*', cmd:'set'|'clear'|'mode'|'double'|
+                'halve'|'inc'|'dec'|'add'|'sub'|'number'|'get', value, reqId}
+     Ответ:    {type:'abacus:done', id, reqId, ok, value, error, remainder}
+     Изменения:{type:'abacus:state', id, value, busy}                         */
+  if (global.addEventListener) global.addEventListener('message', function (e) {
+    var m = e.data;
+    if (!m || m.type !== 'abacus') return;
+    var list = (!m.id || m.id === '*') ? Object.keys(registry).map(function (k) { return registry[k]; }) : [registry[m.id]];
+    list.forEach(function (inst) {
+      if (!inst) return;
+      inst.command(m.cmd, m.value).then(function (res) {
+        var reply = { type: 'abacus:done', id: inst.id, reqId: m.reqId, ok: res.ok, value: inst.value(),
+          error: res.error || null, remainder: res.remainder || 0 };
+        try { (e.source || global).postMessage(reply, '*'); } catch (err) {}
+      });
+    });
+  });
+
+  global.AbacusCore = Core;
+  global.Abacus = Abacus;
+  global.Abacus.registry = registry;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+(function () {
+  'use strict';
+  /* ---------- общие помощники ---------- */
+  var $ = function (id) { return document.getElementById(id); };
+  function fmt(n) { var s = String(n); return s.length < 5 ? s : s.replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+  var SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
+  function sup(n) { return String(n).split('').map(function (c) { return SUP[+c]; }).join(''); }
+  function digits(n) { return String(n).split('').map(Number); }
+  // Проверка 9: «13 → 4», «27 → 9 → 0»
+  function nineChain(n) {
+    var parts = [], s = String(n);
+    if (s.length === 1) return { text: s + (n === 9 ? ' → 0' : ''), r: n % 9 };
+    var cur = n;
+    while (String(cur).length > 1) {
+      var ds = digits(cur), sum = ds.reduce(function (a, b) { return a + b; }, 0);
+      parts.push(ds.join(' + ') + ' = ' + sum);
+      cur = sum;
+    }
+    var txt = parts.join(' → ');
+    if (cur === 9) txt += ' → 0';
+    return { text: txt, r: n % 9 };
+  }
+  function nineShort(n) { // «127 → 1», «3969 → 27 → 0»
+    var chain = [String(n)], cur = n;
+    while (String(cur).length > 1) { cur = digits(cur).reduce(function (a, b) { return a + b; }, 0); chain.push(cur); }
+    if (cur === 9) chain.push(0);
+    return { text: chain.join(' → '), r: n % 9 };
+  }
+  // Проверка 11: с последней цифры «+ − + …»
+  function elevenChain(n) {
+    var ds = digits(n).reverse(), v = 0, txt = '';
+    ds.forEach(function (d, i) {
+      v += i % 2 === 0 ? d : -d;
+      txt += i === 0 ? String(d) : (i % 2 === 0 ? ' + ' : ' − ') + d;
+    });
+    var r = ((v % 11) + 11) % 11;
+    if (ds.length > 1) txt += ' = ' + (v < 0 ? '−' + (-v) : v);
+    if (v !== r) txt += ' → ' + r;
+    return { text: txt, r: r };
+  }
+  function elevenShort(n) {
+    var c = elevenChain(n);
+    var short = c.text.indexOf('=') >= 0 ? c.text.slice(c.text.indexOf('=') + 2) : c.text;
+    return { text: n + ' → ' + short, r: c.r };
+  }
+
+  /* ---------- навигация ---------- */
+  var screens = ['s1', 's2', 's3', 's4'];
+  var names = ['Разность квадратов', 'Крестьянский метод', 'Квадрирование', 'Проверки 9 и 11'];
+  var cur = 0, splashShown = false;
+  screens.forEach(function (id, i) {
+    var b = document.createElement('button');
+    b.className = 'dot'; b.type = 'button'; b.textContent = i + 1; b.title = names[i];
+    b.addEventListener('click', function () { go(i); });
+    $('dots').appendChild(b);
+  });
+  function go(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach(function (id, k) { $(id).classList.toggle('active', k === cur); });
+    document.querySelectorAll('.dot').forEach(function (d, k) { d.setAttribute('aria-current', k === cur ? 'true' : 'false'); });
+    $('prev').disabled = cur === 0; $('next').disabled = cur === screens.length - 1;
+    $('nm').textContent = names[cur];
+    if (screens[cur] === 's2' && !splashShown) { splashShown = true; showSplash(); }
+  }
+  $('prev').addEventListener('click', function () { go(cur - 1); });
+  $('next').addEventListener('click', function () { go(cur + 1); });
+  document.addEventListener('keydown', function (e) {
+    var t = e.target.tagName;
+    if (t === 'INPUT' || t === 'SELECT' || t === 'TEXTAREA') return;
+    if (!$('splash').hidden && (e.key === 'Escape' || e.key === ' ' || e.key === 'Enter')) { hideSplash(); e.preventDefault(); return; }
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { go(cur + 1); e.preventDefault(); }
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') { go(cur - 1); e.preventDefault(); }
+  });
+  $('fs').addEventListener('click', function () {
+    if (!document.fullscreenElement) { (document.documentElement.requestFullscreen || function () {}).call(document.documentElement); }
+    else if (document.exitFullscreen) document.exitFullscreen();
+  });
+
+  /* ---------- ЭКРАН 1 ---------- */
+  (function () {
+    var ticks = $('nl-ticks'), NS = 'http://www.w3.org/2000/svg';
+    for (var n = 43; n <= 51; n++) {
+      var x = 180 + (n - 44) * 90;
+      var t = document.createElementNS(NS, 'line');
+      t.setAttribute('x1', x); t.setAttribute('x2', x); t.setAttribute('y1', 138); t.setAttribute('y2', 162); t.setAttribute('class', 'nl-tick');
+      ticks.appendChild(t);
+      if (n === 44 || n === 47 || n === 50) {
+        var tx = document.createElementNS(NS, 'text');
+        tx.setAttribute('x', x); tx.setAttribute('y', 205);
+        tx.setAttribute('class', 'nl-lbl' + (n === 50 ? ' round' : ''));
+        tx.textContent = n;
+        if (n !== 47) { tx.classList.add('reveal'); tx.dataset.step = '1'; }
+        ticks.appendChild(tx);
+      }
+    }
+    var step = 0;
+    function show() {
+      $('r1').classList.toggle('on', step >= 1);
+      ticks.querySelectorAll('[data-step]').forEach(function (e) { e.classList.toggle('on', step >= 1); });
+      $('r2').classList.toggle('on', step >= 2);
+      $('r3').classList.toggle('on', step >= 3);
+      $('r4').classList.toggle('on', step >= 4);
+      $('s1next').disabled = step >= 4;
+    }
+    $('s1next').addEventListener('click', function () { step = Math.min(4, step + 1); show(); });
+    $('s1reset').addEventListener('click', function () { step = 0; show(); $('trap9out').hidden = true; $('trap11out').hidden = true; });
+    $('trap9').addEventListener('click', function () { $('trap9out').hidden = false; });
+    $('trap11').addEventListener('click', function () { $('trap11out').hidden = false; });
+    show();
+  })();
+
+  /* ---------- ЭКРАН 2: счёты + крестьянский метод ---------- */
+  var left = new Abacus($('abLeft'), { id: 'left', wires: 6, controls: ['double', 'addn', 'clear'], title: 'Левые счёты — удваиваем', stepMs: 300 });
+  var right = new Abacus($('abRight'), { id: 'right', wires: 6, controls: ['halve', 'addn', 'clear'], title: 'Правые счёты — уполовиниваем меньшее', stepMs: 300 });
+
+  // Управление счётами — через postMessage (тот же протокол, что у schety.html)
+  var reqN = 0, pending = {}, live = { left: 0, right: 0 };
+  window.addEventListener('message', function (e) {
+    var m = e.data; if (!m) return;
+    if (m.type === 'abacus:state') live[m.id] = m.value;
+    if (m.type === 'abacus:done') {
+      live[m.id] = m.value;
+      var key = m.reqId + ':' + m.id;
+      if (pending[key]) { pending[key](m); delete pending[key]; }
+    }
+  });
+  function send(id, cmd, value) {
+    var reqId = 'r' + (++reqN);
+    return new Promise(function (resolve) {
+      pending[reqId + ':' + id] = resolve;
+      window.postMessage({ type: 'abacus', id: id, cmd: cmd, value: value, reqId: reqId }, '*');
+    });
+  }
+
+  var P = { a: 127, b: 89, rows: [], sum: null };
+  function status(t) { $('pstatus').textContent = t || ''; }
+  function renderP() {
+    var tb = $('ptable').tBodies[0];
+    tb.innerHTML = '';
+    P.rows.forEach(function (r, i) {
+      var tr = document.createElement('tr');
+      tr.className = 'row' + (r.mark ? ' ' + r.mark : '');
+      var c1 = '<td class="v' + (r.warnL ? ' warn' : '') + '">' + fmt(r.l) + (r.warnL ? ' <span class="small">ожидали ' + fmt(r.warnL) + '</span>' : '') + '</td>';
+      var c2 = '<td class="v' + (r.warnR != null ? ' warn' : '') + '">' + fmt(r.r) + (r.warnR != null ? ' <span class="small">ожидали ' + fmt(r.warnR) + '</span>' : '') + '</td>';
+      var c3 = '<td>' + (r.mark === 'take' ? 'да' : r.mark === 'drop' ? 'нет' : '') + '</td>';
+      var c4 = '<td class="act">' + (r.mark === 'take' ? '+ ' + fmt(r.l) + ' в сумму' : r.mark === 'drop' ? 'зачёркиваем' : '') + '</td>';
+      tr.innerHTML = c1 + c2 + c3 + c4;
+      tr.addEventListener('click', function () {
+        r.mark = r.mark === 'take' ? 'drop' : 'take';
+        P.sum = null; $('psumout').textContent = ''; $('pcheck').innerHTML = '';
+        renderP();
+      });
+      tb.appendChild(tr);
+    });
+    var last = P.rows[P.rows.length - 1];
+    var done = !last || last.r <= 1;
+    $('pstep').disabled = done; $('precord').disabled = done;
+    $('s2title').textContent = P.a + ' × ' + P.b + ' — без таблицы умножения';
+  }
+  function startP() {
+    var v = $('pex').value.split(',').map(Number);
+    P.a = v[0]; P.b = v[1]; P.rows = []; P.sum = null;
+    $('psumout').textContent = ''; $('pcheck').innerHTML = ''; status('');
+    renderP();
+    return Promise.all([send('left', 'set', P.a), send('right', 'set', P.b)]).then(function () {
+      P.rows = [{ l: P.a, r: P.b, mark: null }];
+      renderP();
+      status('Уполовиниваем меньшее число — строк будет меньше. Левые — «Удвоить», правые — «Уполовинить».');
+    });
+  }
+  function recordP() {
+    // число берём через очередь счётов — после всех действий, нажатых раньше
+    return Promise.all([send('left', 'get'), send('right', 'get')]).then(function (res) { recordNow(res[0].value, res[1].value); });
+  }
+  function recordNow(l, r) {
+    var last = P.rows[P.rows.length - 1];
+    if (!last) { status('Сначала нажмите «Начать».'); return; }
+    if (last.r <= 1) { status('Правое число уже 1 — строки кончились. Зачёркиваем строки с чётным правым.'); return; }
+
+    if (l === last.l && r === last.r) { status('Счёты не изменились: сначала удвойте левые и уполовиньте правые.'); return; }
+    var row = { l: l, r: r, mark: null };
+    if (l !== last.l * 2) row.warnL = last.l * 2;
+    if (r !== Math.floor(last.r / 2)) row.warnR = Math.floor(last.r / 2);
+    P.rows.push(row); P.sum = null; $('psumout').textContent = ''; $('pcheck').innerHTML = '';
+    renderP();
+    if (row.warnL || row.warnR != null) status('Проверьте строку — на счётах не то, что ожидали.');
+    else status(r <= 1 ? 'Правое число стало 1 — таблица готова. Какие строки зачёркиваем?' : '');
+  }
+  function stepP() {
+    var last = P.rows[P.rows.length - 1];
+    if (!last || last.r <= 1) { recordP(); return; }
+    $('pstep').disabled = true;
+    Promise.all([send('left', 'double'), send('right', 'halve')]).then(function (res) {
+      if (res.some(function (x) { return !x.ok; })) { status('Не хватает проволок на счётах.'); renderP(); return; }
+      recordP();
+    });
+  }
+  function sumP() {
+    if (!P.rows.length) { status('Сначала нажмите «Начать».'); return null; }
+    var kept = P.rows.filter(function (r) { return r.mark !== 'drop'; });
+    var s = kept.reduce(function (a, r) { return a + r.l; }, 0);
+    P.sum = s;
+    $('psumout').textContent = 'Сумма: ' + kept.map(function (r) { return fmt(r.l); }).join(' + ') + ' = ' + fmt(s);
+    var last = P.rows[P.rows.length - 1];
+    if (last.r > 1) status('Таблица ещё не закончена — правое число пока не 1.');
+    return s;
+  }
+  function checkP(kind) {
+    var s = P.sum == null ? sumP() : P.sum;
+    if (s == null) return;
+    var a = P.a, b = P.b, html;
+    if (kind === 9) {
+      var ra = nineShort(a), rb = nineShort(b), prod = ra.r * rb.r, rs = nineShort(s);
+      var pr = prod % 9;
+      var prodTxt = ra.r + ' · ' + rb.r + ' = ' + prod + (prod !== pr ? ' → ' + pr : '');
+      var ok = pr === rs.r;
+      html = '<div class="out ' + (ok ? 'good' : 'badbg') + '"><div class="line">' + ra.text + ', ' + rb.text + '; ' + prodTxt + '</div>' +
+        '<div class="line">' + rs.text + ' <span class="verdict ' + (ok ? 'ok' : 'bad') + '">' + (ok ? 'совпало ✓' : 'не совпало — ищем ошибку ✗') + '</span></div></div>';
+    } else {
+      var ea = elevenShort(a), eb = elevenShort(b), p2 = ea.r * eb.r, es = elevenChain(s);
+      var r2 = p2 % 11;
+      var pTxt = ea.r + ' · ' + eb.r + ' = ' + p2 + (p2 !== r2 ? ' → ' + r2 : '');
+      var ok2 = r2 === es.r;
+      html = '<div class="out ' + (ok2 ? 'good' : 'badbg') + '"><div class="line">' + ea.text + ', ' + eb.text + '; ' + pTxt + '</div>' +
+        '<div class="line">' + String(s) + ': ' + es.text + ' <span class="verdict ' + (ok2 ? 'ok' : 'bad') + '">' + (ok2 ? 'совпало ✓' : 'не совпало — ищем ошибку ✗') + '</span></div></div>';
+    }
+    $('pcheck').innerHTML = html;
+  }
+  $('pstart').addEventListener('click', startP);
+  $('precord').addEventListener('click', recordP);
+  $('pstep').addEventListener('click', stepP);
+  $('pmark').addEventListener('click', function () {
+    P.rows.forEach(function (r) { r.mark = r.r % 2 === 1 ? 'take' : 'drop'; });
+    P.sum = null; $('psumout').textContent = ''; $('pcheck').innerHTML = '';
+    renderP();
+  });
+  $('psum').addEventListener('click', sumP);
+  $('p9').addEventListener('click', function () { checkP(9); });
+  $('p11').addEventListener('click', function () { checkP(11); });
+  $('p41').addEventListener('click', function () {
+    status('41 пополам: делим нацело, остаток забываем.');
+    send('right', 'set', 41).then(function () { return send('right', 'halve'); });
+  });
+  document.querySelectorAll('#s2 [data-mode]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('#s2 [data-mode]').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      send('*', 'mode', b.dataset.mode);
+    });
+  });
+
+  // Заставка-хук
+  var splashT = null, splashAnim = null;
+  function showSplash() {
+    $('splash').hidden = false;
+    var bar = $('splashTimer');
+    if (bar.animate) { splashAnim = bar.animate([{ transform: 'scaleX(1)' }, { transform: 'scaleX(0)' }], { duration: 30000, fill: 'forwards' }); }
+    clearTimeout(splashT);
+    splashT = setTimeout(hideSplash, 30000);
+  }
+  function hideSplash() { $('splash').hidden = true; clearTimeout(splashT); if (splashAnim) splashAnim.cancel(); }
+  $('splash').addEventListener('click', hideSplash);
+  $('hookAgain').addEventListener('click', showSplash);
+  startP();
+
+  /* ---------- ЭКРАН 3: квадрирование ---------- */
+  var Q = null;
+  function bits(e) { return e.toString(2).split('').map(Number); }
+  function startQ() {
+    var v = $('qex').value.split(',').map(Number);
+    Q = { base: v[0], exp: v[1], rows: [], acc: null, sq: 0, mul: 0 };
+    Q.rows.push({ p: 1, val: BigInt(Q.base), rest: Q.exp, bit: Q.exp % 2, action: null });
+    $('qstatus').textContent = '';
+    $('s3title').textContent = Q.base + sup(Q.exp) + ' — сколько умножений?';
+    var bl = Q.exp.toString(2).length, pc = bits(Q.exp).filter(Boolean).length;
+    $('s3foot').textContent = 'В лоб: ' + (Q.exp - 1) + ' ' + plural(Q.exp - 1, 'умножение', 'умножения', 'умножений') +
+      '. Через квадрирование: ' + ((bl - 1) + (pc - 1)) + '.';
+    renderQ();
+  }
+  function plural(n, a, b, c) { var m10 = n % 10, m100 = n % 100; if (m10 === 1 && m100 !== 11) return a; if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return b; return c; }
+  function renderQ() {
+    // лента битов: заполняется из таблицы — строка k даёт k-й бит справа
+    var bs = bits(Q.exp), n = bs.length, done = finishedQ();
+    var html = '<span class="lbl">двоичная запись показателя:</span><span>' + Q.exp + ' =</span>';
+    bs.forEach(function (b, i) {
+      var row = Q.rows[n - 1 - i], known = row && row.action;
+      var curr = row && !row.action;
+      html += '<span class="bit ' + (known ? (row.action === 'take' ? 'one' : 'zero') : 'unk') + (curr ? ' cur' : '') + '">' +
+        (known ? (row.action === 'take' ? 1 : 0) : '?') + '</span>';
+    });
+    html += '<span class="two">2</span>';
+    if (done) {
+      var parts = [];
+      bs.forEach(function (b, i) { if (b) parts.push(Math.pow(2, n - 1 - i)); });
+      html += '<span class="sum">= ' + parts.join(' + ') + '</span>';
+    } else html += '<span class="hint">берём = 1, зачёркиваем = 0, читаем снизу вверх</span>';
+    $('ribbon').innerHTML = html;
+    // таблица
+    var tb = $('qtable').tBodies[0];
+    tb.innerHTML = '';
+    Q.rows.forEach(function (r, i) {
+      var tr = document.createElement('tr');
+      tr.className = r.action ? r.action : '';
+      tr.innerHTML = '<td class="v">' + fmt(r.val.toString()) + '<span class="pw">' + Q.base + sup(r.p) + '</span></td>' +
+        '<td class="v">' + r.rest + '</td>' +
+        '<td>' + (r.action === 'take' ? 'да' : r.action === 'drop' ? 'нет' : '') + '</td>' +
+        '<td class="act">' + (r.action === 'take' ? '× в накопитель' : r.action === 'drop' ? 'зачёркиваем' : '') + '</td>';
+      tb.appendChild(tr);
+    });
+    $('qaccout').textContent = Q.acc == null ? '___' : fmt(Q.acc.toString());
+    $('qcount').textContent = 'Квадратов: ' + Q.sq + ' · умножений в накопитель: ' + Q.mul + ' · всего: ' + (Q.sq + Q.mul);
+    var last = Q.rows[Q.rows.length - 1];
+    $('qacc').disabled = !!last.action; $('qskip').disabled = !!last.action;
+    $('qnext').disabled = !last.action || last.rest <= 1;
+    if (finishedQ()) $('qstatus').innerHTML = '<span class="ok">Готово: ' + Q.base + sup(Q.exp) + ' = ' + fmt(Q.acc.toString()) +
+      ' за ' + (Q.sq + Q.mul) + ' ' + plural(Q.sq + Q.mul, 'операцию', 'операции', 'операций') + ' вместо ' + (Q.exp - 1) + '.</span>';
+  }
+  function finishedQ() { var l = Q.rows[Q.rows.length - 1]; return l.action && l.rest <= 1; }
+  $('qacc').addEventListener('click', function () {
+    var r = Q.rows[Q.rows.length - 1];
+    if (r.bit === 0) { $('qstatus').textContent = 'Стоп: справа чётное — строку зачёркиваем.'; return; }
+    r.action = 'take';
+    if (Q.acc == null) Q.acc = r.val; else { Q.acc = Q.acc * r.val; Q.mul++; }
+    $('qstatus').textContent = '';
+    renderQ();
+  });
+  $('qskip').addEventListener('click', function () {
+    var r = Q.rows[Q.rows.length - 1];
+    if (r.bit === 1) { $('qstatus').textContent = 'Стоп: справа нечётное — берём в накопитель.'; return; }
+    r.action = 'drop'; $('qstatus').textContent = '';
+    renderQ();
+  });
+  $('qnext').addEventListener('click', function () {
+    var r = Q.rows[Q.rows.length - 1];
+    if (!r.action) { $('qstatus').textContent = 'Сначала решите: в накопитель или зачеркнуть.'; return; }
+    if (r.rest <= 1) return;
+    var rest = Math.floor(r.rest / 2);
+    Q.rows.push({ p: r.p * 2, val: r.val * r.val, rest: rest, bit: rest % 2, action: null });
+    Q.sq++;
+    $('qstatus').textContent = '';
+    renderQ();
+  });
+  $('qstart').addEventListener('click', startQ);
+  $('qex').addEventListener('change', startQ);
+  $('rgo').addEventListener('click', function () {
+    var n = parseInt($('rn').value.replace(/\s/g, ''), 10);
+    if (!(n >= 1)) { $('rout').textContent = 'Нужен показатель от 1'; return; }
+    var b = n.toString(2), sq = b.length - 1, mul = b.split('').filter(function (c) { return c === '1'; }).length - 1;
+    var parts = []; b.split('').forEach(function (c, i) { if (c === '1') parts.push(fmt(Math.pow(2, b.length - 1 - i))); });
+    $('rout').innerHTML = fmt(n) + ' = ' + b + '₂ = ' + parts.join(' + ') + '<br>' + sq + ' ' + plural(sq, 'квадрат', 'квадрата', 'квадратов') +
+      ' + ' + mul + ' ' + plural(mul, 'умножение', 'умножения', 'умножений') + ' = <b>' + (sq + mul) + '</b>. В лоб: <b>' + fmt(n - 1) + '</b>.';
+  });
+  startQ();
+
+  /* ---------- ЭКРАН 4: проверки ---------- */
+  [2209, 2029, 3969, 3364, 6536, 8308, 10024, 11303].forEach(function (n) {
+    var c = document.createElement('button');
+    c.className = 'chip'; c.type = 'button'; c.textContent = n;
+    c.addEventListener('click', function () { $('cin').value = n; checkBoth(); });
+    $('chips').appendChild(c);
+  });
+  function checkBoth() {
+    var s = $('cin').value.replace(/\s/g, '');
+    if (!/^\d+$/.test(s)) { $('c9chain').textContent = 'Введите целое число'; $('c9rem').textContent = ''; $('c11chain').textContent = ''; $('c11rem').textContent = ''; return; }
+    var n = Number(s);
+    if (s.length > 15) { $('c9chain').textContent = 'Слишком длинное число'; return; }
+    var a = nineChain(n), b = elevenChain(n);
+    $('c9chain').textContent = s + ': ' + a.text;
+    $('c9rem').textContent = 'остаток ' + a.r;
+    $('c11chain').textContent = s + ': ' + b.text;
+    $('c11rem').textContent = 'остаток ' + b.r;
+  }
+  $('cgo').addEventListener('click', checkBoth);
+  $('cin').addEventListener('keydown', function (e) { if (e.key === 'Enter') checkBoth(); });
+
+  go(0);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Раздатка — быстрые вычисления</title><style>
+@page { size: A4; margin: 10mm; }
+* { box-sizing: border-box; }
+html { background: #e9e6df; }
+body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; font-size: 10.5pt; color: #000; line-height: 1.35; }
+.toolbar { position: sticky; top: 0; background: #fff; border-bottom: 1px solid #bbb; padding: 8px 16px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; z-index: 2; font-size: 14px; }
+.toolbar button { font: inherit; font-weight: 700; padding: 8px 16px; border: 2px solid #1d4ed8; background: #1d4ed8; color: #fff; border-radius: 8px; cursor: pointer; }
+.sheet { width: 190mm; min-height: 277mm; margin: 8mm auto; background: #fff; padding: 9mm 10mm; box-shadow: 0 1px 6px rgba(0,0,0,.2); break-after: page; page-break-after: always; }
+.sh { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1.5pt solid #000; padding-bottom: 2mm; margin-bottom: 3mm; font-size: 10pt; }
+h2 { font-size: 12pt; margin: 4mm 0 2mm; display: flex; align-items: center; gap: 2.5mm; }
+h2 .no { display: inline-flex; width: 6.5mm; height: 6.5mm; border: 1.2pt solid #000; border-radius: 50%; align-items: center; justify-content: center; font-size: 10pt; }
+h3 { font-size: 10.5pt; margin: 0 0 1.5mm; }
+h3 small { font-weight: 400; }
+.two { display: grid; grid-template-columns: auto 1fr; gap: 5mm; align-items: start; }
+.task { font-size: 16pt; font-weight: 800; margin-bottom: 1.5mm; letter-spacing: .03em; }
+.grid { display: block; }
+.side { display: flex; flex-direction: column; gap: 2.2mm; }
+.remind { border: 1pt dashed #000; border-radius: 2mm; padding: 2mm 3mm; font-size: 9.5pt; }
+.field { margin: 1.6mm 0; }
+.rule { margin: 1mm 0 2mm; }
+.blank { display: inline-block; border-bottom: .8pt solid #000; height: 5.5mm; vertical-align: bottom; }
+.box { display: inline-block; height: 9mm; border: .9pt solid #000; border-radius: 1mm; vertical-align: middle; }
+.box.thick { border: 2.4pt double #000; }
+.formula { font-size: 13pt; font-weight: 700; margin: 2.5mm 0; }
+.must { display: inline-block; padding: 1mm 2mm; border: 1.2pt solid #000; border-radius: 2mm; position: relative; }
+.must::after { content: "не пропусти!"; position: absolute; top: -3.4mm; right: 1mm; font-size: 7.5pt; background: #fff; padding: 0 1mm; font-weight: 800; }
+.tbl { border-collapse: collapse; width: 100%; }
+.tbl th, .tbl td { border: .7pt solid #000; padding: 1mm 2mm; text-align: left; vertical-align: middle; }
+.tbl th { font-size: 9pt; background: #f2f2f2; }
+.tbl th small { font-weight: 400; }
+.tbl td { height: 9mm; }
+.peas { width: 105mm; }
+.peas td { height: 8.6mm; }
+.checks { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; margin-top: 2mm; }
+.checks > div { border: .8pt solid #000; border-radius: 2mm; padding: 2mm 3mm; line-height: 2.1; }
+.teacher .tbl.mini td { height: auto; font-size: 9pt; padding: .8mm 1.5mm; }
+.teacher .tbl.mini th { font-size: 8.5pt; padding: .8mm 1.5mm; }
+.teacher tr.drop td { color: #666; text-decoration: line-through; }
+.teacher tr.drop td:last-child { text-decoration: none; }
+.note { border-left: 2pt solid #000; padding: 1mm 3mm; margin: 2.5mm 0; font-size: 9.5pt; }
+.tgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm 5mm; margin-bottom: 3mm; }
+.tcard p { margin: .7mm 0; font-size: 9pt; }
+.teacher .tcard td small { font-size: 7pt; }
+@media print {
+  html { background: #fff; }
+  .toolbar { display: none; }
+  .sheet { margin: 0; box-shadow: none; width: auto; min-height: 0; padding: 0; }
+  .tbl th { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+</style></head>
+<body>
+<div class="toolbar"><button type="button" onclick="window.print()">Печать</button>
+<span>A4, по 2 страницы на ученика (печать с двух сторон). Варианты 1–3 — по ученику, затем шаблон для практики и учительский лист.</span></div>
+
+<section class="sheet">
+  <header class="sh"><b>Быстрые вычисления</b><span>Вариант 1</span><span>Имя: <span class="blank" style="width:55mm"></span></span></header>
+
+  <h2><span class="no">1</span> Разогрев: корень уголком</h2>
+  <div class="two">
+    <div>
+      <div class="task">√ 39 69</div>
+      <svg class="grid" viewBox="0 0 90 55" style="width:90mm;height:55mm"><defs><pattern id="ga1" width="5" height="5" patternUnits="userSpaceOnUse"><path d="M5 0H0V5" fill="none" stroke="#9a9a9a" stroke-width=".15"/></pattern></defs><rect width="90" height="55" fill="url(#ga1)" stroke="#555" stroke-width=".3"/></svg>
+    </div>
+    <div class="side">
+      <div class="remind"><b>Не забудь:</b><br>(20 × текущий корень + B) × B ≤ остатка.<br>Подбираем наибольшую цифру B.<br>20 × текущий корень = <span class="blank" style="width:16mm"></span></div>
+      <div class="field"><b>Проверка девяткой</b></div>
+      <div class="field">корень <span class="blank" style="width:16mm"></span> → остаток <span class="blank" style="width:10mm"></span></div>
+      <div class="field">остаток в квадрат: <span class="blank" style="width:10mm"></span> → <span class="blank" style="width:10mm"></span></div>
+      <div class="field">число 3969 → остаток <span class="blank" style="width:10mm"></span></div>
+      <div class="field">совпало? <span class="blank" style="width:16mm"></span></div>
+    </div>
+  </div>
+
+  <h2><span class="no">2</span> Теперь наоборот: квадрат по формуле</h2>
+  <p class="rule">n² = (n − d)(n + d) + d², &nbsp; у нас d = 3. &nbsp; n — корень, который ты нашёл: n = <span class="blank" style="width:16mm"></span></p>
+  <div class="formula">
+    n² = ( <span class="box " style="width:14mm"></span> − 3 ) · ( <span class="box " style="width:14mm"></span> + 3 ) <span class="must">+ d² = <span class="box thick" style="width:12mm"></span></span>
+  </div>
+  <div class="formula">
+    &nbsp;&nbsp;&nbsp;&nbsp;= <span class="box " style="width:18mm"></span> · <span class="box " style="width:18mm"></span> + <span class="box " style="width:12mm"></span> = <span class="box " style="width:24mm"></span>
+  </div>
+  <p class="field">Сверка с разогревом: получилось 3969? &nbsp; ☐ да &nbsp; ☐ нет</p>
+
+  <h2><span class="no">3</span> Проверяем двумя проверками</h2>
+  <table class="tbl">
+    <thead><tr><th style="width:30%">число</th><th>сумма цифр</th><th>остаток 9</th><th>чередование<br><small>(с последней цифры: + − + −)</small></th><th>остаток 11</th></tr></thead>
+    <tbody>
+      <tr><td>63² = <span class="blank" style="width:18mm"></span></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>58² = <span class="blank" style="width:18mm"></span></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>2209 (с доски)</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>2029 — ловушка</td><td></td><td></td><td></td><td></td></tr>
+    </tbody>
+  </table>
+  <p class="field">Какая проверка поймала 2029? <span class="blank" style="width:60mm"></span></p>
+  <p class="field">Вывод: <span class="blank" style="width:150mm"></span></p>
+</section>
+<section class="sheet">
+  <header class="sh"><b>Быстрые вычисления</b><span>Вариант 1</span><span>Имя: <span class="blank" style="width:55mm"></span></span></header>
+
+  <h2><span class="no">4</span> Русский крестьянский метод: 152 × 43</h2>
+  <div class="two">
+    <div>
+      <table class="tbl peas">
+        <thead><tr><th>левое<br><small>удваиваем</small></th><th>правое<br><small>уполовиниваем</small></th><th>берём?</th></tr></thead>
+        <tbody><tr><td>152</td><td>43</td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody>
+      </table>
+    </div>
+    <div class="side">
+      <div class="remind"><b>Правила</b><br>Уполовиниваем меньшее число — строк будет меньше.<br>Левое — удваиваем. Правое — делим пополам нацело, остаток забываем: 41 → 20.<br>Останавливаемся, когда справа 1.<br>Правое чётное — зачёркиваем всю строку.<br>Ответ — сумма оставшихся левых чисел.</div>
+    </div>
+  </div>
+  <p class="field">Сумма оставшихся: <span class="blank" style="width:120mm"></span> = <span class="box " style="width:26mm"></span></p>
+  <div class="checks">
+    <div><b>Проверка девяткой</b><br>152 → <span class="blank" style="width:10mm"></span>, &nbsp; 43 → <span class="blank" style="width:10mm"></span><br>
+      <span class="blank" style="width:8mm"></span> · <span class="blank" style="width:8mm"></span> = <span class="blank" style="width:10mm"></span> → <span class="blank" style="width:8mm"></span><br>ответ → <span class="blank" style="width:10mm"></span> &nbsp; совпало? <span class="blank" style="width:12mm"></span></div>
+    <div><b>Проверка одиннадцаткой</b><br>152 → <span class="blank" style="width:10mm"></span>, &nbsp; 43 → <span class="blank" style="width:10mm"></span><br>
+      <span class="blank" style="width:8mm"></span> · <span class="blank" style="width:8mm"></span> = <span class="blank" style="width:10mm"></span> → <span class="blank" style="width:8mm"></span><br>ответ → <span class="blank" style="width:10mm"></span> &nbsp; совпало? <span class="blank" style="width:12mm"></span></div>
+  </div>
+
+  <h2><span class="no">5</span> Квадрирование: 2¹⁰</h2>
+  <div class="two">
+    <div>
+      <table class="tbl peas">
+        <thead><tr><th>левое<br><small>в квадрат</small></th><th>правое<br><small>показатель пополам</small></th><th>берём?</th><th>действие</th></tr></thead>
+        <tbody><tr><td>2</td><td>10</td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr></tbody>
+      </table>
+    </div>
+    <div class="side">
+      <div class="remind"><b>Та же таблица, что в задании 4</b><br>Левое — возводим в квадрат.<br>Правое — делим пополам нацело.<br>Останавливаемся, когда справа 1.<br>Правое чётное — зачёркиваем строку.<br>Ответ — произведение оставшихся левых чисел.</div>
+    </div>
+  </div>
+  <p class="field">Двоичная запись показателя (берём = 1, зачёркиваем = 0, читаем снизу вверх): 10 = <span class="blank" style="width:28mm"></span>₂</p>
+  <p class="field">Накопитель: <span class="blank" style="width:80mm"></span> &nbsp; Ответ: <span class="box " style="width:30mm"></span></p>
+  <p class="field">Сравним: в лоб — <span class="blank" style="width:10mm"></span> умножений; через квадрирование — <span class="blank" style="width:10mm"></span> квадратов + <span class="blank" style="width:10mm"></span> умножений = <span class="blank" style="width:10mm"></span>.</p>
+</section>
+<section class="sheet">
+  <header class="sh"><b>Быстрые вычисления</b><span>Вариант 2</span><span>Имя: <span class="blank" style="width:55mm"></span></span></header>
+
+  <h2><span class="no">1</span> Разогрев: корень уголком</h2>
+  <div class="two">
+    <div>
+      <div class="task">√ 33 64</div>
+      <svg class="grid" viewBox="0 0 90 55" style="width:90mm;height:55mm"><defs><pattern id="ga2" width="5" height="5" patternUnits="userSpaceOnUse"><path d="M5 0H0V5" fill="none" stroke="#9a9a9a" stroke-width=".15"/></pattern></defs><rect width="90" height="55" fill="url(#ga2)" stroke="#555" stroke-width=".3"/></svg>
+    </div>
+    <div class="side">
+      <div class="remind"><b>Не забудь:</b><br>(20 × текущий корень + B) × B ≤ остатка.<br>Подбираем наибольшую цифру B.<br>20 × текущий корень = <span class="blank" style="width:16mm"></span></div>
+      <div class="field"><b>Проверка девяткой</b></div>
+      <div class="field">корень <span class="blank" style="width:16mm"></span> → остаток <span class="blank" style="width:10mm"></span></div>
+      <div class="field">остаток в квадрат: <span class="blank" style="width:10mm"></span> → <span class="blank" style="width:10mm"></span></div>
+      <div class="field">число 3364 → остаток <span class="blank" style="width:10mm"></span></div>
+      <div class="field">совпало? <span class="blank" style="width:16mm"></span></div>
+    </div>
+  </div>
+
+  <h2><span class="no">2</span> Теперь наоборот: квадрат по формуле</h2>
+  <p class="rule">n² = (n − d)(n + d) + d², &nbsp; у нас d = 3. &nbsp; n — корень, который ты нашёл: n = <span class="blank" style="width:16mm"></span></p>
+  <div class="formula">
+    n² = ( <span class="box " style="width:14mm"></span> − 3 ) · ( <span class="box " style="width:14mm"></span> + 3 ) <span class="must">+ d² = <span class="box thick" style="width:12mm"></span></span>
+  </div>
+  <div class="formula">
+    &nbsp;&nbsp;&nbsp;&nbsp;= <span class="box " style="width:18mm"></span> · <span class="box " style="width:18mm"></span> + <span class="box " style="width:12mm"></span> = <span class="box " style="width:24mm"></span>
+  </div>
+  <p class="field">Сверка с разогревом: получилось 3364? &nbsp; ☐ да &nbsp; ☐ нет</p>
+
+  <h2><span class="no">3</span> Проверяем двумя проверками</h2>
+  <table class="tbl">
+    <thead><tr><th style="width:30%">число</th><th>сумма цифр</th><th>остаток 9</th><th>чередование<br><small>(с последней цифры: + − + −)</small></th><th>остаток 11</th></tr></thead>
+    <tbody>
+      <tr><td>63² = <span class="blank" style="width:18mm"></span></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>58² = <span class="blank" style="width:18mm"></span></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>2209 (с доски)</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>2029 — ловушка</td><td></td><td></td><td></td><td></td></tr>
+    </tbody>
+  </table>
+  <p class="field">Какая проверка поймала 2029? <span class="blank" style="width:60mm"></span></p>
+  <p class="field">Вывод: <span class="blank" style="width:150mm"></span></p>
+</section>
+<section class="sheet">
+  <header class="sh"><b>Быстрые вычисления</b><span>Вариант 2</span><span>Имя: <span class="blank" style="width:55mm"></span></span></header>
+
+  <h2><span class="no">4</span> Русский крестьянский метод: 268 × 31</h2>
+  <div class="two">
+    <div>
+      <table class="tbl peas">
+        <thead><tr><th>левое<br><small>удваиваем</small></th><th>правое<br><small>уполовиниваем</small></th><th>берём?</th></tr></thead>
+        <tbody><tr><td>268</td><td>31</td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody>
+      </table>
+    </div>
+    <div class="side">
+      <div class="remind"><b>Правила</b><br>Уполовиниваем меньшее число — строк будет меньше.<br>Левое — удваиваем. Правое — делим пополам нацело, остаток забываем: 41 → 20.<br>Останавливаемся, когда справа 1.<br>Правое чётное — зачёркиваем всю строку.<br>Ответ — сумма оставшихся левых чисел.</div>
+    </div>
+  </div>
+  <p class="field">Сумма оставшихся: <span class="blank" style="width:120mm"></span> = <span class="box " style="width:26mm"></span></p>
+  <div class="checks">
+    <div><b>Проверка девяткой</b><br>268 → <span class="blank" style="width:10mm"></span>, &nbsp; 31 → <span class="blank" style="width:10mm"></span><br>
+      <span class="blank" style="width:8mm"></span> · <span class="blank" style="width:8mm"></span> = <span class="blank" style="width:10mm"></span> → <span class="blank" style="width:8mm"></span><br>ответ → <span class="blank" style="width:10mm"></span> &nbsp; совпало? <span class="blank" style="width:12mm"></span></div>
+    <div><b>Проверка одиннадцаткой</b><br>268 → <span class="blank" style="width:10mm"></span>, &nbsp; 31 → <span class="blank" style="width:10mm"></span><br>
+      <span class="blank" style="width:8mm"></span> · <span class="blank" style="width:8mm"></span> = <span class="blank" style="width:10mm"></span> → <span class="blank" style="width:8mm"></span><br>ответ → <span class="blank" style="width:10mm"></span> &nbsp; совпало? <span class="blank" style="width:12mm"></span></div>
+  </div>
+
+  <h2><span class="no">5</span> Квадрирование: 3⁷</h2>
+  <div class="two">
+    <div>
+      <table class="tbl peas">
+        <thead><tr><th>левое<br><small>в квадрат</small></th><th>правое<br><small>показатель пополам</small></th><th>берём?</th><th>действие</th></tr></thead>
+        <tbody><tr><td>3</td><td>7</td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr></tbody>
+      </table>
+    </div>
+    <div class="side">
+      <div class="remind"><b>Та же таблица, что в задании 4</b><br>Левое — возводим в квадрат.<br>Правое — делим пополам нацело.<br>Останавливаемся, когда справа 1.<br>Правое чётное — зачёркиваем строку.<br>Ответ — произведение оставшихся левых чисел.</div>
+    </div>
+  </div>
+  <p class="field">Двоичная запись показателя (берём = 1, зачёркиваем = 0, читаем снизу вверх): 7 = <span class="blank" style="width:28mm"></span>₂</p>
+  <p class="field">Накопитель: <span class="blank" style="width:80mm"></span> &nbsp; Ответ: <span class="box " style="width:30mm"></span></p>
+  <p class="field">Сравним: в лоб — <span class="blank" style="width:10mm"></span> умножений; через квадрирование — <span class="blank" style="width:10mm"></span> квадратов + <span class="blank" style="width:10mm"></span> умножений = <span class="blank" style="width:10mm"></span>.</p>
+</section>
+<section class="sheet">
+  <header class="sh"><b>Быстрые вычисления</b><span>Вариант 3</span><span>Имя: <span class="blank" style="width:55mm"></span></span></header>
+
+  <h2><span class="no">1</span> Разогрев: корень уголком</h2>
+  <div class="two">
+    <div>
+      <div class="task">√ 39 69</div>
+      <svg class="grid" viewBox="0 0 90 55" style="width:90mm;height:55mm"><defs><pattern id="ga3" width="5" height="5" patternUnits="userSpaceOnUse"><path d="M5 0H0V5" fill="none" stroke="#9a9a9a" stroke-width=".15"/></pattern></defs><rect width="90" height="55" fill="url(#ga3)" stroke="#555" stroke-width=".3"/></svg>
+    </div>
+    <div class="side">
+      <div class="remind"><b>Не забудь:</b><br>(20 × текущий корень + B) × B ≤ остатка.<br>Подбираем наибольшую цифру B.<br>20 × текущий корень = <span class="blank" style="width:16mm"></span></div>
+      <div class="field"><b>Проверка девяткой</b></div>
+      <div class="field">корень <span class="blank" style="width:16mm"></span> → остаток <span class="blank" style="width:10mm"></span></div>
+      <div class="field">остаток в квадрат: <span class="blank" style="width:10mm"></span> → <span class="blank" style="width:10mm"></span></div>
+      <div class="field">число 3969 → остаток <span class="blank" style="width:10mm"></span></div>
+      <div class="field">совпало? <span class="blank" style="width:16mm"></span></div>
+    </div>
+  </div>
+
+  <h2><span class="no">2</span> Теперь наоборот: квадрат по формуле</h2>
+  <p class="rule">n² = (n − d)(n + d) + d², &nbsp; у нас d = 3. &nbsp; n — корень, который ты нашёл: n = <span class="blank" style="width:16mm"></span></p>
+  <div class="formula">
+    n² = ( <span class="box " style="width:14mm"></span> − 3 ) · ( <span class="box " style="width:14mm"></span> + 3 ) <span class="must">+ d² = <span class="box thick" style="width:12mm"></span></span>
+  </div>
+  <div class="formula">
+    &nbsp;&nbsp;&nbsp;&nbsp;= <span class="box " style="width:18mm"></span> · <span class="box " style="width:18mm"></span> + <span class="box " style="width:12mm"></span> = <span class="box " style="width:24mm"></span>
+  </div>
+  <p class="field">Сверка с разогревом: получилось 3969? &nbsp; ☐ да &nbsp; ☐ нет</p>
+
+  <h2><span class="no">3</span> Проверяем двумя проверками</h2>
+  <table class="tbl">
+    <thead><tr><th style="width:30%">число</th><th>сумма цифр</th><th>остаток 9</th><th>чередование<br><small>(с последней цифры: + − + −)</small></th><th>остаток 11</th></tr></thead>
+    <tbody>
+      <tr><td>63² = <span class="blank" style="width:18mm"></span></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>58² = <span class="blank" style="width:18mm"></span></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>2209 (с доски)</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>2029 — ловушка</td><td></td><td></td><td></td><td></td></tr>
+    </tbody>
+  </table>
+  <p class="field">Какая проверка поймала 2029? <span class="blank" style="width:60mm"></span></p>
+  <p class="field">Вывод: <span class="blank" style="width:150mm"></span></p>
+</section>
+<section class="sheet">
+  <header class="sh"><b>Быстрые вычисления</b><span>Вариант 3</span><span>Имя: <span class="blank" style="width:55mm"></span></span></header>
+
+  <h2><span class="no">4</span> Русский крестьянский метод: 179 × 56</h2>
+  <div class="two">
+    <div>
+      <table class="tbl peas">
+        <thead><tr><th>левое<br><small>удваиваем</small></th><th>правое<br><small>уполовиниваем</small></th><th>берём?</th></tr></thead>
+        <tbody><tr><td>179</td><td>56</td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody>
+      </table>
+    </div>
+    <div class="side">
+      <div class="remind"><b>Правила</b><br>Уполовиниваем меньшее число — строк будет меньше.<br>Левое — удваиваем. Правое — делим пополам нацело, остаток забываем: 41 → 20.<br>Останавливаемся, когда справа 1.<br>Правое чётное — зачёркиваем всю строку.<br>Ответ — сумма оставшихся левых чисел.</div>
+    </div>
+  </div>
+  <p class="field">Сумма оставшихся: <span class="blank" style="width:120mm"></span> = <span class="box " style="width:26mm"></span></p>
+  <div class="checks">
+    <div><b>Проверка девяткой</b><br>179 → <span class="blank" style="width:10mm"></span>, &nbsp; 56 → <span class="blank" style="width:10mm"></span><br>
+      <span class="blank" style="width:8mm"></span> · <span class="blank" style="width:8mm"></span> = <span class="blank" style="width:10mm"></span> → <span class="blank" style="width:8mm"></span><br>ответ → <span class="blank" style="width:10mm"></span> &nbsp; совпало? <span class="blank" style="width:12mm"></span></div>
+    <div><b>Проверка одиннадцаткой</b><br>179 → <span class="blank" style="width:10mm"></span>, &nbsp; 56 → <span class="blank" style="width:10mm"></span><br>
+      <span class="blank" style="width:8mm"></span> · <span class="blank" style="width:8mm"></span> = <span class="blank" style="width:10mm"></span> → <span class="blank" style="width:8mm"></span><br>ответ → <span class="blank" style="width:10mm"></span> &nbsp; совпало? <span class="blank" style="width:12mm"></span></div>
+  </div>
+
+  <h2><span class="no">5</span> Квадрирование: 6⁵</h2>
+  <div class="two">
+    <div>
+      <table class="tbl peas">
+        <thead><tr><th>левое<br><small>в квадрат</small></th><th>правое<br><small>показатель пополам</small></th><th>берём?</th><th>действие</th></tr></thead>
+        <tbody><tr><td>6</td><td>5</td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr></tbody>
+      </table>
+    </div>
+    <div class="side">
+      <div class="remind"><b>Та же таблица, что в задании 4</b><br>Левое — возводим в квадрат.<br>Правое — делим пополам нацело.<br>Останавливаемся, когда справа 1.<br>Правое чётное — зачёркиваем строку.<br>Ответ — произведение оставшихся левых чисел.</div>
+    </div>
+  </div>
+  <p class="field">Двоичная запись показателя (берём = 1, зачёркиваем = 0, читаем снизу вверх): 5 = <span class="blank" style="width:28mm"></span>₂</p>
+  <p class="field">Накопитель: <span class="blank" style="width:80mm"></span> &nbsp; Ответ: <span class="box " style="width:30mm"></span></p>
+  <p class="field">Сравним: в лоб — <span class="blank" style="width:10mm"></span> умножений; через квадрирование — <span class="blank" style="width:10mm"></span> квадратов + <span class="blank" style="width:10mm"></span> умножений = <span class="blank" style="width:10mm"></span>.</p>
+</section>
+<section class="sheet">
+  <header class="sh"><b>Быстрые вычисления</b><span>Шаблон для практики</span><span>Имя: <span class="blank" style="width:55mm"></span></span></header>
+
+  <h2><span class="no">1</span> Разогрев: корень уголком</h2>
+  <div class="two">
+    <div>
+      <div class="task">√ __________</div>
+      <svg class="grid" viewBox="0 0 90 55" style="width:90mm;height:55mm"><defs><pattern id="ga0" width="5" height="5" patternUnits="userSpaceOnUse"><path d="M5 0H0V5" fill="none" stroke="#9a9a9a" stroke-width=".15"/></pattern></defs><rect width="90" height="55" fill="url(#ga0)" stroke="#555" stroke-width=".3"/></svg>
+    </div>
+    <div class="side">
+      <div class="remind"><b>Не забудь:</b><br>(20 × текущий корень + B) × B ≤ остатка.<br>Подбираем наибольшую цифру B.<br>20 × текущий корень = <span class="blank" style="width:16mm"></span></div>
+      <div class="field"><b>Проверка девяткой</b></div>
+      <div class="field">корень <span class="blank" style="width:16mm"></span> → остаток <span class="blank" style="width:10mm"></span></div>
+      <div class="field">остаток в квадрат: <span class="blank" style="width:10mm"></span> → <span class="blank" style="width:10mm"></span></div>
+      <div class="field">число <span class="blank" style="width:20mm"></span> → остаток <span class="blank" style="width:10mm"></span></div>
+      <div class="field">совпало? <span class="blank" style="width:16mm"></span></div>
+    </div>
+  </div>
+
+  <h2><span class="no">2</span> Теперь наоборот: квадрат по формуле</h2>
+  <p class="rule">n² = (n − d)(n + d) + d², &nbsp; у нас d = 3. &nbsp; n — корень, который ты нашёл: n = <span class="blank" style="width:16mm"></span></p>
+  <div class="formula">
+    n² = ( <span class="box " style="width:14mm"></span> − 3 ) · ( <span class="box " style="width:14mm"></span> + 3 ) <span class="must">+ d² = <span class="box thick" style="width:12mm"></span></span>
+  </div>
+  <div class="formula">
+    &nbsp;&nbsp;&nbsp;&nbsp;= <span class="box " style="width:18mm"></span> · <span class="box " style="width:18mm"></span> + <span class="box " style="width:12mm"></span> = <span class="box " style="width:24mm"></span>
+  </div>
+  <p class="field">Сверка с разогревом: получилось то же число, что под корнем? &nbsp; ☐ да &nbsp; ☐ нет</p>
+
+  <h2><span class="no">3</span> Проверяем двумя проверками</h2>
+  <table class="tbl">
+    <thead><tr><th style="width:30%">число</th><th>сумма цифр</th><th>остаток 9</th><th>чередование<br><small>(с последней цифры: + − + −)</small></th><th>остаток 11</th></tr></thead>
+    <tbody>
+      <tr><td>63² = <span class="blank" style="width:18mm"></span></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>58² = <span class="blank" style="width:18mm"></span></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>2209 (с доски)</td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>2029 — ловушка</td><td></td><td></td><td></td><td></td></tr>
+    </tbody>
+  </table>
+  <p class="field">Какая проверка поймала 2029? <span class="blank" style="width:60mm"></span></p>
+  <p class="field">Вывод: <span class="blank" style="width:150mm"></span></p>
+</section>
+<section class="sheet">
+  <header class="sh"><b>Быстрые вычисления</b><span>Шаблон для практики</span><span>Имя: <span class="blank" style="width:55mm"></span></span></header>
+
+  <h2><span class="no">4</span> Русский крестьянский метод: <span class="blank" style="width:18mm"></span> × <span class="blank" style="width:18mm"></span></h2>
+  <div class="two">
+    <div>
+      <table class="tbl peas">
+        <thead><tr><th>левое<br><small>удваиваем</small></th><th>правое<br><small>уполовиниваем</small></th><th>берём?</th></tr></thead>
+        <tbody><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></tbody>
+      </table>
+    </div>
+    <div class="side">
+      <div class="remind"><b>Правила</b><br>Уполовиниваем меньшее число — строк будет меньше.<br>Левое — удваиваем. Правое — делим пополам нацело, остаток забываем: 41 → 20.<br>Останавливаемся, когда справа 1.<br>Правое чётное — зачёркиваем всю строку.<br>Ответ — сумма оставшихся левых чисел.</div>
+    </div>
+  </div>
+  <p class="field">Сумма оставшихся: <span class="blank" style="width:120mm"></span> = <span class="box " style="width:26mm"></span></p>
+  <div class="checks">
+    <div><b>Проверка девяткой</b><br><span class="blank" style="width:12mm"></span> → <span class="blank" style="width:10mm"></span>, &nbsp; <span class="blank" style="width:12mm"></span> → <span class="blank" style="width:10mm"></span><br>
+      <span class="blank" style="width:8mm"></span> · <span class="blank" style="width:8mm"></span> = <span class="blank" style="width:10mm"></span> → <span class="blank" style="width:8mm"></span><br>ответ → <span class="blank" style="width:10mm"></span> &nbsp; совпало? <span class="blank" style="width:12mm"></span></div>
+    <div><b>Проверка одиннадцаткой</b><br><span class="blank" style="width:12mm"></span> → <span class="blank" style="width:10mm"></span>, &nbsp; <span class="blank" style="width:12mm"></span> → <span class="blank" style="width:10mm"></span><br>
+      <span class="blank" style="width:8mm"></span> · <span class="blank" style="width:8mm"></span> = <span class="blank" style="width:10mm"></span> → <span class="blank" style="width:8mm"></span><br>ответ → <span class="blank" style="width:10mm"></span> &nbsp; совпало? <span class="blank" style="width:12mm"></span></div>
+  </div>
+
+  <h2><span class="no">5</span> Квадрирование: <span class="blank" style="width:12mm"></span><sup><span class="blank" style="width:8mm"></span></sup></h2>
+  <div class="two">
+    <div>
+      <table class="tbl peas">
+        <thead><tr><th>левое<br><small>в квадрат</small></th><th>правое<br><small>показатель пополам</small></th><th>берём?</th><th>действие</th></tr></thead>
+        <tbody><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td></tr></tbody>
+      </table>
+    </div>
+    <div class="side">
+      <div class="remind"><b>Та же таблица, что в задании 4</b><br>Левое — возводим в квадрат.<br>Правое — делим пополам нацело.<br>Останавливаемся, когда справа 1.<br>Правое чётное — зачёркиваем строку.<br>Ответ — произведение оставшихся левых чисел.</div>
+    </div>
+  </div>
+  <p class="field">Двоичная запись показателя (берём = 1, зачёркиваем = 0, читаем снизу вверх): <span class="blank" style="width:10mm"></span> = <span class="blank" style="width:28mm"></span>₂</p>
+  <p class="field">Накопитель: <span class="blank" style="width:80mm"></span> &nbsp; Ответ: <span class="box " style="width:30mm"></span></p>
+  <p class="field">Сравним: в лоб — <span class="blank" style="width:10mm"></span> умножений; через квадрирование — <span class="blank" style="width:10mm"></span> квадратов + <span class="blank" style="width:10mm"></span> умножений = <span class="blank" style="width:10mm"></span>.</p>
+</section>
+<section class="sheet teacher">
+  <header class="sh"><b>Учительский лист — эталон</b><span>все числа сверены</span><span></span></header>
+  <h2>Корни и квадраты (d = 3 у всех)</h2>
+  <table class="tbl mini">
+    <thead><tr><th>корень</th><th>квадрат по формуле</th><th>проверка 9 (корень → квадрат → число)</th><th>проверка 11</th></tr></thead>
+    <tbody>
+      <tr><td>√2209 = 47 (учитель)</td><td>(44)(50) + 9 = 2200 + 9 = 2209</td><td>47 → 11 → 2; 2² = 4; 2209 → 13 → 4 ✓</td><td>47 → 7 − 4 = 3; 3² = 9; 2209: 9 − 0 + 2 − 2 = 9 ✓</td></tr>
+      <tr><td>√3969 = 63 (вар. 1, 3)</td><td>(60)(66) + 9 = 3960 + 9 = 3969</td><td>63 → 9 → 0; 0² = 0; 3969 → 27 → 0 ✓</td><td>63 → 3 − 6 = −3 → 8; 8² = 64 → 9; 3969: 9 − 6 + 9 − 3 = 9 ✓</td></tr>
+      <tr><td>√3364 = 58 (вар. 2)</td><td>(55)(61) + 9 = 3355 + 9 = 3364</td><td>58 → 13 → 4; 4² = 16 → 7; 3364 → 16 → 7 ✓</td><td>58 → 8 − 5 = 3; 3² = 9; 3364: 4 − 6 + 3 − 3 = −2 → 9 ✓</td></tr>
+    </tbody>
+  </table>
+  <h2>Лист 3 — ответы</h2>
+  <table class="tbl mini">
+    <thead><tr><th>число</th><th>сумма цифр</th><th>остаток 9</th><th>чередование</th><th>остаток 11</th></tr></thead>
+    <tbody>
+      <tr><td>63² = 3969</td><td>27 → 9</td><td>0</td><td>9 − 6 + 9 − 3 = 9</td><td>9</td></tr>
+      <tr><td>58² = 3364</td><td>16 → 7</td><td>7</td><td>4 − 6 + 3 − 3 = −2</td><td>9</td></tr>
+      <tr><td>2209</td><td>13 → 4</td><td>4</td><td>9 − 0 + 2 − 2 = 9</td><td>9</td></tr>
+      <tr><td>2029</td><td>13 → 4</td><td>4</td><td>9 − 2 + 0 − 2 = 5</td><td>5</td></tr>
+    </tbody>
+  </table>
+  <div class="note"><b>Ловушка 2029.</b> Девятка молчит: 2 + 0 + 2 + 9 = 13 → 4 — тот же остаток, что у 2209.
+  Признак полного квадрата отсекает: 2029 между 45² = 2025 и 46² = 2116. Одиннадцатка ловит: 9 − 2 + 0 − 2 = 5 против 9 у настоящего ответа.
+  Мораль: один фильтр слеп — проверяем двумя.</div>
+  <div class="note"><b>Слепая зона девятки (не для детей).</b> Забыли d²: d² = 9 ≡ 0 (mod 9) — девятка не заметит. Одиннадцатка поймает:
+  2200 даёт 0 − 0 + 2 − 2 = 0 против 9 у 2209. «Забыли d² — девятка промолчит, одиннадцатка поймает. За урок девятка слепнет дважды:
+  на перестановке 2029 и на забытой девятке — обе слепые зоны кратны девяти. Ещё один повод проверять двумя».</div>
+  <h2>Резерв</h2>
+  <p>a¹⁰⁰: в лоб — 99 умножений. 100 = 1100100₂ = 64 + 32 + 4 → 6 квадратов + 2 умножения = <b>8</b>. Контраст 99 ↔ 8.<br>
+  Если спросят про a¹⁰⁰⁰⁰⁰: <b>21</b> операция против 99 999 (16 квадратов + 5 умножений в накопитель по шести единичным битам; не «16»).</p>
+</section>
+<section class="sheet teacher">
+  <header class="sh"><b>Учительский лист — эталон</b><span>крестьянский метод и квадрирование</span><span></span></header>
+  <div class="tgrid"><div class="tcard"><h3>127 × 89 = 11 303 <small>(учитель)</small></h3>
+<table class="tbl mini"><thead><tr><th>левое</th><th>правое</th><th>берём?</th></tr></thead><tbody><tr class=""><td>127</td><td>89</td><td>да</td></tr><tr class="drop"><td>254</td><td>44</td><td>нет</td></tr><tr class="drop"><td>508</td><td>22</td><td>нет</td></tr><tr class=""><td>1016</td><td>11</td><td>да</td></tr><tr class=""><td>2032</td><td>5</td><td>да</td></tr><tr class="drop"><td>4064</td><td>2</td><td>нет</td></tr><tr class=""><td>8128</td><td>1</td><td>да</td></tr></tbody></table>
+<p>127 + 1016 + 2032 + 8128 = 11 303</p><p><b>9:</b> 8 (127 → 1, 89 → 8 ✓)</p><p><b>11:</b> 3 − 0 + 3 − 1 + 1 = 6 (127 → 6, 89 → 1 ✓)</p></div><div class="tcard"><h3>152 × 43 = 6536 <small>(вариант 1)</small></h3>
+<table class="tbl mini"><thead><tr><th>левое</th><th>правое</th><th>берём?</th></tr></thead><tbody><tr class=""><td>152</td><td>43</td><td>да</td></tr><tr class=""><td>304</td><td>21</td><td>да</td></tr><tr class="drop"><td>608</td><td>10</td><td>нет</td></tr><tr class=""><td>1216</td><td>5</td><td>да</td></tr><tr class="drop"><td>2432</td><td>2</td><td>нет</td></tr><tr class=""><td>4864</td><td>1</td><td>да</td></tr></tbody></table>
+<p>152 + 304 + 1216 + 4864 = 6536</p><p><b>9:</b> 20 → 2 (152 → 8, 43 → 7, 8 · 7 = 56 → 2 ✓)</p><p><b>11:</b> 6 − 3 + 5 − 6 = 2 (152 → −2 → 9, 43 → −1 → 10, 9 · 10 = 90 → 2 ✓)</p></div><div class="tcard"><h3>268 × 31 = 8308 <small>(вариант 2)</small></h3>
+<table class="tbl mini"><thead><tr><th>левое</th><th>правое</th><th>берём?</th></tr></thead><tbody><tr class=""><td>268</td><td>31</td><td>да</td></tr><tr class=""><td>536</td><td>15</td><td>да</td></tr><tr class=""><td>1072</td><td>7</td><td>да</td></tr><tr class=""><td>2144</td><td>3</td><td>да</td></tr><tr class=""><td>4288</td><td>1</td><td>да</td></tr></tbody></table>
+<p>268 + 536 + 1072 + 2144 + 4288 = 8308</p><p><b>9:</b> 19 → 1 (268 → 7, 31 → 4, 7 · 4 = 28 → 1 ✓)</p><p><b>11:</b> 8 − 0 + 3 − 8 = 3 (268 → 4, 31 → −2 → 9, 4 · 9 = 36 → 3 ✓)</p></div><div class="tcard"><h3>179 × 56 = 10 024 <small>(вариант 3)</small></h3>
+<table class="tbl mini"><thead><tr><th>левое</th><th>правое</th><th>берём?</th></tr></thead><tbody><tr class="drop"><td>179</td><td>56</td><td>нет</td></tr><tr class="drop"><td>358</td><td>28</td><td>нет</td></tr><tr class="drop"><td>716</td><td>14</td><td>нет</td></tr><tr class=""><td>1432</td><td>7</td><td>да</td></tr><tr class=""><td>2864</td><td>3</td><td>да</td></tr><tr class=""><td>5728</td><td>1</td><td>да</td></tr></tbody></table>
+<p>1432 + 2864 + 5728 = 10 024</p><p><b>9:</b> 7 (179 → 8, 56 → 2, 8 · 2 = 16 → 7 ✓)</p><p><b>11:</b> 4 − 2 + 0 − 0 + 1 = 3 (179 → 3, 56 → 1 ✓)</p></div></div>
+  <div class="tgrid"><div class="tcard"><h3>5¹³ = 1 220 703 125 <small>(учитель)</small></h3>
+<p>13 = 1101₂ = 8 + 4 + 1</p>
+<table class="tbl mini"><thead><tr><th>в квадрат</th><th>пополам</th><th>берём?</th><th>действие</th></tr></thead><tbody><tr class=""><td>5 <small>(5¹)</small></td><td>13</td><td>да</td><td>в накопит.</td></tr><tr class="drop"><td>25 <small>(5²)</small></td><td>6</td><td>нет</td><td>зачёрк.</td></tr><tr class=""><td>625 <small>(5⁴)</small></td><td>3</td><td>да</td><td>в накопит.</td></tr><tr class=""><td>390 625 <small>(5⁸)</small></td><td>1</td><td>да</td><td>в накопит.</td></tr></tbody></table>
+<p>3 квадрата + 2 умножения = <b>5</b>; в лоб — <b>12</b>.</p></div><div class="tcard"><h3>2¹⁰ = 1024 <small>(вариант 1)</small></h3>
+<p>10 = 1010₂ = 8 + 2</p>
+<table class="tbl mini"><thead><tr><th>в квадрат</th><th>пополам</th><th>берём?</th><th>действие</th></tr></thead><tbody><tr class="drop"><td>2 <small>(2¹)</small></td><td>10</td><td>нет</td><td>зачёрк.</td></tr><tr class=""><td>4 <small>(2²)</small></td><td>5</td><td>да</td><td>в накопит.</td></tr><tr class="drop"><td>16 <small>(2⁴)</small></td><td>2</td><td>нет</td><td>зачёрк.</td></tr><tr class=""><td>256 <small>(2⁸)</small></td><td>1</td><td>да</td><td>в накопит.</td></tr></tbody></table>
+<p>3 квадрата + 1 умножение = <b>4</b>; в лоб — <b>9</b>.</p></div><div class="tcard"><h3>3⁷ = 2187 <small>(вариант 2)</small></h3>
+<p>7 = 111₂ = 4 + 2 + 1</p>
+<table class="tbl mini"><thead><tr><th>в квадрат</th><th>пополам</th><th>берём?</th><th>действие</th></tr></thead><tbody><tr class=""><td>3 <small>(3¹)</small></td><td>7</td><td>да</td><td>в накопит.</td></tr><tr class=""><td>9 <small>(3²)</small></td><td>3</td><td>да</td><td>в накопит.</td></tr><tr class=""><td>81 <small>(3⁴)</small></td><td>1</td><td>да</td><td>в накопит.</td></tr></tbody></table>
+<p>2 квадрата + 2 умножения = <b>4</b>; в лоб — <b>6</b>.</p></div><div class="tcard"><h3>6⁵ = 7776 <small>(вариант 3)</small></h3>
+<p>5 = 101₂ = 4 + 1</p>
+<table class="tbl mini"><thead><tr><th>в квадрат</th><th>пополам</th><th>берём?</th><th>действие</th></tr></thead><tbody><tr class=""><td>6 <small>(6¹)</small></td><td>5</td><td>да</td><td>в накопит.</td></tr><tr class="drop"><td>36 <small>(6²)</small></td><td>2</td><td>нет</td><td>зачёрк.</td></tr><tr class=""><td>1296 <small>(6⁴)</small></td><td>1</td><td>да</td><td>в накопит.</td></tr></tbody></table>
+<p>2 квадрата + 1 умножение = <b>3</b>; в лоб — <b>4</b>.</p></div></div>
+</section>
+</body></html>

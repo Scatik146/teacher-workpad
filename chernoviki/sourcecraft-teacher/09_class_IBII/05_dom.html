@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Домашняя работа. Нейрон-калькулятор</title>
+<style>
+  @page {
+    size: A4;
+    margin: 15mm 15mm 15mm 15mm;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 11.5pt;
+    line-height: 1.35;
+    color: #000;
+    margin: 0;
+    padding: 0;
+    background: #fff;
+  }
+
+  .page {
+    width: 100%;
+    max-width: 180mm;
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  .page-break {
+    page-break-before: always;
+    break-before: page;
+  }
+
+  h1 {
+    font-size: 17pt;
+    text-align: center;
+    margin: 0 0 4mm 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  h1 + .subtitle {
+    text-align: center;
+    font-size: 10.5pt;
+    color: #444;
+    margin: -2mm 0 6mm 0;
+    font-style: italic;
+  }
+
+  h2 {
+    font-size: 13pt;
+    margin: 6mm 0 2.5mm 0;
+    padding-bottom: 1mm;
+    border-bottom: 1.5px solid #333;
+  }
+
+  h3 {
+    font-size: 11.5pt;
+    margin: 4mm 0 1.5mm 0;
+  }
+
+  p { margin: 1.5mm 0; }
+
+  ol, ul { margin: 1.5mm 0 1.5mm 6mm; padding: 0; }
+  li { margin-bottom: 1mm; }
+
+  .task {
+    border: 1px solid #333;
+    border-radius: 2mm;
+    padding: 3mm 4mm;
+    margin-bottom: 4mm;
+    page-break-inside: avoid;
+  }
+
+  .task-title {
+    font-size: 12pt;
+    font-weight: bold;
+    margin: 0 0 2mm 0;
+  }
+
+  .task-title .num {
+    display: inline-block;
+    background: #333;
+    color: #fff;
+    border-radius: 50%;
+    width: 7mm;
+    height: 7mm;
+    line-height: 7mm;
+    text-align: center;
+    font-size: 11pt;
+    margin-right: 2mm;
+  }
+
+  .task-title .tag {
+    font-size: 10pt;
+    font-weight: normal;
+    color: #555;
+    font-style: italic;
+    margin-left: 4px;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 2mm 0;
+    font-size: 10pt;
+    table-layout: fixed;
+  }
+
+  th, td {
+    border: 1px solid #333;
+    padding: 1.5mm 1mm;
+    text-align: center;
+    vertical-align: middle;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  th {
+    background: #eee;
+    font-weight: bold;
+    font-size: 9.5pt;
+    line-height: 1.2;
+  }
+
+  td.left, th.left { text-align: left; }
+
+  /* Таблица сумм: 8 столбцов (метка + 7 букв) */
+  table.sums-table { font-size: 9.5pt; }
+  table.sums-table th,
+  table.sums-table td { padding: 1.2mm 0.5mm; }
+  table.sums-table .row-label {
+    width: 18%;
+    font-weight: bold;
+    font-size: 9pt;
+  }
+
+  /* Легенда символов */
+  .legend {
+    background: #f7f7f7;
+    border: 1px solid #bbb;
+    border-radius: 1.5mm;
+    padding: 2mm 3mm;
+    margin: 2mm 0;
+    font-family: "Courier New", monospace;
+    font-size: 9.5pt;
+    line-height: 1.5;
+  }
+  .legend b { font-family: "Times New Roman", serif; }
+
+  .hint {
+    background: #f5f5f5;
+    border-left: 3px solid #666;
+    padding: 2mm 3mm;
+    margin: 2mm 0;
+    font-size: 10.5pt;
+  }
+
+  .ib-note {
+    background: #f0f0f0;
+    border: 1px dashed #555;
+    padding: 2mm 3mm;
+    margin: 2mm 0;
+    font-size: 10.5pt;
+  }
+
+  .blank {
+    display: inline-block;
+    border-bottom: 1px solid #333;
+    min-width: 20mm;
+    height: 4mm;
+    margin: 0 1mm;
+    vertical-align: bottom;
+  }
+  .blank.wide { min-width: 40mm; }
+  .blank.narrow { min-width: 12mm; }
+
+  .key-answer {
+    background: #eaf5ea;
+    border-left: 4px solid #2e7d32;
+    padding: 2.5mm 3mm;
+    margin: 2mm 0;
+    font-size: 10.5pt;
+  }
+  .key-answer b { color: #1b5e20; }
+
+  .correction {
+    background: #fff4e5;
+    border-left: 4px solid #e65100;
+    padding: 2.5mm 3mm;
+    margin: 2mm 0;
+    font-size: 10.5pt;
+  }
+
+  .footer-note {
+    font-size: 9pt;
+    color: #666;
+    text-align: center;
+    margin-top: 4mm;
+    font-style: italic;
+  }
+
+  .star { font-size: 11pt; }
+
+  /* Матрица весов (для задачи 2 и 4) */
+  table.weight-matrix {
+    width: auto;
+    max-width: 80mm;
+    margin: 2mm auto;
+    font-size: 10pt;
+  }
+  table.weight-matrix td,
+  table.weight-matrix th {
+    width: 22mm;
+    height: 9mm;
+    padding: 1mm;
+  }
+
+  @media print {
+    body { font-size: 11pt; }
+    .task { border-color: #000; }
+    a { color: #000; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================ -->
+<!-- СТРАНИЦА 1: ЗАДАНИЯ 1–2 -->
+<!-- ============================================================ -->
+<div class="page">
+
+  <h1>Домашняя работа. Нейрон-калькулятор</h1>
+  <div class="subtitle">Практикум по искусственным нейронным сетям и информационной безопасности</div>
+
+  <p><b>Фамилия, имя:</b> <span class="blank wide"></span> &nbsp; <b>Класс:</b> <span class="blank narrow"></span> &nbsp; <b>Дата:</b> <span class="blank narrow"></span></p>
+
+  <p style="font-size:10.5pt;"><i>Открой приложение «Нейрон-калькулятор» и выполни четыре задания. Записывай веса, пороги, суммы и выводы прямо в лист.</i></p>
+
+  <!-- Легенда символов -->
+  <div class="legend">
+    <b>Обозначения начертаний (матрица 3×3, читается по строкам):</b><br>
+    <b>C₁</b> = {111, 100, 111} &nbsp;&nbsp; <b>C₂</b> = {110, 100, 110} &nbsp;&nbsp; <b>C₃</b> = {011, 010, 011}<br>
+    <b>T</b>&nbsp;&nbsp; = {111, 010, 010} &nbsp;&nbsp; <b>П₁</b> = {111, 101, 101} &nbsp;&nbsp; <b>П₂</b> = {111, 101, 000}<br>
+    <b>+</b>&nbsp;&nbsp; = {010, 111, 010}
+  </div>
+
+  <!-- ========== ЗАДАНИЕ 1 ========== -->
+  <div class="task">
+    <div class="task-title"><span class="num">1</span> «Площадь обманывает» <span class="tag">Режим 1: один нейрон</span></div>
+
+    <p>Поставь <b>все девять весов = 1</b>. Порог пока любой.</p>
+
+    <ol>
+      <li>Нажми по очереди все 7 кнопок входов и впиши <b>взвешенные суммы</b>:</li>
+    </ol>
+
+    <table class="sums-table">
+      <tr>
+        <th class="row-label">Символ</th>
+        <th>C₁</th>
+        <th>C₂</th>
+        <th>C₃</th>
+        <th>T</th>
+        <th>П₁</th>
+        <th>П₂</th>
+        <th>+</th>
+      </tr>
+      <tr>
+        <td class="row-label">Сумма</td>
+        <td style="height:9mm;"></td>
+        <td></td><td></td><td></td><td></td><td></td><td></td>
+      </tr>
+    </table>
+
+    <ol start="2">
+      <li>Подбери <b>один порог</b>, чтобы нейрон сработал на C₁.<br>
+        Порог = <span class="blank narrow"></span> &nbsp; На кого ещё сработал? <span class="blank wide"></span></li>
+      <li>Впиши вывод (одна фраза):<br>
+        «Нейрон путает C₁ с <span class="blank"></span>, потому что у них одинаковый <span class="blank"></span>».</li>
+    </ol>
+
+    <div class="ib-note">
+      <b>Связь с ИБ:</b> злоумышленник рисует <i>другую</i> букву с той же «площадью» — и детектор по площади обманут. Один признак = слабая защита.
+    </div>
+  </div>
+
+  <!-- ========== ЗАДАНИЕ 2 ========== -->
+  <div class="task">
+    <div class="task-title"><span class="num">2</span> «Нейрон-обманщик» <span class="tag">Режим 1: один нейрон</span></div>
+
+    <p>Твой детектор ловит C₁. Теперь встань на сторону злоумышленника: настрой веса (от −10 до +10) и порог так, чтобы нейрон:</p>
+    <ul>
+      <li><b>срабатывал</b> на <b>T</b>;</li>
+      <li><b>молчал</b> на C₁, C₂, C₃, П₁, П₂.</li>
+    </ul>
+
+    <p><b>Подсказка:</b> что есть у T (верхняя строка + центральный столбец), но чего нет у C и П? Посмотри на <b>левый столбец ниже верхней строки</b> — попробуй там отрицательные веса.</p>
+
+    <h3>Запиши свои веса и порог</h3>
+    <table class="weight-matrix">
+      <tr><th></th><th>1-й столбец</th><th>2-й столбец</th><th>3-й столбец</th></tr>
+      <tr><td><b>1-я строка</b></td>
+        <td style="height:8mm;"></td><td></td><td></td></tr>
+      <tr><td><b>2-я строка</b></td>
+        <td style="height:8mm;"></td><td></td><td></td></tr>
+      <tr><td><b>3-я строка</b></td>
+        <td style="height:8mm;"></td><td></td><td></td></tr>
+    </table>
+
+    <p style="text-align:center;">Порог = <span class="blank"></span></p>
+
+    <h3>Проверка (заполни таблицу)</h3>
+    <table class="sums-table">
+      <tr>
+        <th class="row-label">Символ</th>
+        <th>C₁</th><th>C₂</th><th>C₃</th><th>T</th><th>П₁</th><th>П₂</th>
+      </tr>
+      <tr>
+        <td class="row-label">Сумма</td>
+        <td style="height:8mm;"></td><td></td><td></td><td></td><td></td><td></td>
+      </tr>
+      <tr>
+        <td class="row-label">Выход</td>
+        <td style="height:8mm;"></td><td></td><td></td><td></td><td></td><td></td>
+      </tr>
+    </table>
+
+    <p><b>Вопрос:</b> какая буква подошла к порогу ближе всех? <span class="blank wide"></span><br>
+      Что будет, если враг добавит одну лишнюю клетку? <span class="blank wide"></span></p>
+
+    <div class="ib-note">
+      <b>Связь с ИБ:</b> тот, кто знает признаки и пороги, умеет строить «антидетектор». Поэтому настоящие сети держат веса в секрете — иначе их легко обмануть.
+    </div>
+  </div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- СТРАНИЦА 2: ЗАДАНИЯ 3–4 -->
+<!-- ============================================================ -->
+<div class="page page-break">
+
+  <!-- ========== ЗАДАНИЕ 3 ========== -->
+  <div class="task">
+    <div class="task-title"><span class="num">3</span> «Кто с кем путается» <span class="tag">Режим 2: слой нейронов</span></div>
+
+    <p>Настрой два нейрона слоя:</p>
+    <ul>
+      <li><b>A — левый столбец</b> (веса столбца = 1, остальные 0), порог 2.5;</li>
+      <li><b>B — правый столбец</b> (веса столбца = 1, остальные 0), порог 2.5.</li>
+    </ul>
+
+    <p style="font-size:10pt;font-style:italic;">Примечание: в приложении стрелки нарисованы к левому, центральному столбцам и нижнему ряду. Веса правого столбца всё равно считаются — просто стрелок к ним не будет.</p>
+
+    <h3>Заполни таблицу для всех 7 символов</h3>
+    <table class="sums-table">
+      <tr>
+        <th class="row-label" style="width:16%;">Символ</th>
+        <th>A: сумма</th>
+        <th>A: вых.</th>
+        <th>B: сумма</th>
+        <th>B: вых.</th>
+        <th>Вектор (A, B)</th>
+      </tr>
+      <tr><td class="row-label">C₁</td><td style="height:8mm;"></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">C₂</td><td style="height:8mm;"></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">C₃</td><td style="height:8mm;"></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">T</td><td style="height:8mm;"></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">П₁</td><td style="height:8mm;"></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">П₂</td><td style="height:8mm;"></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td class="row-label">+</td><td style="height:8mm;"></td><td></td><td></td><td></td><td></td></tr>
+    </table>
+
+    <ol>
+      <li>Найди символы с <b>одинаковыми векторами</b> — подчеркни их пары.</li>
+      <li>Впиши вывод: «Сеть с двумя признаками путает <span class="blank"></span> и <span class="blank"></span>».</li>
+    </ol>
+
+    <p><span class="star">⭐</span> <b>Со звёздочкой:</b> добавь <b>третий</b> нейрон так, чтобы развести хотя бы одну пару. Чем C₂ отличается от П₂? <span class="blank wide"></span></p>
+
+    <div class="ib-note">
+      <b>Связь с ИБ:</b> подделка — это не «нарисовать похоже», а <i>совпасть по признакам</i> с оригиналом. Чем меньше признаков, тем проще подделка.
+    </div>
+  </div>
+
+  <!-- ========== ЗАДАНИЕ 4 ========== -->
+  <div class="task">
+    <div class="task-title"><span class="num">4</span> «Зеркальная сеть» <span class="tag">Режим 3: сеть из двух слоёв</span></div>
+
+    <p>Настрой сеть так, чтобы она узнавала <b>только C₃</b> (правобокую C):</p>
+    <ul>
+      <li>выход = 1 на <b>C₃</b>;</li>
+      <li>выход = 0 на C₁, C₂, T, П₁, П₂.</li>
+    </ul>
+
+    <p><b>Подсказки:</b></p>
+    <ol>
+      <li>В <b>левом верхнем окне (СЗ)</b> у C₃ заполнен только <b>правый столбец окна</b>. Поставь там веса +1.</li>
+      <li>Но у T, П₁ и П₂ в этом же окне слева сверху есть «лишний» пиксель — <b>оштрафуй</b> его отрицательным весом.</li>
+      <li>Второй слой: один вес = 1, порог подбери.</li>
+    </ol>
+
+    <h3>Слой 1. Окно СЗ (2×2)</h3>
+    <table class="weight-matrix" style="max-width:70mm;">
+      <tr>
+        <td style="height:11mm;">лев-верх<br><span style="font-size:8.5pt;">(вес)</span></td>
+        <td style="height:11mm;">прав-верх<br><span style="font-size:8.5pt;">(вес)</span></td>
+      </tr>
+      <tr>
+        <td style="height:11mm;">лев-низ<br><span style="font-size:8.5pt;">(вес)</span></td>
+        <td style="height:11mm;">прав-низ<br><span style="font-size:8.5pt;">(вес)</span></td>
+      </tr>
+    </table>
+    <p style="text-align:center;">Порог первого слоя (СЗ): <span class="blank"></span></p>
+
+    <h3>Слой 2. Итог</h3>
+    <p>Вес от СЗ-нейрона = <span class="blank narrow"></span> &nbsp; Вес от остальных = <span class="blank narrow"></span> &nbsp; Порог = <span class="blank narrow"></span></p>
+
+    <h3>Проверка</h3>
+    <table class="sums-table">
+      <tr>
+        <th class="row-label">Символ</th>
+        <th>C₁</th><th>C₂</th><th>C₃</th><th>T</th><th>П₁</th><th>П₂</th>
+      </tr>
+      <tr>
+        <td class="row-label">Сумма СЗ</td>
+        <td style="height:8mm;"></td><td></td><td></td><td></td><td></td><td></td>
+      </tr>
+      <tr>
+        <td class="row-label">Выход СЗ</td>
+        <td style="height:8mm;"></td><td></td><td></td><td></td><td></td><td></td>
+      </tr>
+      <tr>
+        <td class="row-label">Итог</td>
+        <td style="height:8mm;"></td><td></td><td></td><td></td><td></td><td></td>
+      </tr>
+    </table>
+
+    <p>Горит только на C₃? <span class="blank narrow"></span> &nbsp; Если нет — что подкрутил? <span class="blank wide"></span></p>
+
+    <div class="ib-note">
+      <b>Связь с ИБ:</b> одна хорошая локальная feature иногда решает задачу, но такая защита хрупка: достаточно одной лишней клетки, чтобы детектор обманулся. Настоящие сети комбинируют много признаков.
+    </div>
+  </div>
+
+  <div class="footer-note">Нейрон-калькулятор — практикум по ИИ и ИБ. Лист ученика.</div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- СТРАНИЦА 3: КЛЮЧИ ДЛЯ УЧИТЕЛЯ -->
+<!-- ============================================================ -->
+<div class="page page-break">
+
+  <h1>Ключи для учителя</h1>
+  <div class="subtitle">Домашняя работа. Нейрон-калькулятор — решения и методические заметки</div>
+
+  <div class="correction">
+    <b>Внимание:</b> ключ к заданию 3 исправлен по сравнению с первоначальным вариантом. При порогах 2.5 и весах «левый столбец» / «правый столбец» векторы получаются иными — см. таблицу. Первоначальный ключ предполагал другую комбинацию порогов.
+  </div>
+
+  <!-- Задание 1 -->
+  <div class="task">
+    <div class="task-title"><span class="num">1</span> «Площадь обманывает»</div>
+
+    <p><b>Суммы при всех весах = 1:</b></p>
+    <table class="sums-table" style="max-width:160mm;">
+      <tr>
+        <th class="row-label">Символ</th>
+        <th>C₁</th><th>C₂</th><th>C₃</th><th>T</th><th>П₁</th><th>П₂</th><th>+</th>
+      </tr>
+      <tr>
+        <td class="row-label">Сумма</td>
+        <td><b>7</b></td><td>5</td><td>5</td><td>5</td><td><b>7</b></td><td>5</td><td>5</td>
+      </tr>
+    </table>
+
+    <div class="key-answer">
+      <b>Ответ:</b> порог <b>6.5</b>. Нейрон срабатывает на <b>C₁ (7)</b> и <b>П₁ (7)</b>.<br>
+      <b>Вывод:</b> «Нейрон путает C₁ с <b>П₁</b>, потому что у них одинаковое <b>число закрашенных клеток</b> (площадь = 7)».
+    </div>
+
+    <p><b>Методическая заметка:</b> это «ловушка» — учащиеся видят, что один признак (площадь) не различает разные буквы. Хороший мостик к теме «недостаточность одного признака».</p>
+  </div>
+
+  <!-- Задание 2 -->
+  <div class="task">
+    <div class="task-title"><span class="num">2</span> «Нейрон-обманщик»</div>
+
+    <p><b>Одно из решений:</b></p>
+    <table class="weight-matrix" style="max-width:90mm;">
+      <tr><th></th><th>1-й столбец</th><th>2-й столбец</th><th>3-й столбец</th></tr>
+      <tr><td><b>1-я строка</b></td><td>+1</td><td>+1</td><td>+1</td></tr>
+      <tr><td><b>2-я строка</b></td><td>−1</td><td>+1</td><td>0</td></tr>
+      <tr><td><b>3-я строка</b></td><td>−1</td><td>+1</td><td>0</td></tr>
+    </table>
+    <p style="text-align:center;">Порог = <b>4.5</b></p>
+
+    <p><b>Проверка:</b></p>
+    <table class="sums-table" style="max-width:160mm;">
+      <tr>
+        <th class="row-label">Символ</th><th>C₁</th><th>C₂</th><th>C₃</th><th>T</th><th>П₁</th><th>П₂</th>
+      </tr>
+      <tr><td class="row-label">Сумма</td><td>2</td><td>1</td><td>4</td><td><b>5</b></td><td>1</td><td>2</td></tr>
+      <tr><td class="row-label">Выход</td><td>0</td><td>0</td><td>0</td><td><b>1</b></td><td>0</td><td>0</td></tr>
+    </table>
+
+    <div class="key-answer">
+      <b>Ответ:</b> срабатывает только на T (сумма 5 ≥ 4.5); все остальные — ниже порога.
+    </div>
+
+    <div class="correction">
+      <b>Обсудить с классом:</b> C₃ даёт сумму <b>4</b> — всего на <b>0.5</b> ниже порога. Это «запас прочности» детектора: если враг добавит одну лишнюю клетку, C₃ может ложно сработать. Естественный мостик к состязательным атакам.
+    </div>
+  </div>
+
+  <!-- Задание 3 -->
+  <div class="task">
+    <div class="task-title"><span class="num">3</span> «Кто с кем путается»</div>
+
+    <p><b>Реальные векторы при A = левый столбец, B = правый столбец, пороги 2.5:</b></p>
+    <table class="sums-table">
+      <tr>
+        <th class="row-label" style="width:14%;">Символ</th>
+        <th>A: сумма</th><th>A: вых</th>
+        <th>B: сумма</th><th>B: вых</th>
+        <th>Вектор (A,B)</th>
+      </tr>
+      <tr><td class="row-label">C₁</td><td>3</td><td>1</td><td>2</td><td>0</td><td><b>(1,0)</b></td></tr>
+      <tr><td class="row-label">C₂</td><td>3</td><td>1</td><td>0</td><td>0</td><td><b>(1,0)</b></td></tr>
+      <tr><td class="row-label">C₃</td><td>0</td><td>0</td><td>2</td><td>0</td><td>(0,0)</td></tr>
+      <tr><td class="row-label">T</td><td>1</td><td>0</td><td>1</td><td>0</td><td>(0,0)</td></tr>
+      <tr><td class="row-label">П₁</td><td>3</td><td>1</td><td>3</td><td>1</td><td><b>(1,1)</b></td></tr>
+      <tr><td class="row-label">П₂</td><td>2</td><td>0</td><td>2</td><td>0</td><td>(0,0)</td></tr>
+      <tr><td class="row-label">+</td><td>1</td><td>0</td><td>1</td><td>0</td><td>(0,0)</td></tr>
+    </table>
+
+    <div class="key-answer">
+      <b>Совпадения:</b> <b>C₁ = C₂</b> (оба (1,0)).<br>
+      <b>Четырёхместная ничья:</b> <b>C₃ = T = П₂ = +</b> (все (0,0)).<br>
+      <b>Уникальный вектор:</b> только у <b>П₁</b> — (1,1).
+    </div>
+
+    <p><b>⭐ Со звёздочкой:</b> добавить третий нейрон «правый верхний угол» (вес +1 только на клетку c, порог 0.5). Тогда C₂ = (1,0,1), П₂ = (0,0,0) — пара разведена. Но C₁ и П₂ всё ещё требуют дополнительных признаков. <b>Вывод для обсуждения:</b> двум-трём признакам не хватает — вот почему настоящие сети большие.</p>
+
+    <div class="correction">
+      <b>Ошибка в исходном ключе:</b> ранее было указано C₃ = (0,1) и П₂ = (1,0). При порогах 2.5 и указанных весах это не так. Возможно, при ручной проверке использовались другие пороги (например, 1.5 для B). Если учитель хочет получить исходный набор пар, можно поменять порог B на <b>1.5</b> — тогда B сработает на C₁ (2), C₃ (2), П₁ (3), П₂ (2), и картина станет другой. <b>Рекомендуется оставить пороги 2.5</b> — так задание прозрачнее.
+    </div>
+
+    <div class="correction">
+      <b>О визуальных стрелках:</b> в приложении стрелки нарисованы только к левому, центральному столбцам и нижнему ряду. Если ученик выставляет веса правого столбца, они считаются, но стрелок не будет. Формулировка «веса правого столбца» сохранена, но стоит предупредить класс: стрелки — не ограничение, а подсказка.
+    </div>
+  </div>
+
+  <!-- Задание 4 -->
+  <div class="task">
+    <div class="task-title"><span class="num">4</span> «Зеркальная сеть»</div>
+
+    <p><b>Одно из решений:</b></p>
+    <table class="weight-matrix" style="max-width:70mm;">
+      <tr><th></th><th>лев</th><th>прав</th></tr>
+      <tr><td><b>верх</b></td><td>−1</td><td>+1</td></tr>
+      <tr><td><b>низ</b></td><td>0</td><td>+1</td></tr>
+    </table>
+    <p style="text-align:center;">Порог СЗ = <b>1.5</b>; вес СЗ-нейрона во втором слое = <b>1</b>; остальные = 0; порог второго слоя = <b>0.5</b>.</p>
+
+    <p><b>Проверка:</b></p>
+    <table class="sums-table">
+      <tr>
+        <th class="row-label">Символ</th><th>C₁</th><th>C₂</th><th>C₃</th><th>T</th><th>П₁</th><th>П₂</th>
+      </tr>
+      <tr><td class="row-label">Сумма СЗ</td><td>0</td><td>0</td><td><b>2</b></td><td>1</td><td>0</td><td>0</td></tr>
+      <tr><td class="row-label">Выход СЗ</td><td>0</td><td>0</td><td><b>1</b></td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td class="row-label">Итог</td><td>0</td><td>0</td><td><b>1</b></td><td>0</td><td>0</td><td>0</td></tr>
+    </table>
+
+    <div class="key-answer">
+      <b>Ответ:</b> горит только на C₃. У T сумма 1 — «штраф» −1 ровно гасит «лишний» пиксель, но не даёт превысить порог 1.5.
+    </div>
+
+    <div class="ib-note" style="background:#f5f5f5;">
+      <b>Методическая заметка:</b> отрицательный вес в окне СЗ — первый осмысленный случай «штрафа». Стоит проговорить: «нейрон не просто ищет признак, он ищет признак <i>при отсутствии</i> мешающего». Это базовая идея состязательной устойчивости.
+    </div>
+  </div>
+
+  <div class="footer-note">Ключи для учителя. Не выдавать ученикам.</div>
+
+</div>
+
+</body>
+</html>

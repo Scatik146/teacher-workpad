@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Цифровые двойники в промышленности</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;overflow:hidden;background:#05080e}
+  body{font-family:"Segoe UI","PT Sans","Helvetica Neue",Arial,sans-serif;
+       -webkit-font-smoothing:antialiased}
+
+  #stage{
+    position:absolute;left:50%;top:50%;
+    width:1920px;height:1080px;
+    transform-origin:center center;
+    background:#0d1420;
+    background-image:
+      radial-gradient(1200px 620px at 12% -10%, rgba(40,86,148,.38), rgba(40,86,148,0) 70%),
+      radial-gradient(900px 520px at 100% 108%, rgba(255,138,31,.10), rgba(255,138,31,0) 70%);
+    color:#e9eff8;
+    overflow:hidden;
+  }
+
+  /* ---------- слайды ---------- */
+  .slide{
+    position:absolute;inset:0;
+    padding:60px 96px 116px;
+    display:none;flex-direction:column;
+  }
+  .slide.active{display:flex}
+
+  h2{
+    font-size:52px;line-height:1.15;font-weight:700;color:#f4f8ff;
+    padding-left:28px;position:relative;margin-bottom:38px;letter-spacing:-.4px;
+  }
+  h2::before{
+    content:"";position:absolute;left:0;top:8px;bottom:8px;width:8px;
+    border-radius:4px;background:#ff8a1f;
+  }
+
+  .ac{color:#ff8a1f;font-weight:700}
+
+  /* ---------- слайд 1 ---------- */
+  .slide-cover{justify-content:center;align-items:flex-start}
+  .cover-rule{width:180px;height:10px;border-radius:5px;background:#ff8a1f;margin-bottom:46px}
+  .slide-cover h1{
+    font-size:56px;line-height:1.2;font-weight:700;color:#ffffff;
+    letter-spacing:-.6px;max-width:1500px;
+  }
+  .cover-sub{
+    margin-top:34px;font-size:32px;line-height:1.45;color:#9db0ca;max-width:1350px;
+  }
+  .cover-deco{
+    position:absolute;right:96px;top:50%;transform:translateY(-50%);
+    width:420px;height:420px;border:2px solid #1e2f47;border-radius:50%;
+    opacity:.9;
+  }
+  .cover-deco::before{
+    content:"";position:absolute;inset:56px;border:2px solid #23385a;border-radius:50%;
+  }
+  .cover-deco::after{
+    content:"";position:absolute;inset:126px;border:2px dashed #2c456b;border-radius:50%;
+  }
+
+  /* ---------- слайд 2 ---------- */
+  .q-big{
+    font-size:46px;line-height:1.35;text-align:center;font-weight:600;
+    max-width:1460px;margin:18px auto 0;color:#f2f7ff;
+  }
+  .alts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:30px;margin-top:auto;margin-bottom:14px}
+  .alt{
+    background:#141e2f;border:1px solid #26374f;border-left:6px solid #ff8a1f;
+    border-radius:12px;padding:26px 28px;font-size:30px;line-height:1.35;color:#e4ecf8;
+  }
+  .alt b{display:block;font-weight:700;color:#ffffff;margin-bottom:8px}
+  .alt span{color:#9db0ca}
+
+  /* ---------- слайд 3 ---------- */
+  .def{
+    font-size:31px;line-height:1.45;color:#dbe6f4;max-width:1500px;
+    border-left:6px solid #ff8a1f;padding-left:26px;margin-bottom:auto;
+  }
+  .triad{display:flex;align-items:center;justify-content:center;gap:26px;margin:34px 0 10px}
+  .tri-box{
+    flex:1;text-align:center;font-size:34px;font-weight:600;color:#ffffff;
+    background:#152134;border:2px solid #2c4162;border-radius:14px;
+    padding:34px 18px;line-height:1.25;
+  }
+  .tri-arrow{font-size:56px;color:#ff8a1f;line-height:1;padding:0 4px}
+  .tri-legend{
+    display:flex;justify-content:center;gap:70px;flex-wrap:wrap;
+    font-size:28px;color:#9db0ca;margin-top:26px;
+  }
+  .tri-legend span{color:#c8d6e8}
+
+  /* ---------- слайд 4 ---------- */
+  table.cmp{width:100%;border-collapse:collapse}
+  table.cmp th{
+    font-size:29px;font-weight:700;color:#ffffff;text-align:left;
+    padding:18px 22px;background:#17233a;border:1px solid #2b3d59;
+  }
+  table.cmp th:last-child{color:#ff8a1f}
+  table.cmp td{
+    font-size:28px;line-height:1.3;padding:22px;border:1px solid #2b3d59;
+    color:#dbe6f4;vertical-align:top;
+  }
+  table.cmp td:last-child{background:rgba(255,138,31,.07);color:#f0f5fc}
+  table.cmp tr.ex td{color:#9db0ca}
+  table.cmp tr.ex td:last-child{color:#c9d8ea}
+  .crit{
+    margin-top:38px;text-align:center;font-size:34px;font-weight:700;color:#ff8a1f;
+  }
+
+  /* ---------- слайд 5 ---------- */
+  .chain{display:flex;align-items:center;gap:12px;margin-top:44px}
+  .chain-box{
+    flex:1;text-align:center;font-size:32px;font-weight:600;color:#ffffff;
+    background:#152134;border:2px solid #2c4162;border-radius:12px;
+    padding:34px 8px;line-height:1.2;
+  }
+  .chain-box.hl{border-color:#ff8a1f;background:rgba(255,138,31,.10)}
+  .chain-arrow{font-size:40px;color:#ff8a1f;flex:0 0 auto;padding:0 2px}
+  .chain-note{
+    margin-top:auto;margin-bottom:24px;text-align:center;font-size:32px;color:#c6d4e6;
+  }
+
+  /* ---------- слайд 6 ---------- */
+  .mile{
+    display:flex;align-items:flex-start;gap:26px;padding:30px 0;
+    border-bottom:1px solid #1e2c42;
+  }
+  .mile:last-child{border-bottom:none}
+  .mile-year{flex:0 0 250px;font-size:42px;font-weight:700;color:#ff8a1f;line-height:1.2}
+  .mile-dash{font-size:38px;color:#3d5273;line-height:1.2}
+  .mile-text{font-size:30px;line-height:1.4;color:#e2eaf6}
+
+  /* ---------- слайд 7 ---------- */
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+  .card{background:#141e2f;border:1px solid #26374f;border-radius:14px;padding:24px 30px}
+  .card .co{font-size:32px;font-weight:700;color:#ff8a1f;margin-bottom:10px}
+  .card p{font-size:28px;line-height:1.35;color:#dbe5f2}
+  .also{margin-top:auto;margin-bottom:8px;font-size:24px;color:#8fa0ba}
+
+  /* ---------- слайд 8 ---------- */
+  .s8-main{
+    flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;
+    text-align:center;gap:38px;
+  }
+  .s8-lead{font-size:40px;line-height:1.4;font-weight:600;max-width:1450px;color:#f2f7ff}
+  .s8-sub{font-size:30px;color:#9db0ca;max-width:1200px}
+  .corner{
+    position:absolute;right:96px;bottom:118px;max-width:900px;text-align:right;
+    font-size:22px;line-height:1.4;color:#8b9db7;
+  }
+
+  /* ---------- слайд 9 (практикум) ---------- */
+  .prac{display:flex;gap:50px;align-items:flex-start}
+  .prac-left{flex:1;min-width:0}
+  .legend-item{
+    font-size:28px;line-height:1.35;color:#dbe6f4;padding:10px 0 10px 20px;
+    border-left:3px solid #2b3d5c;margin-bottom:12px;
+  }
+  .prac-right{flex:0 0 850px}
+  table.tel{width:100%;border-collapse:collapse;table-layout:fixed}
+  table.tel th{
+    font-size:23px;font-weight:700;color:#ff8a1f;background:#17233a;
+    border:1px solid #2b3d59;padding:6px 8px;text-align:center;
+  }
+  table.tel td{
+    font-size:26px;line-height:1.15;color:#dbe6f4;border:1px solid #2b3d59;
+    padding:4px 8px;text-align:center;
+  }
+  table.tel td:first-child{color:#9db0ca}
+  .criteria{
+    margin-top:26px;font-size:26px;line-height:1.4;font-weight:700;color:#ff8a1f;
+    background:rgba(255,138,31,.09);border:1px solid rgba(255,138,31,.45);
+    border-radius:10px;padding:14px 20px;text-align:center;
+  }
+
+  /* ---------- слайд 10 (атака) ---------- */
+  .cols3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:34px}
+  .col-h{font-size:30px;font-weight:700;color:#ff8a1f;margin-bottom:14px;text-align:center}
+  .col-box{
+    min-height:230px;border:2px dashed #3a4c6b;border-radius:14px;background:rgba(20,30,47,.6);
+  }
+  .case{
+    margin-top:34px;font-size:25px;line-height:1.45;color:#dbe6f4;
+    background:#141e2f;border:1px solid #26374f;border-left:6px solid #ff8a1f;
+    border-radius:12px;padding:20px 26px;
+  }
+  .case-small{margin-top:16px;font-size:22px;line-height:1.4;color:#8fa0ba}
+
+  /* ---------- слайд 11 (рефлексия) ---------- */
+  .s12-q{font-size:40px;line-height:1.35;font-weight:700;color:#f4f8ff;max-width:1550px}
+  .s12-q2{font-size:30px;line-height:1.4;color:#c2d2e6;margin-top:24px;max-width:1500px}
+  .hw{
+    margin-top:auto;margin-bottom:10px;background:#141e2f;border:1px solid #26374f;
+    border-radius:14px;padding:24px 30px;
+  }
+  .hw-title{font-size:28px;font-weight:700;color:#ff8a1f;margin-bottom:14px;letter-spacing:.5px}
+  .hw-item{font-size:26px;line-height:1.4;color:#dbe6f4;padding-left:26px;position:relative;margin-bottom:10px}
+  .hw-item:last-child{margin-bottom:0}
+  .hw-item::before{content:"›";position:absolute;left:4px;top:-2px;color:#ff8a1f;font-weight:700;font-size:26px}
+
+  /* ---------- управление ---------- */
+  .controls{
+    position:absolute;left:0;right:0;bottom:26px;
+    display:flex;align-items:center;justify-content:center;gap:26px;
+    z-index:50;
+  }
+  .controls button{
+    font-family:inherit;font-size:24px;color:#dbe6f5;cursor:pointer;
+    background:#16202f;border:1px solid #2f4160;border-radius:9px;
+    padding:11px 26px;transition:none;
+  }
+  .controls button:hover{background:#1d2a3e;border-color:#ff8a1f;color:#ffffff}
+  .controls button:active{background:#243349}
+  .counter{font-size:24px;color:#8fa0ba;min-width:230px;text-align:center;letter-spacing:.3px}
+  .counter b{color:#ffffff;font-weight:700}
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- ============ 1 ============ -->
+  <section class="slide slide-cover active">
+    <div class="cover-deco"></div>
+    <div class="cover-rule"></div>
+    <h1>Цифровые двойники в промышленности</h1>
+    <p class="cover-sub">Искусственный интеллект и информационная безопасность · ИИ в промышленности · 8 класс</p>
+  </section>
+
+  <!-- ============ 2 ============ -->
+  <section class="slide">
+    <h2>Вы — директор завода</h2>
+    <div class="q-big">
+      Станок на линии встанет <span class="ac">через 5 дней</span>. Как вы это узнаете, если он ещё целый?
+    </div>
+    <div class="alts">
+      <div class="alt"><b>Ждать поломки</b><span>→ простой, деньги</span></div>
+      <div class="alt"><b>Разбирать и смотреть</b><span>→ дорого, остановка</span></div>
+      <div class="alt"><b>Гадать</b><span>→ неточно</span></div>
+    </div>
+  </section>
+
+  <!-- ============ 3 ============ -->
+  <section class="slide">
+    <h2>Что такое цифровой двойник</h2>
+    <p class="def">Цифровой двойник — виртуальная копия объекта, живущая по данным с датчиков и умеющая смотреть в будущее</p>
+    <div class="triad">
+      <div class="tri-box">Физический объект</div>
+      <div class="tri-arrow">⇄</div>
+      <div class="tri-box">Поток данных</div>
+      <div class="tri-arrow">⇄</div>
+      <div class="tri-box">Виртуальная модель</div>
+    </div>
+    <div class="tri-legend">
+      <span>→ данные датчиков (объект → модель)</span>
+      <span>← управляющие решения (модель → объект)</span>
+    </div>
+  </section>
+
+  <!-- ============ 4 ============ -->
+  <section class="slide">
+    <h2>Не всякая модель — двойник</h2>
+    <table class="cmp">
+      <tr>
+        <th>3D-модель</th>
+        <th>Цифровая тень</th>
+        <th>Цифровой двойник</th>
+      </tr>
+      <tr>
+        <td>только геометрия</td>
+        <td>геометрия + история данных</td>
+        <td>живой поток данных с объекта + сценарии «что если»</td>
+      </tr>
+      <tr class="ex">
+        <td>пример: модель цеха в игре</td>
+        <td>пример: 3D-скан завода без датчиков</td>
+        <td>пример: домна, живущая по телеметрии</td>
+      </tr>
+    </table>
+    <div class="crit">Главный критерий — живой поток данных с реального объекта</div>
+  </section>
+
+  <!-- ============ 5 ============ -->
+  <section class="slide">
+    <h2>Как работает двойник</h2>
+    <div class="chain">
+      <div class="chain-box">Датчики</div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-box">Промышленный IoT</div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-box hl">ИИ</div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-box">Прогноз</div>
+      <div class="chain-arrow">→</div>
+      <div class="chain-box">Действия</div>
+    </div>
+    <p class="chain-note">Температура, давление, вибрация — каждый день, каждый час</p>
+  </section>
+
+  <!-- ============ 6 ============ -->
+  <section class="slide">
+    <h2>Откуда это взялось</h2>
+    <div class="mile">
+      <div class="mile-year">1960-е</div>
+      <div class="mile-dash">—</div>
+      <div class="mile-text">NASA: наземные копии кораблей для отработки процедур (предтечи, Apollo-13, 1970)</div>
+    </div>
+    <div class="mile">
+      <div class="mile-year">2002</div>
+      <div class="mile-dash">—</div>
+      <div class="mile-text">Майкл Гривз (Мичиганский университет) придумал термин «digital twin»</div>
+    </div>
+    <div class="mile">
+      <div class="mile-year">после 2010</div>
+      <div class="mile-dash">—</div>
+      <div class="mile-text">термин NASA делает двойники массовыми</div>
+    </div>
+  </section>
+
+  <!-- ============ 7 ============ -->
+  <section class="slide">
+    <h2>Кто уже строит двойники</h2>
+    <div class="cards">
+      <div class="card">
+        <div class="co">«Северсталь»</div>
+        <p>доменный процесс, ИИ-агент ежечасно корректирует расход топлива, эффект <span class="ac">170+ млн ₽</span></p>
+      </div>
+      <div class="card">
+        <div class="co">«Росатом»</div>
+        <p>двойник АЭС ВВЭР-1200, контроль <span class="ac">2 млн</span> параметров</p>
+      </div>
+      <div class="card">
+        <div class="co">«Шереметьево»</div>
+        <p>двойники бизнес-процессов аэропорта, <span class="ac">8 лет</span> развития</p>
+      </div>
+      <div class="card">
+        <div class="co">«Tesla»</div>
+        <p>телеметрия с каждого автомобиля, исправления через обновления ПО</p>
+      </div>
+    </div>
+    <div class="also">Также: Лукойл · Газпром нефть · Сингапур (двойник города) · Tata Steel</div>
+  </section>
+
+  <!-- ============ 8 ============ -->
+  <section class="slide">
+    <h2>А где здесь настоящий ИИ?</h2>
+    <div class="s8-main">
+      <div class="s8-lead">
+        Настоящий ИИ смотрит на тысячи подшипников, вибрационные спектры, часы наработки и режимы резания — и предсказывает отказ <span class="ac">за 30+ дней</span>
+      </div>
+      <div class="s8-sub">Сегодня мы построим упрощённую модель, чтобы понять принцип</div>
+    </div>
+    <div class="corner">20% крупных промышленных компаний уже внедрили двойники, ещё 31% изучают (НИУ ВШЭ, 2024)</div>
+  </section>
+
+  <!-- ============ 9 ============ -->
+  <section class="slide">
+    <h2>Практикум: побудь двойником</h2>
+    <div class="prac">
+      <div class="prac-left">
+        <div class="legend-item">Фрезерный станок с ЧПУ · шпиндель 6 000 об/мин</div>
+        <div class="legend-item">Подшипник отработал 8 200 часов из расчётных 10 000</div>
+        <div class="legend-item">Последняя замена смазки — 2 месяца назад</div>
+        <div class="legend-item">Режим: черновое фрезерование стали 45</div>
+        <div class="legend-item">В некоторые дни шли партии с тяжёлым черновым резанием — повышают вибрацию, но за один день не поднимают температуру</div>
+      </div>
+      <div class="prac-right">
+        <table class="tel">
+          <tr>
+            <th style="width:16%">День</th>
+            <th style="width:42%">T, °C</th>
+            <th style="width:42%">V, мм/с</th>
+          </tr>
+          <tr><td>1</td><td>61,8</td><td>1,6</td></tr>
+          <tr><td>2</td><td>63,0</td><td>1,8</td></tr>
+          <tr><td>3</td><td>63,0</td><td>1,7</td></tr>
+          <tr><td>4</td><td>63,8</td><td>2,0</td></tr>
+          <tr><td>5</td><td>65,1</td><td>1,9</td></tr>
+          <tr><td>6</td><td>65,0</td><td>2,2</td></tr>
+          <tr><td>7</td><td>66,7</td><td>2,3</td></tr>
+          <tr><td>8</td><td>66,8</td><td>4,3</td></tr>
+          <tr><td>9</td><td>68,2</td><td>2,4</td></tr>
+          <tr><td>10</td><td>68,1</td><td>2,6</td></tr>
+          <tr><td>11</td><td>69,6</td><td>2,9</td></tr>
+          <tr><td>12</td><td>69,8</td><td>4,1</td></tr>
+          <tr><td>13</td><td>71,0</td><td>3,0</td></tr>
+          <tr><td>14</td><td>71,6</td><td>3,2</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="criteria">T ≥ 75 °C — зона обслуживания · V ≥ 3,5 мм/с — зона обслуживания · оба параметра в зоне — замена</div>
+  </section>
+
+  <!-- ============ 10 ============ -->
+  <section class="slide">
+    <h2>Атака на двойник</h2>
+    <div class="cols3">
+      <div>
+        <div class="col-h">Что узнал?</div>
+        <div class="col-box"></div>
+      </div>
+      <div>
+        <div class="col-h">Что может сломать?</div>
+        <div class="col-box"></div>
+      </div>
+      <div>
+        <div class="col-h">Как защищаться?</div>
+        <div class="col-box"></div>
+      </div>
+    </div>
+    <div class="case">
+      Colonial Pipeline (2021): хакеры взломали IT-инфраструктуру через украденные пароли. Компания остановила перекачку сама, превентивно, на <span class="ac">6 дней</span>. Выкуп ~<span class="ac">4,4 млн</span> долларов
+    </div>
+    <div class="case-small">Triton/Trisis (2017) — атака не на данные, а на систему аварийной защиты завода</div>
+  </section>
+
+  <!-- ============ 11 ============ -->
+  <section class="slide">
+    <h2>Проверь себя</h2>
+    <div class="s12-q">Модель цеха в компьютерной игре — это цифровой двойник? Почему нет?</div>
+    <div class="s12-q2">А если двойник — человека? Дипфейки и мошенники уже строят такие двойники…</div>
+    <div class="hw">
+      <div class="hw-title">Домашнее задание</div>
+      <div class="hw-item">Найди у любого окружающего объекта три места для датчиков. Что бы прогнозировал его двойник?</div>
+      <div class="hw-item">По желанию: выбери кейс с доски (Лукойл, Газпром нефть, Сингапур, Tata Steel) и найди про него одну деталь</div>
+    </div>
+  </section>
+
+  <!-- ============ управление ============ -->
+  <div class="controls">
+    <button id="prev" type="button">← назад</button>
+    <span class="counter">слайд <b id="cur">1</b> из 11</span>
+    <button id="next" type="button">далее →</button>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  var stage  = document.getElementById('stage');
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var cur    = document.getElementById('cur');
+  var idx    = 0;
+
+  /* --- масштабирование сцены 1920×1080 под любой экран --- */
+  function fit() {
+    var s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+    stage.style.transform = 'translate(-50%,-50%) scale(' + s + ')';
+  }
+  window.addEventListener('resize', fit);
+  window.addEventListener('orientationchange', fit);
+  fit();
+
+  /* --- переключение слайдов --- */
+  function render() {
+    for (var i = 0; i < slides.length; i++) {
+      if (i === idx) { slides[i].classList.add('active'); }
+      else { slides[i].classList.remove('active'); }
+    }
+    cur.textContent = idx + 1;
+  }
+  function next() { if (idx < slides.length - 1) { idx++; render(); } }
+  function prev() { if (idx > 0) { idx--; render(); } }
+
+  document.getElementById('next').addEventListener('click', function () { next(); this.blur(); });
+  document.getElementById('prev').addEventListener('click', function () { prev(); this.blur(); });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+      e.preventDefault(); next();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault(); prev();
+    } else if (e.key === 'Home') {
+      e.preventDefault(); idx = 0; render();
+    } else if (e.key === 'End') {
+      e.preventDefault(); idx = slides.length - 1; render();
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

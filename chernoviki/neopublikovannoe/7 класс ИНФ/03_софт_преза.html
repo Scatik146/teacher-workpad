@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Программное обеспечение. Правовая охрана программ и данных</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+        --primary: #667eea;
+        --secondary: #764ba2;
+        --success: #4caf50;
+        --warning: #ff9800;
+        --danger: #f44336;
+        --dark: #2d3748;
+        --light: #f8f9fa;
+        --gray: #718096;
+    }
+
+    html, body {
+        height: 100%;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: #1a1a2e;
+        overflow: hidden;
+        color: var(--dark);
+    }
+
+    /* === КОНТЕЙНЕР ПРЕЗЕНТАЦИИ === */
+    .presentation {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    /* === СЛАЙДЫ === */
+    .slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        padding: 60px 80px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.5s ease, visibility 0.5s;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .slide.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .slide.light {
+        background: white;
+        color: var(--dark);
+    }
+
+    .slide.gradient-alt {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .slide.gradient-warm {
+        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    }
+
+    .slide.gradient-cool {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+
+    .slide.gradient-green {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    }
+
+    /* === ЗАГОЛОВКИ === */
+    h1 {
+        font-size: clamp(32px, 5vw, 64px);
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 20px;
+        letter-spacing: -1px;
+    }
+
+    h2 {
+        font-size: clamp(28px, 4vw, 48px);
+        font-weight: 700;
+        margin-bottom: 30px;
+        line-height: 1.2;
+    }
+
+    h3 {
+        font-size: clamp(20px, 2.5vw, 28px);
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .subtitle {
+        font-size: clamp(18px, 2vw, 24px);
+        opacity: 0.9;
+        margin-bottom: 30px;
+        font-weight: 300;
+    }
+
+    /* === ТИПОГРАФИКА === */
+    p, li {
+        font-size: clamp(16px, 1.8vw, 22px);
+        line-height: 1.6;
+        margin-bottom: 12px;
+    }
+
+    ul {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    ul li {
+        padding-left: 35px;
+        position: relative;
+        margin-bottom: 15px;
+    }
+
+    ul li::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        top: 0;
+        font-weight: bold;
+        font-size: 1.2em;
+        color: #fff59d;
+    }
+
+    .slide.light ul li::before {
+        color: var(--primary);
+    }
+
+    /* === СЕТКИ И БЛОКИ === */
+    .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-top: 20px;
+    }
+
+    .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 25px;
+        margin-top: 20px;
+    }
+
+    .grid-4 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .card {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        padding: 25px;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .slide.light .card {
+        background: #f8f9fa;
+        border: 2px solid #e2e8f0;
+        color: var(--dark);
+    }
+
+    .card-icon {
+        font-size: 48px;
+        margin-bottom: 15px;
+        display: block;
+    }
+
+    .card-title {
+        font-size: clamp(18px, 2vw, 24px);
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .card-text {
+        font-size: clamp(14px, 1.5vw, 18px);
+        opacity: 0.9;
+        line-height: 1.5;
+    }
+
+    /* === ТАБЛИЦА === */
+    .info-table {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .slide.light .info-table {
+        background: white;
+        border: 2px solid #e2e8f0;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    }
+
+    .table-row {
+        display: grid;
+        grid-template-columns: 1fr 1.5fr 1.5fr;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .slide.light .table-row {
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .table-row:last-child {
+        border-bottom: none;
+    }
+
+    .table-row.header {
+        background: rgba(0, 0, 0, 0.2);
+        font-weight: 700;
+        font-size: clamp(14px, 1.5vw, 18px);
+    }
+
+    .slide.light .table-row.header {
+        background: var(--primary);
+        color: white;
+    }
+
+    .table-cell {
+        padding: 18px 25px;
+        font-size: clamp(14px, 1.5vw, 18px);
+        display: flex;
+        align-items: center;
+    }
+
+    /* === ИНТЕРАКТИВ (слайд 4) === */
+    .program-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin-top: 20px;
+    }
+
+    .program-item {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        padding: 15px 20px;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: clamp(14px, 1.5vw, 18px);
+        font-weight: 500;
+    }
+
+    .program-item:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateX(5px);
+    }
+
+    .program-item.revealed {
+        background: rgba(76, 175, 80, 0.3);
+        border-color: var(--success);
+    }
+
+    .program-answer {
+        font-weight: 700;
+        opacity: 0;
+        transition: opacity 0.3s;
+        padding: 5px 12px;
+        border-radius: 20px;
+        background: white;
+        color: var(--primary);
+        font-size: 14px;
+    }
+
+    .program-item.revealed .program-answer {
+        opacity: 1;
+    }
+
+    .reveal-btn {
+        background: white;
+        color: var(--primary);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 30px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: all 0.3s;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .reveal-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    /* === СВЕТОФОР === */
+    .traffic-light {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin: 30px 0;
+    }
+
+    .light-circle {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.3s;
+        opacity: 0.5;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .light-circle:hover {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+
+    .light-circle.active {
+        opacity: 1;
+        transform: scale(1.15);
+        box-shadow: 0 0 40px currentColor;
+    }
+
+    .light-green { background: var(--success); color: var(--success); }
+    .light-yellow { background: var(--warning); color: var(--warning); }
+    .light-red { background: var(--danger); color: var(--danger); }
+
+    /* === ВОПРОС-БОКС === */
+    .question-box {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 20px;
+        padding: 30px;
+        margin: 20px 0;
+        font-size: clamp(18px, 2vw, 24px);
+        font-weight: 500;
+        text-align: center;
+        line-height: 1.5;
+    }
+
+    .slide.light .question-box {
+        background: #fff3e0;
+        border-color: #ffb74d;
+        color: #e65100;
+    }
+
+    /* === ВАЖНЫЙ БЛОК === */
+    .important-box {
+        background: linear-gradient(135deg, rgba(244, 67, 54, 0.2), rgba(255, 152, 0, 0.2));
+        border: 2px solid rgba(244, 67, 54, 0.5);
+        border-radius: 15px;
+        padding: 20px 25px;
+        margin-top: 20px;
+        font-size: clamp(16px, 1.8vw, 20px);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .important-box .icon {
+        font-size: 36px;
+    }
+
+    /* === СПИСОК ЗАДАНИЙ === */
+    .task-list {
+        counter-reset: task;
+        list-style: none;
+    }
+
+    .task-list li {
+        counter-increment: task;
+        padding: 15px 20px 15px 70px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        margin-bottom: 12px;
+        position: relative;
+        font-size: clamp(14px, 1.5vw, 18px);
+    }
+
+    .task-list li::before {
+        content: counter(task);
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 40px;
+        height: 40px;
+        background: white;
+        color: var(--primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 20px;
+    }
+
+    /* === НАВИГАЦИЯ === */
+    .nav-controls {
+        position: fixed;
+        bottom: 25px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(15px);
+        padding: 10px 20px;
+        border-radius: 50px;
+        z-index: 100;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-btn {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 18px;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .nav-btn:hover:not(:disabled) {
+        background: rgba(255, 255, 255, 0.25);
+        transform: scale(1.1);
+    }
+
+    .nav-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+    }
+
+    .slide-counter {
+        color: white;
+        font-weight: 600;
+        font-size: 14px;
+        min-width: 60px;
+        text-align: center;
+    }
+
+    /* === ПРОГРЕСС-БАР === */
+    .progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #fff59d, #ff9800);
+        width: 0%;
+        transition: width 0.4s ease;
+        z-index: 100;
+        box-shadow: 0 0 10px rgba(255, 245, 157, 0.5);
+    }
+
+    /* === ПОЛНОЭКРАННАЯ КНОПКА === */
+    .fullscreen-btn {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(10px);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        width: 45px;
+        height: 45px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 20px;
+        z-index: 100;
+        transition: all 0.3s;
+    }
+
+    .fullscreen-btn:hover {
+        background: rgba(0, 0, 0, 0.6);
+        transform: scale(1.05);
+    }
+
+    /* === АНИМАЦИИ ПОЯВЛЕНИЯ === */
+    .slide.active .fade-in {
+        animation: fadeInUp 0.6s ease forwards;
+    }
+
+    .slide.active .fade-in-1 { animation-delay: 0.1s; opacity: 0; }
+    .slide.active .fade-in-2 { animation-delay: 0.3s; opacity: 0; }
+    .slide.active .fade-in-3 { animation-delay: 0.5s; opacity: 0; }
+    .slide.active .fade-in-4 { animation-delay: 0.7s; opacity: 0; }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* === ДЕКОРАТИВНЫЕ ЭЛЕМЕНТЫ === */
+    .decoration {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        pointer-events: none;
+    }
+
+    .deco-1 {
+        width: 300px;
+        height: 300px;
+        top: -100px;
+        right: -100px;
+    }
+
+    .deco-2 {
+        width: 200px;
+        height: 200px;
+        bottom: -80px;
+        left: -80px;
+    }
+
+    /* === АДАПТИВНОСТЬ === */
+    @media (max-width: 768px) {
+        .slide {
+            padding: 40px 30px;
+        }
+        .grid-2, .grid-3, .grid-4, .program-list {
+            grid-template-columns: 1fr;
+        }
+        .table-row {
+            grid-template-columns: 1fr;
+        }
+        .table-row.header {
+            display: none;
+        }
+        .traffic-light {
+            gap: 15px;
+        }
+        .light-circle {
+            width: 70px;
+            height: 70px;
+        }
+        .nav-controls {
+            padding: 8px 15px;
+            gap: 10px;
+        }
+    }
+
+    /* === ПОДСКАЗКА КЛАВИШ === */
+    .hint {
+        position: fixed;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.6);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 12px;
+        opacity: 0;
+        transition: opacity 0.3s;
+        pointer-events: none;
+        z-index: 99;
+    }
+
+    .hint.show {
+        opacity: 1;
+    }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<button class="fullscreen-btn" id="fullscreenBtn" title="Полноэкранный режим (F)">⛶</button>
+
+<div class="presentation" id="presentation">
+
+    <!-- СЛАЙД 1: ТИТУЛЬНЫЙ -->
+    <div class="slide active">
+        <div class="decoration deco-1"></div>
+        <div class="decoration deco-2"></div>
+        <div style="text-align: center;">
+            <div class="fade-in fade-in-1" style="font-size: 80px; margin-bottom: 20px;">💻🛡️</div>
+            <h1 class="fade-in fade-in-2">Программное обеспечение</h1>
+            <h2 class="fade-in fade-in-3" style="font-weight: 400; opacity: 0.9;">Правовая охрана программ и данных</h2>
+            <div class="fade-in fade-in-4" style="margin-top: 50px; font-size: 20px; opacity: 0.8;">
+                Информатика · 7 класс
+            </div>
+        </div>
+    </div>
+
+    <!-- СЛАЙД 2: АНАЛОГИЯ -->
+    <div class="slide">
+        <div class="decoration deco-1"></div>
+        <h2 class="fade-in fade-in-1">Компьютер без программ — как тело без мыслей</h2>
+        <div class="grid-2 fade-in fade-in-2">
+            <div class="card">
+                <span class="card-icon">🖥️</span>
+                <div class="card-title">Hardware (железо)</div>
+                <div class="card-text">Тело компьютера: процессор, память, экран, клавиатура</div>
+            </div>
+            <div class="card">
+                <span class="card-icon">💾</span>
+                <div class="card-title">Software (программы)</div>
+                <div class="card-text">Мысли, знания и правила поведения компьютера</div>
+            </div>
+        </div>
+        <div class="question-box fade-in fade-in-3" style="margin-top: 30px;">
+            ❓ Вы нашли платную программу и передали другу ссылку на облако, чтобы он скачал её бесплатно. Или дали свой логин от подписки. Можно ли так делать?
+        </div>
+    </div>
+
+    <!-- СЛАЙД 3: ТРИ ГРУППЫ ПО -->
+    <div class="slide light">
+        <h2 class="fade-in fade-in-1" style="color: var(--primary);">Три группы программного обеспечения</h2>
+        <div class="info-table fade-in fade-in-2">
+            <div class="table-row header">
+                <div class="table-cell">Группа</div>
+                <div class="table-cell">Что делает</div>
+                <div class="table-cell">Примеры</div>
+            </div>
+            <div class="table-row">
+                <div class="table-cell"><strong>🖥️ Системное ПО</strong></div>
+                <div class="table-cell">Управляет компьютером</div>
+                <div class="table-cell">Windows, Astra Linux, Kaspersky, драйверы</div>
+            </div>
+            <div class="table-row">
+                <div class="table-cell"><strong>📱 Прикладное ПО</strong></div>
+                <div class="table-cell">Помогает решать ваши задачи</div>
+                <div class="table-cell">Telegram, Яндекс Документы, Roblox, Photoshop</div>
+            </div>
+            <div class="table-row">
+                <div class="table-cell"><strong>⚙️ Системы программирования</strong></div>
+                <div class="table-cell">Создают новые программы</div>
+                <div class="table-cell">Python, VS Code, PyCharm</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- СЛАЙД 4: ПРОВЕРКА ПОНИМАНИЯ -->
+    <div class="slide">
+        <h2 class="fade-in fade-in-1">Распределите программы по группам</h2>
+        <p class="fade-in fade-in-1" style="opacity: 0.9;">Кликните на программу, чтобы увидеть ответ</p>
+        <div class="program-list fade-in fade-in-2">
+            <div class="program-item" onclick="revealAnswer(this)">
+                <span>🐧 Astra Linux</span>
+                <span class="program-answer">1 · Системное</span>
+            </div>
+            <div class="program-item" onclick="revealAnswer(this)">
+                <span>📄 Яндекс Документы</span>
+                <span class="program-answer">2 · Прикладное</span>
+            </div>
+            <div class="program-item" onclick="revealAnswer(this)">
+                <span>💻 VS Code</span>
+                <span class="program-answer">3 · Системы прогр.</span>
+            </div>
+            <div class="program-item" onclick="revealAnswer(this)">
+                <span>🎮 Драйвер видеокарты</span>
+                <span class="program-answer">1 · Системное</span>
+            </div>
+            <div class="program-item" onclick="revealAnswer(this)">
+                <span>✈️ Telegram</span>
+                <span class="program-answer">2 · Прикладное</span>
+            </div>
+            <div class="program-item" onclick="revealAnswer(this)">
+                <span>🎲 Roblox</span>
+                <span class="program-answer">2 · Прикладное</span>
+            </div>
+            <div class="program-item" onclick="revealAnswer(this)">
+                <span>🛡️ Kaspersky</span>
+                <span class="program-answer">1 · Системное</span>
+            </div>
+            <div class="program-item" onclick="revealAnswer(this)">
+                <span>🎨 Blender</span>
+                <span class="program-answer">2 · Прикладное</span>
+            </div>
+        </div>
+        <button class="reveal-btn fade-in fade-in-3" onclick="revealAll()">Показать все ответы</button>
+    </div>
+
+    <!-- СЛАЙД 5: ТИПЫ ЛИЦЕНЗИЙ -->
+    <div class="slide light">
+        <h2 class="fade-in fade-in-1" style="color: var(--primary);">Типы лицензий программного обеспечения</h2>
+        <div class="grid-4 fade-in fade-in-2">
+            <div class="card" style="border-left: 5px solid #f44336;">
+                <span class="card-icon">💰</span>
+                <div class="card-title">Коммерческое ПО</div>
+                <div class="card-text">Платное, по подписке или разово<br><br><strong>Примеры:</strong> Microsoft 365, Adobe Creative Cloud</div>
+            </div>
+            <div class="card" style="border-left: 5px solid #ff9800;">
+                <span class="card-icon">⏳</span>
+                <div class="card-title">Shareware</div>
+                <div class="card-text">Условно-бесплатное (пробный период)<br><br><strong>Пример:</strong> WinRAR (40 дней)</div>
+            </div>
+            <div class="card" style="border-left: 5px solid #2196f3;">
+                <span class="card-icon">🎁</span>
+                <div class="card-title">Freeware</div>
+                <div class="card-text">Бесплатное, но код закрыт<br><br><strong>Примеры:</strong> Яндекс Браузер, Discord</div>
+            </div>
+            <div class="card" style="border-left: 5px solid #4caf50;">
+                <span class="card-icon">🔓</span>
+                <div class="card-title">Open Source</div>
+                <div class="card-text">Бесплатное + код открыт<br><br><strong>Примеры:</strong> Linux, LibreOffice, Blender</div>
+            </div>
+        </div>
+        <div class="important-box fade-in fade-in-3">
+            <span class="icon">⚠️</span>
+            <span>Бесплатная программа ≠ открытая программа</span>
+        </div>
+    </div>
+
+    <!-- СЛАЙД 6: ПРАВОВАЯ ОХРАНА -->
+    <div class="slide">
+        <div class="decoration deco-1"></div>
+        <h2 class="fade-in fade-in-1">Программа охраняется законом как книга или песня</h2>
+        <div class="grid-3 fade-in fade-in-2">
+            <div class="card">
+                <span class="card-icon">📜</span>
+                <div class="card-title">Авторское право</div>
+                <div class="card-text">Возникает автоматически в момент создания. Программа = литературное произведение (ГК РФ)</div>
+            </div>
+            <div class="card">
+                <span class="card-icon">🛡️</span>
+                <div class="card-title">Лицензия (EULA)</div>
+                <div class="card-text">Договор между вами и разработчиком. Объясняет, что можно и что нельзя</div>
+            </div>
+            <div class="card" style="border: 2px solid rgba(244, 67, 54, 0.5);">
+                <span class="card-icon">☠️</span>
+                <div class="card-title">Пиратство</div>
+                <div class="card-text">Взломанные программы, «кряки», передача платного аккаунта — <strong>это нарушение закона!</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- СЛАЙД 7: ВОПРОС ПРО ИИ -->
+    <div class="slide gradient-alt">
+        <div class="decoration deco-1"></div>
+        <div class="decoration deco-2"></div>
+        <div style="text-align: center;">
+            <div class="fade-in fade-in-1" style="font-size: 80px; margin-bottom: 20px;">🤖⚖️</div>
+            <h2 class="fade-in fade-in-2">Кто владелец прав на то, что создал ИИ?</h2>
+            <div class="question-box fade-in fade-in-3" style="background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.4);">
+                Если нейросеть нарисовала картинку или написала код по вашему запросу...<br>
+                <strong>Кто автор?</strong><br>
+                Вы? Разработчик нейросети? Сама нейросеть?
+            </div>
+            <div class="fade-in fade-in-4" style="margin-top: 30px; font-size: 22px; font-weight: 600;">
+                По закону РФ автором может быть <u>только человек</u>.<br>
+                Нейросеть — это инструмент, а не субъект права.<br>
+                <span style="opacity: 0.8; font-size: 18px;">Но споры об этом идут прямо сейчас!</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- СЛАЙД 8: ПРАКТИЧЕСКАЯ РАБОТА -->
+    <div class="slide light">
+        <h2 class="fade-in fade-in-1" style="color: var(--primary);">🖥️ Практическая работа</h2>
+        <p class="fade-in fade-in-1" style="font-size: 20px; margin-bottom: 20px;">Откройте файл <code style="background: #e3f2fd; padding: 3px 10px; border-radius: 5px; color: var(--primary);">po-classifier-extended.html</code> на рабочем столе</p>
+        <ol class="task-list fade-in fade-in-2">
+            <li>📋 Распределите 12 программ по группам (drag-and-drop)</li>
+            <li>🎯 Определите тип лицензии в 6 ситуациях</li>
+            <li>📖 Решите кейс «Лицензия под лупой»</li>
+            <li>✅ Ответьте на 6 вопросов «Можно или нельзя?»</li>
+            <li>📊 Нажмите «Проверить» и запишите результат в тетрадь</li>
+        </ol>
+        <div class="important-box fade-in fade-in-3" style="background: linear-gradient(135deg, rgba(102,126,234,0.1), rgba(118,75,162,0.1)); border-color: var(--primary); color: var(--primary);">
+            <span class="icon">⏱️</span>
+            <span>Время выполнения: 10 минут · Всего 25 заданий</span>
+        </div>
+    </div>
+
+    <!-- СЛАЙД 9: РЕФЛЕКСИЯ -->
+    <div class="slide">
+        <h2 class="fade-in fade-in-1">Подведём итоги</h2>
+        <h3 class="fade-in fade-in-2" style="text-align: center; margin-top: 20px;">Как вы поняли тему?</h3>
+        <div class="traffic-light fade-in fade-in-2">
+            <div class="light-circle light-green" onclick="selectLight(this)" title="Всё понял"></div>
+            <div class="light-circle light-yellow" onclick="selectLight(this)" title="Есть вопросы"></div>
+            <div class="light-circle light-red" onclick="selectLight(this)" title="Не понял"></div>
+        </div>
+        <div class="grid-3 fade-in fade-in-3" style="margin-top: 30px;">
+            <div class="card">
+                <div class="card-title">1️⃣</div>
+                <div class="card-text">Какие <strong>три группы ПО</strong> мы выделили?</div>
+            </div>
+            <div class="card">
+                <div class="card-title">2️⃣</div>
+                <div class="card-text">Чем <strong>freeware</strong> отличается от <strong>open source</strong>?</div>
+            </div>
+            <div class="card">
+                <div class="card-title">3️⃣</div>
+                <div class="card-text">Почему нельзя <strong>«скинуть ссылку»</strong> на взломанную программу?</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- СЛАЙД 10: ДОМАШНЕЕ ЗАДАНИЕ -->
+    <div class="slide gradient-cool">
+        <div class="decoration deco-1"></div>
+        <h2 class="fade-in fade-in-1">📚 Домашнее задание</h2>
+        <div class="grid-2 fade-in fade-in-2">
+            <div class="card" style="background: rgba(255,255,255,0.25);">
+                <span class="card-icon">✅</span>
+                <div class="card-title">Обязательно</div>
+                <div class="card-text">
+                    • Прочитать § 2.3<br>
+                    • Ответить на вопросы после параграфа (письменно в тетради)
+                </div>
+            </div>
+            <div class="card" style="background: rgba(255,255,255,0.25);">
+                <span class="card-icon">⭐</span>
+                <div class="card-title">По желанию (доп. балл)</div>
+                <div class="card-text">
+                    Найти в интернете:<br>
+                    • <strong>3 примера</strong> свободных программ (Open Source)<br>
+                    • <strong>1 пример</strong> коммерческой программы с подпиской<br>
+                    Кратко написать, для чего они используются
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- СЛАЙД 11: ИТОГ УРОКА -->
+    <div class="slide light">
+        <h2 class="fade-in fade-in-1" style="color: var(--primary);">Главное, что мы узнали</h2>
+        <ul class="fade-in fade-in-2" style="margin-top: 20px;">
+            <li>Программы делятся на <strong>3 группы</strong>: системное, прикладное, системы программирования</li>
+            <li>Программы бывают <strong>разных типов</strong>: коммерческие, shareware, freeware, open source</li>
+            <li><strong>Закон охраняет</strong> программы и данные так же, как книги и музыку</li>
+            <li><strong>Легальное использование</strong> ПО — это норма цифровой культуры</li>
+            <li><strong>Пиратство</strong> — это нарушение закона, а не «хитрость»</li>
+        </ul>
+    </div>
+
+    <!-- СЛАЙД 12: СПАСИБО -->
+    <div class="slide gradient-green">
+        <div class="decoration deco-1"></div>
+        <div class="decoration deco-2"></div>
+        <div style="text-align: center;">
+            <div class="fade-in fade-in-1" style="font-size: 100px; margin-bottom: 30px;">🎓</div>
+            <h1 class="fade-in fade-in-2">Спасибо за урок!</h1>
+            <p class="fade-in fade-in-3" style="font-size: 24px; margin-top: 30px; max-width: 700px; margin-left: auto; margin-right: auto;">
+                Быть цифровым гражданином — значит уважать права других в интернете
+            </p>
+        </div>
+    </div>
+
+</div>
+
+<!-- НАВИГАЦИЯ -->
+<div class="nav-controls">
+    <button class="nav-btn" id="prevBtn" onclick="prevSlide()" title="Назад (←)">◀</button>
+    <span class="slide-counter" id="slideCounter">1 / 12</span>
+    <button class="nav-btn" id="nextBtn" onclick="nextSlide()" title="Вперёд (→)">▶</button>
+</div>
+
+<div class="hint" id="hint">Используйте ← → или пробел для навигации · F — полный экран</div>
+
+<script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    const progressBar = document.getElementById('progressBar');
+    const slideCounter = document.getElementById('slideCounter');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const hint = document.getElementById('hint');
+
+    function showSlide(index) {
+        if (index < 0 || index >= totalSlides) return;
+        slides.forEach(s => s.classList.remove('active'));
+        slides[index].classList.add('active');
+        currentSlide = index;
+        
+        // Обновление счётчика и прогресс-бара
+        slideCounter.textContent = `${currentSlide + 1} / ${totalSlides}`;
+        progressBar.style.width = `${((currentSlide + 1) / totalSlides) * 100}%`;
+        
+        // Кнопки навигации
+        prevBtn.disabled = currentSlide === 0;
+        nextBtn.disabled = currentSlide === totalSlides - 1;
+    }
+
+    function nextSlide() {
+        if (currentSlide < totalSlides - 1) showSlide(currentSlide + 1);
+    }
+
+    function prevSlide() {
+        if (currentSlide > 0) showSlide(currentSlide - 1);
+    }
+
+    // Клавиатурная навигация
+    document.addEventListener('keydown', (e) => {
+        switch(e.key) {
+            case 'ArrowRight':
+            case ' ':
+            case 'PageDown':
+                e.preventDefault();
+                nextSlide();
+                break;
+            case 'ArrowLeft':
+            case 'PageUp':
+                e.preventDefault();
+                prevSlide();
+                break;
+            case 'Home':
+                e.preventDefault();
+                showSlide(0);
+                break;
+            case 'End':
+                e.preventDefault();
+                showSlide(totalSlides - 1);
+                break;
+            case 'f':
+            case 'F':
+            case 'а':
+            case 'А':
+                toggleFullscreen();
+                break;
+            case 'Escape':
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                }
+                break;
+        }
+    });
+
+    // Полноэкранный режим
+    function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(err => {
+                console.log('Полноэкранный режим недоступен:', err);
+            });
+        } else {
+            document.exitFullscreen();
+        }
+    }
+
+    document.getElementById('fullscreenBtn').addEventListener('click', toggleFullscreen);
+
+    // Интерактив на слайде 4
+    function revealAnswer(element) {
+        element.classList.toggle('revealed');
+    }
+
+    function revealAll() {
+        document.querySelectorAll('.program-item').forEach(item => {
+            item.classList.add('revealed');
+        });
+    }
+
+    // Светофор на слайде 9
+    function selectLight(element) {
+        document.querySelectorAll('.light-circle').forEach(l => l.classList.remove('active'));
+        element.classList.add('active');
+    }
+
+    // Подсказка при загрузке
+    setTimeout(() => {
+        hint.classList.add('show');
+        setTimeout(() => hint.classList.remove('show'), 4000);
+    }, 1000);
+
+    // Инициализация
+    showSlide(0);
+</script>
+
+</body>
+</html>

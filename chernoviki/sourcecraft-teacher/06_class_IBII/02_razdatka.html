@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Печатные материалы — Этика и мораль использования нейросетей</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    @page {
+        size: A4;
+        margin: 12mm 15mm;
+    }
+    
+    body {
+        font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+        color: #000;
+        background: #f0f0f0;
+        line-height: 1.4;
+    }
+    
+    /* ===== ЭКРАННЫЙ РЕЖИМ ===== */
+    .sheet {
+        width: 210mm;
+        min-height: 297mm;
+        padding: 12mm 15mm;
+        margin: 10px auto;
+        background: #fff;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+        position: relative;
+        page-break-after: always;
+    }
+    
+    .sheet:last-child { page-break-after: auto; }
+    
+    .sheet-header {
+        border-bottom: 2px solid #000;
+        padding-bottom: 6px;
+        margin-bottom: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        font-size: 10pt;
+    }
+    
+    .sheet-header .title {
+        font-weight: bold;
+        font-size: 11pt;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .sheet-header .meta {
+        color: #555;
+        font-size: 9pt;
+    }
+    
+    /* ===== ЛИСТ 1: КЕЙСЫ ===== */
+    .cases-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        height: 100%;
+    }
+    
+    .case-card {
+        border: 2px solid #000;
+        padding: 12px 14px;
+        page-break-inside: avoid;
+        position: relative;
+    }
+    
+    .case-card + .case-card {
+        border-top: 2px dashed #888;
+    }
+    
+    .case-card .case-num {
+        position: absolute;
+        top: 8px;
+        right: 10px;
+        font-size: 22pt;
+        font-weight: bold;
+        color: #ccc;
+    }
+    
+    .case-card .case-subject {
+        display: inline-block;
+        background: #000;
+        color: #fff;
+        padding: 2px 10px;
+        font-size: 9pt;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 6px;
+    }
+    
+    .case-card h3 {
+        font-size: 12pt;
+        margin-bottom: 6px;
+    }
+    
+    .case-card p {
+        font-size: 11pt;
+        line-height: 1.45;
+    }
+    
+    .case-card .verdict {
+        margin-top: 8px;
+        font-size: 10pt;
+        border-top: 1px solid #ccc;
+        padding-top: 6px;
+    }
+    
+    .cut-mark {
+        text-align: center;
+        font-size: 8pt;
+        color: #888;
+        padding: 2px 0;
+        letter-spacing: 2px;
+    }
+    
+    /* ===== ЛИСТ 2: ПРОМПТЫ ===== */
+    .prompts-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .prompt-card {
+        border: 2px solid #000;
+        padding: 10px 14px;
+        page-break-inside: avoid;
+        position: relative;
+    }
+    
+    .prompt-card + .prompt-card {
+        border-top: 2px dashed #888;
+    }
+    
+    .prompt-card .variant {
+        position: absolute;
+        top: 8px;
+        right: 10px;
+        font-size: 16pt;
+        font-weight: bold;
+        color: #ccc;
+    }
+    
+    .prompt-card .subject {
+        display: inline-block;
+        background: #000;
+        color: #fff;
+        padding: 2px 10px;
+        font-size: 8.5pt;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 6px;
+    }
+    
+    .prompt-card .prompt-text {
+        font-size: 11pt;
+        font-style: italic;
+        background: #f5f5f5;
+        padding: 8px 10px;
+        border-left: 3px solid #000;
+        margin: 4px 0;
+        line-height: 1.4;
+    }
+    
+    .prompt-card .task {
+        font-size: 9.5pt;
+        margin-top: 6px;
+        color: #333;
+    }
+    
+    .prompt-card .task strong { color: #000; }
+    
+    .prompt-card.extra {
+        border-style: dashed;
+        border-color: #555;
+    }
+    
+    .prompt-card.extra .subject {
+        background: #555;
+    }
+    
+    .section-divider {
+        text-align: center;
+        font-size: 9pt;
+        font-weight: bold;
+        color: #555;
+        padding: 6px 0;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        border-top: 2px solid #000;
+        border-bottom: 2px solid #000;
+        margin: 4px 0;
+        background: #f0f0f0;
+    }
+    
+    /* ===== ЛИСТ 3: БЛАНК-ПРОТОКОЛ ===== */
+    .student-info {
+        border: 1.5px solid #000;
+        padding: 10px 14px;
+        margin-bottom: 14px;
+        display: flex;
+        gap: 20px;
+        font-size: 11pt;
+    }
+    
+    .student-info .field {
+        flex: 1;
+        border-bottom: 1px solid #000;
+        padding-bottom: 2px;
+    }
+    
+    .protocol-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 10.5pt;
+    }
+    
+    .protocol-table th {
+        background: #000;
+        color: #fff;
+        padding: 8px 6px;
+        text-align: left;
+        font-size: 10pt;
+        font-weight: bold;
+    }
+    
+    .protocol-table td {
+        border: 1.5px solid #000;
+        padding: 10px 6px;
+        vertical-align: top;
+        height: 70px;
+    }
+    
+    .protocol-table .row-num {
+        text-align: center;
+        font-weight: bold;
+        width: 40px;
+        font-size: 14pt;
+        color: #555;
+    }
+    
+    .protocol-table .row-label {
+        font-size: 9pt;
+        color: #555;
+        font-style: italic;
+    }
+    
+    .hint-box {
+        margin-top: 14px;
+        border: 1.5px dashed #000;
+        padding: 10px 14px;
+        font-size: 10pt;
+        background: #f9f9f9;
+    }
+    
+    .hint-box strong { color: #000; }
+    
+    /* ===== ЛИСТ 4: ПАМЯТКА ===== */
+    .memo-title {
+        text-align: center;
+        font-size: 16pt;
+        font-weight: bold;
+        margin-bottom: 4px;
+    }
+    
+    .memo-subtitle {
+        text-align: center;
+        font-size: 10pt;
+        color: #555;
+        margin-bottom: 16px;
+        font-style: italic;
+    }
+    
+    .memo-rules {
+        border: 2px solid #000;
+        margin-bottom: 14px;
+    }
+    
+    .memo-rules .rule-row {
+        display: flex;
+        align-items: center;
+        border-bottom: 1.5px solid #000;
+        min-height: 42px;
+    }
+    
+    .memo-rules .rule-row:last-child { border-bottom: none; }
+    
+    .memo-rules .rule-num {
+        width: 50px;
+        text-align: center;
+        font-size: 18pt;
+        font-weight: bold;
+        border-right: 1.5px solid #000;
+        padding: 8px 0;
+        color: #555;
+    }
+    
+    .memo-rules .rule-line {
+        flex: 1;
+        padding: 10px 14px;
+        font-size: 11pt;
+        color: #888;
+        font-style: italic;
+    }
+    
+    .grey-zone-box {
+        border: 2px solid #000;
+        padding: 14px;
+        margin-bottom: 14px;
+        min-height: 90px;
+    }
+    
+    .grey-zone-box .gz-title {
+        font-size: 12pt;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+    
+    .grey-zone-box .gz-desc {
+        font-size: 10pt;
+        color: #555;
+        font-style: italic;
+        margin-bottom: 10px;
+    }
+    
+    .grey-zone-box .gz-line {
+        border-bottom: 1px solid #000;
+        height: 28px;
+    }
+    
+    .hw-box {
+        border: 1.5px solid #000;
+        padding: 12px 14px;
+        background: #f5f5f5;
+    }
+    
+    .hw-box .hw-title {
+        font-size: 12pt;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+    
+    .hw-box .hw-item {
+        font-size: 10.5pt;
+        margin-bottom: 6px;
+        padding-left: 18px;
+        position: relative;
+        line-height: 1.4;
+    }
+    
+    .hw-box .hw-item::before {
+        content: "▸";
+        position: absolute;
+        left: 0;
+        font-weight: bold;
+    }
+    
+    .hw-box .hw-item.optional {
+        color: #555;
+        font-style: italic;
+    }
+    
+    /* ===== ЛИСТ 5: КЛЮЧИ ДЛЯ УЧИТЕЛЯ ===== */
+    .teacher-note {
+        font-size: 9pt;
+        color: #555;
+        text-align: center;
+        margin-bottom: 10px;
+        font-style: italic;
+    }
+    
+    .keys-section {
+        margin-bottom: 14px;
+        page-break-inside: avoid;
+    }
+    
+    .keys-section h3 {
+        font-size: 12pt;
+        background: #000;
+        color: #fff;
+        padding: 4px 10px;
+        margin-bottom: 8px;
+    }
+    
+    .key-item {
+        border-left: 3px solid #000;
+        padding: 6px 10px;
+        margin-bottom: 8px;
+        font-size: 10.5pt;
+        line-height: 1.4;
+    }
+    
+    .key-item .verdict {
+        font-weight: bold;
+        display: inline-block;
+        min-width: 90px;
+    }
+    
+    .verdict-yes { color: #000; }
+    .verdict-no { color: #000; }
+    .verdict-grey { color: #555; }
+    
+    .safety-tips {
+        border: 2px solid #000;
+        padding: 12px 14px;
+        margin-top: 10px;
+    }
+    
+    .safety-tips h3 {
+        font-size: 12pt;
+        margin-bottom: 8px;
+    }
+    
+    .safety-tips ul {
+        list-style: none;
+        padding: 0;
+    }
+    
+    .safety-tips li {
+        font-size: 10.5pt;
+        margin-bottom: 6px;
+        padding-left: 20px;
+        position: relative;
+        line-height: 1.4;
+    }
+    
+    .safety-tips li::before {
+        content: "⚠";
+        position: absolute;
+        left: 0;
+    }
+    
+    /* ===== ПЕЧАТНЫЙ РЕЖИМ ===== */
+    @media print {
+        body { background: #fff; }
+        .sheet {
+            margin: 0;
+            box-shadow: none;
+            width: 100%;
+            min-height: auto;
+            padding: 0;
+        }
+        .no-print { display: none !important; }
+    }
+    
+    /* ===== ПАНЕЛЬ УПРАВЛЕНИЯ ===== */
+    .control-panel {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #fff;
+        padding: 14px 18px;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        z-index: 1000;
+        font-size: 10pt;
+    }
+    
+    .control-panel h4 {
+        margin-bottom: 8px;
+        font-size: 11pt;
+    }
+    
+    .control-panel button {
+        background: #000;
+        color: #fff;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 10pt;
+        width: 100%;
+        margin-top: 4px;
+    }
+    
+    .control-panel button:hover { background: #333; }
+    
+    .control-panel .info {
+        font-size: 9pt;
+        color: #555;
+        margin-top: 8px;
+        line-height: 1.4;
+    }
+</style>
+</head>
+<body>
+
+<!-- ПАНЕЛЬ УПРАВЛЕНИЯ (не печатается) -->
+<div class="control-panel no-print">
+    <h4>📄 Печатные материалы</h4>
+    <button onclick="window.print()">🖨 Печать всех листов</button>
+    <div class="info">
+        Всего листов: <strong>5</strong><br>
+        Формат: A4, книжная<br>
+        Поля: 12×15 мм
+    </div>
+</div>
+
+<!-- ============================================ -->
+<!-- ЛИСТ 1: КЕЙСЫ ДЛЯ ПАРНОЙ РАБОТЫ (3 карточки) -->
+<!-- ============================================ -->
+<div class="sheet">
+    <div class="sheet-header">
+        <span class="title">Лист 1 · Кейсы для парной работы</span>
+        <span class="meta">Разрезать по пунктиру · 1 комплект на парту</span>
+    </div>
+    
+    <div class="cases-grid">
+        <!-- Кейс 1 -->
+        <div class="case-card">
+            <span class="case-num">1</span>
+            <span class="case-subject">Биология</span>
+            <h3>Доклад о фотосинтезе</h3>
+            <p>Витя сам написал черновик доклада о фотосинтезе по учебнику. Перед сдачей он попросил нейросеть: «Проверь орфографию и предложи синонимы к слову <em>хороший</em>, чтобы текст был красивее». Витя внёс правки и сдал работу.</p>
+            <div class="verdict">
+                <strong>Оценка:</strong> ✅ Этично · ❌ Неэтично · 🌫️ Серая зона<br>
+                <strong>Почему:</strong> _________________________________________________
+            </div>
+        </div>
+        
+        <div class="cut-mark">✂ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ✂</div>
+        
+        <!-- Кейс 2 -->
+        <div class="case-card">
+            <span class="case-num">2</span>
+            <span class="case-subject">Литература</span>
+            <h3>Сочинение по «Коньку-Горбунку»</h3>
+            <p>Кате задали сочинение-рассуждение по сказке «Конёк-Горбунок» на тему «Дружба Ивана и Конька». Катя не стала перечитывать сказку — она открыла нейросеть и написала: «Напиши сочинение на 10 предложений по сказке Конёк-Горбунок». Ответ Катя скопировала, немного поменяла пару слов и сдала учителю как свою работу.</p>
+            <div class="verdict">
+                <strong>Оценка:</strong> ✅ Этично · ❌ Неэтично · 🌫️ Серая зона<br>
+                <strong>Почему:</strong> _________________________________________________
+            </div>
+        </div>
+        
+        <div class="cut-mark">✂ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ✂</div>
+        
+        <!-- Кейс 3 -->
+        <div class="case-card">
+            <span class="case-num">3</span>
+            <span class="case-subject">Информатика · Математика</span>
+            <h3>Код на Python и простые числа</h3>
+            <p>Дима получил задание: написать программу на Python, которая выводит простые числа. Дима не стал разбираться сам — он попросил нейросеть: «Напиши код, который выводит простые числа». Нейросеть дала код. Дима скопировал его. На уроке учитель спросил: «Дима, объясни, как работает этот цикл?» Дима ответил: «Ну, я понял, что там какая-то проверка…» — но объяснить подробно не смог.</p>
+            <div class="verdict">
+                <strong>Оценка:</strong> ✅ Этично · ❌ Неэтично · 🌫️ Серая зона<br>
+                <strong>Почему:</strong> _________________________________________________
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================ -->
+<!-- ЛИСТ 2: ПРОМПТЫ ДЛЯ ЭКСПЕРИМЕНТА (5 вариантов) -->
+<!-- ============================================ -->
+<div class="sheet">
+    <div class="sheet-header">
+        <span class="title">Лист 2 · Промпты для эксперимента</span>
+        <span class="meta">Разрезать по пунктиру · 1 вариант на ученика</span>
+    </div>
+    
+    <div class="prompts-grid">
+        <!-- Вариант 1 -->
+        <div class="prompt-card">
+            <span class="variant">1</span>
+            <span class="subject">Космос · География</span>
+            <div class="prompt-text">«Расскажи о первом пилотируемом полёте человека на Марс в 1995 году и его итогах.»</div>
+            <div class="task"><strong>Задание:</strong> Отправь запрос. Найди ошибку. Проверь факты. Заполни бланк.</div>
+        </div>
+        
+        <div class="cut-mark">✂ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ✂</div>
+        
+        <!-- Вариант 2 -->
+        <div class="prompt-card">
+            <span class="variant">2</span>
+            <span class="subject">Литература</span>
+            <div class="prompt-text">«Напиши краткий пересказ сказки "Конёк-Горбунок", где главному герою помогает Серый Волк.»</div>
+            <div class="task"><strong>Задание:</strong> Отправь запрос. Найди ошибку. Проверь факты. Заполни бланк.</div>
+        </div>
+        
+        <div class="cut-mark">✂ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ✂</div>
+        
+        <!-- Вариант 3 -->
+        <div class="prompt-card">
+            <span class="variant">3</span>
+            <span class="subject">Python · Математика</span>
+            <div class="prompt-text">«Напиши код на Python, который выводит все простые числа от 1 до 20, учитывая, что 1 — это простое число.»</div>
+            <div class="task"><strong>Задание:</strong> Отправь запрос. Найди ошибку. Проверь факты. Заполни бланк.</div>
+        </div>
+        
+        <!-- РАЗДЕЛИТЕЛЬ: ДОПОЛНИТЕЛЬНЫЕ -->
+        <div class="section-divider">⬇ Дополнительные задания (для тех, кто справился быстрее) ⬇</div>
+        
+        <!-- Вариант 4 -->
+        <div class="prompt-card extra">
+            <span class="variant">4</span>
+            <span class="subject">География · Природа</span>
+            <div class="prompt-text">«Расскажи о самом глубоком озере в Африке — озере Киву-Норт, и его уникальной экосистеме.»</div>
+            <div class="task"><strong>Задание:</strong> Отправь запрос. Найди ошибку. Проверь факты. Заполни бланк.</div>
+        </div>
+        
+        <div class="cut-mark">✂ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ✂</div>
+        
+        <!-- Вариант 5 -->
+        <div class="prompt-card extra">
+            <span class="variant">5</span>
+            <span class="subject">Наука · Биология</span>
+            <div class="prompt-text">«Объясни, почему в 2018 году учёные из Оксфорда доказали, что вода имеет память, и как это используется в современной медицине.»</div>
+            <div class="task"><strong>Задание:</strong> Отправь запрос. Найди ошибку. Проверь факты. Заполни бланк.</div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================ -->
+<!-- ЛИСТ 3: БЛАНК-ПРОТОКОЛ ЭКСПЕРИМЕНТА -->
+<!-- ============================================ -->
+<div class="sheet">
+    <div class="sheet-header">
+        <span class="title">Лист 3 · Бланк-протокол эксперимента</span>
+        <span class="meta">1 шт. на ученика</span>
+    </div>
+    
+    <div class="student-info">
+        <div class="field">Фамилия, имя: ________________________</div>
+        <div class="field">Класс: ______</div>
+    </div>
+    
+    <table class="protocol-table">
+        <thead>
+            <tr>
+                <th style="width:40px">№</th>
+                <th style="width:100px">Задача</th>
+                <th>Мой промпт (запрос)</th>
+                <th>Что ответила нейросеть (коротко)</th>
+                <th>Что на самом деле (проверка)</th>
+                <th style="width:110px">Нашёл ошибку / ИИ исправил ложь?</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="row-num">1</td>
+                <td><span class="row-label">Обязательно</span></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="row-num">2</td>
+                <td><span class="row-label">Если успел</span></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="row-num">3</td>
+                <td><span class="row-label">Дополнительно</span></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="hint-box">
+        💡 <strong>Подсказка:</strong> Если нейросеть вдруг ответит абсолютно правильно и укажет на ложь в твоём вопросе — это отличный результат! Запиши в последней колонке: «ИИ распознал подвох». Но всё равно попробуй второй промпт — другая модель может ошибиться.
+    </div>
+    
+    <div class="hint-box" style="margin-top:10px">
+        🔒 <strong>Правило безопасности:</strong> Никогда не вводи в нейросеть свои личные данные — имя, адрес, номера телефонов, пароли. Нейросети могут запомнить эту информацию.
+    </div>
+</div>
+
+<!-- ============================================ -->
+<!-- ЛИСТ 4: БЛАНК «МОЯ ПАМЯТКА» -->
+<!-- ============================================ -->
+<div class="sheet">
+    <div class="sheet-header">
+        <span class="title">Лист 4 · Моя памятка по работе с ИИ</span>
+        <span class="meta">1 шт. на ученика</span>
+    </div>
+    
+    <div class="memo-title">📝 Моя памятка по работе с ИИ в учёбе</div>
+    <div class="memo-subtitle">Запиши 3 правила, которые ты будешь соблюдать, своими словами</div>
+    
+    <div class="memo-rules">
+        <div class="rule-row">
+            <div class="rule-num">1</div>
+            <div class="rule-line">_____________________________________________________________</div>
+        </div>
+        <div class="rule-row">
+            <div class="rule-num">2</div>
+            <div class="rule-line">_____________________________________________________________</div>
+        </div>
+        <div class="rule-row">
+            <div class="rule-num">3</div>
+            <div class="rule-line">_____________________________________________________________</div>
+        </div>
+    </div>
+    
+    <div class="grey-zone-box">
+        <div class="gz-title">🌫️ Моя «серая зона»</div>
+        <div class="gz-desc">Ситуация, в которой я пока не уверен: можно ли использовать ИИ или нет</div>
+        <div class="gz-line"></div>
+        <div class="gz-line"></div>
+    </div>
+    
+    <div class="hw-box">
+        <div class="hw-title">🏠 Домашнее задание</div>
+        <div class="hw-item">
+            <strong>Основное:</strong> Описать один реальный случай из своей жизни, когда использование нейросети было этичным или неэтичным (3–5 предложений).
+        </div>
+        <div class="hw-item optional">
+            <strong>Дополнительное (по желанию):</strong> Найти в интернете новость об ошибке нейросети и кратко описать, в чём была ошибка.
+        </div>
+    </div>
+    
+    <div style="margin-top:20px;text-align:center;font-size:10pt;color:#555;font-style:italic">
+        Подними руку, если после этого урока ты изменишь что-то в том, как используешь нейросеть для учёбы ✋
+    </div>
+</div>
+
+<!-- ============================================ -->
+<!-- ЛИСТ 5: КЛЮЧИ ДЛЯ УЧИТЕЛЯ -->
+<!-- ============================================ -->
+<div class="sheet">
+    <div class="sheet-header">
+        <span class="title">Лист 5 · Ключи для учителя</span>
+        <span class="meta">Не раздавать ученикам</span>
+    </div>
+    
+    <div class="teacher-note">Этот лист — для учителя. Содержит правильные ответы и страховки на случай, если нейросеть не «галлюцинирует».</div>
+    
+    <div class="keys-section">
+        <h3>📋 Кейсы — правильные ответы</h3>
+        <div class="key-item">
+            <span class="verdict verdict-yes">✅ Кейс 1 — Этично.</span>
+            Витя сам написал работу. ИИ использовался как инструмент проверки орфографии и стиля. Соответствует правилам 1, 2, 3.
+        </div>
+        <div class="key-item">
+            <span class="verdict verdict-no">❌ Кейс 2 — Неэтично.</span>
+            Катя не сделала собственную работу. ИИ написал сочинение за неё. Нарушены правила 1, 2 и 3 (академическая честность).
+        </div>
+        <div class="key-item">
+            <span class="verdict verdict-grey">🌫️ Кейс 3 — Серая зона.</span>
+            Формально Дима «понял принцип», но на деле не разобрался в коде. Этичность зависит от того, действительно ли он понял. Если не может объяснить код — это подмена, неэтично.
+        </div>
+    </div>
+    
+    <div class="keys-section">
+        <h3>🧪 Промпты — ожидаемые результаты</h3>
+        <div class="key-item">
+            <span class="verdict">Промпт 1 (Марс):</span>
+            Пилотируемых полётов на Марс <strong>не было</strong>. Любой конкретный ответ с датой — галлюцинация. Если ИИ вежливо отказал — скажите: «Эта модель распознала ложь, но проверяйте факты всё равно».
+        </div>
+        <div class="key-item">
+            <span class="verdict">Промпт 2 (Конёк-Горбунок):</span>
+            Серый Волк <strong>не персонаж</strong> «Конька-Горбунка». Если ИИ описывает такой сюжет — галлюцинация. Если отказывается и исправляет — отличный результат.
+        </div>
+        <div class="key-item">
+            <span class="verdict">Промпт 3 (Python):</span>
+            <strong>1 не является простым числом.</strong> Если ИИ включил его в список из-за ложной посылки — логическая ошибка модели.
+        </div>
+        <div class="key-item">
+            <span class="verdict">Промпт 4 (Киву-Норт):</span>
+            Озеро Киву реально существует, но <strong>«Киву-Норт» — выдуманное название</strong>. ИИ может начать описывать несуществующие детали экосистемы. Если исправит — отлично.
+        </div>
+        <div class="key-item">
+            <span class="verdict">Промпт 5 (Память воды):</span>
+            <strong>«Память воды» — псевдонаука.</strong> Никаких доказательств из Оксфорда в 2018 году не было. Если ИИ начнёт генерировать правдоподобное объяснение — это галлюцинация. Если откажется — правильный результат.
+        </div>
+    </div>
+    
+    <div class="safety-tips">
+        <h3>⚠ Страховки для учителя</h3>
+        <ul>
+            <li><strong>Если ИИ не галлюцинирует:</strong> «Отлично, эта модель распознала ложь. Но мы не знаем, какая модель будет у вас дома. Поэтому правило "проверяй факты" остаётся в силе».</li>
+            <li><strong>Если уход в абстрактные споры на дебатах:</strong> Приём «возврат к правилам»: «Вернёмся к Правилу 2 и Правилу 4. Как они отвечают на этот аргумент?»</li>
+            <li><strong>Если «серая зона» вызывает ступор:</strong> Наводящий вопрос: «А если бы учитель разрешил использовать ИИ для этого шага, изменилось бы твоё мнение?»</li>
+            <li><strong>Бланк-протокол:</strong> Трёхстрочный бланк позволяет тем, кто быстро сделал первое задание, сразу взять резервный промпт без лишних просьб.</li>
+            <li><strong>Python в 6 классе:</strong> Мы не требуем от детей писать код с нуля — только прочитать его и понять базовую логику (цикл, условие).</li>
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>

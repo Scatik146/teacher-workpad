@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Дополнительные возможности SVG</title>
+<style>
+  :root {
+    --bg: #f5f7fa;
+    --card: #ffffff;
+    --text: #1a1a2e;
+    --muted: #6b7280;
+    --accent: #3b82f6;
+    --accent2: #10b981;
+    --danger: #ef4444;
+    --code-bg: #1e293b;
+    --code-text: #e2e8f0;
+    --tag: #f472b6;
+    --attr: #fbbf24;
+    --str: #86efac;
+    --comment: #64748b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+  }
+
+  .deck {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 60px 80px;
+    display: none;
+    flex-direction: column;
+    overflow-y: auto;
+    animation: fadeIn 0.4s ease;
+  }
+
+  .slide.active { display: flex; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  h1 {
+    font-size: 2.8em;
+    font-weight: 700;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  h2 {
+    font-size: 2.2em;
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.3em;
+    font-weight: 600;
+    margin: 20px 0 12px;
+    color: var(--accent);
+  }
+
+  p, li {
+    font-size: 1.15em;
+    line-height: 1.7;
+    margin-bottom: 12px;
+  }
+
+  ul { padding-left: 28px; }
+
+  .subtitle {
+    font-size: 1.4em;
+    color: var(--muted);
+    margin-bottom: 40px;
+  }
+
+  .meta {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: auto;
+    padding-top: 30px;
+  }
+
+  .badge {
+    background: var(--card);
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 0.95em;
+    color: var(--muted);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+
+  .badge strong { color: var(--text); }
+
+  .card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin: 12px 0;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    align-items: start;
+  }
+
+  .three-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+  }
+
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 18px 22px;
+    border-radius: 10px;
+    font-family: "SF Mono", Consolas, Monaco, monospace;
+    font-size: 0.95em;
+    line-height: 1.6;
+    overflow-x: auto;
+    margin: 10px 0;
+  }
+
+  code {
+    font-family: "SF Mono", Consolas, Monaco, monospace;
+    background: #f1f5f9;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    color: #be185d;
+  }
+
+  .tag { color: var(--tag); }
+  .attr { color: var(--attr); }
+  .str { color: var(--str); }
+  .cmt { color: var(--comment); font-style: italic; }
+
+  .svg-demo {
+    background: white;
+    border: 2px dashed #e2e8f0;
+    border-radius: 10px;
+    padding: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+  }
+
+  .svg-demo svg { max-width: 100%; height: auto; }
+
+  .formula {
+    background: linear-gradient(135deg, #eff6ff, #f0fdf4);
+    border-left: 4px solid var(--accent);
+    padding: 16px 22px;
+    border-radius: 8px;
+    margin: 14px 0;
+    font-family: "SF Mono", Consolas, monospace;
+    font-size: 1.05em;
+  }
+
+  .warning {
+    background: #fef2f2;
+    border-left: 4px solid var(--danger);
+    padding: 16px 22px;
+    border-radius: 8px;
+    margin: 14px 0;
+  }
+
+  .warning strong { color: var(--danger); }
+
+  .tip {
+    background: #f0fdf4;
+    border-left: 4px solid var(--accent2);
+    padding: 16px 22px;
+    border-radius: 8px;
+    margin: 14px 0;
+  }
+
+  .tip strong { color: var(--accent2); }
+
+  .checklist {
+    list-style: none;
+    padding: 0;
+  }
+
+  .checklist li {
+    padding: 10px 14px;
+    margin: 6px 0;
+    background: #f8fafc;
+    border-radius: 8px;
+    border-left: 3px solid var(--accent2);
+  }
+
+  .checklist li::before {
+    content: "☐ ";
+    color: var(--accent2);
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+
+  /* Навигация */
+  .nav {
+    position: fixed;
+    bottom: 20px;
+    right: 30px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--card);
+    padding: 8px 16px;
+    border-radius: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    z-index: 100;
+  }
+
+  .nav button {
+    background: none;
+    border: none;
+    font-size: 1.3em;
+    cursor: pointer;
+    color: var(--muted);
+    padding: 4px 10px;
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+
+  .nav button:hover { background: #f1f5f9; color: var(--accent); }
+  .nav button:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  .counter {
+    font-size: 0.95em;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    min-width: 50px;
+    text-align: center;
+  }
+
+  .progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    transition: width 0.3s ease;
+    z-index: 100;
+  }
+
+  .block-label {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .block-label.green { background: var(--accent2); }
+  .block-label.red { background: var(--danger); }
+
+  .final {
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .final h1 { font-size: 3.5em; }
+
+  .hint {
+    position: fixed;
+    bottom: 20px;
+    left: 30px;
+    font-size: 0.85em;
+    color: var(--muted);
+    background: var(--card);
+    padding: 6px 14px;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+
+  kbd {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-family: monospace;
+    font-size: 0.9em;
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<div class="deck" id="deck">
+
+  <!-- Слайд 1: Титул -->
+  <section class="slide active">
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <h1>Дополнительные возможности SVG</h1>
+      <p class="subtitle">Полигоны, кривые Безье, векторы и штампы</p>
+      <div class="meta">
+        <div class="badge"><strong>Предмет:</strong> Информатика, 10 класс</div>
+        <div class="badge"><strong>Длительность:</strong> 80 минут</div>
+        <div class="badge"><strong>Среда:</strong> StackEdit.io</div>
+        <div class="badge"><strong>Формат:</strong> Освоение нового + практика</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Слайд 2: Блок 1 — polyline/polygon -->
+  <section class="slide">
+    <span class="block-label">Блок 1 · Этап 1 · 10 мин</span>
+    <h2>От одного отрезка к ломаным и фигурам</h2>
+    <div class="three-col">
+      <div class="card">
+        <h3><code>&lt;line&gt;</code></h3>
+        <p>Только 1 отрезок (2 точки).</p>
+        <pre><span class="tag">&lt;line</span> <span class="attr">x1</span>=<span class="str">"10"</span> <span class="attr">y1</span>=<span class="str">"20"</span>
+      <span class="attr">x2</span>=<span class="str">"100"</span> <span class="attr">y2</span>=<span class="str">"20"</span> <span class="tag">/&gt;</span></pre>
+      </div>
+      <div class="card">
+        <h3><code>&lt;polyline&gt;</code></h3>
+        <p>Ломаная из множества последовательных отрезков.</p>
+        <pre><span class="tag">&lt;polyline</span>
+  <span class="attr">points</span>=<span class="str">"10,20 50,80 90,20"</span>
+  <span class="attr">fill</span>=<span class="str">"none"</span> <span class="tag">/&gt;</span></pre>
+      </div>
+      <div class="card">
+        <h3><code>&lt;polygon&gt;</code></h3>
+        <p>Ломаная + <strong>автозамыкание</strong> + заливка.</p>
+        <pre><span class="tag">&lt;polygon</span>
+  <span class="attr">points</span>=<span class="str">"10,20 50,80 90,20"</span>
+  <span class="attr">fill</span>=<span class="str">"rgba(0,100,255,0.3)"</span> <span class="tag">/&gt;</span></pre>
+      </div>
+    </div>
+
+    <div class="tip" style="margin-top:20px;">
+      <strong>💡 rgba(R, G, B, A)</strong> — цвет с прозрачностью. A от 0.0 (невидимый) до 1.0 (непрозрачный).<br>
+      <strong>Лайфхак:</strong> открой Яндекс → «rgba конвертер» → выбери цвет → скопируй готовую строку.
+    </div>
+  </section>
+
+  <!-- Слайд 3: path и Q -->
+  <section class="slide">
+    <span class="block-label">Блок 1 · Этап 2 · 15 мин</span>
+    <h2>Плавные графики: тег <code>&lt;path&gt;</code> и команда <code>Q</code></h2>
+
+    <div class="two-col">
+      <div>
+        <div class="card">
+          <h3>Команды маршрута в атрибуте <code>d</code></h3>
+          <ul>
+            <li><code>M x y</code> — перенести перо (начало)</li>
+            <li><code>L x y</code> — провести прямую</li>
+            <li><code>Q cx cy x y</code> — квадратичная кривая Безье</li>
+          </ul>
+          <p style="margin-top:14px;"><strong>Почему именно <code>Q</code>?</strong><br>
+          Парабола математически <em>является</em> квадратичной кривой. Это не аппроксимация — это идеальная точность.</p>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Алгоритм контрольной точки</h3>
+          <p>Для симметричной дуги параболы:</p>
+          <ol style="padding-left:20px;">
+            <li>Найди вершину <code>(xᵥ, yᵥ)</code>. Твоя <code>cx = xᵥ</code>.</li>
+            <li>Вычисли <code>Δy = y_концевая − yᵥ</code>.</li>
+            <li>Контрольная точка <code>cy = yᵥ − Δy</code> (в противоположную сторону).</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Слайд 4: Пример Q -->
+  <section class="slide">
+    <span class="block-label">Блок 1 · Этап 2 · пример</span>
+    <h2>Пример: <code>y = x² − 4x + 3</code></h2>
+
+    <div class="two-col">
+      <div>
+        <div class="card">
+          <h3>1. Находим вершину</h3>
+          <div class="formula">
+            xᵥ = −b/(2a) = 4/2 = <strong>2</strong><br>
+            yᵥ = 2² − 4·2 + 3 = <strong>−1</strong>
+          </div>
+
+          <h3>2. Концевые точки (симметричные)</h3>
+          <div class="formula">
+            x = 0 → y = 3 → точка A(0, 3)<br>
+            x = 4 → y = 3 → точка Б(4, 3)
+          </div>
+
+          <h3>3. Контрольная точка</h3>
+          <div class="formula">
+            cx = 2<br>
+            Δy = 3 − (−1) = 4<br>
+            cy = −1 − 4 = <strong>−5</strong>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3>4. Перевод в экранные координаты</h3>
+          <p>Параметры: <code>S=30, CX=150, CY=200</code></p>
+          <div class="formula">
+            A: sx = 150 + 0·30 = <strong>150</strong>, sy = 200 − 3·30 = <strong>110</strong><br>
+            Б: sx = 150 + 4·30 = <strong>270</strong>, sy = 200 − 3·30 = <strong>110</strong><br>
+            Q: cx = 150 + 2·30 = <strong>210</strong>, cy = 200 − (−5)·30 = <strong>350</strong>
+          </div>
+
+          <h3>5. Итоговый тег</h3>
+          <pre><span class="tag">&lt;path</span>
+  <span class="attr">d</span>=<span class="str">"M 150 110 Q 210 350 270 110"</span>
+  <span class="attr">fill</span>=<span class="str">"none"</span>
+  <span class="attr">stroke</span>=<span class="str">"red"</span>
+  <span class="attr">stroke-width</span>=<span class="str">"3"</span> <span class="tag">/&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="svg-demo" style="margin-top:16px;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+        <line x1="50" y1="200" x2="350" y2="200" stroke="gray" stroke-width="1"/>
+        <line x1="150" y1="200" x2="150" y2="50" stroke="gray" stroke-width="1"/>
+        <path d="M 150 110 Q 210 350 270 110" fill="none" stroke="red" stroke-width="3"/>
+        <circle cx="210" cy="230" r="4" fill="black"/>
+        <circle cx="210" cy="350" r="4" fill="green"/>
+        <text x="220" y="235" font-family="sans-serif" font-size="12" fill="black">Вершина (2, −1)</text>
+        <text x="220" y="355" font-family="sans-serif" font-size="12" fill="green">Контрольная (2, −5)</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Слайд 5: marker -->
+  <section class="slide">
+    <span class="block-label">Блок 1 · Этап 3 · 10 мин</span>
+    <h2>Многоразовые стрелки: <code>&lt;defs&gt;</code> и <code>&lt;marker&gt;</code></h2>
+
+    <div class="two-col">
+      <div>
+        <div class="card">
+          <h3>1. Описываем штамп один раз</h3>
+          <pre><span class="tag">&lt;defs&gt;</span>
+  <span class="tag">&lt;marker</span> <span class="attr">id</span>=<span class="str">"arrow"</span>
+    <span class="attr">viewBox</span>=<span class="str">"0 0 10 10"</span>
+    <span class="attr">refX</span>=<span class="str">"9"</span> <span class="attr">refY</span>=<span class="str">"5"</span>
+    <span class="attr">markerWidth</span>=<span class="str">"6"</span>
+    <span class="attr">markerHeight</span>=<span class="str">"6"</span>
+    <span class="attr">orient</span>=<span class="str">"auto"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;path</span> <span class="attr">d</span>=<span class="str">"M 0 0 L 10 5 L 0 10 z"</span>
+          <span class="attr">fill</span>=<span class="str">"black"</span><span class="tag">/&gt;</span>
+  <span class="tag">&lt;/marker&gt;</span>
+<span class="tag">&lt;/defs&gt;</span></pre>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h3>Расшифровка атрибутов</h3>
+          <ul>
+            <li><code>viewBox</code> — внутренний холст стрелки</li>
+            <li><code>refX, refY</code> — <strong>точка привязки</strong> («булавка»)</li>
+            <li><code>orient="auto"</code> — автоповорот по углу линии</li>
+          </ul>
+
+          <h3 style="margin-top:18px;">2. Применяем к любой линии</h3>
+          <pre><span class="tag">&lt;line</span> <span class="attr">x1</span>=<span class="str">"..."</span> <span class="attr">y1</span>=<span class="str">"..."</span>
+      <span class="attr">x2</span>=<span class="str">"..."</span> <span class="attr">y2</span>=<span class="str">"..."</span>
+      <span class="attr">marker-end</span>=<span class="str">"url(#arrow)"</span> <span class="tag">/&gt;</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="svg-demo" style="margin-top:16px;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="500" height="200" viewBox="0 0 500 200">
+        <defs>
+          <marker id="arr1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="black"/>
+          </marker>
+        </defs>
+        <line x1="50" y1="100" x2="200" y2="40" stroke="blue" stroke-width="3" marker-end="url(#arr1)"/>
+        <line x1="50" y1="100" x2="200" y2="160" stroke="red" stroke-width="3" marker-end="url(#arr1)"/>
+        <line x1="50" y1="100" x2="250" y2="100" stroke="green" stroke-width="3" marker-end="url(#arr1)"/>
+        <text x="280" y="105" font-family="sans-serif" font-size="14" fill="gray">Один штамп — три вектора под разными углами</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Слайд 6: Инфобез -->
+  <section class="slide">
+    <span class="block-label red">Блок 1 · Этап 4 · 5 мин · Безопасность</span>
+    <h2>Скрытые угрозы в чужом SVG</h2>
+
+    <p>StackEdit вырезает <code>&lt;script&gt;</code>, но есть другие лазейки:</p>
+
+    <div class="two-col" style="margin-top:20px;">
+      <div class="warning">
+        <strong>⚠️ Угроза 1: Утечка данных</strong>
+        <pre style="margin-top:10px;"><span class="tag">&lt;use</span> <span class="attr">href</span>=<span class="str">"http://evil.com/track.svg"</span><span class="tag">/&gt;</span></pre>
+        <p style="margin-top:10px;">Браузер <strong>тихо</strong> загружает файл с чужого сервера → владелец сайта получает ваш IP и факт просмотра.</p>
+      </div>
+
+      <div class="warning">
+        <strong>⚠️ Угроза 2: DoS-атака</strong>
+        <pre style="margin-top:10px;"><span class="tag">&lt;animate</span> <span class="attr">attributeName</span>=<span class="str">"opacity"</span>
+  <span class="attr">dur</span>=<span class="str">"0.01s"</span> <span class="attr">repeatCount</span>=<span class="str">"indefinite"</span><span class="tag">/&gt;</span></pre>
+        <p style="margin-top:10px;">Бесконечная перерисовка → 100% CPU → вкладка зависает (без JavaScript!).</p>
+      </div>
+    </div>
+
+    <div class="tip" style="margin-top:24px;">
+      <strong>✅ Правило:</strong> перед вставкой чужого SVG удаляй теги <code>&lt;use&gt;</code>, <code>&lt;image&gt;</code>, <code>&lt;animate&gt;</code>, <code>&lt;set&gt;</code>.
+    </div>
+  </section>
+
+  <!-- Слайд 7: Блок 2 — расчёт -->
+  <section class="slide">
+    <span class="block-label green">Блок 2 · Этап 1 · 10 мин</span>
+    <h2>Практикум: расчёт перед кодом</h2>
+
+    <div class="card" style="background: linear-gradient(135deg, #eff6ff, #f0fdf4);">
+      <h3>📋 Алгоритм работы</h3>
+      <ol style="padding-left:24px; font-size:1.1em;">
+        <li>Выбери одну из трёх карточек (математика или физика).</li>
+        <li>Реши задачу <strong>аналитически на бумаге</strong>.</li>
+        <li>Заполни таблицу перевода в экранные координаты.</li>
+        <li>Только после этого открывай StackEdit.</li>
+      </ol>
+    </div>
+
+    <div class="formula" style="margin-top:20px;">
+      <strong>Формулы перевода:</strong><br>
+      sx = CX + x · S<br>
+      sy = CY − y · S &nbsp;&nbsp; <span style="color:var(--danger);">(помни: Y в SVG направлен ВНИЗ!)</span>
+    </div>
+
+    <div class="warning">
+      <strong>⏱️ Внимание:</strong> первые 10 минут вы <strong>не трогаете клавиатуру</strong>. Работа с бумагой и калькулятором. Если начнёте писать код без расчётов — увязнете в подборе чисел.
+    </div>
+  </section>
+
+  <!-- Слайд 8: Чек-лист сборки -->
+  <section class="slide">
+    <span class="block-label green">Блок 2 · Этап 2 · 20 мин</span>
+    <h2>Чек-лист сборки SVG-модели</h2>
+
+    <div class="two-col">
+      <div>
+        <ul class="checklist">
+          <li>Оси координат на месте, серые, с подписями</li>
+          <li>Единичный отрезок с подписью «1»</li>
+          <li>Графики/векторы через рассчитанные sx, sy</li>
+          <li><code>polygon</code> с <code>fill="rgba(..., 0.3)"</code> для площади</li>
+          <li><code>marker-end</code> для стрелок (если есть векторы)</li>
+          <li>Код чистый: нет внешних ссылок, <code>&lt;animate&gt;</code></li>
+        </ul>
+      </div>
+      <div>
+        <div class="card">
+          <h3>🎨 Принцип минимализма</h3>
+          <ul>
+            <li>Оси — <strong>тонкие и серые</strong> (<code>stroke="gray"</code>)</li>
+            <li>Графики — <strong>яркие и толстые</strong> (<code>stroke-width="3"</code>)</li>
+            <li>Шрифт — читаемый, без лишних подписей</li>
+            <li>Заливка — полупрозрачная, не перекрывает текст</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Слайд 9: Peer-review -->
+  <section class="slide">
+    <span class="block-label green">Блок 2 · Этап 3 · 10 мин</span>
+    <h2>Peer-review: проверь соседа</h2>
+
+    <div class="card" style="background: linear-gradient(135deg, #fef3c7, #fde68a);">
+      <h3>🔄 Алгоритм взаимопроверки</h3>
+      <ol style="padding-left:24px; font-size:1.1em;">
+        <li>Поменяйтесь местами за компьютером.</li>
+        <li>Откройте карточку с аналитическим решением соседа.</li>
+        <li>Сверьте 2–3 ключевые точки на графике с его расчётами в таблице.</li>
+        <li>Проверьте код по чек-листу на экране.</li>
+        <li>Оставьте устный комментарий: «Что сделано круто» и «Что можно упростить».</li>
+      </ol>
+    </div>
+
+    <div class="tip" style="margin-top:20px;">
+      <strong>💡 Совет:</strong> выберите любую точку (конец вектора, вершину параболы) и подставьте математические <code>x</code> и <code>y</code> в формулы <code>sx</code> и <code>sy</code>. Совпало с кодом? → плюс. Нет? → укажите на ошибку.
+    </div>
+  </section>
+
+  <!-- Слайд 10: Финал -->
+  <section class="slide final">
+    <h1>Итоги урока</h1>
+    <div style="max-width:800px; text-align:left; margin:0 auto;">
+      <div class="card" style="margin:16px 0;">
+        <h3>🎯 Что вы теперь умеете</h3>
+        <ul>
+          <li>Строить ломаные и замкнутые фигуры через <code>&lt;polyline&gt;</code> и <code>&lt;polygon&gt;</code></li>
+          <li>Рисовать идеальные параболы через команду <code>Q</code></li>
+          <li>Создавать многоразовые стрелки через <code>&lt;marker&gt;</code></li>
+          <li>Применять принцип минимализма в визуализации</li>
+          <li>Распознавать скрытые угрозы в чужом SVG-коде</li>
+        </ul>
+      </div>
+
+      <div class="card" style="margin:16px 0; background: linear-gradient(135deg, #eff6ff, #f0fdf4);">
+        <h3>🔗 Межпредметные связи</h3>
+        <ul>
+          <li><strong>Физика + Математика:</strong> площадь под графиком <code>v(t)</code> = пройденный путь</li>
+          <li><strong>Векторная алгебра:</strong> правило параллелограмма → точный координатный чертёж</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="nav">
+  <button id="prev" title="Предыдущий слайд (←)">←</button>
+  <span class="counter" id="counter">1 / 10</span>
+  <button id="next" title="Следующий слайд (→)">→</button>
+</div>
+
+<div class="hint">
+  <kbd>←</kbd> <kbd>→</kbd> или <kbd>Space</kbd> для навигации
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+
+  const prevBtn = document.getElementById('prev');
+  const nextBtn = document.getElementById('next');
+  const counter = document.getElementById('counter');
+  const progress = document.getElementById('progress');
+
+  function show(i) {
+    slides.forEach(s => s.classList.remove('active'));
+    slides[i].classList.add('active');
+    counter.textContent = `${i + 1} / ${total}`;
+    progress.style.width = `${((i + 1) / total) * 100}%`;
+    prevBtn.disabled = i === 0;
+    nextBtn.disabled = i === total - 1;
+  }
+
+  function next() { if (current < total - 1) { current++; show(current); } }
+  function prev() { if (current > 0) { current--; show(current); } }
+
+  prevBtn.addEventListener('click', prev);
+  nextBtn.addEventListener('click', next);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); next(); }
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prev(); }
+    if (e.key === 'Home') { current = 0; show(current); }
+    if (e.key === 'End') { current = total - 1; show(current); }
+  });
+
+  // Клик по краям экрана
+  document.addEventListener('click', (e) => {
+    const x = e.clientX;
+    const w = window.innerWidth;
+    if (x < w * 0.2) prev();
+    else if (x > w * 0.8) next();
+  });
+
+  show(0);
+</script>
+
+</body>
+</html>

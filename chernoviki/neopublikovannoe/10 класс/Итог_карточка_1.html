@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Карточка: Вариант 1 — Накопления семьи</title>
+    <style>
+        @page {
+            size: 210mm 297mm;
+            margin: 12mm;
+        }
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11pt;
+            line-height: 1.3;
+            color: #000;
+            width: 186mm;
+            margin: 12mm auto;
+            background: #fff;
+        }
+        h1 {
+            font-size: 14pt;
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 1px solid #000;
+            padding-bottom: 4px;
+            margin: 0 0 8px 0;
+        }
+        .metadata {
+            font-size: 10pt;
+            color: #555;
+            text-align: center;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        .time-checkpoints {
+            background-color: #eee;
+            border: 1px solid #999;
+            padding: 6px 10px;
+            margin-bottom: 10px;
+            font-size: 10pt;
+        }
+        .time-checkpoints ul {
+            margin: 4px 0 0 0;
+            padding-left: 20px;
+        }
+        .time-checkpoints li {
+            margin-bottom: 2px;
+        }
+        .block {
+            margin-bottom: 10px;
+            page-break-inside: avoid;
+        }
+        .block-header {
+            background-color: #333;
+            color: #fff;
+            font-size: 11pt;
+            padding: 4px 8px;
+            font-weight: bold;
+        }
+        h2 {
+            font-size: 12pt;
+            font-weight: bold;
+            margin: 8px 0 4px 0;
+        }
+        p {
+            margin: 4px 0;
+            font-size: 11pt;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 6px 0;
+            font-size: 10pt;
+        }
+        th, td {
+            border: 1px solid #999;
+            padding: 4px 6px;
+        }
+        th {
+            background-color: #eee;
+            text-align: left;
+        }
+        .formula {
+            border: 1px solid #ccc;
+            padding: 8px;
+            margin: 8px 0;
+            background-color: #fafafa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            page-break-inside: avoid;
+        }
+        .math {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 12pt;
+        }
+        .frac {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: stretch;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 0.95em;
+            margin: 0 3px;
+        }
+        .frac .num {
+            border-bottom: 1px solid #000;
+            padding: 0 4px 2px 4px;
+        }
+        .frac .den {
+            padding: 2px 4px 0 4px;
+        }
+        .sum {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+            line-height: 1;
+            margin: 0 2px;
+        }
+        .sum .sigma {
+            font-size: 1.4em;
+            line-height: 1;
+        }
+        .sum .sup {
+            font-size: 0.65em;
+            line-height: 1;
+            margin-bottom: -2px;
+            font-style: italic;
+        }
+        .sum .sub {
+            font-size: 0.65em;
+            line-height: 1;
+            margin-top: -2px;
+            font-style: italic;
+        }
+        .overline {
+            display: inline-block;
+            border-top: 1px solid #000;
+            padding-top: 1px;
+            vertical-align: bottom;
+        }
+        .sub {
+            vertical-align: sub;
+            font-size: 0.75em;
+            font-style: italic;
+        }
+        .sup-text {
+            vertical-align: super;
+            font-size: 0.75em;
+            font-style: italic;
+        }
+        .quote {
+            border-left: 3px solid #999;
+            padding-left: 10px;
+            font-style: italic;
+            margin: 6px 0;
+            color: #333;
+            font-size: 11pt;
+        }
+        ul {
+            margin: 4px 0;
+            padding-left: 20px;
+            font-size: 11pt;
+        }
+        li {
+            margin-bottom: 2px;
+        }
+        .code-block {
+            background-color: #f5f5f5;
+            padding: 6px;
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 10pt;
+            margin: 4px 0;
+            white-space: pre-wrap;
+            border: 1px solid #eee;
+        }
+        .checklist {
+            border: 1px solid #999;
+            padding: 8px;
+            margin-top: 10px;
+            page-break-inside: avoid;
+        }
+        .checklist ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 0;
+        }
+        .checklist li {
+            margin-bottom: 3px;
+            font-size: 10pt;
+        }
+        .checklist li::before {
+            content: "☐ ";
+        }
+        .footer {
+            font-size: 8pt;
+            color: #555;
+            text-align: center;
+            margin-top: 12px;
+            border-top: 1px solid #ccc;
+            padding-top: 6px;
+        }
+        .bold-num {
+            font-weight: bold;
+        }
+        code {
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 10pt;
+        }
+    </style>
+</head>
+<body>
+    <h1>Карточка: Вариант 1 — Накопления семьи</h1>
+    
+    <div class="metadata">
+        Итоговая работа по темам: Markdown, LaTeX, Mermaid, SVG<br>
+        Среда: StackEdit.io<br>
+        Время: 30 минут на выполнение
+    </div>
+
+    <div class="time-checkpoints">
+        <strong>Контрольные точки времени:</strong>
+        <ul>
+            <li>10 мин — Блок 1 готов</li>
+            <li>16 мин — Блок 2 готов</li>
+            <li>30 мин — Блок 3 готов</li>
+        </ul>
+    </div>
+
+    <div class="block">
+        <div class="block-header">Блок 1. Markdown + LaTeX (10 мин)</div>
+        <p>Оформите документ со следующей структурой. Все данные заданы — нужно знать синтаксис.</p>
+        
+        <h2>Накопления семьи за полгода</h2>
+        <h2>Данные о накоплениях</h2>
+        <p>Семья откладывает деньги на отпуск. В таблице показаны суммы накоплений по месяцам с января по июнь. Все значения — в условных единицах.</p>
+        
+        <table>
+            <tr>
+                <th>Месяц</th>
+                <th style="text-align: right;">Накопления, усл. ед.</th>
+            </tr>
+            <tr>
+                <td>Январь</td>
+                <td style="text-align: right;">3</td>
+            </tr>
+            <tr>
+                <td>Февраль</td>
+                <td style="text-align: right;">5</td>
+            </tr>
+            <tr>
+                <td>Март</td>
+                <td style="text-align: right;">4</td>
+            </tr>
+            <tr>
+                <td>Апрель</td>
+                <td style="text-align: right;">6</td>
+            </tr>
+            <tr>
+                <td>Май</td>
+                <td style="text-align: right;">5</td>
+            </tr>
+            <tr>
+                <td>Июнь</td>
+                <td style="text-align: right;">7</td>
+            </tr>
+        </table>
+
+        <div class="formula">
+            <span class="math">
+                <span class="overline">S</span>
+                <span>=</span>
+                <span class="frac">
+                    <span class="num">1</span>
+                    <span class="den"><i>n</i></span>
+                </span>
+                <span class="sum">
+                    <span class="sup"><i>n</i></span>
+                    <span class="sigma">&sum;</span>
+                    <span class="sub"><i>i</i>=1</span>
+                </span>
+                <span><i>S</i><span class="sub"><i>i</i></span></span>
+            </span>
+        </div>
+
+        <div class="formula">
+            <span class="math">
+                <i>r</i>
+                <span>=</span>
+                <span class="frac">
+                    <span class="num"><i>S</i><span class="sub"><i>n</i></span> - <i>S</i><span class="sub">1</span></span>
+                    <span class="den"><i>S</i><span class="sub">1</span></span>
+                </span>
+                <span>&middot;</span>
+                <span>100%</span>
+            </span>
+        </div>
+
+        <div class="quote">Регулярные накопления помогают планировать крупные расходы без кредитов.</div>
+
+        <ul>
+            <li>Максимальные накопления — в июне (<span class="bold-num">7</span> усл. ед.)</li>
+            <li>Минимальные — в январе (<span class="bold-num">3</span> усл. ед.)</li>
+            <li>Рост за полгода — более <span class="bold-num">100%</span></li>
+        </ul>
+    </div>
+
+    <div class="block">
+        <div class="block-header">Блок 2. Mermaid (6 мин)</div>
+        <h2>Расходы за июнь</h2>
+        <p>Постройте круговую диаграмму.<br>
+        Заголовок диаграммы: «Расходы за июнь»</p>
+        <p>Данные (5 категорий):</p>
+        
+        <table>
+            <tr>
+                <th>Категория</th>
+                <th style="text-align: right;">Усл. ед.</th>
+            </tr>
+            <tr>
+                <td>Продукты</td>
+                <td style="text-align: right;">40</td>
+            </tr>
+            <tr>
+                <td>Жильё</td>
+                <td style="text-align: right;">30</td>
+            </tr>
+            <tr>
+                <td>Транспорт</td>
+                <td style="text-align: right;">15</td>
+            </tr>
+            <tr>
+                <td>Развлечения</td>
+                <td style="text-align: right;">10</td>
+            </tr>
+            <tr>
+                <td>Накопления</td>
+                <td style="text-align: right;">5</td>
+            </tr>
+        </table>
+
+        <p>Создайте Markdown-таблицу с расшифровкой долей:</p>
+        <table>
+            <tr>
+                <th>Категория</th>
+                <th style="text-align: right;">Усл. ед.</th>
+                <th style="text-align: right;">Доля, %</th>
+            </tr>
+            <tr>
+                <td>Продукты</td>
+                <td style="text-align: right;">40</td>
+                <td style="text-align: right;">40</td>
+            </tr>
+            <tr>
+                <td>Жильё</td>
+                <td style="text-align: right;">30</td>
+                <td style="text-align: right;">30</td>
+            </tr>
+            <tr>
+                <td>Транспорт</td>
+                <td style="text-align: right;">15</td>
+                <td style="text-align: right;">15</td>
+            </tr>
+            <tr>
+                <td>Развлечения</td>
+                <td style="text-align: right;">10</td>
+                <td style="text-align: right;">10</td>
+            </tr>
+            <tr>
+                <td>Накопления</td>
+                <td style="text-align: right;">5</td>
+                <td style="text-align: right;">5</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="block">
+        <div class="block-header">Блок 3. SVG (14 мин)</div>
+        <h2>График накоплений</h2>
+        <p>Параметры SVG: <code>width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg"</code><br>
+        1 деление по оси X = 1 месяц</p>
+        <p>Напишите SVG-код. Все координаты заданы — нужно знать синтаксис тегов <code>&lt;line&gt;</code>, <code>&lt;text&gt;</code>, <code>&lt;polyline&gt;</code>, <code>&lt;polygon&gt;</code>.</p>
+
+        <h2>Оси и подписи (координаты заданы, теги пишете сами)</h2>
+        <ul>
+            <li>Ось X: от (20, 250) до (280, 250). Серая, толщина 1.</li>
+            <li>Ось Y: от (50, 20) до (50, 280). Серая, толщина 1.</li>
+            <li>Единичный отрезок: от (50, 250) до (75, 250). Серая, толщина 2.</li>
+            <li>Подпись «1»: координаты (77, 262).</li>
+            <li>Подпись «X»: координаты (285, 254).</li>
+            <li>Подпись «Y»: координаты (38, 18).</li>
+        </ul>
+
+        <h2>Координаты точек графика</h2>
+        <table>
+            <tr>
+                <th>Месяц</th>
+                <th style="text-align: right;">x</th>
+                <th style="text-align: right;">y</th>
+                <th style="text-align: right;">sx</th>
+                <th style="text-align: right;">sy</th>
+            </tr>
+            <tr>
+                <td>Январь</td>
+                <td style="text-align: right;">1</td>
+                <td style="text-align: right;">3</td>
+                <td style="text-align: right;">75</td>
+                <td style="text-align: right;">175</td>
+            </tr>
+            <tr>
+                <td>Февраль</td>
+                <td style="text-align: right;">2</td>
+                <td style="text-align: right;">5</td>
+                <td style="text-align: right;">100</td>
+                <td style="text-align: right;">125</td>
+            </tr>
+            <tr>
+                <td>Март</td>
+                <td style="text-align: right;">3</td>
+                <td style="text-align: right;">4</td>
+                <td style="text-align: right;">125</td>
+                <td style="text-align: right;">150</td>
+            </tr>
+            <tr>
+                <td>Апрель</td>
+                <td style="text-align: right;">4</td>
+                <td style="text-align: right;">6</td>
+                <td style="text-align: right;">150</td>
+                <td style="text-align: right;">100</td>
+            </tr>
+            <tr>
+                <td>Май</td>
+                <td style="text-align: right;">5</td>
+                <td style="text-align: right;">5</td>
+                <td style="text-align: right;">175</td>
+                <td style="text-align: right;">125</td>
+            </tr>
+            <tr>
+                <td>Июнь</td>
+                <td style="text-align: right;">6</td>
+                <td style="text-align: right;">7</td>
+                <td style="text-align: right;">200</td>
+                <td style="text-align: right;">75</td>
+            </tr>
+        </table>
+
+        <h2>График: тег <code>&lt;polyline&gt;</code></h2>
+        <p>Атрибуты: <code>fill="none" stroke="blue" stroke-width="2"</code></p>
+        <div class="code-block">points="75,175 100,125 125,150 150,100 175,125 200,75"</div>
+
+        <h2>Заливка: тег <code>&lt;polygon&gt;</code></h2>
+        <p>Атрибут: <code>fill="rgba(0,0,255,0.2)"</code></p>
+        <div class="code-block">points="75,175 100,125 125,150 150,100 175,125 200,75 200,250 75,250"</div>
+    </div>
+
+    <div class="checklist">
+        <strong>Чек-лист самопроверки</strong>
+        <ul>
+            <li>У pie-диаграммы есть заголовок?</li>
+            <li>pie-диаграмма отрисовалась в предпросмотре?</li>
+            <li>SVG виден в предпросмотре?</li>
+            <li>polyline — синяя линия (не чёрное пятно)?</li>
+            <li>polygon — полупрозрачная голубая заливка?</li>
+            <li>Оси серые, без стрелок и сетки?</li>
+            <li>Есть единичный отрезок с подписью «1»?</li>
+            <li>Есть подписи «X» и «Y»?</li>
+            <li>Формулы отображаются корректно?</li>
+        </ul>
+    </div>
+
+    <div class="footer">
+        Итоговая работа по информатике · 11 класс · Углублённый уровень
+    </div>
+</body>
+</html>

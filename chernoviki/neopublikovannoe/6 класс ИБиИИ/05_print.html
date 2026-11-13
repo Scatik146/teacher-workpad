@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Раздаточный лист — ИИ и экология</title>
+<style>
+@page { size: A4; margin: 8mm; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', Arial, sans-serif; color: #000; font-size: 11px; line-height: 1.4; }
+.section { border: 2px solid #333; border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; }
+.section-title { font-size: 13px; font-weight: 700; text-align: center; margin-bottom: 6px; padding-bottom: 4px; border-bottom: 2px solid #e94560; }
+.opt-row { display: flex; gap: 4px; margin: 3px 0; align-items: baseline; }
+.opt-label { font-weight: 700; min-width: 55px; flex-shrink: 0; font-size: 10px; }
+.opt-items { display: flex; flex-wrap: wrap; gap: 3px; }
+.opt-item { border: 1px solid #999; border-radius: 3px; padding: 2px 5px; font-size: 10px; }
+.prompt-box { background: #f0f0f0; border-radius: 4px; padding: 6px 8px; margin: 5px 0; font-size: 10px; line-height: 1.4; }
+.l2-row { font-size: 10px; margin: 2px 0; }
+.checklist-table { width: 100%; border-collapse: collapse; font-size: 10px; }
+.checklist-table th { background: #333; color: #fff; padding: 4px 6px; text-align: center; font-size: 11px; }
+.checklist-table td { border: 1px solid #999; padding: 4px 6px; width: 50%; vertical-align: top; }
+.tokens-row { display: flex; gap: 5px; }
+.token { border: 2px dashed #555; border-radius: 6px; padding: 6px 8px; text-align: center; flex: 1; }
+.token-name { font-size: 11px; font-weight: 700; color: #e94560; margin-bottom: 2px; }
+.token-desc { font-size: 9px; color: #444; }
+.token-qty { font-size: 9px; color: #888; margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<div class="section">
+  <div class="section-title">ПРОМПТ-КОНСТРУКТОР «ЭКО-ОТКРЫТКА»</div>
+  <div class="opt-row"><span class="opt-label">Объект:</span>
+    <div class="opt-items">
+      <span class="opt-item">☐ сова с книгой</span>
+      <span class="opt-item">☐ лиса с глобусом</span>
+      <span class="opt-item">☐ ёжик с карандашами</span>
+      <span class="opt-item">☐ дерево с книгами</span>
+    </div>
+  </div>
+  <div class="opt-row"><span class="opt-label">Фон:</span>
+    <div class="opt-items">
+      <span class="opt-item">☐ осенний лес</span>
+      <span class="opt-item">☐ школьный двор</span>
+      <span class="opt-item">☐ светлая поляна</span>
+      <span class="opt-item">☐ кабинет с окном</span>
+    </div>
+  </div>
+  <div class="opt-row"><span class="opt-label">Цвета:</span>
+    <div class="opt-items">
+      <span class="opt-item">☐ золотистый, бордовый</span>
+      <span class="opt-item">☐ зелёный, голубой</span>
+      <span class="opt-item">☐ тёплый жёлтый</span>
+      <span class="opt-item">☐ розовый, сиреневый</span>
+    </div>
+  </div>
+  <div class="opt-row"><span class="opt-label">Стиль:</span>
+    <div class="opt-items">
+      <span class="opt-item">☐ акварель</span>
+      <span class="opt-item">☐ детская иллюстрация</span>
+      <span class="opt-item">☐ цифровая живопись</span>
+      <span class="opt-item">☐ сказочная иллюстрация</span>
+    </div>
+  </div>
+  <div class="prompt-box">
+    <strong>Шаблон:</strong> «Алиса, нарисуй вертикальную открытку: [объект] на фоне [фон]. Цвета: [цвета]. Стиль: [стиль]. Оставь место для надписи внизу.»
+  </div>
+  <div style="margin-top: 4px;">
+    <strong style="font-size:10px;">Уровень 2 (по предмету):</strong>
+    <span class="l2-row">☐ География: глобус, карта, компас</span> ·
+    <span class="l2-row">☐ Математика: планета, фигуры, цифры</span> ·
+    <span class="l2-row">☐ Русский язык: книги, перо, азбука</span> ·
+    <span class="l2-row">☐ Биология: листья, цветы, бабочки</span>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">ЧЕК-ЛИСТ ПРИЁМКИ ОТКРЫТКИ</div>
+  <table class="checklist-table">
+    <tr><th>Принимаем ✓</th><th>Отправляем переделывать ✗</th></tr>
+    <tr><td>☐ Все объекты на месте</td><td>☐ Кривые руки/лапы, странные пропорции</td></tr>
+    <tr><td>☐ Осенние/эко-элементы есть</td><td>☐ Не связано с осенью/экологией</td></tr>
+    <tr><td>☐ Есть пустое место для подписи</td><td>☐ Всё заполнено, негде писать</td></tr>
+    <tr><td>☐ Доброе настроение, приятные цвета</td><td>☐ Мрачное/странное/пугающее</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <div class="section-title">РОЛИ В КОМАНДЕ</div>
+  <div class="tokens-row">
+    <div class="token">
+      <div class="token-name">ГЕНЕРАТОР</div>
+      <div class="token-desc">Работает с Алисой,<br>создаёт промпт</div>
+      <div class="token-qty">×4 на класс</div>
+    </div>
+    <div class="token">
+      <div class="token-name">ПАРТНЁР-<br>РЕДАКТОР</div>
+      <div class="token-desc">Проверяет по<br>чек-листу</div>
+      <div class="token-qty">×4 на класс</div>
+    </div>
+    <div class="token">
+      <div class="token-name">РЕДАКТОР<br>ГРУППЫ</div>
+      <div class="token-desc">Финальное<br>решение</div>
+      <div class="token-qty">×2 на класс</div>
+    </div>
+    <div class="token">
+      <div class="token-name">ПОСЛАННИК</div>
+      <div class="token-desc">Носит на печать,<br>забирает готовые</div>
+      <div class="token-qty">×2 на класс</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>История развития Интернета - Презентация</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .presentation {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            display: none;
+            width: 100%;
+            height: 100vh;
+            padding: 40px;
+            background: white;
+            animation: fadeIn 0.5s;
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #764ba2;
+            font-size: 2.2em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        h3 {
+            color: #333;
+            font-size: 1.5em;
+            margin: 20px 0 10px 0;
+        }
+
+        .content {
+            max-width: 1000px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .text-block {
+            background: #f8f9ff;
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+            font-size: 1.2em;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .image-container {
+            margin: 20px 0;
+            text-align: center;
+            background: #f0f4ff;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            max-height: 350px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .scheme-container {
+            background: #f0f4ff;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            width: 100%;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+            background: rgba(255,255,255,0.9);
+            padding: 15px 30px;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .nav-btn {
+            padding: 12px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+
+        .nav-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 20px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #667eea;
+            z-index: 1000;
+        }
+
+        .personality-card {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 20px 0;
+            max-width: 800px;
+        }
+
+        .personality-photo {
+            width: 250px;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+        }
+
+        .personality-info {
+            flex: 1;
+        }
+
+        .timeline-item {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            width: 100%;
+        }
+
+        .highlight {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .fact-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-style: italic;
+        }
+
+        /* SVG Schemes */
+        .svg-scheme {
+            max-width: 600px;
+            width: 100%;
+            margin: 20px auto;
+        }
+
+        svg {
+            display: block;
+            margin: 0 auto;
+        }
+
+        .title-slide {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .title-slide h1 {
+            color: white;
+            font-size: 3.5em;
+            margin-bottom: 30px;
+        }
+
+        .title-slide p {
+            font-size: 1.5em;
+            opacity: 0.9;
+        }
+
+        .logo-placeholder {
+            width: 200px;
+            height: 80px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px auto;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .google-logo {
+            background: white;
+            padding: 20px 40px;
+            border-radius: 10px;
+        }
+
+        .google-logo span {
+            font-size: 36px;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+        }
+
+        .google-logo .g1 { color: #4285F4; }
+        .google-logo .o1 { color: #EA4335; }
+        .google-logo .o2 { color: #FBBC05; }
+        .google-logo .g2 { color: #4285F4; }
+        .google-logo .l { color: #34A853; }
+        .google-logo .e { color: #EA4335; }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2em; }
+            h2 { font-size: 1.5em; }
+            .personality-card { flex-direction: column; }
+            .personality-photo { width: 200px; height: 240px; }
+            .content { padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="presentation">
+    <div class="slide-counter">
+        <span id="currentSlide">1</span> / <span id="totalSlides">15</span>
+    </div>
+
+    <!-- Slide 1: Title -->
+    <div class="slide active title-slide">
+        <div class="content">
+            <h1> История развития Интернета</h1>
+            <p>От коаксиального кабеля до спутниковых сетей</p>
+            <p style="margin-top: 30px; font-size: 1.2em;">Информатика, 9 класс</p>
+        </div>
+    </div>
+
+    <!-- Slide 2: Coaxial Cable - FIXED with TWO terminators -->
+    <div class="slide">
+        <h2>1970-е: Первые локальные сети</h2>
+        <div class="content">
+            <div class="text-block">
+                <h3>Коаксиальный кабель</h3>
+                <p>Первые сети использовали <span class="highlight">толстый коаксиальный кабель</span> (похож на телевизионный). Все компьютеры подключались к одному общему кабелю.</p>
+                <p><strong>Проблема:</strong> Если кабель повреждался в одном месте — <span class="highlight">вся сеть переставала работать!</span></p>
+            </div>
+            <div class="scheme-container">
+                <svg class="svg-scheme" viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Coaxial cable bus topology -->
+                    <line x1="50" y1="150" x2="550" y2="150" stroke="#8B4513" stroke-width="12" stroke-linecap="round"/>
+                    <line x1="50" y1="150" x2="550" y2="150" stroke="#D2691E" stroke-width="8" stroke-linecap="round"/>
+                    
+                    <!-- Computers -->
+                    <rect x="80" y="50" width="60" height="50" fill="#4169E1" rx="5"/>
+                    <text x="110" y="80" text-anchor="middle" fill="white" font-size="12">PC 1</text>
+                    <line x1="110" y1="100" x2="110" y2="144" stroke="#333" stroke-width="3"/>
+                    
+                    <rect x="200" y="50" width="60" height="50" fill="#4169E1" rx="5"/>
+                    <text x="230" y="80" text-anchor="middle" fill="white" font-size="12">PC 2</text>
+                    <line x1="230" y1="100" x2="230" y2="144" stroke="#333" stroke-width="3"/>
+                    
+                    <rect x="320" y="50" width="60" height="50" fill="#4169E1" rx="5"/>
+                    <text x="350" y="80" text-anchor="middle" fill="white" font-size="12">PC 3</text>
+                    <line x1="350" y1="100" x2="350" y2="144" stroke="#333" stroke-width="3"/>
+                    
+                    <rect x="440" y="50" width="60" height="50" fill="#4169E1" rx="5"/>
+                    <text x="470" y="80" text-anchor="middle" fill="white" font-size="12">PC 4</text>
+                    <line x1="470" y1="100" x2="470" y2="144" stroke="#333" stroke-width="3"/>
+                    
+                    <!-- TWO Terminators - FIXED -->
+                    <rect x="35" y="140" width="15" height="20" fill="#FF0000"/>
+                    <text x="42" y="180" text-anchor="middle" fill="#FF0000" font-size="10">TERM</text>
+                    
+                    <rect x="550" y="140" width="15" height="20" fill="#FF0000"/>
+                    <text x="557" y="180" text-anchor="middle" fill="#FF0000" font-size="10">TERM</text>
+                    
+                    <text x="300" y="220" text-anchor="middle" fill="#333" font-size="14">
+                        ОДНА ОБЩАЯ ЛИНИЯ — ВСЕ КОМПЬЮТЕРЫ
+                    </text>
+                    <text x="300" y="250" text-anchor="middle" fill="#FF0000" font-size="12" font-weight="bold">
+                         Если кабель повреждён — сеть не работает!
+                    </text>
+                    <text x="300" y="275" text-anchor="middle" fill="#2E8B57" font-size="11">
+                        ✓ ТЕРМИНАТОРЫ С ОБОИХ КОНЦОВ
+                    </text>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: Twisted Pair -->
+    <div class="slide">
+        <h2>1980-1990-е: Революция витой пары</h2>
+        <div class="content">
+            <div class="text-block">
+                <h3>Витая пара (Twisted Pair)</h3>
+                <p>8 тонких цветных проводков, скрученных попарно. Каждый компьютер подключается <span class="highlight">отдельным кабелем</span> к центральному устройству (коммутатору).</p>
+                <p><strong>Преимущество:</strong> Если один провод ломается — <span class="highlight">остальные компьютеры работают!</span></p>
+            </div>
+            <div class="scheme-container">
+                <svg class="svg-scheme" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Star topology with twisted pair -->
+                    <!-- Central switch -->
+                    <rect x="250" y="150" width="100" height="80" fill="#2E8B57" rx="10"/>
+                    <text x="300" y="185" text-anchor="middle" fill="white" font-size="14" font-weight="bold">SWITCH</text>
+                    <text x="300" y="205" text-anchor="middle" fill="white" font-size="10">КОММУТАТОР</text>
+                    
+                    <!-- Computers around switch -->
+                    <rect x="50" y="50" width="70" height="60" fill="#4169E1" rx="5"/>
+                    <text x="85" y="85" text-anchor="middle" fill="white" font-size="11">PC 1</text>
+                    <line x1="120" y1="80" x2="250" y2="170" stroke="#FF6347" stroke-width="2" stroke-dasharray="5,3"/>
+                    
+                    <rect x="480" y="50" width="70" height="60" fill="#4169E1" rx="5"/>
+                    <text x="515" y="85" text-anchor="middle" fill="white" font-size="11">PC 2</text>
+                    <line x1="480" y1="80" x2="350" y2="170" stroke="#32CD32" stroke-width="2" stroke-dasharray="5,3"/>
+                    
+                    <rect x="50" y="280" width="70" height="60" fill="#4169E1" rx="5"/>
+                    <text x="85" y="315" text-anchor="middle" fill="white" font-size="11">PC 3</text>
+                    <line x1="120" y1="310" x2="250" y2="210" stroke="#FFD700" stroke-width="2" stroke-dasharray="5,3"/>
+                    
+                    <rect x="480" y="280" width="70" height="60" fill="#4169E1" rx="5"/>
+                    <text x="515" y="315" text-anchor="middle" fill="white" font-size="11">PC 4</text>
+                    <line x1="480" y1="310" x2="350" y2="210" stroke="#9370DB" stroke-width="2" stroke-dasharray="5,3"/>
+                    
+                    <!-- Cable detail -->
+                    <text x="300" y="350" text-anchor="middle" fill="#333" font-size="14" font-weight="bold">
+                        КАЖДЫЙ КОМПЬЮТЕР — ОТДЕЛЬНЫЙ КАБЕЛЬ
+                    </text>
+                    <text x="300" y="380" text-anchor="middle" fill="#2E8B57" font-size="12">
+                        ✓ Один сломался — остальные работают!
+                    </text>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4: ARPANET and X.25 - FIXED with SVG map instead of image -->
+    <div class="slide">
+        <h2>1969-1980-е: Глобальные сети</h2>
+        <div class="content">
+            <div class="timeline-item">
+                <h3>🇺🇸 ARPANET (1969)</h3>
+                <p>Первая попытка передать слово <span class="highlight">"LOGIN"</span> провалилась — система зависла на буквах <span class="highlight">"LO"</span>. Так Интернет начался с молодежного приветствия!</p>
+            </div>
+            <div class="timeline-item">
+                <h3>🌍 Протокол X.25</h3>
+                <p>Первый надежный стандарт для больших расстояний. Именно на X.25 заработали <span class="highlight">банковские системы всего мира</span> (межбанковские переводы и банкоматы).</p>
+            </div>
+            <div class="timeline-item">
+                <h3>🇷🇺 СССР: Станции "Дионис"</h3>
+                <p>На базе X.25 работали отечественные информационные системы. Через "Дионис" госучреждения обменивались первой <span class="highlight">электронной почтой</span>.</p>
+            </div>
+            
+            <!-- SVG representation of ARPANET instead of image -->
+            <div class="scheme-container">
+                <svg class="svg-scheme" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+                    <text x="300" y="30" text-anchor="middle" fill="#333" font-size="18" font-weight="bold">ARPANET (1974)</text>
+                    <text x="300" y="50" text-anchor="middle" fill="#666" font-size="12">Первая глобальная сеть</text>
+                    
+                    <!-- Nodes representing cities/universities -->
+                    <circle cx="100" cy="120" r="25" fill="#4169E1" stroke="#1E3A8A" stroke-width="3"/>
+                    <text x="100" y="125" text-anchor="middle" fill="white" font-size="10">UCLA</text>
+                    
+                    <circle cx="250" cy="100" r="25" fill="#4169E1" stroke="#1E3A8A" stroke-width="3"/>
+                    <text x="250" y="105" text-anchor="middle" fill="white" font-size="9">SRI</text>
+                    
+                    <circle cx="400" cy="130" r="25" fill="#4169E1" stroke="#1E3A8A" stroke-width="3"/>
+                    <text x="400" y="135" text-anchor="middle" fill="white" font-size="9">UCSB</text>
+                    
+                    <circle cx="150" cy="220" r="25" fill="#4169E1" stroke="#1E3A8A" stroke-width="3"/>
+                    <text x="150" y="225" text-anchor="middle" fill="white" font-size="9">Utah</text>
+                    
+                    <circle cx="320" cy="200" r="25" fill="#4169E1" stroke="#1E3A8A" stroke-width="3"/>
+                    <text x="320" y="205" text-anchor="middle" fill="white" font-size="9">MIT</text>
+                    
+                    <circle cx="480" cy="220" r="25" fill="#4169E1" stroke="#1E3A8A" stroke-width="3"/>
+                    <text x="480" y="225" text-anchor="middle" fill="white" font-size="9">Stanford</text>
+                    
+                    <circle cx="200" cy="300" r="25" fill="#4169E1" stroke="#1E3A8A" stroke-width="3"/>
+                    <text x="200" y="305" text-anchor="middle" fill="white" font-size="9">RAND</text>
+                    
+                    <circle cx="400" cy="290" r="25" fill="#4169E1" stroke="#1E3A8A" stroke-width="3"/>
+                    <text x="400" y="295" text-anchor="middle" fill="white" font-size="9">BBN</text>
+                    
+                    <!-- Connections -->
+                    <line x1="120" y1="135" x2="230" y2="110" stroke="#DC2626" stroke-width="2"/>
+                    <line x1="275" y1="110" x2="375" y2="125" stroke="#DC2626" stroke-width="2"/>
+                    <line x1="130" y1="145" x2="160" y2="195" stroke="#DC2626" stroke-width="2"/>
+                    <line x1="175" y1="230" x2="295" y2="215" stroke="#DC2626" stroke-width="2"/>
+                    <line x1="345" y1="205" x2="455" y2="215" stroke="#DC2626" stroke-width="2"/>
+                    <line x1="330" y1="220" x2="390" y2="270" stroke="#DC2626" stroke-width="2"/>
+                    <line x1="220" y1="290" x2="380" y2="285" stroke="#DC2626" stroke-width="2"/>
+                    <line x1="170" y1="245" x2="190" y2="275" stroke="#DC2626" stroke-width="2"/>
+                    
+                    <text x="300" y="350" text-anchor="middle" fill="#333" font-size="12">
+                        8 узлов соединены между собой
+                    </text>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5: FidoNet -->
+    <div class="slide">
+        <h2>1984-1990-е: Народная сеть FidoNet</h2>
+        <div class="content">
+            <div class="text-block">
+                <h3>📞 "Интернет для бедных"</h3>
+                <p>Энтузиасты соединяли компьютеры по <span class="highlight">обычному телефону</span> через модем. Модем издавал страшный скрипучий звук при соединении!</p>
+                <p>Чтобы сэкономить на телефонных счетах, обмен сообщениями происходил <span class="highlight">глубокой ночью</span>.</p>
+                <p><strong>Эхоконференции</strong> — прообразы современных форумов и чатов, где люди обсуждали всё: от программирования до кулинарии.</p>
+            </div>
+            <div class="scheme-container">
+                <svg class="svg-scheme" viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg">
+                    <!-- FidoNet night communication -->
+                    <rect x="50" y="100" width="120" height="100" fill="#1E3A8A" rx="10"/>
+                    <text x="110" y="140" text-anchor="middle" fill="white" font-size="14" font-weight="bold">КОМПЬЮТЕР 1</text>
+                    <text x="110" y="160" text-anchor="middle" fill="white" font-size="11">Москва</text>
+                    <text x="110" y="180" text-anchor="middle" fill="#FFD700" font-size="10"> НОЧЬ</text>
+                    
+                    <rect x="430" y="100" width="120" height="100" fill="#1E3A8A" rx="10"/>
+                    <text x="490" y="140" text-anchor="middle" fill="white" font-size="14" font-weight="bold">КОМПЬЮТЕР 2</text>
+                    <text x="490" y="160" text-anchor="middle" fill="white" font-size="11">Санкт-Петербург</text>
+                    <text x="490" y="180" text-anchor="middle" fill="#FFD700" font-size="10">🌙 НОЧЬ</text>
+                    
+                    <!-- Phone line -->
+                    <line x1="170" y1="150" x2="430" y2="150" stroke="#DC2626" stroke-width="4" stroke-dasharray="10,5"/>
+                    
+                    <!-- Modem sound waves -->
+                    <path d="M 250 130 Q 270 120, 290 130 T 330 130" stroke="#FF6B6B" stroke-width="2" fill="none"/>
+                    <path d="M 250 150 Q 270 140, 290 150 T 330 150" stroke="#FF6B6B" stroke-width="2" fill="none"/>
+                    <path d="M 250 170 Q 270 160, 290 170 T 330 170" stroke="#FF6B6B" stroke-width="2" fill="none"/>
+                    
+                    <text x="300" y="145" text-anchor="middle" fill="#DC2626" font-size="10" font-weight="bold">СКРИП МОДЕМА</text>
+                    
+                    <text x="300" y="230" text-anchor="middle" fill="#333" font-size="14" font-weight="bold">
+                        📮 ОБМЕН СООБЩЕНИЯМИ НОЧЬЮ
+                    </text>
+                    <text x="300" y="260" text-anchor="middle" fill="#666" font-size="12">
+                        Экономия на телефонных счетах
+                    </text>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 6: Tim Berners-Lee - FIXED with emoji placeholder -->
+    <div class="slide">
+        <h2>1989-1991: Тим Бернерс-Ли и WWW</h2>
+        <div class="content">
+            <div class="personality-card">
+                <div class="personality-photo">👨‍🔬</div>
+                <div class="personality-info">
+                    <h3>‍🔬 Сэр Тим Бернерс-Ли</h3>
+                    <p>Английский ученый, который в <span class="highlight">1989 году</span> придумал <strong>World Wide Web (WWW)</strong> — Всемирную паутину.</p>
+                    <p>Он создал:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>Первый веб-браузер</li>
+                        <li>Язык HTML (разметка страниц)</li>
+                        <li>Протокол HTTP</li>
+                        <li>Систему адресов URL</li>
+                    </ul>
+                    <p style="margin-top: 15px;"><strong>ГЛАВНОЕ:</strong> Он сделал технологию <span class="highlight">БЕСПЛАТНОЙ и ОТКРЫТОЙ</span> для всего мира!</p>
+                </div>
+            </div>
+            <div class="fact-box">
+                💡 Тим Бернерс-Ли мог стать миллиардером, но решил, что Интернет должен принадлежать всем людям, а не одной компании.
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 7: Runet - FIXED with text representation -->
+    <div class="slide">
+        <h2>1990-е: Рождение Рунета</h2>
+        <div class="content">
+            <div class="timeline-item">
+                <h3>🇺 1994 год — домен .ru</h3>
+                <p>Появился национальный российский домен <span class="highlight">.ru</span>. Россия официально вошла в мировое интернет-пространство.</p>
+            </div>
+            <div class="timeline-item">
+                <h3>🔍 1997 год — Яндекс</h3>
+                <p>Запущен первый российский поисковик <span class="highlight">"Яндекс"</span>. Интернет стал понятным справочником для обычных людей.</p>
+            </div>
+            <div class="timeline-item">
+                <h3>🔎 1998 год — Google</h3>
+                <p>В США появился <span class="highlight">Google</span>, который позже стал самым популярным поисковиком в мире.</p>
+            </div>
+            
+            <!-- Google logo representation -->
+            <div class="image-container">
+                <div class="google-logo">
+                    <span class="g1">G</span><span class="o1">o</span><span class="o2">o</span><span class="g2">g</span><span class="l">l</span><span class="e">e</span>
+                </div>
+                <p style="margin-top: 15px; font-style: italic; color: #666; font-size: 14px;">
+                    Google 1998 — простой дизайн, только поиск
+                </p>
+                <div style="margin-top: 10px; padding: 10px; background: white; border-radius: 5px; width: 300px;">
+                    <div style="border: 1px solid #ccc; padding: 5px; margin: 10px 0; text-align: left; font-size: 12px; color: #666;">
+                        🔍 [Поисковая строка]
+                    </div>
+                    <div style="font-size: 11px; color: #0066cc;">
+                        Stanford Search | Search the Web
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 8: Wi-Fi -->
+    <div class="slide">
+        <h2>1999-2000-е: Освобождение от проводов</h2>
+        <div class="content">
+            <div class="text-block">
+                <h3>📶 Wi-Fi</h3>
+                <p>Массовое внедрение беспроводной технологии <span class="highlight">Wi-Fi</span>. Компьютеры и ноутбуки получили свободу перемещения!</p>
+                <p>Интернет впервые <span class="highlight">"вышел из-под стола"</span> и переместился в кафе, аэропорты, парки.</p>
+            </div>
+            <div class="scheme-container">
+                <svg class="svg-scheme" viewBox="0 0 600 350" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Wi-Fi Router -->
+                    <rect x="250" y="120" width="100" height="80" fill="#FF6B35" rx="10"/>
+                    <text x="300" y="155" text-anchor="middle" fill="white" font-size="14" font-weight="bold">Wi-Fi</text>
+                    <text x="300" y="175" text-anchor="middle" fill="white" font-size="11">РОУТЕР</text>
+                    <line x1="260" y1="120" x2="260" y2="100" stroke="#FF6B35" stroke-width="4"/>
+                    <line x1="340" y1="120" x2="340" y2="100" stroke="#FF6B35" stroke-width="4"/>
+                    
+                    <!-- Wi-Fi waves -->
+                    <path d="M 300 100 Q 200 80, 180 120" stroke="#4ECDC4" stroke-width="3" fill="none" opacity="0.6"/>
+                    <path d="M 300 100 Q 400 80, 420 120" stroke="#4ECDC4" stroke-width="3" fill="none" opacity="0.6"/>
+                    <path d="M 300 90 Q 180 60, 150 110" stroke="#4ECDC4" stroke-width="3" fill="none" opacity="0.4"/>
+                    <path d="M 300 90 Q 420 60, 450 110" stroke="#4ECDC4" stroke-width="3" fill="none" opacity="0.4"/>
+                    <path d="M 300 80 Q 160 40, 120 100" stroke="#4ECDC4" stroke-width="3" fill="none" opacity="0.2"/>
+                    <path d="M 300 80 Q 440 40, 480 100" stroke="#4ECDC4" stroke-width="3" fill="none" opacity="0.2"/>
+                    
+                    <!-- Devices -->
+                    <!-- Laptop -->
+                    <rect x="80" y="200" width="90" height="70" fill="#4169E1" rx="5"/>
+                    <text x="125" y="230" text-anchor="middle" fill="white" font-size="11">💻 Ноутбук</text>
+                    <text x="125" y="250" text-anchor="middle" fill="#FFD700" font-size="10">✓ Подключен</text>
+                    
+                    <!-- Smartphone -->
+                    <rect x="430" y="200" width="50" height="90" fill="#2E8B57" rx="5"/>
+                    <text x="455" y="240" text-anchor="middle" fill="white" font-size="20"></text>
+                    <text x="455" y="260" text-anchor="middle" fill="white" font-size="10">Телефон</text>
+                    <text x="455" y="280" text-anchor="middle" fill="#FFD700" font-size="10">✓ Подключен</text>
+                    
+                    <!-- Tablet -->
+                    <rect x="250" y="260" width="70" height="70" fill="#9370DB" rx="5"/>
+                    <text x="285" y="290" text-anchor="middle" fill="white" font-size="20">📟</text>
+                    <text x="285" y="310" text-anchor="middle" fill="white" font-size="10">Планшет</text>
+                    <text x="285" y="325" text-anchor="middle" fill="#FFD700" font-size="10">✓ Подключен</text>
+                    
+                    <text x="300" y="340" text-anchor="middle" fill="#333" font-size="14" font-weight="bold">
+                         СВОБОДА ПЕРЕМЕЩЕНИЯ!
+                    </text>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 9: iPhone - FIXED with emoji representation -->
+    <div class="slide">
+        <h2>2007: Мобильная революция</h2>
+        <div class="content">
+            <div class="personality-card">
+                <div class="personality-photo">👨‍💼</div>
+                <div class="personality-info">
+                    <h3>🍎 Стив Джобс и iPhone</h3>
+                    <p><strong>2007 год</strong> — выход первого iPhone с полноценным браузером Safari.</p>
+                    <p><strong>2008 год</strong> — iPhone 3G с магазином приложений App Store.</p>
+                    <p style="margin-top: 15px;"><strong>РЕВОЛЮЦИЯ:</strong> Интернет перестал быть местом, <span class="highlight">куда мы приходим</span>. Он стал средой, <span class="highlight">в которой мы постоянно находимся</span>.</p>
+                    <p>Сеть переехала в карман!</p>
+                </div>
+            </div>
+            
+            <!-- iPhone representation -->
+            <div class="image-container">
+                <svg width="200" height="350" viewBox="0 0 200 350" xmlns="http://www.w3.org/2000/svg">
+                    <!-- iPhone body -->
+                    <rect x="50" y="20" width="100" height="310" fill="#1a1a1a" rx="15" stroke="#333" stroke-width="2"/>
+                    <!-- Screen -->
+                    <rect x="60" y="40" width="80" height="200" fill="#4169E1" rx="5"/>
+                    <!-- Home button -->
+                    <circle cx="100" cy="290" r="15" fill="#333" stroke="#666" stroke-width="1"/>
+                    <!-- Camera -->
+                    <circle cx="100" cy="30" r="5" fill="#333"/>
+                    <!-- Screen content -->
+                    <text x="100" y="90" text-anchor="middle" fill="white" font-size="12">iPhone</text>
+                    <text x="100" y="110" text-anchor="middle" fill="white" font-size="10">2007</text>
+                    <text x="100" y="150" text-anchor="middle" fill="white" font-size="24"></text>
+                    <text x="100" y="180" text-anchor="middle" fill="white" font-size="8">Safari</text>
+                    <!-- Label -->
+                    <text x="100" y="330" text-anchor="middle" fill="#333" font-size="12">Первый iPhone (2007)</text>
+                </svg>
+                <p style="margin-top: 10px; font-style: italic; color: #666;">Революция началась!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 10: Cloud and 4G -->
+    <div class="slide">
+        <h2>2010-2012: Облака и 4G</h2>
+        <div class="content">
+            <div class="text-block">
+                <h3>☁️ Облачные хранилища</h3>
+                <p>Фотографии, музыка и документы перестали занимать место в памяти телефона. Они <span class="highlight">улетели в "облако"</span> и стали доступны с любого устройства в мире.</p>
+            </div>
+            <div class="text-block">
+                <h3>📡 4G/LTE — скоростной мобильный интернет</h3>
+                <p>Появление быстрых мобильных сетей. Видео можно смотреть прямо на телефоне без задержек!</p>
+            </div>
+            <div class="scheme-container">
+                <svg class="svg-scheme" viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Cloud storage -->
+                    <path d="M 200 100 Q 180 60, 220 60 Q 240 30, 280 40 Q 320 20, 350 50 Q 400 40, 410 80 Q 450 90, 440 130 Q 450 170, 410 180 Q 420 220, 380 220 L 230 220 Q 190 220, 200 180 Q 160 170, 170 130 Q 160 100, 200 100" 
+                          fill="#87CEEB" stroke="#4682B4" stroke-width="3"/>
+                    <text x="305" y="140" text-anchor="middle" fill="white" font-size="20" font-weight="bold">☁️</text>
+                    <text x="305" y="165" text-anchor="middle" fill="white" font-size="14" font-weight="bold">ОБЛАКО</text>
+                    
+                    <!-- Devices connecting to cloud -->
+                    <rect x="50" y="220" width="70" height="60" fill="#4169E1" rx="5"/>
+                    <text x="85" y="250" text-anchor="middle" fill="white" font-size="24">📱</text>
+                    <line x1="85" y1="220" x2="200" y2="180" stroke="#FF6B6B" stroke-width="2" stroke-dasharray="5,3"/>
+                    
+                    <rect x="480" y="220" width="70" height="60" fill="#4169E1" rx="5"/>
+                    <text x="515" y="250" text-anchor="middle" fill="white" font-size="24">💻</text>
+                    <line x1="515" y1="220" x2="410" y2="180" stroke="#4ECDC4" stroke-width="2" stroke-dasharray="5,3"/>
+                    
+                    <text x="300" y="270" text-anchor="middle" fill="#333" font-size="14">
+                        Доступ с любого устройства
+                    </text>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 11: 2020 Pandemic - FIXED with SVG representation -->
+    <div class="slide">
+        <h2>2020: Интернет как воздух</h2>
+        <div class="content">
+            <div class="text-block">
+                <h3>🦠 Глобальная пандемия</h3>
+                <p>Взрывной рост видеосвязи (<span class="highlight">Zoom</span>), онлайн-образования и доставки.</p>
+                <p>Интернет окончательно доказал, что он такая же <span class="highlight">базовая инфраструктура жизни</span>, как электричество или водопровод.</p>
+                <p>Без Интернета жизнь просто остановилась бы!</p>
+            </div>
+            
+            <!-- Zoom logo representation -->
+            <div class="image-container">
+                <svg width="200" height="100" viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Zoom camera icon -->
+                    <circle cx="100" cy="50" r="40" fill="#2D8CFF"/>
+                    <rect x="70" y="35" width="35" height="30" fill="white" rx="3"/>
+                    <polygon points="105,30 135,20 135,80 105,70" fill="white"/>
+                    <text x="100" y="95" text-anchor="middle" fill="#333" font-size="14" font-weight="bold">Zoom</text>
+                </svg>
+                <p style="margin-top: 15px; font-style: italic; color: #666;">Zoom стал символом эпохи пандемии</p>
+                <div style="margin-top: 10px; padding: 15px; background: #f0f4ff; border-radius: 10px; width: 100%;">
+                    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                        <div style="width: 80px; height: 60px; background: #2D8CFF; border-radius: 5px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px;">👤</div>
+                        <div style="width: 80px; height: 60px; background: #2D8CFF; border-radius: 5px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px;"></div>
+                        <div style="width: 80px; height: 60px; background: #2D8CFF; border-radius: 5px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px;"></div>
+                    </div>
+                    <p style="text-align: center; margin-top: 10px; color: #666; font-size: 12px;">Онлайн-встречи из дома</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 12: 2025-2026 Satellites and AI -->
+    <div class="slide">
+        <h2>2025-2026: Спутники и ИИ</h2>
+        <div class="content">
+            <div class="text-block">
+                <h3>🛰️ Спутниковый интернет</h3>
+                <p>Массовое покрытие планеты спутниковым интернетом. Сеть стала доступна <span class="highlight">даже в океане и тайге</span>!</p>
+            </div>
+            <div class="text-block">
+                <h3>🤖 Искусственный интеллект в сети</h3>
+                <p>Внедрение ИИ непосредственно в поисковые системы и сети. Обработка <span class="highlight">Больших данных</span> перешла на новый уровень: ИИ анализирует запросы и предлагает решения в реальном времени.</p>
+            </div>
+            <div class="scheme-container">
+                <svg class="svg-scheme" viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Satellite -->
+                    <ellipse cx="300" cy="80" rx="40" ry="25" fill="#C0C0C0" stroke="#808080" stroke-width="2"/>
+                    <rect x="220" y="70" width="60" height="8" fill="#4169E1"/>
+                    <rect x="320" y="70" width="60" height="8" fill="#4169E1"/>
+                    <text x="300" y="85" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">AI</text>
+                    
+                    <!-- Signal to Earth -->
+                    <line x1="300" y1="105" x2="300" y2="200" stroke="#FF6B6B" stroke-width="2" stroke-dasharray="5,3"/>
+                    
+                    <!-- Earth -->
+                    <circle cx="300" cy="230" r="50" fill="#4169E1"/>
+                    <circle cx="300" cy="230" r="45" fill="none" stroke="#87CEEB" stroke-width="2"/>
+                    
+                    <!-- Continents (simplified) -->
+                    <ellipse cx="285" cy="220" rx="12" ry="8" fill="#2E8B57"/>
+                    <ellipse cx="315" cy="235" rx="10" ry="7" fill="#2E8B57"/>
+                    
+                    <!-- AI Brain icon -->
+                    <circle cx="450" cy="100" r="30" fill="#9370DB"/>
+                    <text x="450" y="107" text-anchor="middle" fill="white" font-size="24">🧠</text>
+                    <text x="450" y="145" text-anchor="middle" fill="#333" font-size="12">ИИ анализирует</text>
+                    <text x="450" y="160" text-anchor="middle" fill="#333" font-size="12">Большие данные</text>
+                    
+                    <text x="300" y="290" text-anchor="middle" fill="#333" font-size="14" font-weight="bold">
+                        🌍 ВСЕМИРНЫЙ ДОСТУП + ИСКУССТВЕННЫЙ ИНТЕЛЛЕКТ
+                    </text>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 13: IP Addresses -->
+    <div class="slide">
+        <h2>IP-адреса: Как компьютеры находят друг друга</h2>
+        <div class="content">
+            <div class="text-block">
+                <h3> Аналогия с почтой</h3>
+                <p>Чтобы отправить письмо, вы пишете на конверте: <span class="highlight">индекс, город, улицу, дом</span>.</p>
+                <p>В Интернете точно так же! У каждого устройства есть уникальный <span class="highlight">IP-адрес</span>.</p>
+            </div>
+            <div class="text-block">
+                <h3>Как выглядит IP-адрес?</h3>
+                <p style="font-size: 1.5em; text-align: center; color: #667eea; font-family: monospace; margin: 15px 0; padding: 15px; background: white; border-radius: 10px;">
+                    87.250.250.242
+                </p>
+                <p style="text-align: center;">(это реальный адрес сервера Яндекса)</p>
+                <p>4 числа от 0 до 255, разделенные точками.</p>
+            </div>
+            <div class="fact-box">
+                ⚠️ Проблема: таких адресов (IPv4) всего 4,3 миллиарда. А устройств в мире уже больше! Поэтому внедряют новый стандарт <strong>IPv6</strong> с гораздо большим количеством адресов.
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 14: Big Data -->
+    <div class="slide">
+        <h2>Большие данные (Big Data)</h2>
+        <div class="content">
+            <div class="text-block">
+                <h3>💧 Капля vs 🌊 Океан</h3>
+                <p><strong>Обычные данные</strong> — это как одна капля воды: ваша одна оценка в журнале или один лайк под видео.</p>
+                <p><strong>Большие данные</strong> — это как океан: миллиарды лайков, покупок, перемещений телефонов, которые собираются и анализируются каждую секунду.</p>
+            </div>
+            <div class="timeline-item">
+                <h3>️ Яндекс.Пробки</h3>
+                <p>Карты видят скопление телефонов на дороге и автоматически рисуют красную линию.</p>
+            </div>
+            <div class="timeline-item">
+                <h3>🎵 Музыкальные рекомендации</h3>
+                <p>Сервисы анализируют, что вы слушали, и предлагают похожие треки.</p>
+            </div>
+            <div class="timeline-item">
+                <h3>🛒 Умные магазины</h3>
+                <p>Магазины знают, что перед дождем люди чаще покупают зонты, и заранее завозят их на полки.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 15: Conclusion -->
+    <div class="slide title-slide">
+        <div class="content">
+            <h1> Выводы</h1>
+            <div class="text-block" style="background: rgba(255,255,255,0.2); color: white; border: none;">
+                <p style="font-size: 1.3em; line-height: 1.8;">
+                    📡 От <strong>коаксиального кабеля</strong> до <strong>спутникового интернета</strong><br>
+                    🌙 От <strong>ночных звонков Фидонета</strong> до <strong>мгновенной связи</strong><br>
+                    🤖 От <strong>простых текстов</strong> до <strong>искусственного интеллекта</strong><br>
+                    <br>
+                    <strong>Интернет — это история о том, как человечество научилось соединять не только компьютеры, но и людей!</strong>
+                </p>
+            </div>
+            <p style="margin-top: 40px; font-size: 1.5em;">Спасибо за внимание! </p>
+        </div>
+    </div>
+</div>
+
+<div class="navigation">
+    <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">← Назад</button>
+    <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Вперед →</button>
+</div>
+
+<script>
+    let currentSlide = 1;
+    const totalSlides = 15;
+    document.getElementById('totalSlides').textContent = totalSlides;
+
+    function changeSlide(direction) {
+        const slides = document.querySelectorAll('.slide');
+        slides[currentSlide - 1].classList.remove('active');
+        
+        currentSlide += direction;
+        
+        if (currentSlide < 1) currentSlide = 1;
+        if (currentSlide > totalSlides) currentSlide = totalSlides;
+        
+        slides[currentSlide - 1].classList.add('active');
+        document.getElementById('currentSlide').textContent = currentSlide;
+        
+        updateButtons();
+    }
+
+    function updateButtons() {
+        document.getElementById('prevBtn').disabled = currentSlide === 1;
+        document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowRight' || e.key === ' ') {
+            if (currentSlide < totalSlides) changeSlide(1);
+        } else if (e.key === 'ArrowLeft') {
+            if (currentSlide > 1) changeSlide(-1);
+        }
+    });
+
+    updateButtons();
+</script>
+
+</body>
+</html>

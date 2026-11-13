@@ -1,0 +1,513 @@
+<!--
+УРОК «СТОП-КРАН» — ШПАРГАЛКА УЧИТЕЛЯ (эта строка часть файла, не удалять)
+1) СОХРАНИТЬ: Блокнот → вставить весь файл → Файл → Сохранить как → Тип файла: «Все файлы» →
+   Имя: "stop-kran.html" (в кавычках!) → Кодировка: UTF-8.
+2) ОТКРЫТЬ: двойной клик по файлу. Если открылся Блокнот: файл называется stop-kran.html.txt.
+   Проводник → Вид → включить «Расширения имён файлов» → переименовать, убрав .txt.
+3) КРАКОЗЯБРЫ: пересохранить с кодировкой UTF-8 (см. п.1).
+4) ПРОВЕРКА ПЕРЕД УРОКОМ (2 минуты): открылась рамка телефона; русский текст читается;
+   Ctrl и «+» — рамка влезает в проектор; нажми «Опасно» и тапни по подчёркнутым словам;
+   покликай кнопками быстро, ничего не проскакивает; F5 сбрасывает в начало, это норма;
+   белый экран или сообщение с номером строки: ищи знак двойной кавычки " в текстах,
+   заменяй на «ёлочки».
+5) КНОПКИ ПОД ТЕЛЕФОНОМ («С начала», «Дальше») — только для учителя.
+   «Дальше» пропускает карточку или вопрос без учёта ответа, если не хватает времени.
+6) ПОРЯДОК: сначала карточки с меткой «Ведёт учитель» на проекторе, потом каждый ребёнок
+   проходит свои карточки сам. После них приложение само предложит: запасные карточки
+   или финальный тест. Тайминг: демо около 4 минут, самостоятельные 8–10, тест 3–4.
+7) ОБЕЩАНИЕ КЛАССУ (сказать вслух до начала): «Если с вами такое случится — приходите
+   ко мне. Я не ругаю и никому не пересказываю».
+8) НА КАРТОЧКЕ ПРО «500 ЗА МЕССЕНДЖЕР» добавь одну фразу вслух: выманивают и переводы
+   денег со взрослого банковского приложения, поэтому об этом тоже говорят взрослым.
+9) ПРАВИЛО ПРАВОК ТЕКСТОВ: внутри текстов не ставь знак двойной кавычки, пиши «ёлочки».
+-->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Стоп-кран — опасные ссылки и странные сообщения</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;background:#23272f;font-family:"Segoe UI",Arial,sans-serif;}
+.wrap{display:flex;flex-direction:column;align-items:center;padding:14px;gap:10px;}
+.phone{width:390px;max-width:96vw;background:#0d0f13;border-radius:38px;padding:12px;box-shadow:0 20px 60px rgba(0,0,0,.55);}
+.screen{background:#eef0f4;border-radius:28px;overflow:hidden;height:600px;display:flex;flex-direction:column;position:relative;}
+.status{flex:0 0 34px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;font-size:12px;color:#3a3f47;background:#eef0f4;position:relative;}
+.notch{position:absolute;left:50%;top:7px;transform:translateX(-50%);width:86px;height:16px;background:#0d0f13;border-radius:9px;}
+.sig{letter-spacing:2px;font-size:10px;}
+.batt{display:inline-block;width:22px;height:11px;border:1.5px solid #4a4f57;border-radius:3px;position:relative;vertical-align:-1px;}
+.batt:after{content:"";position:absolute;left:1.5px;top:1.5px;bottom:1.5px;width:65%;background:#4a4f57;border-radius:1px;}
+.spct{font-size:11px;margin-left:4px;}
+.sright{display:flex;align-items:center;gap:6px;}
+.stage{flex:1;display:flex;flex-direction:column;position:relative;min-height:0;}
+.chat{flex:1;overflow-y:auto;padding:12px 12px 6px;display:flex;flex-direction:column;gap:8px;}
+.qbar{flex:0 0 auto;padding:10px 12px 12px;border-top:1px solid #dfe2e8;background:#f7f8fa;}
+.badge{align-self:center;background:#e2e6ec;color:#5a6270;font-size:11px;border-radius:10px;padding:3px 10px;}
+.from{font-size:11px;color:#8a909b;margin:0 4px 2px;}
+.bub{background:#ffffff;border-radius:4px 16px 16px 16px;padding:10px 12px;font-size:15px;line-height:1.5;color:#191c21;max-width:90%;box-shadow:0 1px 2px rgba(0,0,0,.07);align-self:flex-start;}
+.bub.voice{min-width:72%;}
+.vrow{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.play{width:30px;height:30px;border-radius:50%;background:#e3efe7;color:#2e7d4f;display:flex;align-items:center;justify-content:center;font-size:12px;flex:0 0 auto;}
+.vdur{font-size:12px;color:#7c828c;}
+.vtxt{font-size:11px;color:#9aa0aa;}
+.wavebars i{display:inline-block;width:3px;margin-right:2px;background:#a9c2b1;border-radius:2px;}
+.frag{border-radius:4px;padding:1px 2px;}
+.frag.seekable{cursor:pointer;border-bottom:2px dotted #d64545;background:#fff5f5;}
+.frag.hit{background:#ffdcdc;border-bottom:2px solid #d64545;cursor:default;}
+.note{border-radius:12px;padding:9px 12px;font-size:13.5px;line-height:1.45;align-self:flex-start;max-width:92%;}
+.note.warn{background:#fff3d6;color:#6b5416;border:1px solid #f0dfa8;}
+.note.good{background:#e3f2e8;color:#1f5c36;border:1px solid #c4e3ce;}
+.debrief{background:#e9f4ed;border:1px solid #c9e4d2;border-radius:14px;padding:10px 12px;font-size:14px;line-height:1.55;color:#1d4a2e;max-width:92%;align-self:flex-start;}
+.debrief.finalRule{align-self:center;max-width:100%;text-align:center;margin-top:10px;}
+.btnrow{display:flex;flex-direction:column;gap:8px;margin-top:8px;}
+.btn{border:0;border-radius:12px;padding:11px 14px;font-size:14.5px;font-family:inherit;cursor:pointer;background:#e8ebf1;color:#23262c;text-align:left;line-height:1.35;}
+.btn:active{transform:translateY(1px);}
+.btn.pri{background:#2e7d4f;color:#fff;}
+.btn.big{align-self:center;text-align:center;padding:12px 34px;font-size:16px;margin-top:14px;}
+.qtext{font-size:13.5px;font-weight:600;color:#2a2e35;margin-bottom:2px;}
+.push{position:absolute;left:10px;right:10px;top:6px;background:#ffffff;border-radius:16px;box-shadow:0 8px 26px rgba(0,0,0,.20);padding:10px 14px;z-index:6;cursor:pointer;animation:drop .28s ease-out;}
+@keyframes drop{from{transform:translateY(-70px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.prow{display:flex;align-items:center;gap:10px;}
+.pico{font-size:22px;}
+.ptitle{font-size:13px;font-weight:600;color:#22252b;}
+.ptext{font-size:12px;color:#8a909b;}
+.start{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;gap:6px;}
+.logo{font-size:44px;}
+.title{font-size:24px;font-weight:700;color:#20242b;}
+.sub{font-size:14px;color:#5a6270;}
+.steps{font-size:13px;color:#2e7d4f;font-weight:600;margin:2px 0 4px;}
+.rank{font-size:24px;font-weight:700;color:#20242b;}
+.score{font-size:13.5px;color:#5a6270;}
+.quizQ{font-size:16px;font-weight:600;color:#20242b;line-height:1.45;padding:4px 2px 8px;}
+.addr{background:#ffffff;border:1.5px solid #c9d0da;border-radius:10px;padding:8px 12px;font-size:14px;color:#333a44;display:flex;align-items:center;gap:8px;max-width:92%;align-self:flex-start;}
+.addr.real{border-color:#d64545;color:#8c2626;font-family:Consolas,monospace;font-weight:600;}
+.addrCap{font-size:11px;color:#8a909b;margin:2px 4px 6px;}
+.err{margin:60px auto;max-width:80%;background:#fff3d6;border:1px solid #f0dfa8;color:#6b5416;border-radius:14px;padding:16px;font-size:14px;line-height:1.5;}
+.ctrl{display:flex;align-items:center;gap:8px;}
+.ctrlLabel{font-size:12px;color:#9aa2ad;}
+.cbtn{border:1px solid #454c58;background:#2c313b;color:#cfd5de;border-radius:10px;padding:7px 14px;font-size:13px;font-family:inherit;cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="phone">
+    <div class="screen" id="screen"></div>
+  </div>
+  <div class="ctrl">
+    <span class="ctrlLabel">Для учителя:</span>
+    <button class="cbtn" data-act="restart">С начала</button>
+    <button class="cbtn" data-act="skip">Дальше →</button>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* === ДВИЖОК. Ничего здесь не менять. === */
+window.onerror=function(msg,src,line){
+  var show=function(){var sc=document.getElementById("screen");if(sc){sc.innerHTML='<div class="err"><b>Ошибка в файле, строка '+line+'.</b><br>Чаще всего причина — знак двойной кавычки внутри текстов карточек. Найдите его, замените на «ёлочки» и пересохраните файл.</div>';}};
+  if(document.readyState==="loading"){window.addEventListener("DOMContentLoaded",show);}else{show();}
+  return false;
+};
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function shuffle(a){var r=a.slice(),i,j,t;for(i=r.length-1;i>0;i--){j=Math.floor(Math.random()*(i+1));t=r[i];r[i]=r[j];r[j]=t;}return r;}
+function idx(n){var a=[],i;for(i=0;i<n;i++)a.push(i);return a;}
+function closestNode(node,sel){var e=node;while(e&&e.nodeType===1){var m=e.matches||e.msMatchesSelector;if(m&&m.call(e,sel))return e;e=e.parentNode;}return null;}
+function hasFrag(c){for(var i=0;i<c.t.length;i++){if(typeof c.t[i]==="object")return true;}return false;}
+
+var S=null;
+function fresh(){return{scr:"start",q:[],qi:0,c:null,taps:0,seek:false,hit:-1,hint:"",actReply:"",whyReply:"",actOrder:null,whyOrder:null,binOrder:null,forkOrder:null,linkOrder:null,qz:0,qq:null,qOrder:null,qTaps:0,qLast:-1,qLastOk:false,qScore:0,right:0,done:0,seq:0};}
+
+function statusHTML(){return '<div class="status"><span>12:30</span><div class="notch"></div><span class="sright"><span class="sig">▂▄▆</span><span class="batt"></span><span class="spct">87%</span></span></div>';}
+function chatShell(top,qb){return '<div class="chat">'+(top||"")+'</div>'+(qb?'<div class="qbar">'+qb+'</div>':'');}
+function badgeFor(c){if(!c)return"";if(c.grp==="demo")return '<div class="badge">Ведёт учитель — обсуждаем вместе</div>';if(c.grp==="solo")return '<div class="badge">Твоя карточка — решай сам</div>';return '<div class="badge">Запасная карточка</div>';}
+function bubbleHTML(c,seek,reveal){
+  var h='<div class="from">'+esc(c.sender)+'</div>';
+  h+='<div class="bub'+(c.voice?" voice":"")+'">';
+  if(c.voice){var hs=[6,10,14,8,16,11,7,13,9,15,7,12],o="",i;for(i=0;i<hs.length;i++){o+='<i style="height:'+hs[i]+'px"></i>';}
+    h+='<div class="vrow"><span class="play">▶</span><span class="wavebars">'+o+'</span><span class="vdur">'+esc(c.dur||"0:12")+'</span></div><div class="vtxt">расшифровка голосового:</div>';}
+  for(var k=0;k<c.t.length;k++){var s=c.t[k];
+    if(typeof s==="object"){
+      var cls="frag",act="";
+      if(reveal){cls+=" hit";}
+      else if(seek){cls+=" seekable";if(S.hit===k)cls+=" hit";act=' data-act="frag"';}
+      h+='<span class="'+cls+'"'+act+' data-i="'+k+'">'+esc(s.f)+'</span>';
+    }else h+=esc(s);
+  }
+  return h+'</div>';
+}
+function pushHTML(c){return '<div class="push" data-act="push"><div class="prow"><span class="pico">'+esc(c.avatar)+'</span><div><div class="ptitle">'+esc(c.sender)+'</div><div class="ptext">новое сообщение</div></div></div></div>';}
+function binButtons(){
+  if(!S.binOrder)S.binOrder=shuffle([0,1]);
+  var labs=["Опасно","Безопасно"],vs=["d","s"],h='<div class="btnrow">';
+  for(var i=0;i<2;i++){var j=S.binOrder[i];h+='<button class="btn" data-act="bin" data-v="'+vs[j]+'">'+labs[j]+'</button>';}
+  return h+'</div>';
+}
+function actButtons(){
+  var c=S.c;if(!S.actOrder)S.actOrder=shuffle(idx(c.acts.length));
+  var h='<div class="btnrow">';
+  for(var i=0;i<S.actOrder.length;i++){var a=c.acts[S.actOrder[i]];h+='<button class="btn" data-act="act" data-i="'+i+'">'+esc(a.l)+'</button>';}
+  return h+'</div>';
+}
+function chatHTML(){
+  var c=S.c,top=badgeFor(c)+bubbleHTML(c,S.seek,false),qb="";
+  if(S.actReply){top+='<div class="note warn">'+esc(S.actReply)+'</div><div class="btnrow"><button class="btn" data-act="retryAct">Попробовать ещё раз</button></div>';}
+  else if(S.seek){qb='<div class="qtext">Покажи флаг: нажми на подозрительные слова</div>';}
+  else if(S.hint){qb='<div class="note warn">'+esc(S.hint)+'</div>'+binButtons();}
+  else if(c.mode==="action"){qb='<div class="qtext">Что ты сделаешь?</div>'+actButtons();}
+  else{qb='<div class="qtext">Это сообщение опасное или безопасное?</div>'+binButtons();}
+  return chatShell(top,qb);
+}
+function whyHTML(){
+  var c=S.c,top=bubbleHTML(c,false,false),qb="";
+  if(S.whyReply){top+='<div class="note warn">'+esc(S.whyReply)+'</div><div class="btnrow"><button class="btn" data-act="retryWhy">Попробовать ещё раз</button></div>';}
+  else{
+    if(!S.whyOrder)S.whyOrder=shuffle(idx(c.why.length));
+    qb='<div class="qtext">Почему ты так решил?</div><div class="btnrow">';
+    for(var i=0;i<S.whyOrder.length;i++){var w=c.why[S.whyOrder[i]];qb+='<button class="btn" data-act="why" data-i="'+i+'">'+esc(REASONS[w.k])+'</button>';}
+    qb+='</div>';
+  }
+  return chatShell(top,qb);
+}
+function debriefHTML(){
+  var c=S.c,top=badgeFor(c)+bubbleHTML(c,false,true);
+  var lines='<div class="debrief">';
+  for(var i=0;i<c.debrief.length;i++){lines+='• '+esc(c.debrief[i])+'<br>';}
+  lines+='</div>';
+  return chatShell(top+lines,'<div class="btnrow"><button class="btn pri" data-act="next">Дальше</button></div>');
+}
+function forkHTML(){
+  var labs=["Сказать взрослому","Сам разберусь"],qb='<div class="qtext">Что сделаешь дальше?</div><div class="btnrow">';
+  for(var i=0;i<2;i++){var j=S.forkOrder[i];qb+='<button class="btn'+(j===0?" pri":"")+'" data-act="fork" data-v="'+j+'">'+labs[j]+'</button>';}
+  return chatShell('<div class="badge">Важный шаг</div>',qb+'</div>');
+}
+function forkOkHTML(){return chatShell('<div class="note good">Правильно. Взрослый поможет — и ругать не будут. Ты молодец, что не молчал.</div>','<div class="btnrow"><button class="btn pri" data-act="forward">Дальше</button></div>');}
+function forkSelfHTML(){return chatShell('<div class="note warn">«Сам разберусь» — именно этого он и ждёт. Мошенник надеется, что ты будешь молчать.</div>','<div class="btnrow"><button class="btn" data-act="forkRetry">Выбрать ещё раз</button></div>');}
+function linkHTML(){
+  var top=badgeFor(DATA.link)+bubbleHTML(DATA.link,false,false);
+  top+='<div class="addr"><span>🔒</span><span>'+esc(DATA.link.painted)+'</span></div><div class="addrCap">— так это выглядит в сообщении —</div>';
+  if(!S.linkOrder)S.linkOrder=shuffle([0,1]);
+  var labs=["Открыть","Сначала посмотреть"],vs=["open","peek"],qb='<div class="qtext">Ссылка пришла в чат. Что сделаешь?</div><div class="btnrow">';
+  for(var i=0;i<2;i++){var j=S.linkOrder[i];qb+='<button class="btn" data-act="linkGo" data-v="'+vs[j]+'">'+labs[j]+'</button>';}
+  return chatShell(top,qb+'</div>');
+}
+function linkOpenedHTML(){
+  var top=bubbleHTML(DATA.link,false,false);
+  top+='<div class="addr"><span>🔒</span><span>'+esc(DATA.link.painted)+'</span></div>';
+  top+='<div class="note warn">Ты открыл наклейку. Адрес на картинке — нарисованный, настоящий другой. Вор увидел, что ты легко жмёшь на ссылки.</div>';
+  return chatShell(top,'<div class="btnrow"><button class="btn" data-act="linkPeekGo">Теперь посмотреть настоящий адрес</button></div>');
+}
+function linkPeekHTML(){
+  var top=bubbleHTML(DATA.link,false,false);
+  top+='<div class="addr"><span>🔒</span><span>'+esc(DATA.link.painted)+'</span></div><div class="addrCap">— нарисованная строка —</div>';
+  top+='<div class="addr real">настоящий адрес: '+esc(DATA.link.real)+'</div><div class="addrCap">— а вот куда ты попал бы на самом деле —</div>';
+  var lines='<div class="debrief">';
+  for(var i=0;i<DATA.link.debrief.length;i++){lines+='• '+esc(DATA.link.debrief[i])+'<br>';}
+  lines+='</div>';
+  return chatShell(top+lines,'<div class="btnrow"><button class="btn pri" data-act="forward">Продолжить</button></div>');
+}
+function gateHTML(){
+  var top='<div class="badge">Готово!</div><div class="quizQ">Обязательные карточки пройдены!</div><div class="sub">Если осталось время — можно взять запасные карточки.</div>';
+  return chatShell(top,'<div class="btnrow"><button class="btn" data-act="gateRes">Ещё карточки</button><button class="btn pri" data-act="gateQuiz">К финальному тесту</button></div>');
+}
+function startHTML(){return '<div class="start"><div class="logo">🛡</div><div class="title">Стоп-кран</div><div class="sub">Опасные ссылки и странные сообщения</div><div class="steps">Стоп → Подумай → Проверь → Действуй</div><button class="btn pri big" data-act="start">Начать</button></div>';}
+function startQuiz(){S.qz=0;loadQ();}
+function loadQ(){S.qq=DATA.quiz[S.qz];S.qOrder=shuffle(idx(S.qq.o.length));S.qTaps=0;S.qLast=-1;S.qLastOk=false;S.scr="quiz";render();}
+function quizHTML(){
+  var q=S.qq,top='<div class="badge">Финальный тест — вопрос '+(S.qz+1)+' из '+DATA.quiz.length+'</div><div class="quizQ">'+esc(q.q)+'</div>';
+  var qb='<div class="btnrow">';
+  for(var i=0;i<S.qOrder.length;i++){var o=q.o[S.qOrder[i]];qb+='<button class="btn" data-act="qa" data-i="'+i+'">'+esc(o.t)+'</button>';}
+  return chatShell(top,qb+'</div>');
+}
+function quizFbHTML(){
+  var q=S.qq,o=q.o[S.qOrder[S.qLast]];
+  var fb='<div class="note '+(S.qLastOk?"good":"warn")+'">'+esc(o.f)+'</div>';
+  var qb='<div class="btnrow"><button class="btn pri" data-act="'+(S.qLastOk?"quizNext":"quizRetry")+'">'+(S.qLastOk?"Дальше":"Попробовать ещё раз")+'</button></div>';
+  return chatShell('<div class="quizQ">'+esc(q.q)+'</div>'+fb,qb);
+}
+function rankFor(n){if(n>=5)return DATA.ranks[0];if(n===4)return DATA.ranks[1];if(n===3)return DATA.ranks[2];return DATA.ranks[3];}
+function finalHTML(){
+  var r=rankFor(S.qScore);
+  var h='<div class="start"><div class="logo">🏅</div><div class="rank">'+esc(r)+'</div>';
+  h+='<div class="score">Верных ответов в тесте: '+S.qScore+' из '+DATA.quiz.length+'</div>';
+  h+='<div class="score">Карточек пройдено: '+S.done+'</div>';
+  h+='<div class="debrief finalRule">Главное правило: случилось что-то — скажи взрослому.<br>Ругать не будут.</div>';
+  h+='<button class="btn pri big" data-act="restart">С начала</button></div>';
+  return h;
+}
+function render(){
+  var sc=document.getElementById("screen"),h=statusHTML(),body="";
+  switch(S.scr){
+    case "start":body=startHTML();break;
+    case "push":body=chatShell(pushHTML(S.c),"");break;
+    case "chat":body=chatHTML();break;
+    case "debrief":body=debriefHTML();break;
+    case "why":body=whyHTML();break;
+    case "fork":body=forkHTML();break;
+    case "forkOk":body=forkOkHTML();break;
+    case "forkSelf":body=forkSelfHTML();break;
+    case "link":body=linkHTML();break;
+    case "linkOpened":body=linkOpenedHTML();break;
+    case "linkPeek":body=linkPeekHTML();break;
+    case "gate":body=gateHTML();break;
+    case "quiz":body=quizHTML();break;
+    case "quizFb":body=quizFbHTML();break;
+    case "final":body=finalHTML();break;
+  }
+  sc.innerHTML=h+'<div class="stage">'+body+'</div>';
+}
+
+function buildQueue(){var q=[],i,c;
+  for(i=0;i<DATA.cards.length;i++){c=DATA.cards[i];if(c.grp==="demo")q.push({k:"card",c:c});}
+  q.push({k:"link"});
+  for(i=0;i<DATA.cards.length;i++){c=DATA.cards[i];if(c.grp==="solo")q.push({k:"card",c:c});}
+  q.push({k:"gate"});q.push({k:"quiz"});
+  return q;
+}
+function addReserve(){
+  var g=-1,i;for(i=0;i<S.q.length;i++){if(S.q[i].k==="gate"){g=i;break;}}
+  var res=[];for(i=0;i<DATA.cards.length;i++){var c=DATA.cards[i];if(c.grp==="res")res.push({k:"card",c:c});}
+  var args=[g+1,0];for(i=0;i<res.length;i++)args.push(res[i]);
+  Array.prototype.splice.apply(S.q,args);
+}
+function enter(){
+  var it=S.q[S.qi];
+  if(!it){S.scr="final";render();return;}
+  if(it.k==="card"){startCard(it.c);return;}
+  if(it.k==="link"){S.c=null;S.taps=0;S.linkOrder=null;S.scr="link";render();return;}
+  if(it.k==="gate"){S.scr="gate";render();return;}
+  if(it.k==="quiz"){startQuiz();return;}
+}
+function nextItem(){S.qi++;enter();}
+function startCard(c){S.c=c;S.taps=0;S.seek=false;S.hit=-1;S.hint="";S.actReply="";S.whyReply="";S.actOrder=null;S.whyOrder=null;S.binOrder=null;S.scr="push";
+  var my=++S.seq;render();
+  setTimeout(function(){if(S&&S.scr==="push"&&S.seq===my){S.scr="chat";render();}},1600);
+}
+/* Подсчёт: S.right — верных с первого раза, S.done — пройдено карточек.
+   «Два верных подряд» отдельно не блокирует прохождение: угадывание отсекают
+   обязательные шаги «покажи флаг» и «почему ты так решил». */
+function finishCard(){if(S.taps===0)S.right++;S.done++;S.seek=false;S.hit=-1;S.scr="debrief";render();}
+function showPeek(){if(S.taps===0)S.right++;S.done++;S.scr="linkPeek";render();}
+function onBin(v){
+  var c=S.c;
+  if(v==="d"&&c.verdict==="danger"){
+    if(hasFrag(c)&&!S.seek){S.seek=true;S.hint="";S.hit=-1;render();}
+    else finishCard();
+    return;
+  }
+  if(v==="s"&&c.verdict==="safe"){finishCard();return;}
+  S.taps++;
+  if(c.verdict==="danger")S.hint="Присмотрись ещё раз: что здесь просят сделать или чем пугают?";
+  else S.hint="Присмотрись: здесь никто ничего не просит и не торопит.";
+  if(S.taps>=2)S.hint+=" Подсказка: флаг — это просьба, код, угроза или спешка.";
+  S.binOrder=null;render();
+}
+function onFrag(i){if(S.scr!=="chat"||!S.seek)return;S.hit=i;finishCard();}
+function onAct(i){
+  var c=S.c,a=c.acts[S.actOrder[i]];
+  if(a.ok){S.actReply="";S.whyReply="";S.whyOrder=null;S.scr="why";render();}
+  else{S.taps++;S.actReply=a.r;S.scr="chat";render();}
+}
+function onWhy(i){
+  var c=S.c,w=c.why[S.whyOrder[i]];
+  if(w.ok){S.whyReply="";finishCard();}
+  else{S.taps++;S.whyReply="Почти! Но причина другая. Присмотрись ещё раз.";S.whyOrder=null;render();}
+}
+function onQA(i){
+  var o=S.qq.o[S.qOrder[i]];S.qLast=i;
+  if(o.ok){if(S.qTaps===0)S.qScore++;S.qLastOk=true;}
+  else{S.qTaps++;S.qLastOk=false;}
+  S.scr="quizFb";render();
+}
+function skip(){
+  if(!S)return;S.seq++;
+  if(S.scr==="start"||S.scr==="final")return;
+  if(S.scr==="quiz"||S.scr==="quizFb"){S.qz++;if(S.qz>=DATA.quiz.length){S.scr="final";render();}else loadQ();return;}
+  nextItem();
+}
+function boot(){
+  var sc=document.getElementById("screen");
+  if(typeof DATA==="undefined"||typeof REASONS==="undefined"){sc.innerHTML='<div class="err"><b>Данные не вставлены.</b><br>Вставьте блок из Сообщения 2 в конец файла, ниже строки-метки, и пересохраните.</div>';return;}
+  if(!DATA.cards||!DATA.quiz||!DATA.link||!DATA.ranks){sc.innerHTML='<div class="err"><b>Данные вставлены не полностью.</b><br>Вставьте блок из Сообщения 2 целиком.</div>';return;}
+  S=fresh();S.q=buildQueue();render();
+}
+document.addEventListener("click",function(e){
+  var n=closestNode(e.target,"[data-act]");if(!n)return;
+  var a=n.getAttribute("data-act");
+  if(a==="restart"){S=fresh();if(typeof DATA!=="undefined")S.q=buildQueue();render();return;}
+  if(a==="skip"){skip();return;}
+  if(!S)return;
+  switch(a){
+    case "start":if(S.q.length){S.qi=0;enter();}break;
+    case "push":if(S.scr==="push"){S.seq++;S.scr="chat";render();}break;
+    case "bin":onBin(n.getAttribute("data-v"));break;
+    case "frag":onFrag(parseInt(n.getAttribute("data-i"),10));break;
+    case "act":onAct(parseInt(n.getAttribute("data-i"),10));break;
+    case "retryAct":S.actReply="";S.actOrder=null;render();break;
+    case "why":onWhy(parseInt(n.getAttribute("data-i"),10));break;
+    case "retryWhy":S.whyReply="";S.whyOrder=null;render();break;
+    case "next":if(S.c&&S.c.fork){S.scr="fork";S.forkOrder=shuffle([0,1]);render();}else nextItem();break;
+    case "forward":nextItem();break;
+    case "fork":if(n.getAttribute("data-v")==="0"){S.scr="forkOk";render();}else{S.scr="forkSelf";render();}break;
+    case "forkRetry":S.scr="fork";S.forkOrder=shuffle([0,1]);render();break;
+    case "linkGo":if(n.getAttribute("data-v")==="peek"){showPeek();}else{S.taps++;S.scr="linkOpened";render();}break;
+    case "linkPeekGo":showPeek();break;
+    case "gateRes":addReserve();nextItem();break;
+    case "gateQuiz":S.qi++;enter();break;
+    case "qa":onQA(parseInt(n.getAttribute("data-i"),10));break;
+    case "quizNext":S.qz++;if(S.qz>=DATA.quiz.length){S.scr="final";render();}else loadQ();break;
+    case "quizRetry":S.scr="quiz";render();break;
+  }
+});
+if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",boot);}else{boot();}
+</script>
+
+<script>
+// ============================================================
+// СТРОКА-МЕТКА. Вставьте блок данных из Сообщения 2 НИЖЕ этой строки.
+// ============================================================
+var REASONS={
+  code:"Просят код из СМС или доступ к аккаунту",
+  scare:"Пугают и торопят",
+  secret:"Просят никому не говорить",
+  gift:"Обещают подарок или деньги",
+  file:"Просят открыть файл или ссылку"
+};
+
+var DATA={
+ranks:["Мастер стоп-крана 🏅","Зоркий страж 🔎","Надёжный напарник 🤝","Стажёр безопасности 🌱"],
+
+link:{
+  sender:"Незнакомец из чата игры",avatar:"🔗",
+  t:["Лови, раздача скинов: 🎁 жми — вот ссылка"],
+  painted:"skin-shop-free.ru — безопасно 🔒",
+  real:"x7k2-free-skin.ru",
+  debrief:["Нарисованный адрес — как наклейка на двери: что написали, то и видно.","Настоящий адрес — x7k2-free-skin.ru — совсем другой.","Настоящий адрес видно, если держать палец на ссылке. Открывать ссылки — только из приложения игры."]
+},
+
+cards:[
+{id:"C1",grp:"demo",mode:"bin",verdict:"danger",sender:"Бонус-бот игры",avatar:"🎁",
+ t:["Твой приз утверждён! 🎁 ",{f:"Пришли код, который тебе сейчас придёт в сообщение"}," — ",{f:"через час сгорит"},"."],
+ debrief:["Флаг: просят код. Код из сообщения — ключ от твоего аккаунта, даже когда обещают приз.","Настоящие подарки приходят внутри самой игры: без кодов, без таймеров, без «пришли».","Спешка («через час») придумана, чтобы ты не успел подумать."]},
+
+{id:"D2",grp:"demo",mode:"bin",verdict:"danger",sender:"Модератор игры",avatar:"🛡",
+ t:["На твой аккаунт поступила жалоба. Если не ответишь ",{f:"за 10 минут"},", ",{f:"удалим сегодня"}," вместе со всеми скинами."],
+ debrief:["Флаг: пугают и торопят. Настоящий модератор не ставит таймер и не удаляет аккаунты за 10 минут.","Мошеннику нужно, чтобы ты испугался и нажал быстрее, чем подумаешь.","Ты не виноват — виноват тот, кто обманывает. Скажи взрослому, которому доверяешь: чем раньше скажешь, тем больше можно исправить."],
+ fork:true},
+
+{id:"D3",grp:"demo",mode:"bin",verdict:"danger",sender:"Поддержка",avatar:"🎧",
+ t:["Здравствуй! ",{f:"Это служба поддержки"},". Заметили странный вход с твоего аккаунта, помогу защитить. ",{f:"Пришли код, который придёт"},"."],
+ debrief:["Поддержка отвечает, только когда ты сам написал. Если «поддержка» пришла сама — это вор в костюме.","Код из СМС — ключ от твоей двери, даже если просят «просто проверить».","Ты не виноват — виноват тот, кто обманывает. Скажи взрослому, которому доверяешь: чем раньше скажешь, тем больше можно исправить."],
+ fork:true},
+
+{id:"D4",grp:"demo",mode:"action",verdict:"danger",sender:"Тимур (друг из клана)",avatar:"🧒",
+ t:["Привет, это Тимур. Только у меня аккаунт взломали, я зашёл с другого. ",{f:"Мне код из СМС надо"},", без него не восстановится."],
+ acts:[
+  {l:"Перезвонить Тимуру или спросить завтра вживую",ok:true,r:"Верно!"},
+  {l:"Прислать код — он же друг",ok:false,r:"Код уйдёт вору: ты пишешь уже не Тимуру. Код просят только у того, кого обманывают. Попробуй ещё раз."},
+  {l:"Прислать половину кода, вторую спрятать",ok:false,r:"Даже кусочек кода открывает дверь. Настоящему другу код вообще не нужен — он зайдёт со своего аккаунта. Попробуй ещё раз."}],
+ why:[{k:"code",ok:true},{k:"scare"},{k:"gift"}],
+ debrief:["Свой + код — двойной флаг. «Взломанный друг» — любимая маска вора.","«Своих» проверяют другим путём: перезвони, спроси вживую, напиши на старый аккаунт."]},
+
+{id:"D5",grp:"demo",mode:"bin",verdict:"danger",sender:"Админ игрового сервера",avatar:"🎮",
+ t:["Чтобы попасть на сервер, ",{f:"подтверди вход"}," — жми кнопку ",{f:"Войти через…"}," ниже."],
+ debrief:["Кнопка «Войти через…» — это уже передача ключа. Пароль вору не нужен.","Входи только внутри самого приложения игры."]},
+
+{id:"C2",grp:"solo",mode:"bin",verdict:"danger",sender:"Служба безопасности",avatar:"🚨",
+ t:["Ты в ",{f:"списке нарушителей"},". ",{f:"Родителям не говори"}," — я сам всё решу."],
+ debrief:["«Никому не говори» и «удали переписку» — самый громкий сигнал: вору нужно, чтобы взрослые не увидели.","Ты не виноват — виноват тот, кто обманывает. Скажи взрослому, которому доверяешь: чем раньше скажешь, тем больше можно исправить."],
+ fork:true},
+
+{id:"C3",grp:"solo",mode:"bin",verdict:"danger",sender:"Незнакомец в игре",avatar:"🎙",voice:true,dur:"0:14",
+ t:["У меня тот же уровень, давай по-братски. Я тут админ сервера — ",{f:"донат закину или админку дам"},", ",{f:"только никому"},"."],
+ debrief:["Давление «своих» и статуса — и ни одной ссылки. Флаг не в ссылке, а в просьбе.","Настоящий админ не дарит админку в личке за «по-братски»."]},
+
+{id:"C4",grp:"solo",mode:"action",verdict:"danger",sender:"Незнакомый номер",avatar:"📱",
+ t:["Дам 500, дашь свой мессенджер на недельку. ",{f:"Родителям не говори"}," — не поймут. ",{f:"Делать ничего не надо"},"."],
+ acts:[
+  {l:"Отказаться и рассказать взрослому",ok:true,r:"Верно!"},
+  {l:"Согласиться: делать же ничего не надо",ok:false,r:"«Ничего делать не надо» — приманка. Из твоего аккаунта будут писать другим детям плохое — отвечать придётся тебе, а не ему. Попробуй ещё раз."},
+  {l:"Спросить, что именно надо делать",ok:false,r:"Вопросы про «работу» — уже вход в игру. Нормальная работа не начинается со слов «никому не говори». Попробуй ещё раз."}],
+ why:[{k:"secret",ok:true},{k:"scare"},{k:"file"}],
+ debrief:["От твоего имени будут обманывать других детей — отвечать придётся тебе, а не ему.","Нормальная работа не начинается со слов «никому не говори».","Твой аккаунт — не товар: его покупают, чтобы делать от твоего имени гадости.","Ты не виноват — виноват тот, кто обманывает. Скажи взрослому, которому доверяешь: чем раньше скажешь, тем больше можно исправить."],
+ fork:true},
+
+{id:"C5",grp:"solo",mode:"action",verdict:"danger",sender:"Из чата игры",avatar:"📦",
+ t:["Скинул мод, ",{f:"просто открой файл"}," — сам установится, ",{f:"там всё чисто"},"."],
+ acts:[
+  {l:"Не открывать файл и рассказать взрослому",ok:true,r:"Верно!"},
+  {l:"Открыть: вдруг правда мод",ok:false,r:"Файл установится сам — вместе с тем, что внутрь положил вор. Открытый файл не закрыть назад. Попробуй ещё раз."},
+  {l:"Переслать другу — пусть он проверит",ok:false,r:"Вместе с файлом другу уйдёт и ловушка. Файлы проверяют взрослые. Попробуй ещё раз."}],
+ why:[{k:"file",ok:true},{k:"secret"},{k:"gift"}],
+ debrief:["Файл от незнакомца — не подарок, а дверь внутрь телефона. «Там всё чисто» говорит тот, кому выгодно.","Настоящие моды ставят из магазина игры или вместе со взрослыми.","Ты не виноват — виноват тот, кто обманывает. Скажи взрослому, которому доверяешь: чем раньше скажешь, тем больше можно исправить."],
+ fork:true},
+
+{id:"C6",grp:"solo",mode:"bin",verdict:"safe",sender:"Мама",avatar:"👩",
+ t:["Заеду за тобой в 18:30, жди у входа ❤️"],
+ debrief:["Обычное сообщение: никто ничего не просит, никуда не торопит.","Безопасное — это когда просто пишут. Опасное — когда требуют."]},
+
+{id:"C7",grp:"solo",mode:"bin",verdict:"safe",sender:"Незнакомый аккаунт",avatar:"😹",
+ t:["(прислал картинку: кот в коробке, подпись «когда пятница») 😹"],
+ debrief:["Мем без просьб и без ссылок — просто смешно. Отвечать не обязательно.","Признак опасности — просьба, код или спешка, а не «незнакомый человек»."]},
+
+{id:"D1",grp:"res",mode:"bin",verdict:"danger",sender:"Друг по клану",avatar:"⚔️",
+ t:["Нам дюп нашли, у меня ",{f:"лишних 5000 камушков"},". Жми — заберёшь, ",{f:"только никому"},"."],
+ debrief:["Слишком хорошо + «только никому» = подарок с крючком.","У настоящего товарища нет причины прятать подарок."]},
+
+{id:"B1",grp:"res",mode:"bin",verdict:"danger",sender:"Модератор игры",avatar:"🛡",
+ t:[{f:"Удалим сегодня аккаунт и все скины"},", если ",{f:"не подтвердишь вход"},"."],
+ debrief:["Спешка + угроза имуществом + «подтверди вход» — три флага в одном сообщении.","Ты не виноват — виноват тот, кто обманывает. Скажи взрослому, которому доверяешь."],
+ fork:true},
+
+{id:"O1",grp:"res",mode:"bin",verdict:"danger",sender:"Одноклассник",avatar:"🧒",
+ t:["Одолжи ",{f:"аккаунт на денёк"},", сестре поиграть. Потом верну."],
+ debrief:["Одолжить игру — можно. Передать вход в аккаунт — нельзя.","Аккаунт — это ты: из него напишут другим — отвечать придётся тебе."]},
+
+{id:"O2",grp:"res",mode:"bin",verdict:"danger",sender:"Одноклассник",avatar:"🧒",
+ t:[{f:"Сфоткай экран и пришли"},", мне надо ",{f:"проверить"},", одну вещь."],
+ debrief:["На скрине может быть всё: переписка, коды, личное. Что там видно, знает только он.","Если просят скрин «для проверки» — спроси зачем, и расскажи взрослому, если давят."]},
+
+{id:"P1",grp:"res",mode:"bin",verdict:"danger",sender:"Незнакомец из чата",avatar:"🎮",
+ t:["Рейд на скины в 20:00! Чтобы попасть, ",{f:"авторизуйся"}," по кнопке ниже."],
+ debrief:["«Авторизуйся» — значит передай доступ. Настоящий рейд не требует входа через чужую кнопку.","Входи только внутри самого приложения игры."]},
+
+{id:"P2",grp:"res",mode:"bin",verdict:"danger",sender:"Незнакомый канал",avatar:"📢",
+ t:["Промокод от блогера! ",{f:"Активируй по ссылке"}," — ",{f:"хватит первым 300"},"."],
+ debrief:["Спешка + ссылка = двойной флаг.","Промокоды берут в самом приложении игры, а не по ссылкам из чатов.","Сначала посмотри настоящий адрес: он редко совпадает с нарисованным."]},
+
+{id:"T1",grp:"res",mode:"bin",verdict:"danger",sender:"Игрок с рынка",avatar:"🤝",
+ t:["Отдай предмет на минутку — ",{f:"это проверка на жадность"},". ",{f:"Верну с бонусом"},"."],
+ debrief:["Предмет, отданный «на минутку», возвращается редко: трейд-скам — самая частая потеря в играх.","Честный обмен проходит в окне обмена самой игры, а не «на доверии»."]}
+],
+
+quiz:[
+ {q:"Тебе пишет «служба поддержки»: «Пришли код для проверки». Ты у неё ничего не спрашивал. Что это значит?",
+  o:[
+   {t:"Это вор: поддержка не пишет первой и не просит код",ok:true,f:"Верно! Поддержка отвечает, только когда ты сам написал."},
+   {t:"Надо быстро прислать код, вдруг правда взломают",f:"Именно этого он и ждёт: код — ключ от твоей двери."},
+   {t:"Попросить у них пароль, чтобы проверить, настоящие ли они",f:"Настоящей поддержке твой пароль не нужен вообще — это флаг."}]},
+ {q:"В сообщении: «Ты в списке нарушителей. Родителям не говори — я сам всё решу». Самый громкий сигнал здесь —",
+  o:[
+   {t:"«Родителям не говори» — вору нужно, чтобы взрослые не увидели",ok:true,f:"Верно! «Никому не говори» — самый громкий сигнал."},
+   {t:"Сообщение пришло днём, а не ночью",f:"Время не сигнал: воры пишут и днём."},
+   {t:"Пишут вежливо и помогают",f:"Вежливость — маска, а не сигнал."}]},
+ {q:"Чтобы попасть на сервер, просят нажать «Войти через…». Это —",
+  o:[
+   {t:"уже передача доступа: пароль вору не нужен",ok:true,f:"Верно! Кнопка «Войти через…» — это уже передача ключа."},
+   {t:"безопасно: пароль же не просят",f:"Пароль и не нужен: кнопка сама отдаёт доступ."},
+   {t:"можно нажать, если аккаунт всё равно новый",f:"Даже новый аккаунт — твой. Входи только внутри приложения игры."}]},
+ {q:"«Твой приз сгорит через час!» Что сделать первым делом?",
+  o:[
+   {t:"Стоп: спешка — признак обмана. Подумать и проверить",ok:true,f:"Верно! Спешку придумали, чтобы ты не подумал."},
+   {t:"Успеть забрать приз за час",f:"«Успеть» — именно этого он и ждёт."},
+   {t:"Попросить продлить срок",f:"Срок продлит вор — и обрадуется, что ты играешь в его игру."}]},
+ {q:"Ты уже успел нажать на подозрительную кнопку. Что теперь?",
+  o:[
+   {t:"Сказать взрослому: ругать не будут, это можно исправить",ok:true,f:"Верно! Чем раньше скажешь, тем больше можно исправить."},
+   {t:"Удалить переписку и молчать",f:"Молчание — то, чего вору и нужно. Скажи взрослому."},
+   {t:"Самому во всём разобраться и никому не говорить",f:"«Сам разберусь» — именно этого он и ждёт."}]}
+]
+};
+</script>
+</body>
+</html>

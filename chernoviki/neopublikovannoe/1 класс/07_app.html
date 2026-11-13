@@ -1,0 +1,2179 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Раскрась как хочешь</title>
+<style>
+:root{
+  --ui-blue:#2f6fed; --ui-blue-dark:#1f4fb8; --text:#1c2430;
+  --panel:#fff; --line:#c9d6e6; --gold:#f08a2a; --neutral:#e9eff6;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{
+  font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  color:var(--text); background:linear-gradient(180deg,#f7fbff,#e9f1fa);
+  overflow:hidden;
+}
+#app{height:100%;display:flex;flex-direction:column;overflow:hidden}
+#topbar{
+  flex:0 0 48px;display:flex;align-items:center;gap:12px;padding:0 16px;
+  background:#fff;border-bottom:2px solid var(--line);
+  box-shadow:0 2px 10px rgba(31,79,184,.08);z-index:5;
+}
+#topbar h1{font-size:18px;margin:0;color:var(--ui-blue-dark);white-space:nowrap}
+#activity-dot{width:12px;height:12px;border-radius:50%;background:#9fb3cc;transition:all .15s}
+#activity-dot.on{background:#3fbf7f;box-shadow:0 0 0 6px rgba(63,191,127,.18)}
+#gold-indicator{margin-left:auto;font-weight:700;color:#8a4b00;white-space:nowrap}
+.small-btn{
+  padding:6px 12px;border-radius:10px;background:#fff;color:var(--ui-blue-dark);
+  border:2px solid var(--ui-blue);box-shadow:none;font-weight:700;font-size:14px;
+}
+#screens{flex:1 1 0;min-height:0;position:relative;overflow:hidden;}
+#keyboard-wrap{
+  flex:0 0 auto;background:#f4f8fd;border-top:2px solid var(--line);
+  padding:6px 8px 8px;display:flex;flex-direction:column;gap:4px;
+}
+.kb-row{display:flex;gap:4px;justify-content:center}
+.key{
+  --key-bg:#e9eff6;
+  flex:1 1 0;min-width:0;max-width:46px;height:38px;
+  border-radius:8px;background:var(--key-bg);
+  border:2px solid #1c2430;display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:15px;user-select:none;
+  transition:transform .06s,box-shadow .06s,background .2s;
+}
+.key.pressed{transform:translateY(2px);box-shadow:0 0 0 3px rgba(47,111,237,.4)}
+.key.family-hl{
+  box-shadow:0 0 0 3px var(--gold),0 0 14px rgba(240,138,42,.55);
+  animation:familyPulse 1.2s infinite;
+}
+@keyframes familyPulse{
+  50%{box-shadow:0 0 0 6px var(--gold),0 0 22px rgba(240,138,42,.75)}
+}
+.screen{
+  position:absolute;inset:0;display:none;flex-direction:column;
+  padding:14px;overflow:hidden;
+}
+.screen.active{display:flex}
+h2{margin:4px 0 12px;color:var(--ui-blue-dark);font-size:22px;flex:0 0 auto}
+h3{margin:4px 0 8px;color:var(--ui-blue-dark)}
+button{
+  font:inherit;border:none;border-radius:12px;padding:10px 16px;cursor:pointer;
+  background:var(--ui-blue);color:#fff;font-weight:700;
+  box-shadow:0 3px 0 var(--ui-blue-dark);transition:transform .08s;
+  margin:2px;
+}
+button:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ui-blue-dark)}
+button.ghost{background:#fff;color:var(--ui-blue-dark);border:2px solid var(--ui-blue);box-shadow:none}
+button.gold{background:var(--gold);box-shadow:0 3px 0 #b35f10}
+.hidden{display:none!important}
+.card{
+  background:var(--panel);border:2px solid var(--line);border-radius:16px;
+  padding:14px;box-shadow:0 4px 18px rgba(31,79,184,.08);
+}
+.gate-area{
+  display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start;justify-content:center;
+  flex:1;min-height:0;overflow-y:auto;align-content:center;
+}
+.gate-target{
+  width:180px;height:180px;border-radius:22px;
+  border:4px solid #1c2430;display:flex;align-items:center;justify-content:center;
+  font-size:80px;font-weight:800;color:#fff;
+  text-shadow:0 3px 8px rgba(0,0,0,.5);
+  box-shadow:0 6px 22px rgba(31,79,184,.18);
+}
+.gate-word-box{
+  background:#fff;border:3px solid #1c2430;border-radius:22px;
+  padding:18px 28px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;min-width:280px;
+  min-height:180px;box-shadow:0 6px 22px rgba(31,79,184,.10);
+}
+.gate-word-label{
+  font-size:13px;color:#52627a;font-weight:700;letter-spacing:.5px;
+  text-transform:uppercase;margin-bottom:8px;
+}
+.gate-word{font-size:34px;font-weight:800;letter-spacing:8px;}
+.gate-instruction{
+  font-size:16px;font-weight:700;margin-top:14px;text-align:center;
+  color:var(--ui-blue-dark);
+}
+.gate-progress{
+  font-weight:700;color:var(--ui-blue-dark);margin:8px 0 12px;flex:0 0 auto;
+}
+.gate-chips{display:flex;gap:6px;margin-top:14px;flex-wrap:wrap;justify-content:center;flex:0 0 auto}
+.gate-chip{
+  width:44px;height:44px;border-radius:10px;border:2px solid #1c2430;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:20px;
+  text-shadow:0 1px 3px rgba(0,0,0,.4);color:#fff;
+}
+.game-layout{
+  display:flex;gap:18px;flex-wrap:nowrap;align-items:stretch;flex:1;min-height:0;
+}
+.picture-box{
+  flex:1 1 500px;min-width:0;display:flex;align-items:center;justify-content:center;
+  background:#fff;border:2px solid var(--line);border-radius:16px;padding:8px;
+  overflow:hidden;
+}
+.picture-svg{
+  width:100%;height:100%;max-width:100%;max-height:100%;display:block;
+}
+.picture-svg [data-region]{cursor:pointer}
+.picture-svg [data-region].selected-region{
+  stroke:#2f6fed!important;stroke-width:4!important;
+}
+.preview-col{
+  flex:0 0 260px;display:flex;flex-direction:column;gap:12px;
+  overflow-y:auto;
+}
+.color-preview{
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  background:#fff;border:2px solid var(--line);border-radius:16px;
+  padding:16px;box-shadow:0 4px 18px rgba(31,79,184,.08);
+  text-align:center;
+}
+.preview-swatch{
+  width:80px;height:80px;border-radius:14px;border:3px solid #1c2430;
+  display:flex;align-items:center;justify-content:center;
+  font-size:32px;font-weight:800;color:#fff;
+  text-shadow:0 2px 5px rgba(0,0,0,.5);
+}
+.preview-text{font-size:18px;font-weight:700;line-height:1.3}
+.preview-text .hintline{font-size:13px;color:#52627a;font-weight:600;margin-top:4px}
+.sample-box{
+  background:#fff;border:2px solid var(--line);border-radius:16px;
+  padding:8px;flex:0 0 auto;
+}
+.sample-box .picture-svg{max-width:220px;max-height:180px;margin:0 auto}
+.sample-label{
+  font-size:12px;color:#52627a;text-align:center;margin:2px 0 4px;
+  font-weight:700;text-transform:uppercase;letter-spacing:.5px;
+}
+#g2-board{
+  flex:1 1 auto;min-width:0;display:flex;align-items:center;justify-content:center;
+  background:#fff;border:2px solid var(--line);border-radius:16px;padding:8px;
+  overflow:hidden;
+}
+.pixel-grid{
+  display:grid;gap:2px;
+  width:min(100%, 400px);
+  height:min(100%, 400px);
+  aspect-ratio: 1 / 1;
+  margin:auto;
+}
+.pixel-cell{
+  aspect-ratio:1/1;border-radius:4px;border:1px solid #c9d6e6;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:14px;background:#f4f8fc;
+  transition:box-shadow .2s,background .2s;cursor:pointer;
+  user-select:none;
+}
+.pixel-cell.selected{box-shadow:0 0 0 3px var(--ui-blue);z-index:1}
+.pixel-cell.filled{color:transparent;border-color:transparent;text-shadow:none}
+#screen-maze{padding:10px}
+#maze-board{
+  flex:1;min-height:0;display:flex;justify-content:center;align-items:center;
+  padding:4px;
+}
+#maze-board svg{
+  width:100%;height:100%;max-width:100%;max-height:100%;
+  background:#fff;border:2px solid var(--line);border-radius:16px;
+  overflow:visible;
+}
+.maze-levels{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 10px;flex:0 0 auto}
+.maze-tab{
+  padding:6px 12px;border-radius:10px;background:#fff;color:var(--ui-blue-dark);
+  border:2px solid var(--ui-blue);box-shadow:none;font-weight:700;font-size:14px;
+}
+.maze-tab.active{background:var(--ui-blue);color:#fff;box-shadow:0 3px 0 var(--ui-blue-dark)}
+.maze-controls{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0;align-items:center;flex:0 0 auto;justify-content:center}
+.maze-letter{
+  width:50px;height:50px;font-size:22px;font-weight:800;border-radius:12px;
+  border:3px solid #1c2430;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,.5);
+  transition:transform .08s;
+}
+.maze-letter:active{transform:scale(.94)}
+.shake{animation:shake .3s}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.spark{
+  position:fixed;width:10px;height:10px;border-radius:50%;
+  pointer-events:none;z-index:50;animation:sparkFly .45s ease-out forwards;
+}
+@keyframes sparkFly{to{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}
+#hint-arrow{
+  position:fixed;display:none;z-index:60;font-size:36px;color:var(--gold);
+  text-shadow:0 2px 0 #fff;pointer-events:none;
+  animation:arrowBob .6s infinite alternate;
+}
+@keyframes arrowBob{to{transform:translateY(-8px)}}
+#blur-overlay{
+  position:fixed;inset:0;background:rgba(28,36,48,.45);color:#fff;
+  z-index:100;display:none;align-items:center;justify-content:center;
+  font-size:24px;font-weight:800;
+}
+.modal-mask{
+  position:fixed;inset:0;background:rgba(28,36,48,.45);
+  z-index:110;display:none;align-items:center;justify-content:center;
+}
+.modal-mask.open{display:flex}
+.modal-mask .card{max-width:420px;text-align:center;display:flex;flex-direction:column;gap:4px}
+.modal-mask .card button{width:100%}
+.gallery-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:14px;overflow-y:auto;flex:1;align-content:start;
+}
+.gallery-item{
+  background:#fff;border:2px solid var(--line);border-radius:16px;
+  padding:10px;text-align:center;
+}
+.gallery-item .picture-svg{width:100%;max-height:200px}
+.mini-grid{display:grid;gap:2px;margin:auto;max-width:200px;aspect-ratio:1/1}
+.mini-cell{aspect-ratio:1/1;border-radius:2px}
+.status{font-weight:700;color:var(--ui-blue-dark)}
+.small{font-size:14px;color:#52627a}
+@media (max-width:900px){
+  .game-layout{flex-wrap:wrap;overflow-y:auto;align-items:flex-start}
+  .picture-box{flex:1 1 100%;height:50vh}
+  .preview-col{flex:1 1 100%;flex-direction:row;flex-wrap:wrap}
+  .preview-col > *{flex:1}
+  #g2-board{flex:1 1 100%;height:50vh}
+  .gate-target{width:140px;height:140px;font-size:60px}
+  .gate-word-box{min-width:220px;min-height:140px;padding:14px 20px}
+  .gate-word{font-size:26px;letter-spacing:5px}
+  .key{height:32px;font-size:13px}
+  .maze-letter{width:40px;height:40px;font-size:18px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="topbar">
+    <h1>Раскрась как хочешь</h1>
+    <div id="activity-dot" title="Активность"></div>
+    <button id="btn-menu" class="small-btn">Меню</button>
+    <div id="gold-indicator">Золото: 0</div>
+  </header>
+
+  <main id="screens">
+
+    <section id="screen-start" class="screen active">
+      <h2>Добро пожаловать!</h2>
+      <div class="card" style="margin:auto;max-width:600px">
+        <p><b>Правило игры:</b> «Я — отмена». Ошибся в раскраске — нажми <b>Ctrl+Z</b>.</p>
+        <p>Ты будешь искать буквы на клавиатуре и раскрашивать картинки. Смотри на цветные клавиши — они подскажут, где какая буква.</p>
+        <p>В лабиринте используй только буквы, чтобы двигаться. Ошибся — нажми «Заново».</p>
+        <p class="small">Хочешь пропустить этап — нажми <b>Ctrl+` (Ё)</b>.</p>
+        <div style="margin-top:16px">
+          <button id="btn-start">Начать заново</button>
+          <button id="btn-continue" class="ghost hidden">Продолжить</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-gate" class="screen">
+      <h2 id="gate-title">Врата</h2>
+      <p id="gate-progress" class="gate-progress"></p>
+      <div class="gate-area">
+        <div class="gate-target" id="gate-target">Й</div>
+        <div class="gate-word-box">
+          <div class="gate-word-label">это слово</div>
+          <div class="gate-word" id="gate-word"></div>
+          <div class="gate-instruction" id="gate-instruction">
+            Найди его на клавиатуре и нажми любую букву
+          </div>
+        </div>
+      </div>
+      <div class="gate-chips" id="gate-chips"></div>
+    </section>
+
+    <section id="screen-game1" class="screen">
+      <h2 id="g1-title">Игра 1</h2>
+      <div class="game-layout">
+        <div id="g1-picture" class="picture-box"></div>
+        <div class="preview-col">
+          <div class="color-preview" id="g1-preview"></div>
+          <div class="sample-box" id="g1-sample-wrap">
+            <div class="sample-label">образец</div>
+            <div id="g1-sample"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-game2" class="screen">
+      <h2 id="g2-title">Игра 2</h2>
+      <div class="game-layout">
+        <div id="g2-board"></div>
+        <div class="preview-col" style="max-width:240px">
+          <div class="color-preview" id="g2-preview"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-choice" class="screen">
+      <h2>Выбери путь</h2>
+      <div class="card" style="margin:auto">
+        <p>Оба пути равноправны. Выбери, что тебе интереснее.</p>
+        <button id="choice-maze" class="gold">Лабиринт</button>
+        <button id="choice-route" class="ghost">Дописать картинку</button>
+      </div>
+    </section>
+
+    <section id="screen-maze" class="screen">
+      <h2>Лабиринт</h2>
+      <div id="maze-levels" class="maze-levels"></div>
+      <div id="maze-board"></div>
+      <div id="maze-controls" class="maze-controls"></div>
+      <p id="maze-status" class="status" style="text-align:center;flex:0 0 auto;margin:0"></p>
+      <button id="maze-next" class="gold hidden" style="margin:8px auto 0">В галерею</button>
+    </section>
+
+    <section id="screen-gallery" class="screen">
+      <h2>Галерея работ</h2>
+      <div id="gallery-grid" class="gallery-grid"></div>
+      <p style="flex:0 0 auto;margin:10px 0 0"><button id="btn-final" class="gold">Сохранили, посмотрим</button></p>
+    </section>
+
+    <section id="screen-final" class="screen">
+      <h2>Финиш!</h2>
+      <div class="card" style="margin:auto;max-width:500px;text-align:center">
+        <p>Ты прошёл игру. Все работы сохранены в галерее.</p>
+        <p id="final-gold" class="status"></p>
+        <p id="final-stats" class="small"></p>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:16px">
+          <button id="btn-gallery-back" class="ghost">Открыть галерею</button>
+          <button id="btn-restart" class="gold">Играть снова</button>
+          <button id="btn-home" class="ghost">В начало</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <aside id="keyboard-wrap">
+    <div id="keyboard"></div>
+  </aside>
+</div>
+
+<div id="hint-arrow">➜</div>
+<div id="blur-overlay">Кликните, чтобы продолжить</div>
+
+<div id="f5-modal" class="modal-mask">
+  <div class="card">
+    <p><b>Обновить страницу?</b></p>
+    <p>Прогресс сохранён.</p>
+    <button id="f5-yes">Обновить</button>
+    <button id="f5-no" class="ghost">Остаться</button>
+  </div>
+</div>
+
+<div id="menu-modal" class="modal-mask">
+  <div class="card">
+    <h3>Меню</h3>
+    <button id="menu-continue">Продолжить</button>
+    <button id="menu-route" class="ghost">Дорисовать картинку</button>
+    <button id="menu-maze" class="ghost">Лабиринты</button>
+    <button id="menu-start" class="ghost">В начало</button>
+    <button id="menu-reset" class="gold">Начать заново</button>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const G2_LETTERS = ['К','Щ','В','Л','Ч','Т'];
+const G2_CONTOUR = 'Д';
+
+function generateMap(mask) {
+  const lines = mask.trim().split('\n');
+  const map = [];
+  for(let y=0; y<lines.length; y++){
+    const row = [];
+    for(let x=0; x<lines[y].length; x++){
+      const ch = lines[y][x];
+      if(ch === '#') row.push(G2_CONTOUR);
+      else if(ch === 'i') row.push(G2_LETTERS[Math.floor(Math.random() * G2_LETTERS.length)]);
+      else if(ch === '.') row.push(G2_LETTERS[Math.floor(Math.random() * G2_LETTERS.length)]);
+    }
+    map.push(row);
+  }
+  return map;
+}
+
+const CONFIG = {
+  baseColors: {
+    red:'#e05045', green:'#4caf50', yellow:'#f5c518', blue:'#4a9fd6',
+    black:'#424850', purple:'#8a4fc8', orange:'#f08a2a', white:'#fbf7ee'
+  },
+  colorNames: {
+    red:'красный', green:'зелёный', yellow:'жёлтый', blue:'голубой',
+    black:'чёрный', purple:'фиолетовый', orange:'оранжевый', white:'белый'
+  },
+  letterToColor: {
+    'Й':'red','Ц':'red','У':'red','К':'red','Е':'red','Н':'red',
+    'Г':'green','Ш':'green','Щ':'green','З':'green','Х':'green','Ъ':'green',
+    'Ф':'yellow','Ы':'yellow','В':'yellow','А':'yellow',
+    'П':'blue','Р':'blue','О':'blue','Л':'blue',
+    'Д':'black','Ж':'black','Э':'black',
+    'М':'purple','И':'purple','Т':'purple','Ь':'purple','Я':'purple',
+    'Ч':'orange','С':'orange',
+    'Б':'white','Ю':'white','Ё':'white'
+  },
+  gates: [
+    { num:1, letters:['Й','Ш','Ф','О','М','Ж'], next:'game1' },
+    { num:2, letters:['К','Щ','В','Л','Д','Ч','Т'], next:'game2' },
+    { num:3, letters:['Е','Х','А','П','Ж','И','С'], next:'choice' }
+  ],
+  game1: {
+    levels: {
+      A: {
+        title:'Игра 1 «По образцу», уровень А — Домик',
+        viewBox:'0 0 320 240',
+        regions:[
+          {id:'roof', tag:'polygon', attrs:{points:'40,110 160,30 280,110'}, letter:'Й'},
+          {id:'wall', tag:'rect', attrs:{x:'70',y:'110',width:'180',height:'110'}, letter:'Ф'},
+          {id:'door', tag:'rect', attrs:{x:'135',y:'150',width:'50',height:'70'}, letter:'О'},
+          {id:'win1', tag:'rect', attrs:{x:'90',y:'130',width:'38',height:'32'}, letter:'М'},
+          {id:'win2', tag:'rect', attrs:{x:'192',y:'130',width:'38',height:'32'}, letter:'Ш'},
+          {id:'sun', tag:'circle', attrs:{cx:'268',cy:'48',r:'26'}, free:true}
+        ]
+      },
+      B: {
+        title:'Игра 1 «По образцу», уровень Б — Кот',
+        viewBox:'0 0 340 270',
+        regions:[
+          {id:'body', tag:'ellipse', attrs:{cx:'170',cy:'195',rx:'72',ry:'42'}, letter:'Ф'},
+          {id:'head', tag:'circle', attrs:{cx:'170',cy:'120',r:'55'}, letter:'Й'},
+          {id:'earL', tag:'polygon', attrs:{points:'128,82 112,35 152,68'}, letter:'О'},
+          {id:'earR', tag:'polygon', attrs:{points:'212,82 228,35 188,68'}, letter:'М'},
+          {id:'tail', tag:'path', attrs:{d:'M235,195 Q285,175 280,130'},
+            isStroke:true, strokeWidth:14, letter:'Ш'},
+          {id:'chest', tag:'ellipse', attrs:{cx:'170',cy:'188',rx:'30',ry:'22'}, letter:'Ж'},
+          {id:'eyeL', tag:'circle', attrs:{cx:'150',cy:'115',r:'9'}, letter:'Ш'},
+          {id:'eyeR', tag:'circle', attrs:{cx:'190',cy:'115',r:'9'}, letter:'О'},
+          {id:'nose', tag:'polygon', attrs:{points:'170,132 162,144 178,144'}, letter:'Ф'},
+          {id:'pawL', tag:'ellipse', attrs:{cx:'128',cy:'232',rx:'24',ry:'12'}, letter:'Й'},
+          {id:'pawR', tag:'ellipse', attrs:{cx:'212',cy:'232',rx:'24',ry:'12'}, free:true},
+          {id:'cloud', tag:'ellipse', attrs:{cx:'60',cy:'50',rx:'36',ry:'18'}, free:true}
+        ]
+      },
+      C: {
+        title:'Игра 1 «По образцу», уровень В — Рыбка',
+        viewBox:'0 0 340 250',
+        regions:[
+          {id:'body', tag:'ellipse', attrs:{cx:'160',cy:'140',rx:'80',ry:'50'}, letter:'Й'},
+          {id:'tail', tag:'polygon', attrs:{points:'240,140 300,100 300,180'}, letter:'Ш'},
+          {id:'finTop', tag:'polygon', attrs:{points:'150,92 180,92 165,60'}, free:true},
+          {id:'finBottom', tag:'polygon', attrs:{points:'150,188 180,188 165,220'}, free:true},
+          {id:'eye', tag:'circle', attrs:{cx:'120',cy:'130',r:'9'}, free:true},
+          {id:'bubble1', tag:'circle', attrs:{cx:'60',cy:'80',r:'14'}, free:true},
+          {id:'bubble2', tag:'circle', attrs:{cx:'40',cy:'130',r:'9'}, free:true},
+          {id:'sun', tag:'circle', attrs:{cx:'290',cy:'55',r:'25'}, free:true},
+          {id:'seaweed', tag:'path',
+            attrs:{d:'M20,240 Q40,220 30,200 Q20,180 40,160'},
+            isStroke:true, strokeWidth:10, free:true}
+        ]
+      },
+      D: {
+        title:'Игра 1 «Свободная раскраска», уровень Г — Бабочка',
+        viewBox:'0 0 340 260',
+        regions:[
+          {id:'wingUL', tag:'ellipse', attrs:{cx:'110',cy:'95',rx:'55',ry:'45'}, free:true},
+          {id:'wingUR', tag:'ellipse', attrs:{cx:'230',cy:'95',rx:'55',ry:'45'}, free:true},
+          {id:'wingLL', tag:'ellipse', attrs:{cx:'120',cy:'175',rx:'45',ry:'40'}, free:true},
+          {id:'wingLR', tag:'ellipse', attrs:{cx:'220',cy:'175',rx:'45',ry:'40'}, free:true},
+          {id:'body', tag:'ellipse', attrs:{cx:'170',cy:'140',rx:'16',ry:'70'}, free:true},
+          {id:'head', tag:'circle', attrs:{cx:'170',cy:'62',r:'22'}, free:true},
+          {id:'eyeL', tag:'circle', attrs:{cx:'162',cy:'58',r:'5'}, free:true},
+          {id:'eyeR', tag:'circle', attrs:{cx:'178',cy:'58',r:'5'}, free:true},
+          {id:'antennaL', tag:'path', attrs:{d:'M160,45 Q145,15 130,20'}, isStroke:true, strokeWidth:5, free:true},
+          {id:'antennaR', tag:'path', attrs:{d:'M180,45 Q195,15 210,20'}, isStroke:true, strokeWidth:5, free:true},
+          {id:'spot1', tag:'circle', attrs:{cx:'100',cy:'88',r:'12'}, free:true},
+          {id:'spot2', tag:'circle', attrs:{cx:'240',cy:'88',r:'12'}, free:true},
+          {id:'spot3', tag:'circle', attrs:{cx:'115',cy:'175',r:'10'}, free:true},
+          {id:'spot4', tag:'circle', attrs:{cx:'225',cy:'175',r:'10'}, free:true},
+          {id:'sun', tag:'circle', attrs:{cx:'300',cy:'40',r:'22'}, free:true}
+        ]
+      },
+      E: {
+        title:'Игра 1 «Свободная раскраска», уровень Д — Замок',
+        viewBox:'0 0 360 280',
+        regions:[
+          {id:'wall', tag:'rect', attrs:{x:'70',y:'130',width:'220',height:'110'}, free:true},
+          {id:'towerL', tag:'rect', attrs:{x:'40',y:'90',width:'54',height:'150'}, free:true},
+          {id:'towerR', tag:'rect', attrs:{x:'266',y:'90',width:'54',height:'150'}, free:true},
+          {id:'towerM', tag:'rect', attrs:{x:'150',y:'70',width:'60',height:'170'}, free:true},
+          {id:'roofL', tag:'polygon', attrs:{points:'34,90 67,45 100,90'}, free:true},
+          {id:'roofR', tag:'polygon', attrs:{points:'260,90 293,45 326,90'}, free:true},
+          {id:'roofM', tag:'polygon', attrs:{points:'142,70 180,25 218,70'}, free:true},
+          {id:'door', tag:'rect', attrs:{x:'162',y:'190',width:'36',height:'50'}, free:true},
+          {id:'winTL', tag:'rect', attrs:{x:'52',y:'120',width:'30',height:'26'}, free:true},
+          {id:'winTR', tag:'rect', attrs:{x:'278',y:'120',width:'30',height:'26'}, free:true},
+          {id:'winM1', tag:'rect', attrs:{x:'165',y:'95',width:'30',height:'26'}, free:true},
+          {id:'winM2', tag:'rect', attrs:{x:'165',y:'150',width:'30',height:'26'}, free:true},
+          {id:'wallWin1', tag:'rect', attrs:{x:'95',y:'165',width:'34',height:'28'}, free:true},
+          {id:'wallWin2', tag:'rect', attrs:{x:'230',y:'165',width:'34',height:'28'}, free:true},
+          {id:'flagPole', tag:'path', attrs:{d:'M180,25 L180,5'}, isStroke:true, strokeWidth:4, free:true},
+          {id:'flag', tag:'polygon', attrs:{points:'180,8 215,16 180,26'}, free:true},
+          {id:'road', tag:'polygon', attrs:{points:'120,240 240,240 280,280 80,280'}, free:true},
+          {id:'grassL', tag:'path', attrs:{d:'M20,240 Q30,215 40,240'}, isStroke:true, strokeWidth:6, free:true},
+          {id:'cloud1', tag:'ellipse', attrs:{cx:'70',cy:'45',rx:'38',ry:'18'}, free:true},
+          {id:'cloud2', tag:'ellipse', attrs:{cx:'290',cy:'60',rx:'30',ry:'14'}, free:true},
+          {id:'sun', tag:'circle', attrs:{cx:'330',cy:'30',r:'20'}, free:true}
+        ]
+      },
+      F: {
+        title:'Игра 1 «Свободная раскраска» — Натюрморт',
+        viewBox:'0 0 340 280',
+        regions:[
+          {id:'wall', tag:'rect', attrs:{x:'0',y:'0',width:'340',height:'200'}, free:true},
+          {id:'table', tag:'rect', attrs:{x:'0',y:'200',width:'340',height:'80'}, free:true},
+          {id:'vase', tag:'polygon', attrs:{points:'140,200 200,200 215,120 125,120'}, free:true},
+          {id:'vaseNeck', tag:'rect', attrs:{x:'150',y:'90',width:'40',height:'30'}, free:true},
+          {id:'apple1', tag:'circle', attrs:{cx:'110',cy:'205',r:'25'}, free:true},
+          {id:'apple2', tag:'circle', attrs:{cx:'225',cy:'205',r:'25'}, free:true},
+          {id:'orange', tag:'circle', attrs:{cx:'170',cy:'195',r:'20'}, free:true},
+          {id:'leaf1', tag:'ellipse', attrs:{cx:'160',cy:'85',rx:'15',ry:'8'}, free:true},
+          {id:'leaf2', tag:'ellipse', attrs:{cx:'180',cy:'75',rx:'15',ry:'8'}, free:true}
+        ]
+      }
+    }
+  },
+  game2: {
+    levels: {
+      A: {
+        type:'pixel',
+        title:'Игра 2 «По буквам» — Котик',
+        mask: `
+          ............
+          ..##....##..
+          .#ii#..#ii#.
+          .#ii####ii#.
+          .#iiiiiiii#.
+          .#iiiiiiii#.
+          .#iiiiiiii#.
+          .#iiiiiiii#.
+          ..#iiiiii#..
+          ...######...
+          ............
+          ............
+        `
+      },
+      B: {
+        type:'pixel',
+        title:'Игра 2 «По буквам» — Смайлик',
+        mask: `
+          ............
+          ...######...
+          ..#iiiiii#..
+          .#iiiiiiii#.
+          #ii##ii##ii#
+          #ii##ii##ii#
+          #iiiiiiiiii#
+          #iiiiiiiiii#
+          #ii######ii#
+          .#iiiiiiii#.
+          ..#iiiiii#..
+          ...######...
+        `
+      },
+      C: {
+        type:'pixel',
+        title:'Игра 2 «По буквам» — Натюрморт',
+        mask: `
+          ............
+          ....####....
+          ...#iiii#...
+          ...#iiii#...
+          ....#ii#....
+          ....#ii#....
+          ...##ii##...
+          ..##iiii##..
+          .##iiiiii##.
+          .#iiiiiiii#.
+          ############
+          ............
+        `
+      }
+    }
+  },
+  route: {
+    title:'Дописать картинку — Кораблик',
+    viewBox:'0 0 340 250',
+    regions:[
+      {id:'hull', tag:'polygon', attrs:{points:'70,175 270,175 235,215 105,215'}, letter:'Е'},
+      {id:'sail1', tag:'polygon', attrs:{points:'155,42 155,158 88,158'}, letter:'А'},
+      {id:'sail2', tag:'polygon', attrs:{points:'178,68 178,158 245,158'}, letter:'П'},
+      {id:'flag', tag:'polygon', attrs:{points:'155,42 155,22 195,32'}, letter:'И'},
+      {id:'sun', tag:'circle', attrs:{cx:'290',cy:'52',r:'24'}, letter:'С'},
+      {id:'bird1', tag:'path', attrs:{d:'M50,90 Q60,80 70,90 Q80,80 90,90'},
+        isStroke:true, strokeWidth:6, letter:'Х'},
+      {id:'bird2', tag:'path', attrs:{d:'M250,80 Q258,72 266,80 Q274,72 282,80'},
+        isStroke:true, strokeWidth:6, letter:'Ж'},
+      {id:'wave', tag:'path',
+        attrs:{d:'M20,232 Q60,218 100,232 T180,232 T260,232 T320,232'},
+        isStroke:true, strokeWidth:9, free:true}
+    ]
+  },
+  mazes: {
+    1: {
+      title: 'Лабиринт 1 — Лёгкий',
+      map: [
+        "111111111111111",
+        "100000100000001",
+        "101110101011101",
+        "101000101000101",
+        "101011101110101",
+        "101010001010101",
+        "101000111000101",
+        "101010100010101",
+        "101110101110101",
+        "100010100000101",
+        "111010111111101",
+        "100010000000001",
+        "101111111111101",
+        "100000000000001",
+        "111111111111111"
+      ],
+      start: {x:1, y:1},
+      exit: {x:13, y:13},
+      chests: [{x:3, y:7}, {x:11, y:9}, {x:1, y:13}, {x:13, y:1}]
+    },
+    2: {
+      title: 'Лабиринт 2 — Средний',
+      map: [
+        "111111111111111",
+        "100000000000001",
+        "101111111111101",
+        "101000000000101",
+        "101011111110101",
+        "101010000010101",
+        "101010111010101",
+        "101010100010101",
+        "101010101110101",
+        "101010100000101",
+        "101010111111101",
+        "101000000000001",
+        "101111111111101",
+        "100000000000001",
+        "111111111111111"
+      ],
+      start: {x:1, y:1},
+      exit: {x:13, y:13},
+      chests: [{x:3, y:3}, {x:11, y:7}, {x:1, y:13}, {x:13, y:1}]
+    },
+    3: {
+      title: 'Лабиринт 3 — Сложный',
+      map: [
+        "111111111111111111111",
+        "100000000010000000001",
+        "101111111010111111101",
+        "101000001010100000101",
+        "101011101010101110101",
+        "101010001010001010101",
+        "101010111011101010101",
+        "101010000000001010101",
+        "101011111111101010101",
+        "101000000000001010101",
+        "101011111111111010101",
+        "100000000000000010001",
+        "111111111110111111111",
+        "100000000000000000001",
+        "111111111111111111111"
+      ],
+      start: {x:1, y:1},
+      exit: {x:19, y:13},
+      chests: [{x:1, y:13}, {x:19, y:1}, {x:11, y:7}, {x:3, y:9}]
+    },
+    4: {
+      title: 'Лабиринт 4 — Сокобан (лёгкий)',
+      type: 'sokoban',
+      map: [
+        "###################",
+        "#####   ###########",
+        "#####   ###########",
+        "#####   ###########",
+        "###    $ ##########",
+        "### # ## #   ######",
+        "#   # ## #####  . #",
+        "# $  $          ..#",
+        "##### ### #@##    #",
+        "#####     #########",
+        "###################"
+      ]
+    },
+    5: {
+      title: 'Лабиринт 5 — Сокобан',
+      type: 'sokoban',
+      map: [
+        "###################",
+        "#####   ###########",
+        "#####$  ###########",
+        "#####  $###########",
+        "###  $ $ ##########",
+        "### # ## #   ######",
+        "#   # ## #####  ..#",
+        "# $  $          ..#",
+        "##### ### #@##  ..#",
+        "#####     #########",
+        "###################"
+      ]
+    }
+  },
+  scoring: {
+    SCORE_PER_PRESS:10,
+    CHEST_BONUS:25,
+    SPEED_COMP:180
+  }
+};
+
+/* ============================================================
+   KEYBOARD MAP
+   ============================================================ */
+const CODE_TO_LETTER = {
+  KeyQ:'Й',KeyW:'Ц',KeyE:'У',KeyR:'К',KeyT:'Е',KeyY:'Н',KeyU:'Г',KeyI:'Ш',KeyO:'Щ',KeyP:'З',
+  BracketLeft:'Х',BracketRight:'Ъ',
+  KeyA:'Ф',KeyS:'Ы',KeyD:'В',KeyF:'А',KeyG:'П',KeyH:'Р',KeyJ:'О',KeyK:'Л',KeyL:'Д',
+  Semicolon:'Ж',Quote:'Э',
+  KeyZ:'Я',KeyX:'Ч',KeyC:'С',KeyV:'М',KeyB:'И',KeyN:'Т',KeyM:'Ь',Comma:'Б',Period:'Ю',
+  Backquote:'Ё'
+};
+const LETTER_TO_CODE = {};
+for(const [c,l] of Object.entries(CODE_TO_LETTER)) LETTER_TO_CODE[l]=c;
+
+const KEY_ROWS = [
+  ['Backquote','KeyQ','KeyW','KeyE','KeyR','KeyT','KeyY','KeyU','KeyI','KeyO','KeyP','BracketLeft','BracketRight'],
+  ['KeyA','KeyS','KeyD','KeyF','KeyG','KeyH','KeyJ','KeyK','KeyL','Semicolon','Quote'],
+  ['KeyZ','KeyX','KeyC','KeyV','KeyB','KeyN','KeyM','Comma','Period']
+];
+
+const NS='http://www.w3.org/2000/svg';
+const $=(s,el=document)=>el.querySelector(s);
+const $$=(s,el=document)=>[...el.querySelectorAll(s)];
+
+function familyOf(letter){
+  const color = CONFIG.letterToColor[letter];
+  return Object.entries(CONFIG.letterToColor)
+    .filter(([l,c]) => c === color)
+    .map(([l]) => l).join('');
+}
+
+function shuffleArr(a){
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+/* ============================================================
+   SOKOBAN PARSING
+   ============================================================ */
+function parseSokoban(conf){
+  const rows = conf.map;
+  const h = rows.length;
+  const w = rows[0].length;
+  const map = [];
+  const boxes = [];
+  const targets = [];
+  let player = null;
+  for(let y=0;y<h;y++){
+    map.push([]);
+    for(let x=0;x<w;x++){
+      const c = rows[y][x];
+      if(c === '#'){
+        map[y].push('1');
+      } else {
+        map[y].push('0');
+        if(c === '$') boxes.push({x,y});
+        else if(c === '.') targets.push({x,y});
+        else if(c === '@') player = {x,y};
+      }
+    }
+  }
+  return { map, player, boxes, targets, width:w, height:h };
+}
+function getParsedSokoban(level){
+  const conf = CONFIG.mazes[level];
+  if(!conf._parsed) conf._parsed = parseSokoban(conf);
+  return conf._parsed;
+}
+function getSokobanMoves(map, pos, boxes){
+  const dirs = [
+    {dx:0,dy:-1}, {dx:0,dy:1}, {dx:-1,dy:0}, {dx:1,dy:0}
+  ];
+  const letters = shuffleArr(['Е','Х','А','П','Ж','И','С']);
+  const moves = [];
+  let li = 0;
+  for(const d of dirs){
+    const nx = pos.x + d.dx;
+    const ny = pos.y + d.dy;
+    if(!map[ny] || map[ny][nx] !== '0') continue;
+    const boxIdx = boxes.findIndex(b => b.x===nx && b.y===ny);
+    if(boxIdx >= 0){
+      const bx = nx + d.dx;
+      const by = ny + d.dy;
+      if(!map[by] || map[by][bx] !== '0') continue;
+      if(boxes.some(b => b.x===bx && b.y===by)) continue;
+      moves.push({dx:d.dx, dy:d.dy, nx, ny, boxIdx, letter: letters[li++]});
+    } else {
+      moves.push({dx:d.dx, dy:d.dy, nx, ny, letter: letters[li++]});
+    }
+  }
+  return moves;
+}
+function initSokobanState(level){
+  const parsed = getParsedSokoban(level);
+  const s = {
+    level,
+    type: 'sokoban',
+    pos: {...parsed.player},
+    boxes: parsed.boxes.map(b => ({...b})),
+    targets: parsed.targets.map(t => ({...t})),
+    history: [],
+    done: false,
+    score: 0
+  };
+  s.moves = getSokobanMoves(parsed.map, s.pos, s.boxes);
+  return s;
+}
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const STORAGE_KEY='raskras_v9';
+const DEFAULT_STATE={
+  screen:'start',
+  lastScreen:null,
+  gateIndex:0, gateRound:0,
+  gateKeys:{1:[],2:[],3:[]},
+  game1:{level:'A', filled:{}, undo:[], selected:null},
+  game2:{level:'A', filled:{}, undo:[], selected:null},
+  route:{filled:{}, undo:[], selected:null},
+  maze:{level:1, pos:null, moves:[], chests:[], history:[], done:false, score:0},
+  gallery:{g1A:null,g1B:null,g1C:null,g1D:null,g1E:null,g1F:null,g2A:null,g2B:null,g2C:null,route:null,mazes:{1:null,2:null,3:null,4:null,5:null}},
+  gold:0
+};
+let state=loadState();
+let lastActivity=Date.now();
+let hintCooldown=0;
+let pressedCodes=new Set();
+let audioCtx=null;
+
+function loadState(){
+  try{
+    const raw=localStorage.getItem(STORAGE_KEY);
+    if(!raw) return JSON.parse(JSON.stringify(DEFAULT_STATE));
+    const s=Object.assign(JSON.parse(JSON.stringify(DEFAULT_STATE)), JSON.parse(raw));
+    if(!Array.isArray(s.gateKeys[1])) s.gateKeys[1]=[];
+    if(!Array.isArray(s.gateKeys[2])) s.gateKeys[2]=[];
+    if(!Array.isArray(s.gateKeys[3])) s.gateKeys[3]=[];
+    if(!s.gallery.mazes) s.gallery.mazes={1:null,2:null,3:null,4:null,5:null};
+    if(!(4 in s.gallery.mazes)) s.gallery.mazes[4]=null;
+    if(!(5 in s.gallery.mazes)) s.gallery.mazes[5]=null;
+    // Если сохранённый Сокобан не совпадает по числу сундуков с картой — сбрасываем
+    if(s.maze && s.maze.type==='sokoban'){
+      const parsed = getParsedSokoban(s.maze.level);
+      if(!s.maze.boxes || s.maze.boxes.length !== parsed.boxes.length){
+        s.maze = initSokobanState(s.maze.level);
+      }
+    }
+    return s;
+  }catch(e){ return JSON.parse(JSON.stringify(DEFAULT_STATE)); }
+}
+function save(){ try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){} }
+function activity(){
+  lastActivity=Date.now();
+  const d=$('#activity-dot'); d.classList.add('on');
+  setTimeout(()=>d.classList.remove('on'),220);
+}
+function updateGold(){
+  const el=$('#gold-indicator');
+  if(el) el.textContent='Золото: '+state.gold;
+}
+
+/* ============================================================
+   SOUND
+   ============================================================ */
+function ensureAudio(){
+  if(!audioCtx){
+    try{ audioCtx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){}
+  }
+  if(audioCtx && audioCtx.state==='suspended') audioCtx.resume();
+}
+function tone(f,d,t='sine',g=.07,dl=0){
+  if(!audioCtx) return;
+  const o=audioCtx.createOscillator(), gn=audioCtx.createGain();
+  o.type=t; o.frequency.value=f;
+  const now=audioCtx.currentTime+dl;
+  gn.gain.setValueAtTime(g,now);
+  gn.gain.exponentialRampToValueAtTime(.001,now+d);
+  o.connect(gn); gn.connect(audioCtx.destination);
+  o.start(now); o.stop(now+d);
+}
+function playEvent(name){
+  if(!audioCtx) return;
+  if(name==='correct'){ tone(660,.12,'sine',.08); tone(880,.14,'sine',.07,.08); }
+  if(name==='miss'){ tone(220,.12,'triangle',.06); }
+  if(name==='gateOpen'){ tone(523,.16,'sine',.08); tone(659,.16,'sine',.08,.12); tone(784,.2,'sine',.08,.24); }
+  if(name==='chest'){ tone(784,.12,'square',.05); tone(988,.12,'square',.05,.08); tone(1175,.16,'square',.05,.16); }
+  if(name==='exit'){ tone(523,.16,'sine',.08); tone(659,.16,'sine',.08,.1); tone(784,.16,'sine',.08,.2); tone(1047,.24,'sine',.08,.3); }
+  if(name==='level'){ tone(659,.16,'sine',.08); tone(784,.16,'sine',.08,.1); tone(988,.22,'sine',.08,.2); }
+  if(name==='skip'){ tone(440,.1,'triangle',.06); tone(330,.14,'triangle',.06,.09); }
+}
+
+/* ============================================================
+   VISUAL FX
+   ============================================================ */
+function shake(el){
+  if(!el) return;
+  el.classList.remove('shake'); void el.offsetWidth;
+  el.classList.add('shake');
+  setTimeout(()=>el.classList.remove('shake'),320);
+}
+function sparkle(el,color='#f08a2a',n=4){
+  if(!el) return;
+  const r=el.getBoundingClientRect();
+  const cx=r.left+r.width/2, cy=r.top+r.height/2;
+  for(let i=0;i<n;i++){
+    const d=document.createElement('div'); d.className='spark';
+    d.style.left=cx+'px'; d.style.top=cy+'px'; d.style.background=color;
+    const a=(Math.PI*2/n)*i+Math.random()*.6;
+    const dist=28+Math.random()*26;
+    d.style.setProperty('--dx',Math.cos(a)*dist+'px');
+    d.style.setProperty('--dy',Math.sin(a)*dist+'px');
+    document.body.appendChild(d);
+    setTimeout(()=>d.remove(),500);
+  }
+}
+function showHintAt(el){
+  if(!el) return;
+  const r=el.getBoundingClientRect();
+  const a=$('#hint-arrow');
+  a.style.display='block';
+  a.style.left=(r.left-38)+'px';
+  a.style.top=(r.top+r.height/2-22)+'px';
+  el.classList.add('hint');
+  setTimeout(()=>{ a.style.display='none'; el.classList.remove('hint'); },2200);
+}
+
+/* ============================================================
+   KEYBOARD
+   ============================================================ */
+function buildKeyboard(){
+  const kb=$('#keyboard'); kb.innerHTML='';
+  KEY_ROWS.forEach((row,ri)=>{
+    const r=document.createElement('div'); r.className='kb-row';
+    if(ri===0) r.style.paddingLeft='10px';
+    if(ri===1) r.style.paddingLeft='22px';
+    if(ri===2) r.style.paddingLeft='34px';
+    row.forEach(code=>{
+      const l=CODE_TO_LETTER[code];
+      const k=document.createElement('div');
+      k.className='key';
+      k.dataset.code=code;
+      k.dataset.letter=l;
+      k.textContent=l;
+      r.appendChild(k);
+    });
+    kb.appendChild(r);
+  });
+}
+function activeLettersForScreen(){
+  const s=state.screen;
+  if(s==='game1') return state.gateKeys[1];
+  if(s==='game2') return state.gateKeys[2];
+  if(s==='maze'||s==='route'||s==='choice'){
+    return (state.gateKeys[3]&&state.gateKeys[3].length)
+      ? state.gateKeys[3] : ['Е','Х','А','П','Ж','И','С'];
+  }
+  return null;
+}
+function updateKeyboard(){
+  if(state.screen==='gate'){
+    const gate=CONFIG.gates[state.gateIndex];
+    const target=gate && gate.letters[state.gateRound];
+    if(!target){
+      $$('.key').forEach(k=>{
+        k.style.setProperty('--key-bg','#e9eff6');
+        k.classList.remove('family-hl');
+      });
+      return;
+    }
+    const fam=familyOf(target);
+    $$('.key').forEach(k=>{
+      const l=k.dataset.letter;
+      k.style.setProperty('--key-bg','#e9eff6');
+      if(fam.includes(l)) k.classList.add('family-hl');
+      else k.classList.remove('family-hl');
+    });
+    return;
+  }
+  $$('.key').forEach(k=>k.classList.remove('family-hl'));
+  const active=activeLettersForScreen();
+  $$('.key').forEach(k=>{
+    const l=k.dataset.letter;
+    let bg=CONFIG.baseColors[CONFIG.letterToColor[l]]||'#e9eff6';
+    if(!active || !active.includes(l)) bg='#e9eff6';
+    k.style.setProperty('--key-bg',bg);
+  });
+}
+function highlightKey(code,on){
+  const k=document.querySelector(`.key[data-code="${code}"]`);
+  if(k) k.classList.toggle('pressed',on);
+}
+
+/* ============================================================
+   SCREENS
+   ============================================================ */
+const SCREEN_MAP={
+  start:'screen-start', gate:'screen-gate', game1:'screen-game1',
+  game2:'screen-game2', choice:'screen-choice', maze:'screen-maze',
+  gallery:'screen-gallery', final:'screen-final', route:'screen-game1'
+};
+function showScreen(name){
+  if(name!=='start') state.lastScreen=name;
+  state.screen=name; save();
+  $$('.screen').forEach(s=>s.classList.remove('active'));
+  const id=SCREEN_MAP[name]||'screen-start';
+  document.getElementById(id).classList.add('active');
+  updateKeyboard();
+  renderCurrent();
+  updateGold();
+}
+function renderCurrent(){
+  switch(state.screen){
+    case 'start': renderStart(); break;
+    case 'gate': renderGate(); break;
+    case 'game1': renderGame1(); break;
+    case 'game2': renderGame2(); break;
+    case 'maze': renderMaze(); break;
+    case 'route': renderRoute(); break;
+    case 'gallery': renderGallery(); break;
+    case 'final': renderFinal(); break;
+  }
+}
+
+/* ============================================================
+   START
+   ============================================================ */
+function resetAll(){
+  state=JSON.parse(JSON.stringify(DEFAULT_STATE));
+  localStorage.removeItem('g2map_A');
+  localStorage.removeItem('g2map_B');
+  localStorage.removeItem('g2map_C');
+  save();
+  showScreen('start');
+  updateGold();
+}
+function renderStart(){
+  const cont=$('#btn-continue');
+  if(state.lastScreen) cont.classList.remove('hidden');
+  else cont.classList.add('hidden');
+  cont.onclick=()=>{ ensureAudio(); activity(); showScreen(state.lastScreen); };
+  $('#btn-start').onclick=()=>{
+    ensureAudio(); activity();
+    resetAll();
+    showScreen('gate');
+  };
+}
+
+/* ============================================================
+   GATE
+   ============================================================ */
+function renderGate(){
+  const gate=CONFIG.gates[state.gateIndex];
+  if(state.gateRound>=gate.letters.length){
+    playEvent('gateOpen');
+    setTimeout(()=>{
+      if(gate.next==='game1') showScreen('game1');
+      else if(gate.next==='game2') showScreen('game2');
+      else showScreen('choice');
+    },700);
+    return;
+  }
+  const letter=gate.letters[state.gateRound];
+  const colorKey=CONFIG.letterToColor[letter];
+  const hex=CONFIG.baseColors[colorKey];
+  const family=familyOf(letter);
+
+  $('#gate-title').textContent=`Врата №${gate.num}`;
+  $('#gate-progress').textContent=`Образец ${state.gateRound+1} из ${gate.letters.length}`;
+  $('#gate-target').textContent=letter;
+  $('#gate-target').style.background=hex;
+  $('#gate-word').textContent=family;
+  $('#gate-word').style.color=hex;
+  if(colorKey==='white' || colorKey==='yellow') $('#gate-word').style.textShadow = '0 1px 0 #fff';
+  else $('#gate-word').style.textShadow = '0 2px 4px rgba(0,0,0,.15)';
+  $('#gate-instruction').textContent = 'Найди это слово на клавиатуре и нажми любую букву';
+
+  const chips=$('#gate-chips');
+  chips.innerHTML='';
+  state.gateKeys[gate.num].forEach(l=>{
+    const c=document.createElement('div');
+    c.className='gate-chip';
+    c.style.background=CONFIG.baseColors[CONFIG.letterToColor[l]];
+    c.textContent=l;
+    chips.appendChild(c);
+  });
+  updateKeyboard();
+}
+function handleGateKey(letter){
+  const gate=CONFIG.gates[state.gateIndex];
+  const target=gate.letters[state.gateRound];
+  if(!target) return;
+  const fam=familyOf(target);
+  if(!fam.includes(letter)){
+    playEvent('miss');
+    shake($('#gate-target'));
+    return;
+  }
+  state.gateKeys[gate.num].push(target);
+  state.gateRound++;
+  playEvent('correct');
+  sparkle($('#gate-target'), CONFIG.baseColors[CONFIG.letterToColor[target]], 4);
+  save();
+  renderGate();
+}
+
+/* ============================================================
+   PICTURE BUILDER
+   ============================================================ */
+function buildPicture(data, filledMap, opts={}){
+  const {sample=false, selectedId=null, onRegionClick=null}=opts;
+  const svg=document.createElementNS(NS,'svg');
+  svg.setAttribute('viewBox',data.viewBox);
+  svg.classList.add('picture-svg');
+
+  data.regions.forEach(r=>{
+    const shape=document.createElementNS(NS,r.tag);
+    for(const [k,v] of Object.entries(r.attrs)) shape.setAttribute(k,v);
+    const fl=filledMap[r.id];
+    let color=null;
+    if(sample) color = r.letter ? CONFIG.baseColors[CONFIG.letterToColor[r.letter]] : '#e6edf4';
+    else if(fl) color = CONFIG.baseColors[CONFIG.letterToColor[fl]];
+    if(r.isStroke){
+      shape.setAttribute('stroke', color || '#c9d6e6');
+      shape.setAttribute('fill','none');
+      shape.setAttribute('stroke-width',r.strokeWidth||12);
+      shape.setAttribute('stroke-linecap','round');
+      shape.setAttribute('stroke-linejoin','round');
+    } else {
+      shape.setAttribute('fill', color || '#f4f8fc');
+      shape.setAttribute('stroke','#1c2430');
+      shape.setAttribute('stroke-width','2');
+    }
+    shape.dataset.region=r.id;
+    shape.style.cursor='pointer';
+    if(r.id===selectedId && !filledMap[r.id]) shape.classList.add('selected-region');
+    if(onRegionClick) shape.addEventListener('click',()=>onRegionClick(r));
+    svg.appendChild(shape);
+  });
+  return svg;
+}
+
+/* ============================================================
+   GAME 1
+   ============================================================ */
+function selectedOrFirstGame1(){
+  const data=CONFIG.game1.levels[state.game1.level];
+  if(state.game1.selected){
+    const r=data.regions.find(r=>r.id===state.game1.selected);
+    if(r && !state.game1.filled[r.id]) return r;
+  }
+  return data.regions.find(r=>!state.game1.filled[r.id])||null;
+}
+function renderGame1(){
+  const data=CONFIG.game1.levels[state.game1.level];
+  $('#g1-title').textContent=data.title;
+  const current=selectedOrFirstGame1();
+  const pic=$('#g1-picture');
+  pic.innerHTML='';
+  pic.appendChild(buildPicture(data,state.game1.filled,{
+    selectedId: current ? current.id : null,
+    onRegionClick:(r)=>{
+      if(state.game1.filled[r.id]) return;
+      state.game1.selected=r.id;
+      save();
+      renderGame1();
+    }
+  }));
+
+  const hasLetters = data.regions.some(r=>r.letter);
+  $('#g1-sample-wrap').classList.toggle('hidden', !hasLetters);
+  if(hasLetters){
+    const sample=$('#g1-sample');
+    sample.innerHTML='';
+    sample.appendChild(buildPicture(data,{},{sample:true}));
+  }
+  renderG1Preview();
+
+  const allFilled=data.regions.every(r=>state.game1.filled[r.id]);
+  if(allFilled){
+    const order=['A','B','C','D','E','F'];
+    state.gallery['g1'+state.game1.level]=JSON.parse(JSON.stringify(state.game1.filled));
+    const idx=order.indexOf(state.game1.level);
+    save(); playEvent('level');
+    if(idx>=0 && idx<order.length-1){
+      state.game1={level:order[idx+1],filled:{},undo:[],selected:null};
+      setTimeout(renderGame1,500);
+    } else {
+      setTimeout(()=>{ state.gateIndex=1; state.gateRound=0; showScreen('gate'); },700);
+    }
+  }
+}
+function renderG1Preview(){
+  const p=$('#g1-preview');
+  p.innerHTML='';
+  const r=selectedOrFirstGame1();
+  if(!r){
+    p.innerHTML='<div class="preview-text">Готово!<div class="hintline">Все области закрашены</div></div>';
+    return;
+  }
+  const sw=document.createElement('div');
+  sw.className='preview-swatch';
+  if(r.letter){
+    const ck=CONFIG.letterToColor[r.letter];
+    sw.style.background=CONFIG.baseColors[ck];
+    sw.textContent=r.letter;
+  } else {
+    sw.style.background='#e6edf4';
+    sw.style.color='#52627a';
+    sw.style.textShadow='none';
+    sw.textContent='★';
+  }
+  const txt=document.createElement('div');
+  txt.className='preview-text';
+  if(r.letter){
+    const ck=CONFIG.letterToColor[r.letter];
+    txt.innerHTML=`Нажми <b>${r.letter}</b><div class="hintline">область станет ${CONFIG.colorNames[ck]}</div>`;
+  } else {
+    txt.innerHTML=`Свободная область<div class="hintline">нажми любую из твоих клавиш</div>`;
+  }
+  p.appendChild(sw); p.appendChild(txt);
+}
+function processGame1(letter){
+  const keys=state.gateKeys[1]||[];
+  if(!keys.includes(letter)){ playEvent('miss'); shake($('#g1-picture')); return; }
+  const r=selectedOrFirstGame1();
+  if(!r) return;
+  if(r.letter && r.letter!==letter){ playEvent('miss'); shake($('#g1-picture')); return; }
+  const prev=state.game1.filled[r.id];
+  state.game1.filled[r.id]=letter;
+  state.game1.undo.push({id:r.id,prev});
+  state.game1.selected=null;
+  playEvent('correct');
+  sparkle($('#g1-picture'),CONFIG.baseColors[CONFIG.letterToColor[letter]],3);
+  save();
+  renderGame1();
+}
+
+/* ============================================================
+   GAME 2 (PIXEL ART)
+   ============================================================ */
+function game2Data(){
+  const level = state.game2.level;
+  const d = CONFIG.game2.levels[level];
+  if(!d.map){
+    const saved = localStorage.getItem('g2map_'+level);
+    if(saved) d.map = JSON.parse(saved);
+    else { d.map = generateMap(d.mask); localStorage.setItem('g2map_'+level, JSON.stringify(d.map)); }
+  }
+  return d;
+}
+function game2Keys(){
+  const d=game2Data();
+  const keys=[];
+  for(let y=0; y<d.map.length; y++)
+    for(let x=0; x<d.map[y].length; x++)
+      if(d.map[y][x] !== ' ') keys.push(`${x},${y}`);
+  return keys;
+}
+function game2Need(key){
+  const d=game2Data();
+  const [x,y] = key.split(',').map(Number);
+  return d.map[y][x];
+}
+function currentGame2Key(){
+  const keys=game2Keys();
+  const sel=state.game2.selected;
+  if(sel!=null && !state.game2.filled[sel]) return sel;
+  for(const k of keys){ if(!state.game2.filled[k]) return k; }
+  return null;
+}
+function game2AllFilled(){
+  return game2Keys().every(k=>state.game2.filled[k]);
+}
+function renderGame2(){
+  const data=game2Data();
+  $('#g2-title').textContent=data.title;
+  const board=$('#g2-board');
+  board.innerHTML='';
+  const cur=currentGame2Key();
+  const rows = data.map.length, cols = data.map[0].length;
+  const grid = document.createElement('div');
+  grid.className='pixel-grid';
+  grid.style.gridTemplateColumns=`repeat(${cols}, 1fr)`;
+  for(let y=0; y<rows; y++){
+    for(let x=0; x<cols; x++){
+      const key = `${x},${y}`;
+      const need = data.map[y][x];
+      const cell = document.createElement('div');
+      cell.className='pixel-cell';
+      if(need === ' '){ cell.classList.add('empty'); }
+      else if(state.game2.filled[key]){
+        cell.classList.add('filled');
+        cell.style.background=CONFIG.baseColors[CONFIG.letterToColor[state.game2.filled[key]]];
+      } else {
+        cell.textContent = need;
+        if(key === cur) cell.classList.add('selected');
+        cell.onclick = () => { state.game2.selected = key; renderGame2(); };
+      }
+      grid.appendChild(cell);
+    }
+  }
+  board.appendChild(grid);
+  renderG2Preview();
+  if(game2AllFilled()){
+    const order=['A','B','C'];
+    state.gallery['g2'+state.game2.level]=JSON.parse(JSON.stringify(state.game2.filled));
+    const idx=order.indexOf(state.game2.level);
+    save(); playEvent('level');
+    if(idx>=0 && idx<order.length-1){
+      state.game2={level:order[idx+1],filled:{},undo:[],selected:null};
+      setTimeout(renderGame2,500);
+    } else {
+      setTimeout(()=>{ state.gateIndex=2; state.gateRound=0; showScreen('gate'); },700);
+    }
+  }
+}
+function renderG2Preview(){
+  const p=$('#g2-preview');
+  p.innerHTML='';
+  const key=currentGame2Key();
+  if(key==null){ p.innerHTML='<div class="preview-text">Готово!<div class="hintline">Всё закрашено</div></div>'; return; }
+  const letter=game2Need(key);
+  const ck=CONFIG.letterToColor[letter];
+  const sw=document.createElement('div');
+  sw.className='preview-swatch';
+  sw.style.background=CONFIG.baseColors[ck];
+  sw.textContent=letter;
+  const txt=document.createElement('div');
+  txt.className='preview-text';
+  txt.innerHTML=`Нажми <b>${letter}</b><div class="hintline">клетка станет ${CONFIG.colorNames[ck]}</div>`;
+  p.appendChild(sw); p.appendChild(txt);
+}
+function processGame2(letter){
+  const key=currentGame2Key();
+  if(key==null) return;
+  const need=game2Need(key);
+  if(letter!==need){
+    playEvent('miss');
+    const [x,y] = key.split(',').map(Number);
+    const cells = document.querySelectorAll('.pixel-cell');
+    const idx = y * game2Data().map[0].length + x;
+    if(cells[idx]) shake(cells[idx]); else shake($('#g2-board'));
+    return;
+  }
+  const prev=state.game2.filled[key];
+  state.game2.filled[key]=letter;
+  state.game2.undo.push({key,prev});
+  state.game2.selected=null;
+  playEvent('correct');
+  sparkle($('#g2-board'),CONFIG.baseColors[CONFIG.letterToColor[letter]],3);
+  save();
+  renderGame2();
+}
+
+/* ============================================================
+   MAZE
+   ============================================================ */
+function mazeData(){ return CONFIG.mazes[state.maze.level]||CONFIG.mazes[1]; }
+
+function getRegularMazeMoves(M, pos){
+  const dirs = [
+    { dx: 0, dy: -1 }, { dx: 0, dy: 1 }, { dx: -1, dy: 0 }, { dx: 1, dy: 0 }
+  ];
+  const letters = shuffleArr(['Е','Х','А','П','Ж','И','С']);
+  const moves = [];
+  let li = 0;
+  for(const d of dirs){
+    const nx = pos.x + d.dx, ny = pos.y + d.dy;
+    if(M.map[ny] && M.map[ny][nx] === '0'){
+      moves.push({dx:d.dx, dy:d.dy, nx, ny, letter: letters[li++]});
+    }
+  }
+  return moves;
+}
+function resetCurrentMaze(){
+  if(state.maze.type === 'sokoban'){
+    state.maze = initSokobanState(state.maze.level);
+    save(); renderMaze();
+    return;
+  }
+  const M=mazeData();
+  state.maze={
+    level: state.maze.level,
+    pos: {...M.start},
+    moves: getRegularMazeMoves(M, M.start),
+    chests: M.chests.map(c=>({...c, collected:false})),
+    history: [], done: false, score: 0
+  };
+  save(); renderMaze();
+}
+function renderMazeLevels(){
+  const wrap=$('#maze-levels');
+  wrap.innerHTML='';
+  [1,2,3,4,5].forEach(n=>{
+    const b=document.createElement('button');
+    b.className='maze-tab'+(state.maze.level===n?' active':'');
+    b.textContent=CONFIG.mazes[n].title;
+    b.onclick=()=>switchMaze(n);
+    wrap.appendChild(b);
+  });
+}
+function switchMaze(n){
+  if(state.maze.level===n) return;
+  if(!state.maze.done && state.maze.history && state.maze.history.length>0){
+    if(!confirm('Начать этот лабиринт заново? Текущий прогресс сбросится.')) return;
+  }
+  if(CONFIG.mazes[n].type === 'sokoban'){
+    state.maze = initSokobanState(n);
+  } else {
+    const M=CONFIG.mazes[n];
+    state.maze={
+      level:n,
+      pos:{...M.start},
+      moves: getRegularMazeMoves(M, M.start),
+      chests: M.chests.map(c=>({...c, collected:false})),
+      history: [], done: false, score: 0
+    };
+  }
+  save();
+  renderMaze();
+}
+
+function renderMaze(){
+  renderMazeLevels();
+  if(state.maze.type === 'sokoban') renderSokoban();
+  else renderRegularMaze();
+}
+
+function renderRegularMaze(){
+  const M=mazeData();
+  const rows = M.map.length;
+  const cols = M.map[0].length;
+  const cell = 40;
+  const w = cols * cell, h = rows * cell;
+
+  const svg=document.createElementNS(NS,'svg');
+  svg.setAttribute('viewBox',`0 0 ${w} ${h}`);
+  svg.style.overflow='visible';
+
+  for(let y=0; y<rows; y++){
+    for(let x=0; x<cols; x++){
+      const isWall = M.map[y][x] === '1';
+      const rect = document.createElementNS(NS,'rect');
+      rect.setAttribute('x', x*cell);
+      rect.setAttribute('y', y*cell);
+      rect.setAttribute('width', cell);
+      rect.setAttribute('height', cell);
+      rect.setAttribute('fill', isWall ? '#1c2430' : '#ffffff');
+      rect.setAttribute('stroke', '#c9d6e6');
+      rect.setAttribute('stroke-width', '1');
+      svg.appendChild(rect);
+    }
+  }
+
+  state.maze.chests.forEach(c => {
+    if(c.collected) return;
+    const cx = c.x * cell + cell/2;
+    const cy = c.y * cell + cell/2;
+    const rect = document.createElementNS(NS, 'rect');
+    rect.setAttribute('x', cx - 10); rect.setAttribute('y', cy - 10);
+    rect.setAttribute('width', 20); rect.setAttribute('height', 20);
+    rect.setAttribute('rx', 4);
+    rect.setAttribute('fill', '#f08a2a');
+    rect.setAttribute('stroke', '#1c2430');
+    rect.setAttribute('stroke-width', '2');
+    svg.appendChild(rect);
+    const t = document.createElementNS(NS, 'text');
+    t.setAttribute('x', cx); t.setAttribute('y', cy + 5);
+    t.setAttribute('text-anchor', 'middle');
+    t.setAttribute('font-size', '14'); t.setAttribute('font-weight', '800');
+    t.textContent = '★';
+    svg.appendChild(t);
+  });
+
+  state.maze.moves.forEach(m=>{
+    const t=document.createElementNS(NS,'text');
+    t.setAttribute('x', m.nx*cell + cell/2);
+    t.setAttribute('y', m.ny*cell + cell/2);
+    t.setAttribute('text-anchor','middle');
+    t.setAttribute('dominant-baseline','middle');
+    t.setAttribute('font-size','20');
+    t.setAttribute('font-weight','800');
+    t.setAttribute('fill','#2f6fed');
+    t.setAttribute('stroke','#ffffff');
+    t.setAttribute('stroke-width','3');
+    t.setAttribute('paint-order','stroke');
+    t.textContent=m.letter;
+    svg.appendChild(t);
+  });
+
+  const px = state.maze.pos.x * cell + cell/2;
+  const py = state.maze.pos.y * cell + cell/2;
+  const circle = document.createElementNS(NS,'circle');
+  circle.setAttribute('cx', px); circle.setAttribute('cy', py);
+  circle.setAttribute('r', cell/2 - 4);
+  circle.setAttribute('fill', '#2f6fed');
+  circle.setAttribute('stroke', '#1c2430');
+  circle.setAttribute('stroke-width', '2');
+  svg.appendChild(circle);
+
+  const ex = M.exit.x * cell + cell/2;
+  const ey = M.exit.y * cell + cell/2;
+  const star = document.createElementNS(NS,'text');
+  star.setAttribute('x', ex); star.setAttribute('y', ey + 6);
+  star.setAttribute('text-anchor','middle');
+  star.setAttribute('font-size','26');
+  star.textContent='★';
+  svg.appendChild(star);
+
+  const board=$('#maze-board');
+  board.innerHTML='';
+  board.appendChild(svg);
+
+  const controls=$('#maze-controls');
+  controls.innerHTML='';
+  state.maze.moves.forEach(m=>{
+    const b=document.createElement('button');
+    b.className='maze-letter';
+    b.style.background=CONFIG.baseColors[CONFIG.letterToColor[m.letter]];
+    b.textContent=m.letter;
+    b.onclick=()=>{ ensureAudio(); activity(); processMaze(m.letter); };
+    controls.appendChild(b);
+  });
+  const restart=document.createElement('button');
+  restart.className='maze-tab';
+  restart.textContent='↺ Заново';
+  restart.onclick=()=>{ ensureAudio(); activity(); resetCurrentMaze(); };
+  controls.appendChild(restart);
+
+  const st=$('#maze-status');
+  if(state.maze.done){
+    st.textContent=`Готово! Очки: ${state.maze.score}. Нажатия: ${state.maze.history.length}.`;
+  } else if(state.maze.moves.length===0){
+    st.textContent=`Тупик! Нажми «Заново», чтобы начать этот лабиринт.`;
+  } else {
+    st.textContent=`Очки: ${state.maze.history.length * CONFIG.scoring.SCORE_PER_PRESS} · Нажатия: ${state.maze.history.length}`;
+  }
+  $('#maze-next').classList.toggle('hidden',!state.maze.done);
+  $('#maze-next').onclick=()=>showScreen('gallery');
+}
+
+function renderSokoban(){
+  const parsed = getParsedSokoban(state.maze.level);
+  const map = parsed.map;
+  const rows = map.length, cols = map[0].length;
+  const cell = 40;
+
+  const svg=document.createElementNS(NS,'svg');
+  svg.setAttribute('viewBox',`0 0 ${cols*cell} ${rows*cell}`);
+  svg.style.overflow='visible';
+
+  for(let y=0; y<rows; y++){
+    for(let x=0; x<cols; x++){
+      const isWall = map[y][x] === '1';
+      const rect = document.createElementNS(NS,'rect');
+      rect.setAttribute('x', x*cell); rect.setAttribute('y', y*cell);
+      rect.setAttribute('width', cell); rect.setAttribute('height', cell);
+      rect.setAttribute('fill', isWall ? '#1c2430' : '#ffffff');
+      rect.setAttribute('stroke', isWall ? '#1c2430' : '#c9d6e6');
+      rect.setAttribute('stroke-width', '1');
+      svg.appendChild(rect);
+    }
+  }
+
+  state.maze.targets.forEach(t => {
+    const hasBox = state.maze.boxes.some(b => b.x === t.x && b.y === t.y);
+    const rect = document.createElementNS(NS,'rect');
+    rect.setAttribute('x', t.x*cell + 3);
+    rect.setAttribute('y', t.y*cell + 3);
+    rect.setAttribute('width', cell - 6);
+    rect.setAttribute('height', cell - 6);
+    rect.setAttribute('rx', 6);
+    rect.setAttribute('fill', hasBox ? '#4caf50' : '#f5c518');
+    rect.setAttribute('opacity', hasBox ? '0.9' : '0.55');
+    svg.appendChild(rect);
+  });
+
+  state.maze.boxes.forEach(b => {
+    const onTarget = state.maze.targets.some(t => t.x === b.x && t.y === b.y);
+    const rect = document.createElementNS(NS,'rect');
+    rect.setAttribute('x', b.x*cell + 5);
+    rect.setAttribute('y', b.y*cell + 5);
+    rect.setAttribute('width', cell - 10);
+    rect.setAttribute('height', cell - 10);
+    rect.setAttribute('rx', 5);
+    rect.setAttribute('fill', onTarget ? '#4caf50' : '#f08a2a');
+    rect.setAttribute('stroke', '#1c2430');
+    rect.setAttribute('stroke-width', '2');
+    svg.appendChild(rect);
+    const t = document.createElementNS(NS,'text');
+    t.setAttribute('x', b.x*cell + cell/2);
+    t.setAttribute('y', b.y*cell + cell/2 + 5);
+    t.setAttribute('text-anchor','middle');
+    t.setAttribute('font-size','15');
+    t.setAttribute('font-weight','800');
+    t.setAttribute('fill','#ffffff');
+    t.setAttribute('stroke','#1c2430');
+    t.setAttribute('stroke-width','1');
+    t.setAttribute('paint-order','stroke');
+    t.textContent = onTarget ? '✓' : '★';
+    svg.appendChild(t);
+  });
+
+  state.maze.moves.forEach(m => {
+    const t = document.createElementNS(NS,'text');
+    t.setAttribute('x', m.nx*cell + cell/2);
+    t.setAttribute('y', m.ny*cell + cell/2);
+    t.setAttribute('text-anchor','middle');
+    t.setAttribute('dominant-baseline','middle');
+    t.setAttribute('font-size','20');
+    t.setAttribute('font-weight','800');
+    t.setAttribute('fill','#2f6fed');
+    t.setAttribute('stroke','#ffffff');
+    t.setAttribute('stroke-width','4');
+    t.setAttribute('paint-order','stroke');
+    t.textContent = m.letter;
+    svg.appendChild(t);
+  });
+
+  const px = state.maze.pos.x * cell + cell/2;
+  const py = state.maze.pos.y * cell + cell/2;
+  const circle = document.createElementNS(NS,'circle');
+  circle.setAttribute('cx', px); circle.setAttribute('cy', py);
+  circle.setAttribute('r', cell/2 - 5);
+  circle.setAttribute('fill', '#2f6fed');
+  circle.setAttribute('stroke', '#1c2430');
+  circle.setAttribute('stroke-width', '2');
+  svg.appendChild(circle);
+
+  const board=$('#maze-board');
+  board.innerHTML='';
+  board.appendChild(svg);
+
+  const controls=$('#maze-controls');
+  controls.innerHTML='';
+  state.maze.moves.forEach(m=>{
+    const b=document.createElement('button');
+    b.className='maze-letter';
+    b.style.background=CONFIG.baseColors[CONFIG.letterToColor[m.letter]];
+    b.textContent=m.letter;
+    b.onclick=()=>{ ensureAudio(); activity(); processMaze(m.letter); };
+    controls.appendChild(b);
+  });
+  const restart=document.createElement('button');
+  restart.className='maze-tab';
+  restart.textContent='↺ Заново';
+  restart.onclick=()=>{ ensureAudio(); activity(); resetCurrentMaze(); };
+  controls.appendChild(restart);
+
+  const st=$('#maze-status');
+  if(state.maze.done){
+    st.textContent=`Готово! Все сундуки на местах. Нажатия: ${state.maze.history.length}.`;
+  } else {
+    const placed = state.maze.boxes.filter(b =>
+      state.maze.targets.some(t => t.x === b.x && t.y === b.y)
+    ).length;
+    st.textContent=`Сундуков на местах: ${placed} из ${state.maze.targets.length} · Нажатия: ${state.maze.history.length}`;
+  }
+  $('#maze-next').classList.toggle('hidden',!state.maze.done);
+  $('#maze-next').onclick=()=>showScreen('gallery');
+}
+
+function processMaze(letter){
+  if(state.maze.done) return;
+  if(state.maze.type === 'sokoban') return processSokobanMove(letter);
+  return processRegularMaze(letter);
+}
+
+function processRegularMaze(letter){
+  const move = state.maze.moves.find(m => m.letter === letter);
+  if(!move){ playEvent('miss'); shake($('#maze-board')); return; }
+  const M=mazeData();
+  state.maze.history.push({...state.maze.pos});
+  state.maze.pos = { x: move.nx, y: move.ny };
+  state.maze.moves = getRegularMazeMoves(M, state.maze.pos);
+  const chest = state.maze.chests.find(c => c.x === state.maze.pos.x && c.y === state.maze.pos.y && !c.collected);
+  if(chest){
+    chest.collected = true;
+    state.gold++;
+    updateGold();
+    playEvent('chest');
+    sparkle($('#maze-board'), '#f08a2a', 5);
+  }
+  if(state.maze.pos.x === M.exit.x && state.maze.pos.y === M.exit.y){
+    state.maze.done=true;
+    state.maze.score = state.maze.history.length * CONFIG.scoring.SCORE_PER_PRESS;
+    state.gallery.mazes[state.maze.level]={ score: state.maze.score, presses: state.maze.history.length };
+    playEvent('exit');
+    sparkle($('#maze-board'),'#2f6fed',6);
+  } else {
+    playEvent('correct');
+  }
+  save();
+  renderMaze();
+}
+
+function processSokobanMove(letter){
+  const move = state.maze.moves.find(m => m.letter === letter);
+  if(!move){ playEvent('miss'); shake($('#maze-board')); return; }
+  state.maze.history.push({
+    pos: {...state.maze.pos},
+    boxes: state.maze.boxes.map(b => ({...b}))
+  });
+  state.maze.pos = { x: move.nx, y: move.ny };
+  if(move.boxIdx !== undefined){
+    state.maze.boxes[move.boxIdx].x += move.dx;
+    state.maze.boxes[move.boxIdx].y += move.dy;
+  }
+  const parsed = getParsedSokoban(state.maze.level);
+  state.maze.moves = getSokobanMoves(parsed.map, state.maze.pos, state.maze.boxes);
+  const won = state.maze.targets.every(t =>
+    state.maze.boxes.some(b => b.x === t.x && b.y === t.y)
+  );
+  if(won){
+    state.maze.done = true;
+    state.maze.score = state.maze.history.length * CONFIG.scoring.SCORE_PER_PRESS;
+    const firstTime = !state.gallery.mazes[state.maze.level];
+    state.gallery.mazes[state.maze.level] = { score: state.maze.score, presses: state.maze.history.length };
+    if(firstTime){ state.gold += 3; updateGold(); }
+    playEvent('exit');
+    sparkle($('#maze-board'), '#2f6fed', 6);
+  } else {
+    playEvent('correct');
+  }
+  save();
+  renderMaze();
+}
+
+/* ============================================================
+   ROUTE
+   ============================================================ */
+function selectedOrFirstRoute(){
+  const data=CONFIG.route;
+  if(state.route.selected){
+    const r=data.regions.find(r=>r.id===state.route.selected);
+    if(r && !state.route.filled[r.id]) return r;
+  }
+  return data.regions.find(r=>!state.route.filled[r.id])||null;
+}
+function routeAllowedKeys(){
+  return (state.gateKeys[3]&&state.gateKeys[3].length)
+    ? state.gateKeys[3] : ['Е','Х','А','П','Ж','И','С'];
+}
+function renderRoute(){
+  const data=CONFIG.route;
+  $('#g1-title').textContent=data.title;
+  const current=selectedOrFirstRoute();
+  const pic=$('#g1-picture');
+  pic.innerHTML='';
+  pic.appendChild(buildPicture(data,state.route.filled,{
+    selectedId: current ? current.id : null,
+    onRegionClick:(r)=>{
+      if(state.route.filled[r.id]) return;
+      state.route.selected=r.id;
+      save();
+      renderRoute();
+    }
+  }));
+  const sample=$('#g1-sample');
+  sample.innerHTML='';
+  sample.appendChild(buildPicture(data,{},{sample:true}));
+  $('#g1-sample-wrap').classList.remove('hidden');
+  renderRoutePreview();
+  const allFilled=data.regions.every(r=>state.route.filled[r.id]);
+  if(allFilled){
+    if(!state.gallery.route){
+      state.gallery.route=JSON.parse(JSON.stringify(state.route.filled));
+      state.gold+=6;
+      updateGold();
+    }
+    save(); playEvent('level');
+    setTimeout(()=>showScreen('gallery'),700);
+  }
+}
+function renderRoutePreview(){
+  const p=$('#g1-preview');
+  p.innerHTML='';
+  const r=selectedOrFirstRoute();
+  if(!r){
+    p.innerHTML='<div class="preview-text">Готово!<div class="hintline">Картинка дописана</div></div>';
+    return;
+  }
+  const sw=document.createElement('div');
+  sw.className='preview-swatch';
+  if(r.letter){
+    const ck=CONFIG.letterToColor[r.letter];
+    sw.style.background=CONFIG.baseColors[ck];
+    sw.textContent=r.letter;
+  } else {
+    sw.style.background='#e6edf4';
+    sw.style.color='#52627a';
+    sw.style.textShadow='none';
+    sw.textContent='★';
+  }
+  const txt=document.createElement('div');
+  txt.className='preview-text';
+  if(r.letter){
+    const ck=CONFIG.letterToColor[r.letter];
+    txt.innerHTML=`Нажми <b>${r.letter}</b><div class="hintline">область станет ${CONFIG.colorNames[ck]}</div>`;
+  } else {
+    txt.innerHTML=`Свободная область<div class="hintline">нажми любую из твоих клавиш</div>`;
+  }
+  p.appendChild(sw); p.appendChild(txt);
+}
+function processRoute(letter){
+  const keys=routeAllowedKeys();
+  if(!keys.includes(letter)){ playEvent('miss'); shake($('#g1-picture')); return; }
+  const r=selectedOrFirstRoute();
+  if(!r) return;
+  if(r.letter && r.letter!==letter){ playEvent('miss'); shake($('#g1-picture')); return; }
+  const prev=state.route.filled[r.id];
+  state.route.filled[r.id]=letter;
+  state.route.undo.push({id:r.id,prev});
+  state.route.selected=null;
+  playEvent('correct');
+  sparkle($('#g1-picture'),CONFIG.baseColors[CONFIG.letterToColor[letter]],3);
+  save();
+  renderRoute();
+}
+
+/* ============================================================
+   GALLERY / FINAL
+   ============================================================ */
+function miniGrid(level,filled){
+  const data=CONFIG.game2.levels[level];
+  if(!data.map){
+    const saved = localStorage.getItem('g2map_'+level);
+    if(saved) data.map = JSON.parse(saved);
+    else { data.map = generateMap(data.mask); localStorage.setItem('g2map_'+level, JSON.stringify(data.map)); }
+  }
+  const rows = data.map.length, cols = data.map[0].length;
+  const wrap=document.createElement('div');
+  wrap.className='mini-grid';
+  wrap.style.gridTemplateColumns=`repeat(${cols},1fr)`;
+  wrap.style.aspectRatio = '1 / 1';
+  for(let y=0; y<rows; y++){
+    for(let x=0; x<cols; x++){
+      const key = `${x},${y}`;
+      const need = data.map[y][x];
+      const c=document.createElement('div');
+      c.className='mini-cell';
+      if(need === ' '){ c.style.background='transparent'; }
+      else {
+        const fl=filled[key];
+        c.style.background=fl?CONFIG.baseColors[CONFIG.letterToColor[fl]]:'#f4f8fc';
+      }
+      wrap.appendChild(c);
+    }
+  }
+  return wrap;
+}
+function renderGallery(){
+  const grid=$('#gallery-grid');
+  grid.innerHTML='';
+  const add=(title,el)=>{
+    const it=document.createElement('div');
+    it.className='gallery-item';
+    const h=document.createElement('h3');
+    h.textContent=title; h.style.fontSize='16px'; h.style.margin='4px 0 8px';
+    it.appendChild(h); it.appendChild(el); grid.appendChild(it);
+  };
+  if(state.gallery.g1A) add('Домик', buildPicture(CONFIG.game1.levels.A,state.gallery.g1A,{}));
+  if(state.gallery.g1B) add('Кот', buildPicture(CONFIG.game1.levels.B,state.gallery.g1B,{}));
+  if(state.gallery.g1C) add('Рыбка', buildPicture(CONFIG.game1.levels.C,state.gallery.g1C,{}));
+  if(state.gallery.g1D) add('Бабочка', buildPicture(CONFIG.game1.levels.D,state.gallery.g1D,{}));
+  if(state.gallery.g1E) add('Замок', buildPicture(CONFIG.game1.levels.E,state.gallery.g1E,{}));
+  if(state.gallery.g1F) add('Натюрморт', buildPicture(CONFIG.game1.levels.F,state.gallery.g1F,{}));
+  if(state.gallery.g2A) add('Котик', miniGrid('A',state.gallery.g2A));
+  if(state.gallery.g2B) add('Смайлик', miniGrid('B',state.gallery.g2B));
+  if(state.gallery.g2C) add('Натюрморт', miniGrid('C',state.gallery.g2C));
+  [1,2,3,4,5].forEach(n=>{
+    const m=state.gallery.mazes && state.gallery.mazes[n];
+    if(!m) return;
+    const d=document.createElement('div');
+    d.className='status';
+    d.textContent=`${CONFIG.mazes[n].title}: ${m.score} очков, нажатий ${m.presses}`;
+    add(CONFIG.mazes[n].title, d);
+  });
+  if(state.gallery.route) add('Кораблик', buildPicture(CONFIG.route,state.gallery.route,{}));
+  $('#btn-final').onclick=()=>showScreen('final');
+}
+function countWorks(){
+  let n=0;
+  ['g1A','g1B','g1C','g1D','g1E','g1F','g2A','g2B','g2C','route'].forEach(k=>{ if(state.gallery[k]) n++; });
+  [1,2,3,4,5].forEach(k=>{ if(state.gallery.mazes && state.gallery.mazes[k]) n++; });
+  return n;
+}
+function renderFinal(){
+  $('#final-gold').textContent=`Общее золото: ${state.gold}`;
+  $('#final-stats').textContent=`Сохранено работ: ${countWorks()}`;
+  $('#btn-gallery-back').onclick=()=>showScreen('gallery');
+  $('#btn-restart').onclick=()=>{
+    if(!confirm('Начать игру заново? Все работы и золото сбросятся.')) return;
+    resetAll();
+    showScreen('gate');
+  };
+  $('#btn-home').onclick=()=>showScreen('start');
+}
+
+/* ============================================================
+   KEY HANDLING
+   ============================================================ */
+function handleLetter(letter){
+  if(state.screen==='gate') handleGateKey(letter);
+  else if(state.screen==='game1') processGame1(letter);
+  else if(state.screen==='game2') processGame2(letter);
+  else if(state.screen==='maze') processMaze(letter);
+  else if(state.screen==='route') processRoute(letter);
+}
+function handleUndo(){
+  if(state.screen==='game1'){
+    const u=state.game1.undo.pop(); if(!u) return;
+    if(u.prev===undefined) delete state.game1.filled[u.id];
+    else state.game1.filled[u.id]=u.prev;
+    state.game1.selected=null;
+    save(); renderGame1();
+  } else if(state.screen==='route'){
+    const u=state.route.undo.pop(); if(!u) return;
+    if(u.prev===undefined) delete state.route.filled[u.id];
+    else state.route.filled[u.id]=u.prev;
+    state.route.selected=null;
+    save(); renderRoute();
+  } else if(state.screen==='game2'){
+    const u=state.game2.undo.pop(); if(!u) return;
+    if(u.prev===undefined) delete state.game2.filled[u.key];
+    else state.game2.filled[u.key]=u.prev;
+    state.game2.selected=null;
+    save(); renderGame2();
+  }
+}
+
+/* ---------- SKIP STAGE ---------- */
+function handleSkip(){
+  if(state.screen==='gate'){
+    const gate=CONFIG.gates[state.gateIndex];
+    if(!gate) return;
+    gate.letters.forEach(l=>{
+      if(!state.gateKeys[gate.num].includes(l)) state.gateKeys[gate.num].push(l);
+    });
+    state.gateRound=gate.letters.length;
+    playEvent('skip');
+    save();
+    if(gate.next==='game1') showScreen('game1');
+    else if(gate.next==='game2') showScreen('game2');
+    else showScreen('choice');
+    return;
+  }
+  if(state.screen==='game1'){
+    const order=['A','B','C','D','E','F'];
+    const idx=order.indexOf(state.game1.level);
+    playEvent('skip');
+    if(idx>=0 && idx<order.length-1){
+      state.game1={level:order[idx+1],filled:{},undo:[],selected:null};
+      save(); renderGame1();
+    } else {
+      state.gateIndex=1; state.gateRound=0;
+      save(); showScreen('gate');
+    }
+    return;
+  }
+  if(state.screen==='game2'){
+    const order=['A','B','C'];
+    const idx=order.indexOf(state.game2.level);
+    playEvent('skip');
+    if(idx>=0 && idx<order.length-1){
+      state.game2={level:order[idx+1],filled:{},undo:[],selected:null};
+      save(); renderGame2();
+    } else {
+      state.gateIndex=2; state.gateRound=0;
+      save(); showScreen('gate');
+    }
+    return;
+  }
+  if(state.screen==='maze' || state.screen==='route'){
+    playEvent('skip');
+    showScreen('gallery');
+    return;
+  }
+}
+
+document.addEventListener('keydown',e=>{
+  ensureAudio(); activity();
+  if(e.code==='F5'){ e.preventDefault(); $('#f5-modal').classList.add('open'); return; }
+  if(e.ctrlKey && e.code==='Backquote'){ e.preventDefault(); handleSkip(); return; }
+  if(e.ctrlKey && e.code==='KeyZ'){ e.preventDefault(); handleUndo(); return; }
+  if(e.repeat || pressedCodes.has(e.code)) return;
+  pressedCodes.add(e.code);
+  const l=CODE_TO_LETTER[e.code];
+  if(!l) return;
+  highlightKey(e.code,true);
+  handleLetter(l);
+});
+document.addEventListener('keyup',e=>{
+  pressedCodes.delete(e.code);
+  highlightKey(e.code,false);
+});
+document.addEventListener('pointerdown',()=>{ ensureAudio(); activity(); });
+window.addEventListener('blur',()=>{
+  pressedCodes.clear();
+  $$('.key.pressed').forEach(k=>k.classList.remove('pressed'));
+  if(state.screen!=='start') $('#blur-overlay').style.display='flex';
+});
+window.addEventListener('focus',()=>{ $('#blur-overlay').style.display='none'; });
+$('#blur-overlay').addEventListener('click',()=>{ $('#blur-overlay').style.display='none'; window.focus(); });
+window.addEventListener('wheel',e=>{ if(e.ctrlKey) e.preventDefault(); },{passive:false});
+$('#f5-yes').onclick=()=>{ save(); location.reload(); };
+$('#f5-no').onclick=()=>{ $('#f5-modal').classList.remove('open'); };
+
+/* ============================================================
+   MENU
+   ============================================================ */
+function openMenu(){ $('#menu-modal').classList.add('open'); }
+function closeMenu(){ $('#menu-modal').classList.remove('open'); }
+$('#btn-menu').onclick=()=>{ ensureAudio(); activity(); openMenu(); };
+$('#menu-continue').onclick=()=>closeMenu();
+$('#menu-route').onclick=()=>{
+  closeMenu();
+  if(!state.route || !state.route.filled) state.route={filled:{},undo:[],selected:null};
+  showScreen('route');
+};
+$('#menu-maze').onclick=()=>{ closeMenu(); showScreen('maze'); };
+$('#menu-start').onclick=()=>{ closeMenu(); showScreen('start'); };
+$('#menu-reset').onclick=()=>{
+  closeMenu();
+  if(!confirm('Начать игру заново? Все работы и золото сбросятся.')) return;
+  resetAll();
+  showScreen('gate');
+};
+
+/* ============================================================
+   CHOICE
+   ============================================================ */
+$('#choice-maze').onclick=()=>{
+  ensureAudio(); activity();
+  const M = CONFIG.mazes[1];
+  state.maze={
+    level:1,
+    pos:{...M.start},
+    moves:getRegularMazeMoves(M, M.start),
+    chests:M.chests.map(c=>({...c, collected:false})),
+    history:[], done:false, score:0
+  };
+  save(); showScreen('maze');
+};
+$('#choice-route').onclick=()=>{
+  ensureAudio(); activity();
+  state.route={filled:{},undo:[],selected:null};
+  save(); showScreen('route');
+};
+
+/* ============================================================
+   IDLE HINT
+   ============================================================ */
+setInterval(()=>{
+  if(Date.now()-lastActivity<5000) return;
+  if(Date.now()<hintCooldown) return;
+  let el=null;
+  if(state.screen==='game1'){
+    const r=selectedOrFirstGame1();
+    if(r) el=$(`[data-region="${r.id}"]`);
+  }
+  if(state.screen==='route'){
+    const r=selectedOrFirstRoute();
+    if(r) el=$(`[data-region="${r.id}"]`);
+  }
+  if(state.screen==='game2'){
+    const key=currentGame2Key();
+    if(key!=null){
+      const [x,y] = key.split(',').map(Number);
+      const cells = document.querySelectorAll('.pixel-cell');
+      const idx = y * game2Data().map[0].length + x;
+      if(cells[idx]) el = cells[idx];
+    }
+  }
+  if(state.screen==='maze') el=document.querySelector('.maze-letter');
+  if(el){
+    showHintAt(el);
+    hintCooldown=Date.now()+6000;
+    lastActivity=Date.now();
+  }
+},1000);
+
+/* ============================================================
+   SELF-TEST
+   ============================================================ */
+(function selfTest(){
+  const rowOf=l=>{
+    if('ЙЦУКЕНГШЩЗХЪ'.includes(l)) return 'top';
+    if('ФЫВАПРОЛДЖЭ'.includes(l)) return 'home';
+    if('ЯЧСМИТЬБЮ'.includes(l)) return 'bottom';
+    return 'other';
+  };
+  CONFIG.gates.forEach(g=>{
+    const rows=new Set(g.letters.map(rowOf));
+    console.assert(rows.size===3, `Врата ${g.num}: не все три ряда`);
+    const fams=new Set(g.letters.map(l=>CONFIG.letterToColor[l]));
+    console.assert(fams.size===g.letters.length, `Врата ${g.num}: повтор семейства`);
+  });
+  const allFams=new Set(Object.values(CONFIG.letterToColor));
+  console.assert(allFams.size===8, 'Должно быть 8 семей');
+  console.assert(Object.keys(CONFIG.letterToColor).length===33,'33 буквы');
+  const p4 = getParsedSokoban(4);
+  console.assert(p4.boxes.length === 3, 'Сокобан 4 (лёгкий): должно быть 3 сундука, найдено '+p4.boxes.length);
+  console.assert(p4.targets.length === 3, 'Сокобан 4 (лёгкий): должно быть 3 цели, найдено '+p4.targets.length);
+  console.assert(p4.player, 'Сокобан 4: нет игрока');
+  const p5 = getParsedSokoban(5);
+  console.assert(p5.boxes.length === 6, 'Сокобан 5: должно быть 6 сундуков, найдено '+p5.boxes.length);
+  console.assert(p5.targets.length === 6, 'Сокобан 5: должно быть 6 целей, найдено '+p5.targets.length);
+  console.assert(p5.player, 'Сокобан 5: нет игрока');
+  (function checkMaze1(){
+    const M = CONFIG.mazes[1];
+    const seen = new Set();
+    const q = [{x:M.start.x,y:M.start.y}];
+    while(q.length){
+      const c = q.shift();
+      const k = c.x+','+c.y;
+      if(seen.has(k)) continue;
+      seen.add(k);
+      for(const d of [[0,-1],[0,1],[-1,0],[1,0]]){
+        const nx=c.x+d[0], ny=c.y+d[1];
+        if(M.map[ny] && M.map[ny][nx]==='0' && !seen.has(nx+','+ny)) q.push({x:nx,y:ny});
+      }
+    }
+    M.chests.forEach(c=>{
+      console.assert(seen.has(c.x+','+c.y), `Лабиринт 1: сундук (${c.x},${c.y}) недостижим`);
+    });
+    console.assert(seen.has(M.exit.x+','+M.exit.y), 'Лабиринт 1: выход недостижим');
+  })();
+  console.log('Автотест пройден');
+})();
+
+/* ============================================================
+   INIT
+   ============================================================ */
+buildKeyboard();
+updateKeyboard();
+updateGold();
+if(state.screen && state.screen!=='start') showScreen(state.screen);
+else showScreen('start');
+</script>
+</body>
+</html>

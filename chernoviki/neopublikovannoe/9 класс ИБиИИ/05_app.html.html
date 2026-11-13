@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Нейрон-калькулятор</title>
+<style>
+body { font-family: sans-serif; max-width: 1200px; margin: 20px auto; padding: 20px; background: #f5f5f5; }
+h1 { text-align: center; color: #333; }
+h2 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+h3 { color: #34495e; margin-top: 20px; }
+.mode-btn { padding: 12px 24px; margin: 5px; cursor: pointer; font-size: 14px; border: 2px solid #3498db; background: white; border-radius: 5px; transition: all 0.3s; }
+.mode-btn:hover { background: #ecf0f1; }
+.mode-btn.active { background: #3498db; color: white; }
+.mode { display: none; margin-top: 20px; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+.mode.active { display: block; }
+
+.mode1-layout { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 20px; align-items: start; }
+.matrix-block { text-align: center; }
+.matrix { border-collapse: collapse; margin: 10px auto; }
+.matrix td { width: 50px; height: 50px; border: 2px solid #333; text-align: center; cursor: pointer; font-size: 20px; font-weight: bold; }
+.matrix td.on { background: #27ae60; color: white; }
+.matrix td.off { background: #ecf0f1; }
+.matrix td.readonly { cursor: default; background: #fff; }
+.weight-input { width: 50px; height: 50px; text-align: center; font-size: 18px; font-weight: bold; border: 2px solid #3498db; }
+.threshold { width: 80px; height: 40px; font-size: 18px; text-align: center; border: 2px solid #e74c3c; border-radius: 5px; }
+.arrow { font-size: 40px; color: #3498db; align-self: center; }
+.result-box { background: #e8f5e9; border: 2px solid #27ae60; padding: 15px; border-radius: 10px; margin: 20px 0; }
+.result-box h4 { margin: 0 0 10px 0; color: #27ae60; }
+.step { margin: 5px 0; font-family: 'Courier New', monospace; font-size: 14px; padding: 5px; background: #f9f9f9; border-left: 3px solid #3498db; }
+.example-btn { padding: 10px 20px; margin: 5px; cursor: pointer; background: #9b59b6; color: white; border: none; border-radius: 5px; font-size: 14px; }
+.example-btn:hover { background: #8e44ad; }
+.example-btn-sm { padding: 6px 10px; margin: 2px; cursor: pointer; background: #9b59b6; color: white; border: none; border-radius: 5px; font-size: 12px; white-space: nowrap; }
+.example-btn-sm:hover { background: #8e44ad; }
+.calculate-btn { padding: 12px 30px; background: #e67e22; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; }
+.calculate-btn:hover { background: #d35400; }
+label { margin-right: 15px; font-size: 14px; }
+.controls { margin: 20px 0; text-align: center; }
+.task-box { background: #fff3cd; padding: 15px; border-radius: 10px; margin-top: 20px; border: 2px solid #ffc107; }
+.task-box h4 { margin: 0 0 10px 0; color: #856404; }
+.hint { background: #e8f5e9; padding: 10px; border-radius: 5px; margin-top: 10px; border-left: 4px solid #27ae60; font-size: 13px; }
+
+.neurons-container { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; position: relative; }
+.neuron-block { border: 2px solid #3498db; padding: 15px; border-radius: 10px; background: #ecf0f1; min-width: 250px; position: relative; }
+.neuron-block h4 { margin: 0 0 10px 0; color: #2c3e50; text-align: center; }
+.neuron-description { background: #fff3cd; padding: 8px; border-radius: 5px; margin-bottom: 10px; font-size: 12px; text-align: center; font-style: italic; }
+.output-vector { background: #fff3cd; border: 2px solid #ffc107; padding: 15px; border-radius: 10px; margin: 20px 0; text-align: center; }
+.output-vector h4 { margin: 0 0 10px 0; color: #856404; }
+
+/* Режим 2 - визуальные связи */
+.mode2-container { position: relative; }
+.mode2-input-section { text-align: center; margin-bottom: 30px; position: relative; }
+.mode2-neurons-section { position: relative; }
+.connections-svg-mode2 { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+
+.layer-container { margin: 20px 0; position: relative; }
+.layer { border: 3px solid #3498db; padding: 20px; border-radius: 10px; margin: 20px 0; background: #e3f2fd; }
+.layer h3 { margin-top: 0; color: #1976d2; }
+.layer2 { border-color: #e74c3c; background: #ffebee; }
+.layer2 h3 { color: #c62828; }
+.connections-svg { width: 100%; height: 80px; margin: 10px 0; }
+.final-output { background: #d4edda; border: 3px solid #28a745; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center; }
+.final-output h4 { margin: 0 0 15px 0; color: #155724; font-size: 18px; }
+.neuron-block-l2 { border: 2px solid #e74c3c; padding: 15px; border-radius: 10px; background: #ffebee; margin: 15px 0; }
+.neuron-block-l2 h4 { margin: 0 0 10px 0; color: #c62828; text-align: center; }
+.connection-info { background: #fff; padding: 10px; border-radius: 5px; margin: 10px 0; border-left: 4px solid #3498db; }
+.connection-row { display: flex; align-items: center; margin: 8px 0; gap: 10px; }
+.connection-row label { margin: 0; font-size: 13px; flex: 1; }
+.connection-row input { width: 60px; }
+.neuron-block-sm { border: 2px solid #3498db; padding: 10px; border-radius: 10px; background: #ecf0f1; min-width: 180px; position: relative; }
+.neuron-block-sm h4 { margin: 0 0 8px 0; color: #2c3e50; text-align: center; font-size: 13px; }
+.neuron-block-sm .matrix td { width: 40px; height: 40px; }
+.neuron-block-sm .weight-input { width: 40px; height: 40px; font-size: 14px; }
+.neuron-block-sm .threshold { width: 60px; height: 32px; font-size: 14px; }
+
+/* Режим 3 - окна и оверлей */
+.input-matrix-container { position: relative; display: inline-block; }
+.window-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
+.mode3-connections { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+.mode3-wrapper { position: relative; }
+</style>
+</head>
+<body>
+<h1>🧠 Нейрон-калькулятор</h1>
+
+<div style="text-align: center; margin-bottom: 20px;">
+<button class="mode-btn active" onclick="switchMode(1)">Режим 1: Один нейрон</button>
+<button class="mode-btn" onclick="switchMode(2)">Режим 2: Слой нейронов</button>
+<button class="mode-btn" onclick="switchMode(3)">Режим 3: Сеть из двух слоёв</button>
+</div>
+
+<!-- Режим 1 -->
+<div id="mode1" class="mode active">
+<h2>Режим 1: Один нейрон</h2>
+
+<div class="mode1-layout">
+<div class="matrix-block">
+<h3>📥 Входы (буква)</h3>
+<table class="matrix" id="input1"></table>
+<div style="margin-top: 10px;">
+<button class="example-btn" onclick="setInput1([[1,1,1],[1,0,0],[1,1,1]])">C₁: {111,100,111}</button>
+<button class="example-btn" onclick="setInput1([[1,1,0],[1,0,0],[1,1,0]])">C₂: {110,100,110}</button>
+<button class="example-btn" onclick="setInput1([[0,1,1],[0,1,0],[0,1,1]])">C₃: {011,010,011}</button>
+<button class="example-btn" onclick="setInput1([[1,1,1],[0,1,0],[0,1,0]])">T: {111,010,010}</button>
+<button class="example-btn" onclick="setInput1([[1,1,1],[1,0,1],[1,0,1]])">П₁: {111,101,101}</button>
+<button class="example-btn" onclick="setInput1([[1,1,1],[1,0,1],[0,0,0]])">П₂: {111,101,000}</button>
+</div>
+</div>
+
+<div class="arrow">×</div>
+
+<div class="matrix-block">
+<h3>⚖️ Веса нейрона</h3>
+<table class="matrix" id="weights1"></table>
+</div>
+
+<div class="arrow">→</div>
+
+<div class="matrix-block">
+<h3>🎯 Порог и результат</h3>
+<div style="margin: 20px 0;">
+<label>Порог: <input type="number" class="threshold" id="threshold1" step="0.5" value="0.5"></label>
+</div>
+<div id="result1" class="result-box" style="display: none;"></div>
+</div>
+</div>
+
+<div class="controls">
+<button class="calculate-btn" onclick="calculate1()">💡 Рассчитать</button>
+<label><input type="checkbox" id="showSteps1"> Показать пошагово</label>
+</div>
+
+<div class="task-box">
+<h4>📝 Задания:</h4>
+<ol>
+<li><b>Задание 1:</b> Подбери веса (от −10 до +10) и порог так, чтобы нейрон активировался (выход = 1) на букву <b>C₁ {111,100,111}</b></li>
+<li><b>Задание 2:</b> Проверь, работает ли тот же нейрон для других начертаний C: <b>C₂ {110,100,110}</b> и <b>C₃ {011,010,011}</b></li>
+<li><b>Задание 3:</b> Подбери веса и порог так, чтобы нейрон:
+<ul>
+<li>Активировался (выход = 1) на букву <b>C₁ {111,100,111}</b></li>
+<li>Активировался (выход = 1) на букву <b>П₁ {111,101,101}</b></li>
+<li>НЕ активировался (выход = 0) на букву <b>T {111,010,010}</b></li>
+</ul>
+</li>
+</ol>
+<div class="hint">
+<b>💡 Подсказка к заданию 3:</b> Посмотри на C₁ и П₁ — что у них общего, чего нет у T? Обрати внимание на левый и центральный столбцы (без верхней строки). Попробуй положительные веса для левого столбца и отрицательные для центрального.
+</div>
+</div>
+</div>
+
+<!-- Режим 2 -->
+<div id="mode2" class="mode">
+<h2>Режим 2: Слой нейронов</h2>
+
+<div class="mode2-container">
+<div class="mode2-input-section">
+<h3>📥 Входы (буква)</h3>
+<div style="display: flex; justify-content: center; align-items: flex-start; gap: 25px;">
+<table class="matrix" id="input2" style="position: relative; z-index: 2;"></table>
+<div style="display: flex; flex-direction: column; gap: 4px; padding-top: 10px; position: relative; z-index: 2;">
+<button class="example-btn-sm" onclick="setInput2([[1,1,1],[1,0,0],[1,1,1]])">C₁: {111,100,111}</button>
+<button class="example-btn-sm" onclick="setInput2([[1,1,0],[1,0,0],[1,1,0]])">C₂: {110,100,110}</button>
+<button class="example-btn-sm" onclick="setInput2([[0,1,1],[0,1,0],[0,1,1]])">C₃: {011,010,011}</button>
+<button class="example-btn-sm" onclick="setInput2([[1,1,1],[0,1,0],[0,1,0]])">T: {111,010,010}</button>
+<button class="example-btn-sm" onclick="setInput2([[1,1,1],[1,0,1],[1,0,1]])">П₁: {111,101,101}</button>
+<button class="example-btn-sm" onclick="setInput2([[1,1,1],[1,0,1],[0,0,0]])">П₂: {111,101,000}</button>
+<button class="example-btn-sm" onclick="setInput2([[0,1,0],[1,1,1],[0,1,0]])">+: {010,111,010}</button>
+</div>
+</div>
+</div>
+
+<svg class="connections-svg-mode2" id="connections-svg-mode2">
+<defs>
+<marker id="arrowhead2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+<polygon points="0 0, 10 3, 0 6" fill="#3498db" />
+</marker>
+</defs>
+</svg>
+
+<div class="mode2-neurons-section">
+<div class="neurons-container" id="neurons2"></div>
+</div>
+</div>
+
+<div class="controls">
+<button class="calculate-btn" onclick="calculate2()">💡 Рассчитать слой</button>
+<label><input type="checkbox" id="showSteps2"> Показать пошагово</label>
+</div>
+
+<div id="result2" class="output-vector" style="display: none;"></div>
+
+<div class="task-box">
+<h4>📝 Задания:</h4>
+<ol>
+<li>Определи, какие наборы (векторы выхода) получаются для букв <b>C₁ {111,100,111}</b>, <b>П₁ {111,101,101}</b>, <b>T {111,010,010}</b>?</li>
+<li>Какие значения будут у символа <b>+ {010,111,010}</b>?</li>
+<li>Будут ли совпадающие значения на выходе нейронов для остальных символов, и если будут, то у каких символов есть совпадения?</li>
+<li>💡 Используй веса от −10 до +10. Отрицательные веса «выключают» нейрон при наличии признака.</li>
+</ol>
+</div>
+</div>
+
+<!-- Режим 3 -->
+<div id="mode3" class="mode">
+<h2>Режим 3: Сеть из двух слоёв</h2>
+
+<div class="mode3-wrapper" style="position: relative;">
+<svg class="mode3-connections" id="connections-svg-mode3">
+<defs>
+<marker id="arrowhead3" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+<polygon points="0 0, 10 3, 0 6" fill="#7f8c8d" />
+</marker>
+</defs>
+</svg>
+
+<div style="text-align: center; margin: 20px 0;">
+<h3>📥 Входы (буква)</h3>
+<div class="input-matrix-container" style="position: relative; display: inline-block;">
+  <table class="matrix" id="input3"></table>
+  <svg class="window-overlay" id="window-overlay"></svg>
+</div>
+<div style="margin-top: 10px;">
+<button class="example-btn-sm" onclick="setInput3([[1,1,1],[1,0,0],[1,1,1]])">C₁: {111,100,111}</button>
+<button class="example-btn-sm" onclick="setInput3([[1,1,0],[1,0,0],[1,1,0]])">C₂: {110,100,110}</button>
+<button class="example-btn-sm" onclick="setInput3([[0,1,1],[0,1,0],[0,1,1]])">C₃: {011,010,011}</button>
+<button class="example-btn-sm" onclick="setInput3([[1,1,1],[0,1,0],[0,1,0]])">T: {111,010,010}</button>
+<button class="example-btn-sm" onclick="setInput3([[1,1,1],[1,0,1],[1,0,1]])">П₁: {111,101,101}</button>
+<button class="example-btn-sm" onclick="setInput3([[1,1,1],[1,0,1],[0,0,0]])">П₂: {111,101,000}</button>
+</div>
+</div>
+
+<div class="layer-container">
+<div class="layer">
+<h3>🔵 Слой 1: Детекторы признаков (окна 2×2)</h3>
+<div class="neurons-container" id="layer1_3"></div>
+</div>
+
+<div class="layer layer2">
+<h3>🔴 Слой 2: Финальное решение</h3>
+<div style="display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap;">
+  <div style="text-align: center;">
+    <h4>Выход слоя 1</h4>
+    <table class="matrix" id="l1_outputs_3" style="margin: 0 auto;"></table>
+  </div>
+  <div style="font-size: 30px;">×</div>
+  <div style="text-align: center;">
+    <h4>Веса слоя 2</h4>
+    <table class="matrix" id="l2_weights_3" style="margin: 0 auto;"></table>
+  </div>
+  <div style="font-size: 30px;">→</div>
+  <div style="text-align: center;">
+    <h4>Порог</h4>
+    <input type="number" class="threshold" id="threshold3_l2" step="0.5" value="0.5">
+    <div id="final_output_3" style="font-size: 28px; font-weight: bold; margin-top: 10px; color: #155724;">?</div>
+  </div>
+</div>
+</div>
+</div>
+
+<div class="controls">
+<button class="calculate-btn" onclick="calculate3()">💡 Рассчитать сеть</button>
+<label><input type="checkbox" id="showSteps3"> Показать пошагово</label>
+</div>
+
+<div id="result3" class="final-output" style="display: none;"></div>
+
+<div class="task-box">
+<h4>📝 Задание:</h4>
+<ol>
+<li>Расставь веса и значения порогов <b>в первом слое</b> (4 нейрона 2×2: СЗ, СВ, ЮВ, ЮЗ) и <b>во втором слое</b> так, чтобы распознавались любые начертания буквы <b>С</b> (C₁, C₂, C₃).</li>
+<li>💡 Первый слой детектирует локальные признаки (уголки, линии) в каждом окне 2×2. Второй слой объединяет эти признаки в решение «это C».</li>
+<li>Проверь, что для других букв (T, П₁, П₂) выход равен 0.</li>
+</ol>
+<div class="hint">
+<b>💡 Подсказка:</b> Посмотри, какие 2×2-окна есть у всех трёх начертаний C и чего нет у T и П. Например, у C левый столбец заполнен, а правая середина — пустая. Используй отрицательные веса, чтобы «штрафовать» нейроны за нежелательные признаки.
+</div>
+</div>
+</div>
+</div>
+
+<script>
+/* ========== Общие функции ========== */
+
+function createMatrix(tableId, rows, cols, editable, onClick, readonlyClass) {
+const table = document.getElementById(tableId);
+table.innerHTML = '';
+for (let i = 0; i < rows; i++) {
+const tr = document.createElement('tr');
+for (let j = 0; j < cols; j++) {
+const td = document.createElement('td');
+if (editable) {
+const input = document.createElement('input');
+input.type = 'number';
+input.className = 'weight-input';
+input.value = 0;
+input.min = '-10';
+input.max = '10';
+input.dataset.row = i;
+input.dataset.col = j;
+td.appendChild(input);
+} else {
+td.dataset.row = i;
+td.dataset.col = j;
+td.textContent = '0';
+td.className = 'off';
+if (readonlyClass) td.classList.add('readonly');
+if (onClick) td.onclick = onClick;
+}
+tr.appendChild(td);
+}
+table.appendChild(tr);
+}
+}
+
+function getInputValues(tableId) {
+const table = document.getElementById(tableId);
+const values = [];
+for (let i = 0; i < 3; i++) {
+values[i] = [];
+for (let j = 0; j < 3; j++) {
+values[i][j] = parseInt(table.rows[i].cells[j].textContent);
+}
+}
+return values;
+}
+
+function getWeightValues(tableId) {
+const table = document.getElementById(tableId);
+const rows = table.rows.length;
+const cols = table.rows[0].cells.length;
+const weights = [];
+for (let i = 0; i < rows; i++) {
+weights[i] = [];
+for (let j = 0; j < cols; j++) {
+weights[i][j] = parseFloat(table.rows[i].cells[j].querySelector('input').value);
+}
+}
+return weights;
+}
+
+function setInputValues(tableId, values) {
+const table = document.getElementById(tableId);
+for (let i = 0; i < 3; i++) {
+for (let j = 0; j < 3; j++) {
+table.rows[i].cells[j].textContent = values[i][j];
+table.rows[i].cells[j].className = values[i][j] ? 'on' : 'off';
+}
+}
+}
+
+function toggleCell(td) {
+const val = parseInt(td.textContent);
+td.textContent = val ? '0' : '1';
+td.className = val ? 'off' : 'on';
+}
+
+function switchMode(mode) {
+document.querySelectorAll('.mode').forEach(m => m.classList.remove('active'));
+document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+document.getElementById('mode' + mode).classList.add('active');
+document.querySelectorAll('.mode-btn')[mode - 1].classList.add('active');
+if (mode === 2) setTimeout(drawConnectionsMode2, 100);
+if (mode === 3) {
+  setTimeout(() => {
+    drawInputWindows();
+    drawConnections3();
+  }, 100);
+}
+}
+
+/* ========== Режим 1 ========== */
+
+function setInput1(values) { setInputValues('input1', values); }
+
+function calculate1() {
+const input = getInputValues('input1');
+const weights = getWeightValues('weights1');
+const threshold = parseFloat(document.getElementById('threshold1').value);
+const showSteps = document.getElementById('showSteps1').checked;
+
+let sum = 0;
+let steps = [];
+for (let i = 0; i < 3; i++) {
+for (let j = 0; j < 3; j++) {
+const term = input[i][j] * weights[i][j];
+sum += term;
+if (showSteps && term !== 0) {
+steps.push(`w${i*3+j+1}×x${i*3+j+1} = ${weights[i][j]}×${input[i][j]} = ${term}`);
+}
+}
+}
+
+const result = sum >= threshold ? 1 : 0;
+let html = `<h4>Результат вычисления</h4>`;
+html += `<div class="step"><b>Взвешенная сумма = ${sum}</b></div>`;
+html += `<div class="step"><b>Сравнение: ${sum} ≥ ${threshold} → выход = ${result}</b></div>`;
+if (showSteps && steps.length > 0) {
+html += '<div class="step"><b>Пошагово:</b></div>';
+steps.forEach(s => html += `<div class="step">${s}</div>`);
+}
+
+const resultBox = document.getElementById('result1');
+resultBox.innerHTML = html;
+resultBox.style.display = 'block';
+}
+
+/* ========== Режим 2 ========== */
+
+const NUM_NEURONS_2 = 3;
+const neuronDescriptions = [
+'Детектор левой вертикали',
+'Детектор центрального столбца',
+'Детектор нижней горизонтали'
+];
+
+const neuronConnections = [
+[[0,0], [1,0], [2,0]],
+[[0,1], [1,1], [2,1]],
+[[2,0], [2,1], [2,2]]
+];
+
+function initMode2() {
+const container = document.getElementById('neurons2');
+container.innerHTML = '';
+for (let n = 0; n < NUM_NEURONS_2; n++) {
+const div = document.createElement('div');
+div.className = 'neuron-block';
+div.id = `neuron2_${n}`;
+div.innerHTML = `
+<div class="neuron-description">${neuronDescriptions[n]}</div>
+<h4>Нейрон ${n+1}</h4>
+<table class="matrix" id="weights2_${n}"></table>
+<label>Порог: <input type="number" class="threshold" id="threshold2_${n}" step="0.5" value="2.5"></label>
+`;
+container.appendChild(div);
+createMatrix(`weights2_${n}`, 3, 3, true);
+}
+}
+
+function drawConnectionsMode2() {
+const svg = document.getElementById('connections-svg-mode2');
+const inputTable = document.getElementById('input2');
+const neuronBlocks = document.querySelectorAll('#neurons2 .neuron-block');
+
+if (!inputTable || neuronBlocks.length === 0) return;
+
+const svgRect = svg.getBoundingClientRect();
+let paths = '';
+
+neuronBlocks.forEach((neuronBlock, n) => {
+const connections = neuronConnections[n];
+const weightTable = document.getElementById(`weights2_${n}`);
+
+connections.forEach(([row, col]) => {
+const inputCell = inputTable.rows[row].cells[col];
+const weightCell = weightTable.rows[row].cells[col];
+const weight = parseFloat(weightCell.querySelector('input').value);
+
+const inputRect = inputCell.getBoundingClientRect();
+const weightRect = weightCell.getBoundingClientRect();
+
+const x1 = inputRect.left + inputRect.width / 2 - svgRect.left;
+const y1 = inputRect.bottom - svgRect.top;
+const x2 = weightRect.left + weightRect.width / 2 - svgRect.left;
+const y2 = weightRect.top - svgRect.top;
+
+const color = weight > 0 ? '#27ae60' : (weight < 0 ? '#e74c3c' : '#bdc3c7');
+const strokeWidth = Math.min(Math.abs(weight) * 0.5 + 1, 5);
+
+paths += `<path d="M ${x1} ${y1} L ${x2} ${y2}" 
+stroke="${color}" stroke-width="${strokeWidth}" fill="none" 
+marker-end="url(#arrowhead2)" opacity="0.7"/>`;
+});
+});
+
+svg.innerHTML = svg.innerHTML.split('<path')[0] + paths;
+}
+
+function setInput2(values) {
+setInputValues('input2', values);
+setTimeout(drawConnectionsMode2, 50);
+}
+
+function calculate2() {
+const input = getInputValues('input2');
+const showSteps = document.getElementById('showSteps2').checked;
+const outputs = [];
+let html = '<h4>Выходы нейронов:</h4>';
+
+for (let n = 0; n < NUM_NEURONS_2; n++) {
+const weights = getWeightValues(`weights2_${n}`);
+const threshold = parseFloat(document.getElementById(`threshold2_${n}`).value);
+let sum = 0;
+let steps = [];
+for (let i = 0; i < 3; i++) {
+for (let j = 0; j < 3; j++) {
+const term = input[i][j] * weights[i][j];
+sum += term;
+if (showSteps && term !== 0) {
+steps.push(`w${i*3+j+1}×x${i*3+j+1} = ${weights[i][j]}×${input[i][j]} = ${term}`);
+}
+}
+}
+const result = sum >= threshold ? 1 : 0;
+outputs.push(result);
+html += `<div class="step"><b>${neuronDescriptions[n]}:</b> Сумма = ${sum}, ${sum} ≥ ${threshold} → <b>${result}</b></div>`;
+if (showSteps && steps.length > 0) {
+html += '<div class="step">Пошагово:</div>';
+steps.forEach(s => html += `<div class="step">${s}</div>`);
+}
+}
+
+html += `<div class="step" style="background: #fff3cd; border-left-color: #ffc107;"><b>Выход слоя: [${outputs.join(', ')}]</b></div>`;
+const resultBox = document.getElementById('result2');
+resultBox.innerHTML = html;
+resultBox.style.display = 'block';
+}
+
+/* ========== Режим 3 (переделан) ========== */
+
+// Описание четырёх нейронов первого слоя: каждое окно 2×2
+const layer1Neurons3 = [
+{ name: 'СЗ', desc: 'Окно СЗ (верх-лево)', cells: [[0,0],[0,1],[1,0],[1,1]], color: '#e74c3c' },
+{ name: 'СВ', desc: 'Окно СВ (верх-право)', cells: [[0,1],[0,2],[1,1],[1,2]], color: '#3498db' },
+{ name: 'ЮВ', desc: 'Окно ЮВ (низ-право)', cells: [[1,1],[1,2],[2,1],[2,2]], color: '#27ae60' },
+{ name: 'ЮЗ', desc: 'Окно ЮЗ (низ-лево)', cells: [[1,0],[1,1],[2,0],[2,1]], color: '#f39c12' }
+];
+
+const L2_DESC_3 = 'Детектор буквы C';
+
+function initMode3() {
+// Слой 1: 4 нейрона 2×2
+const l1 = document.getElementById('layer1_3');
+l1.innerHTML = '';
+for (let n = 0; n < 4; n++) {
+const div = document.createElement('div');
+div.className = 'neuron-block-sm';
+div.style.borderColor = layer1Neurons3[n].color;
+div.style.borderWidth = '3px';
+div.innerHTML = `
+<div class="neuron-description">${layer1Neurons3[n].desc}</div>
+<h4>Нейрон ${n+1} (${layer1Neurons3[n].name})</h4>
+<table class="matrix" id="weights3_l1_${n}"></table>
+<label style="font-size:12px;">Порог: <input type="number" class="threshold" id="threshold3_l1_${n}" step="0.5" value="0.5"></label>
+`;
+l1.appendChild(div);
+createMatrix(`weights3_l1_${n}`, 2, 2, true);
+}
+
+// Слой 2: 1 нейрон, принимает 4 сигнала, представленных как 2×2
+// Выход слоя 1 (read-only 2x2)
+createMatrix('l1_outputs_3', 2, 2, false, null, true);
+// Веса слоя 2 (editable 2x2)
+createMatrix('l2_weights_3', 2, 2, true);
+
+// Добавим описание для слоя 2
+const l2Container = document.getElementById('layer2_3');
+// Уже есть в HTML, просто убедимся, что порог и выход на месте
+}
+
+function drawInputWindows() {
+const svg = document.getElementById('window-overlay');
+const table = document.getElementById('input3');
+if (!table || !svg) return;
+
+// Устанавливаем размеры SVG равными размерам таблицы
+const tableRect = table.getBoundingClientRect();
+svg.setAttribute('width', tableRect.width);
+svg.setAttribute('height', tableRect.height);
+svg.setAttribute('viewBox', `0 0 ${tableRect.width} ${tableRect.height}`);
+
+// Очищаем SVG
+svg.innerHTML = '';
+
+// Функция для получения координат ячейки относительно таблицы
+function getCellRect(row, col) {
+const cell = table.rows[row].cells[col];
+const cellRect = cell.getBoundingClientRect();
+return {
+  left: cellRect.left - tableRect.left,
+  top: cellRect.top - tableRect.top,
+  width: cellRect.width,
+  height: cellRect.height
+};
+}
+
+// Рисуем прямоугольники для каждого окна 2×2
+layer1Neurons3.forEach((neuron, idx) => {
+const cells = neuron.cells;
+// Находим границы окна: минимальный и максимальный row/col
+const rows = cells.map(c => c[0]);
+const cols = cells.map(c => c[1]);
+const minRow = Math.min(...rows);
+const maxRow = Math.max(...rows);
+const minCol = Math.min(...cols);
+const maxCol = Math.max(...cols);
+
+const topLeft = getCellRect(minRow, minCol);
+const bottomRight = getCellRect(maxRow, maxCol);
+
+const x = topLeft.left;
+const y = topLeft.top;
+const w = bottomRight.left + bottomRight.width - x;
+const h = bottomRight.top + bottomRight.height - y;
+
+// Рисуем прямоугольник с цветом нейрона
+const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+rect.setAttribute('x', x);
+rect.setAttribute('y', y);
+rect.setAttribute('width', w);
+rect.setAttribute('height', h);
+rect.setAttribute('fill', 'none');
+rect.setAttribute('stroke', neuron.color);
+rect.setAttribute('stroke-width', '4');
+rect.setAttribute('rx', '6');
+rect.setAttribute('opacity', '0.8');
+svg.appendChild(rect);
+
+// Добавляем подпись
+const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+text.setAttribute('x', x + 5);
+text.setAttribute('y', y + 20);
+text.setAttribute('fill', neuron.color);
+text.setAttribute('font-size', '16');
+text.setAttribute('font-weight', 'bold');
+text.textContent = neuron.name;
+svg.appendChild(text);
+});
+}
+
+function drawConnections3() {
+const svg = document.getElementById('connections-svg-mode3');
+const wrapper = document.querySelector('.mode3-wrapper');
+if (!svg || !wrapper) return;
+
+const wrapperRect = wrapper.getBoundingClientRect();
+svg.setAttribute('width', wrapperRect.width);
+svg.setAttribute('height', wrapperRect.height);
+svg.setAttribute('viewBox', `0 0 ${wrapperRect.width} ${wrapperRect.height}`);
+
+// Очищаем SVG, оставляя defs
+const defs = svg.querySelector('defs');
+svg.innerHTML = '';
+if (defs) svg.appendChild(defs);
+
+// Получаем элементы
+const l1Neurons = document.querySelectorAll('#layer1_3 .neuron-block-sm');
+const l1OutputsTable = document.getElementById('l1_outputs_3');
+const l2WeightsTable = document.getElementById('l2_weights_3');
+const finalOutputDiv = document.getElementById('final_output_3');
+
+if (l1Neurons.length !== 4 || !l1OutputsTable || !l2WeightsTable) return;
+
+// Рисуем стрелки от нейронов слоя 1 к соответствующим ячейкам в l1_outputs_3
+// Порядок ячеек в l1_outputs_3: [0][0]=СЗ, [0][1]=СВ, [1][0]=ЮЗ, [1][1]=ЮВ
+// Наши нейроны: 0=СЗ, 1=СВ, 2=ЮВ, 3=ЮЗ
+const mapping = [
+  { neuronIdx: 0, row: 0, col: 0 }, // СЗ -> [0][0]
+  { neuronIdx: 1, row: 0, col: 1 }, // СВ -> [0][1]
+  { neuronIdx: 2, row: 1, col: 1 }, // ЮВ -> [1][1]
+  { neuronIdx: 3, row: 1, col: 0 }  // ЮЗ -> [1][0]
+];
+
+mapping.forEach(({ neuronIdx, row, col }) => {
+  const neuronEl = l1Neurons[neuronIdx];
+  const targetCell = l1OutputsTable.rows[row].cells[col];
+
+  const neuronRect = neuronEl.getBoundingClientRect();
+  const targetRect = targetCell.getBoundingClientRect();
+
+  const x1 = neuronRect.left + neuronRect.width / 2 - wrapperRect.left;
+  const y1 = neuronRect.bottom - wrapperRect.top;
+  const x2 = targetRect.left + targetRect.width / 2 - wrapperRect.left;
+  const y2 = targetRect.top - wrapperRect.top;
+
+  const color = layer1Neurons3[neuronIdx].color;
+
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('d', `M ${x1} ${y1} Q ${(x1+x2)/2} ${(y1+y2)/2} ${x2} ${y2}`);
+  path.setAttribute('stroke', color);
+  path.setAttribute('stroke-width', '3');
+  path.setAttribute('fill', 'none');
+  path.setAttribute('marker-end', 'url(#arrowhead3)');
+  path.setAttribute('opacity', '0.8');
+  svg.appendChild(path);
+});
+
+// Стрелка от l1_outputs_3 к l2_weights_3 (просто между таблицами)
+const l1OutRect = l1OutputsTable.getBoundingClientRect();
+const l2WeightRect = l2WeightsTable.getBoundingClientRect();
+
+const x1 = l1OutRect.right - wrapperRect.left;
+const y1 = l1OutRect.top + l1OutRect.height / 2 - wrapperRect.top;
+const x2 = l2WeightRect.left - wrapperRect.left;
+const y2 = l2WeightRect.top + l2WeightRect.height / 2 - wrapperRect.top;
+
+const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+arrow.setAttribute('d', `M ${x1} ${y1} L ${x2} ${y2}`);
+arrow.setAttribute('stroke', '#7f8c8d');
+arrow.setAttribute('stroke-width', '3');
+arrow.setAttribute('fill', 'none');
+arrow.setAttribute('marker-end', 'url(#arrowhead3)');
+svg.appendChild(arrow);
+
+// Стрелка от l2_weights_3 к final_output_3
+const finalRect = finalOutputDiv.getBoundingClientRect();
+const x3 = l2WeightRect.right - wrapperRect.left;
+const y3 = l2WeightRect.top + l2WeightRect.height / 2 - wrapperRect.top;
+const x4 = finalRect.left - wrapperRect.left;
+const y4 = finalRect.top + finalRect.height / 2 - wrapperRect.top;
+
+const arrow2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+arrow2.setAttribute('d', `M ${x3} ${y3} L ${x4} ${y4}`);
+arrow2.setAttribute('stroke', '#7f8c8d');
+arrow2.setAttribute('stroke-width', '3');
+arrow2.setAttribute('fill', 'none');
+arrow2.setAttribute('marker-end', 'url(#arrowhead3)');
+svg.appendChild(arrow2);
+}
+
+function setInput3(values) {
+setInputValues('input3', values);
+setTimeout(() => {
+  drawInputWindows();
+  drawConnections3();
+}, 50);
+}
+
+function calculate3() {
+const input = getInputValues('input3');
+const showSteps = document.getElementById('showSteps3').checked;
+const l1_outputs = [];
+let html = '<h4>🔵 Слой 1:</h4>';
+
+// Соответствие позиций в весовой матрице 2×2 и клеток окна
+const mapping = [[0,0],[0,1],[1,0],[1,1]];
+
+for (let n = 0; n < 4; n++) {
+const weights = getWeightValues(`weights3_l1_${n}`); // 2×2
+const threshold = parseFloat(document.getElementById(`threshold3_l1_${n}`).value);
+const cells = layer1Neurons3[n].cells;
+let sum = 0;
+let steps = [];
+for (let k = 0; k < 4; k++) {
+const [wi, wj] = mapping[k];
+const [ri, cj] = cells[k];
+const term = input[ri][cj] * weights[wi][wj];
+sum += term;
+if (showSteps && term !== 0) {
+steps.push(`w${k+1}×x${ri*3+cj+1} = ${weights[wi][wj]}×${input[ri][cj]} = ${term}`);
+}
+}
+const result = sum >= threshold ? 1 : 0;
+l1_outputs.push(result);
+html += `<div class="step"><b>Нейрон ${n+1} (${layer1Neurons3[n].name}):</b> Сумма = ${sum}, ${sum} ≥ ${threshold} → <b>${result}</b></div>`;
+if (showSteps && steps.length > 0) {
+html += '<div class="step">Пошагово:</div>';
+steps.forEach(s => html += `<div class="step">${s}</div>`);
+}
+}
+
+// Заполняем таблицу l1_outputs_3
+// Порядок: [0][0]=СЗ (нейрон 0), [0][1]=СВ (нейрон 1), [1][0]=ЮЗ (нейрон 3), [1][1]=ЮВ (нейрон 2)
+const l1OutTable = document.getElementById('l1_outputs_3');
+l1OutTable.rows[0].cells[0].textContent = l1_outputs[0];
+l1OutTable.rows[0].cells[1].textContent = l1_outputs[1];
+l1OutTable.rows[1].cells[0].textContent = l1_outputs[3];
+l1OutTable.rows[1].cells[1].textContent = l1_outputs[2];
+// Обновляем классы для цветов (опционально)
+for (let i = 0; i < 2; i++) {
+  for (let j = 0; j < 2; j++) {
+    const cell = l1OutTable.rows[i].cells[j];
+    cell.className = cell.textContent === '1' ? 'on' : 'off';
+  }
+}
+
+html += `<div class="step" style="background: #e3f2fd; border-left-color: #3498db;"><b>Выход слоя 1 (2×2): [${l1_outputs[0]}, ${l1_outputs[1]}; ${l1_outputs[3]}, ${l1_outputs[2]}]</b></div>`;
+html += '<h4>🔴 Слой 2:</h4>';
+
+// Веса слоя 2 (2×2)
+const weights2 = getWeightValues('l2_weights_3');
+// Порядок весов: [0][0] для СЗ, [0][1] для СВ, [1][0] для ЮЗ, [1][1] для ЮВ
+const w00 = weights2[0][0]; // СЗ
+const w01 = weights2[0][1]; // СВ
+const w10 = weights2[1][0]; // ЮЗ
+const w11 = weights2[1][1]; // ЮВ
+
+// Собираем входы в порядке, соответствующем весам
+const inputsForL2 = [
+  l1_outputs[0], // СЗ
+  l1_outputs[1], // СВ
+  l1_outputs[3], // ЮЗ
+  l1_outputs[2]  // ЮВ
+];
+const weightList = [w00, w01, w10, w11];
+
+let sum2 = 0;
+let steps2 = [];
+for (let i = 0; i < 4; i++) {
+  const term = inputsForL2[i] * weightList[i];
+  sum2 += term;
+  if (showSteps && term !== 0) {
+    steps2.push(`w${i+1}×y${i+1} = ${weightList[i]}×${inputsForL2[i]} = ${term}`);
+  }
+}
+const threshold2 = parseFloat(document.getElementById('threshold3_l2').value);
+const result2 = sum2 >= threshold2 ? 1 : 0;
+
+html += `<div class="step"><b>${L2_DESC_3}:</b> Сумма = ${sum2}, ${sum2} ≥ ${threshold2} → <b>${result2}</b></div>`;
+if (showSteps && steps2.length > 0) {
+  html += '<div class="step">Пошагово:</div>';
+  steps2.forEach(s => html += `<div class="step">${s}</div>`);
+}
+html += `<div class="step" style="background: #d4edda; border-left-color: #28a745; font-size: 16px;"><b>Итоговый выход: [${result2}]</b></div>`;
+
+// Обновляем финальный выход на странице
+const finalOutDiv = document.getElementById('final_output_3');
+finalOutDiv.textContent = result2;
+finalOutDiv.style.color = result2 === 1 ? '#155724' : '#721c24';
+
+const resultBox = document.getElementById('result3');
+resultBox.innerHTML = html;
+resultBox.style.display = 'block';
+drawConnections3();
+}
+
+/* ========== Инициализация ========== */
+
+createMatrix('input1', 3, 3, false, function() { toggleCell(this); });
+createMatrix('weights1', 3, 3, true);
+createMatrix('input2', 3, 3, false, function() { toggleCell(this); });
+createMatrix('input3', 3, 3, false, function() { toggleCell(this); });
+initMode2();
+initMode3();
+
+// Первоначальная отрисовка для режима 3 (после загрузки)
+setTimeout(() => {
+  drawInputWindows();
+  drawConnections3();
+}, 200);
+
+// Обновление визуальных связей при изменении весов
+document.addEventListener('input', function(e) {
+if (e.target.id && e.target.id.startsWith('weights3_l2_')) drawConnections3();
+if (e.target.id && e.target.id.startsWith('weights2_')) drawConnectionsMode2();
+if (e.target.id && e.target.id.startsWith('weights3_l1_')) {
+  // Можно перерисовать соединения, если нужно
+}
+});
+
+window.addEventListener('resize', function() {
+if (document.getElementById('mode2').classList.contains('active')) drawConnectionsMode2();
+if (document.getElementById('mode3').classList.contains('active')) {
+  drawInputWindows();
+  drawConnections3();
+}
+});
+</script>
+</body>
+</html>

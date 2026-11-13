@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Принципы работы нейрона — 7 класс</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  background: #f5f5f5;
+  overflow: hidden;
+}
+.slide {
+  display: none;
+  width: 100vw;
+  height: 100vh;
+  padding: 60px 80px;
+  background: white;
+  position: relative;
+}
+.slide.active { display: flex; flex-direction: column; justify-content: center; }
+h1 { font-size: 72px; margin-bottom: 40px; color: #2c3e50; }
+h2 { font-size: 56px; margin-bottom: 30px; color: #34495e; }
+p, li { font-size: 42px; line-height: 1.5; color: #2c3e50; margin-bottom: 20px; }
+ul { margin-left: 60px; }
+.highlight { background: #fff3cd; padding: 20px; border-left: 8px solid #ffc107; }
+.matrix {
+  display: inline-grid;
+  grid-template-columns: repeat(3, 80px);
+  gap: 8px;
+  margin: 30px auto;
+}
+.cell {
+  width: 80px; height: 80px;
+  border: 3px solid #2c3e50;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px; font-weight: bold;
+}
+.cell.filled { background: #3498db; color: white; }
+.schema {
+  display: flex; align-items: center; justify-content: space-around;
+  margin: 40px 0; font-size: 48px;
+}
+.arrow { font-size: 64px; color: #3498db; }
+table { border-collapse: collapse; margin: 30px auto; font-size: 36px; }
+th, td { border: 3px solid #2c3e50; padding: 15px 25px; text-align: center; }
+th { background: #ecf0f1; }
+.controls {
+  position: fixed; bottom: 30px; right: 30px;
+  display: flex; gap: 15px; z-index: 1000;
+}
+button {
+  padding: 15px 30px; font-size: 24px;
+  background: #3498db; color: white; border: none;
+  cursor: pointer; border-radius: 8px;
+}
+button:hover { background: #2980b9; }
+.counter {
+  position: fixed; bottom: 30px; left: 30px;
+  font-size: 24px; color: #7f8c8d;
+}
+</style>
+</head>
+<body>
+
+<div class="slide active">
+  <h1>Принципы работы нейрона</h1>
+  <p>7 класс · 40 минут</p>
+</div>
+
+<div class="slide">
+  <h2>Как машина видит букву?</h2>
+  <p class="highlight">Как научить машину отличать букву C от T?</p>
+</div>
+
+<div class="slide">
+  <h2>Связь с ИИ и ИБ</h2>
+  <p>Распознавание текста (OCR) — основа:</p>
+  <ul>
+    <li>искусственного интеллекта</li>
+    <li>информационной безопасности</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <h2>Историческая веха</h2>
+  <p><strong>1943</strong> — Мак-Каллок и Питтс: модель нейрона</p>
+  <p><strong>1958</strong> — Розенблатт: персептрон (обучаемый нейрон)</p>
+</div>
+
+<div class="slide">
+  <h2>Устройство нейрона</h2>
+  <div class="schema">
+    <span>Входы 3×3</span>
+    <span class="arrow">→</span>
+    <span>Веса</span>
+    <span class="arrow">→</span>
+    <span>S</span>
+    <span class="arrow">→</span>
+    <span>Порог T</span>
+    <span class="arrow">→</span>
+    <span>Выход</span>
+  </div>
+</div>
+
+<div class="slide">
+  <h2>Входы: матрица 3×3</h2>
+  <p>Каждая клетка: 0 или 1</p>
+  <div style="text-align: center;">
+    <div class="matrix">
+      <div class="cell filled">1</div>
+      <div class="cell filled">1</div>
+      <div class="cell filled">1</div>
+      <div class="cell filled">1</div>
+      <div class="cell">0</div>
+      <div class="cell">0</div>
+      <div class="cell filled">1</div>
+      <div class="cell filled">1</div>
+      <div class="cell filled">1</div>
+    </div>
+    <p style="margin-top: 20px;">Пример: буква C</p>
+  </div>
+</div>
+
+<div class="slide">
+  <h2>Веса</h2>
+  <p>Каждой клетке — свой вес</p>
+  <p>Диапазон: <strong>−10 … +10</strong></p>
+  <p>Вес кодирует: насколько важна эта клетка для распознавания</p>
+</div>
+
+<div class="slide">
+  <h2>Сумма S</h2>
+  <p>S = сумма весов клеток с единицей</p>
+  <p class="highlight">S = w₁·x₁ + w₂·x₂ + ... + w₉·x₉</p>
+</div>
+
+<div class="slide">
+  <h2>Правило выхода</h2>
+  <p style="font-size: 64px; text-align: center; margin: 40px 0;">
+    Если S ≥ T → выход = 1<br>
+    Иначе → выход = 0
+  </p>
+</div>
+
+<div class="slide">
+  <h2>Опорные вопросы</h2>
+  <p><strong>Что кодирует вес?</strong></p>
+  <p>Важность клетки для распознавания</p>
+  <p style="margin-top: 40px;"><strong>Что делает порог?</strong></p>
+  <p>Минимальная сумма для активации</p>
+</div>
+
+<div class="slide">
+  <h2>Режим 1: Задания</h2>
+  <p><strong>Задание 1:</strong></p>
+  <p class="highlight">Подбери веса и порог так, чтобы нейрон активировался на C₁ и молчал на T</p>
+</div>
+
+<div class="slide">
+  <h2>Задание 2</h2>
+  <p>Быстро: проверь свой вариант</p>
+  <p>Сравни с соседом</p>
+</div>
+
+<div class="slide">
+  <h2>Задание 3 — основное</h2>
+  <p>Обучи нейрон различать C и T</p>
+  <p style="margin-top: 30px; font-size: 36px;"><strong>Подсказка:</strong></p>
+  <p style="font-size: 32px;">Клетки 4 и 7 (средняя и нижняя левая) и клетка 9 (нижняя правая) есть и у C₁, и у П₁, и нет у T — им подойдёт положительный вес. Клетка 5 (центр) есть только у T — ей подойдёт отрицательный вес. Попробуй.</p>
+</div>
+
+<div class="slide">
+  <h2>Бумажная пауза</h2>
+  <p>Запиши вывод по заданию 3</p>
+  <p style="margin-top: 60px; font-size: 48px; color: #27ae60;">Гимнастика для глаз</p>
+</div>
+
+<div class="slide">
+  <h2>Алгоритм обучения (часть 1)</h2>
+  <p><strong>Шаг 1.</strong> Задай начальные веса (например, все нули)</p>
+  <p><strong>Шаг 2.</strong> Покажи нейрону пример (букву)</p>
+  <p><strong>Шаг 3.</strong> Вычисли S и выход</p>
+  <p><strong>Шаг 4.</strong> Сравни с правильным ответом</p>
+</div>
+
+<div class="slide">
+  <h2>Алгоритм обучения (часть 2)</h2>
+  <p><strong>Шаг 5.</strong> Если ошибка — поправь веса (правило Розенблатта)</p>
+  <p><strong>Шаг 6.</strong> Повтори для всех примеров</p>
+  <p><strong>Шаг 7.</strong> Если есть ошибки — вернись к шагу 3</p>
+  <p><strong>Шаг 8.</strong> Если всё верно — конец обучения</p>
+</div>
+
+<div class="slide">
+  <h2>Правило поправки</h2>
+  <table>
+    <tr>
+      <th>Ситуация</th>
+      <th>Действие</th>
+    </tr>
+    <tr>
+      <td>Совпало</td>
+      <td>Ничего не меняем</td>
+    </tr>
+    <tr>
+      <td>Нужен 1, получили 0</td>
+      <td>Прибавляем веса активных клеток</td>
+    </tr>
+    <tr>
+      <td>Нужен 0, получили 1</td>
+      <td>Вычитаем веса активных клеток</td>
+    </tr>
+  </table>
+</div>
+
+<div class="slide">
+  <h2>Пошаговый режим</h2>
+  <p>Откройте приложение → режим «Обучение»</p>
+  <p>Следуйте алгоритму шаг за шагом</p>
+  <p>Сверяйтесь с эталоном</p>
+</div>
+
+<div class="slide">
+  <h2>Момент удивления</h2>
+  <p style="font-size: 56px; text-align: center; margin: 60px 0;">
+    Проверим нейрон на П₁…
+  </p>
+  <p style="font-size: 36px; text-align: center;">(Букву, которую ему НЕ показывали при обучении)</p>
+</div>
+
+<div class="slide">
+  <h2>Вопрос на 30 секунд</h2>
+  <p style="font-size: 48px; text-align: center; margin: 60px 0;">
+    Какой признак есть у C₂ и П₁,<br>но нет у T?
+  </p>
+</div>
+
+<div class="slide">
+  <h2>Заезд «Смекалка»</h2>
+  <p><strong>Регламент:</strong></p>
+  <ul>
+    <li>Пара учеников против машины</li>
+    <li>Перед проверкой объясни признак</li>
+    <li>Каждая проверка — шаг</li>
+    <li>Лимит: 5 минут или 12 шагов машины</li>
+    <li>При ничьей — ничья</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <h2>Вывод урока</h2>
+  <p class="highlight" style="font-size: 38px;">
+    Машина делает то же, что делал ученик, — по тому же правилу; но она не понимает. Человек может понять и срезать путь — заметить общий признак букв.
+  </p>
+</div>
+
+<div class="slide">
+  <h2>XOR-крючок</h2>
+  <p style="font-size: 48px; text-align: center; margin: 60px 0;">
+    Сможет ли один нейрон давать 1 ровно на двух клетках из двух, но не на обеих сразу?
+  </p>
+</div>
+
+<div class="slide">
+  <h2>Рефлексия</h2>
+  <p>Что я понял(а)?</p>
+  <p>Что было трудным?</p>
+  <p>Что удивило?</p>
+</div>
+
+<div class="slide">
+  <h2>Домашнее задание</h2>
+  <p><strong>Основное:</strong></p>
+  <p>Придумай свою букву 3×3 (свой образ) и проверь на ней обученный нейрон</p>
+  <p style="margin-top: 40px;"><strong>Звёздочка:</strong></p>
+  <p>Построй ДРАКОН-схему алгоритма обучения по раздатке</p>
+</div>
+
+<div class="counter"><span id="current">1</span> / <span id="total">28</span></div>
+<div class="controls">
+  <button onclick="prevSlide()">← Назад</button>
+  <button onclick="nextSlide()">Далее →</button>
+</div>
+
+<script>
+let currentSlide = 0;
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+document.getElementById('total').textContent = total;
+
+function showSlide(n) {
+  slides[currentSlide].classList.remove('active');
+  currentSlide = (n + total) % total;
+  slides[currentSlide].classList.add('active');
+  document.getElementById('current').textContent = currentSlide + 1;
+}
+
+function nextSlide() { showSlide(currentSlide + 1); }
+function prevSlide() { showSlide(currentSlide - 1); }
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+  if (e.key === 'ArrowLeft') prevSlide();
+});
+</script>
+
+</body>
+</html>

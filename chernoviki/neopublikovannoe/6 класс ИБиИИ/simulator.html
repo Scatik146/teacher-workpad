@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Симулятор датчика — ИИ и здоровье</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+    color: #e2e8f0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .container {
+    max-width: 720px;
+    width: 100%;
+    background: rgba(30,41,59,0.9);
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: 0 0 40px rgba(0,0,0,0.5);
+  }
+  h1 {
+    font-size: 22px;
+    text-align: center;
+    margin-bottom: 6px;
+    color: #38bdf8;
+  }
+  .subtitle {
+    text-align: center;
+    font-size: 14px;
+    color: #94a3b8;
+    margin-bottom: 24px;
+  }
+  .task-box {
+    background: rgba(56,189,248,0.1);
+    border: 1px solid rgba(56,189,248,0.3);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 24px;
+    font-size: 15px;
+  }
+  .task-box strong { color: #fbbf24; }
+  .control-group {
+    margin-bottom: 22px;
+  }
+  .control-label {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .control-value {
+    font-size: 13px;
+    color: #94a3b8;
+    font-weight: 400;
+  }
+  input[type=range] {
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: #334155;
+    outline: none;
+    -webkit-appearance: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #38bdf8;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(56,189,248,0.5);
+  }
+  input[type=range]::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #38bdf8;
+    cursor: pointer;
+    border: none;
+  }
+  .canvas-box {
+    background: #0f172a;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  #pulseCanvas {
+    width: 100%;
+    height: 180px;
+    display: block;
+  }
+  .readout {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 16px;
+  }
+  .readout-item {
+    text-align: center;
+  }
+  .readout-label {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-bottom: 4px;
+  }
+  .readout-value {
+    font-size: 28px;
+    font-weight: 700;
+  }
+  .readout-value.ok { color: #4ade80; }
+  .readout-value.warn { color: #fbbf24; }
+  .readout-value.err { color: #f87171; }
+  .status-box {
+    text-align: center;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.3s;
+  }
+  .status-ok {
+    background: rgba(74,222,128,0.15);
+    color: #4ade80;
+    border: 1px solid rgba(74,222,128,0.3);
+  }
+  .status-warn {
+    background: rgba(251,191,36,0.15);
+    color: #fbbf24;
+    border: 1px solid rgba(251,191,36,0.3);
+  }
+  .status-err {
+    background: rgba(248,113,113,0.15);
+    color: #f87171;
+    border: 1px solid rgba(248,113,113,0.3);
+  }
+  .conclusion {
+    margin-top: 20px;
+    padding: 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    display: none;
+  }
+  .conclusion.show { display: block; }
+  .conclusion-ok {
+    background: rgba(74,222,128,0.1);
+    border: 1px solid rgba(74,222,128,0.2);
+  }
+  .conclusion-err {
+    background: rgba(248,113,113,0.1);
+    border: 1px solid rgba(248,113,113,0.2);
+  }
+  .footer {
+    text-align: center;
+    font-size: 12px;
+    color: #475569;
+    margin-top: 16px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🔬 Симулятор оптического датчика</h1>
+  <p class="subtitle">Можешь ли ты «сломать» алгоритм ИИ?</p>
+
+  <div class="task-box">
+    <strong>Задание:</strong> Двигай ползунки и найди такие значения, при которых ИИ-алгоритм «потеряет» пульс или покажет аномальный сбой. Подумай: значит ли это, что гаджет всегда показывает «чистую правду»?
+  </div>
+
+  <div class="readout">
+    <div class="readout-item">
+      <div class="readout-label">Пульс (уд/мин)</div>
+      <div class="readout-value ok" id="pulseValue">72</div>
+    </div>
+    <div class="readout-item">
+      <div class="readout-label">Сигнал (%)</div>
+      <div class="readout-value ok" id="signalValue">95</div>
+    </div>
+  </div>
+
+  <div class="canvas-box">
+    <canvas id="pulseCanvas"></canvas>
+  </div>
+
+  <div class="status-box status-ok" id="statusBox">
+    ✅ Датчик работает нормально — пульс считывается точно
+  </div>
+
+  <div class="control-group">
+    <div class="control-label">
+      Движение руки (вибрация)
+      <span class="control-value" id="moveLabel">спокойно</span>
+    </div>
+    <input type="range" id="movement" min="0" max="100" value="0">
+  </div>
+
+  <div class="control-group">
+    <div class="control-label">
+      Плотность рисунка на запястье (татуировка / повязка)
+      <span class="control-value" id="inkLabel">чистая кожа</span>
+    </div>
+    <input type="range" id="ink" min="0" max="100" value="0">
+  </div>
+
+  <div class="conclusion" id="conclusion"></div>
+
+  <div class="footer">Урок ИИ и ИБ · 6 класс · Симулятор для образовательных целей</div>
+</div>
+
+<script>
+const canvas = document.getElementById('pulseCanvas');
+const ctx = canvas.getContext('2d');
+const movement = document.getElementById('movement');
+const ink = document.getElementById('ink');
+const pulseValue = document.getElementById('pulseValue');
+const signalValue = document.getElementById('signalValue');
+const statusBox = document.getElementById('statusBox');
+const conclusion = document.getElementById('conclusion');
+const moveLabel = document.getElementById('moveLabel');
+const inkLabel = document.getElementById('inkLabel');
+
+function resizeCanvas() {
+  canvas.width = canvas.offsetWidth * 2;
+  canvas.height = canvas.offsetHeight * 2;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+let t = 0;
+let glitchTimer = 0;
+let glitchActive = false;
+
+function draw() {
+  t += 0.05;
+  const m = parseInt(movement.value);
+  const k = parseInt(ink.value);
+
+  // Signal quality: degrades with ink and movement
+  let signal = 100 - k * 0.9 - m * 0.3;
+  signal = Math.max(0, Math.min(100, signal));
+
+  // Glitch logic
+  let isGlitch = false;
+  let displayPulse = 72;
+
+  if (signal < 20) {
+    // Total loss
+    isGlitch = true;
+    displayPulse = Math.floor(Math.random() * 40) + 160; // wild spikes
+  } else if (signal < 45) {
+    // Unstable
+    glitchTimer++;
+    if (glitchTimer > 8) {
+      glitchActive = !glitchActive;
+      glitchTimer = 0;
+    }
+    if (glitchActive) {
+      isGlitch = true;
+      displayPulse = Math.floor(Math.random() * 60) + 100;
+    } else {
+      displayPulse = Math.floor(72 + (Math.random() - 0.5) * 20 + m * 0.15);
+    }
+  } else if (signal < 70) {
+    // Noisy but readable
+    displayPulse = Math.floor(72 + (Math.random() - 0.5) * 12 + m * 0.1);
+  } else {
+    // Good signal
+    displayPulse = Math.floor(72 + Math.sin(t * 2) * 2);
+  }
+
+  // Draw
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Grid
+  ctx.strokeStyle = 'rgba(56,189,248,0.08)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i < canvas.width; i += 40) {
+    ctx.beginPath();
+    ctx.moveTo(i, 0);
+    ctx.lineTo(i, canvas.height);
+    ctx.stroke();
+  }
+  for (let i = 0; i < canvas.height; i += 40) {
+    ctx.beginPath();
+    ctx.moveTo(0, i);
+    ctx.lineTo(canvas.width, i);
+    ctx.stroke();
+  }
+
+  // Waveform
+  const w = canvas.width;
+  const h = canvas.height;
+  const midY = h / 2;
+  const amp = h * 0.3 * (signal / 100);
+  const noise = m * 0.5;
+
+  ctx.beginPath();
+  ctx.strokeStyle = isGlitch ? '#f87171' : '#4ade80';
+  ctx.lineWidth = 3;
+  ctx.shadowBlur = isGlitch ? 0 : 10;
+  ctx.shadowColor = isGlitch ? '#f87171' : '#4ade80';
+
+  for (let x = 0; x < w; x++) {
+    const phase = (x / w) * Math.PI * 6 + t;
+    let y;
+    if (signal < 20) {
+      // Chaotic
+      y = midY + (Math.random() - 0.5) * h * 0.8;
+    } else {
+      // Heartbeat-like wave
+      const beat = Math.sin(phase) * amp;
+      const beat2 = Math.sin(phase * 3) * amp * 0.3;
+      const jitter = (Math.random() - 0.5) * noise * 2;
+      y = midY - beat - beat2 + jitter;
+    }
+
+    if (x === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // Update readouts
+  pulseValue.textContent = displayPulse;
+  pulseValue.className = 'readout-value ' + (isGlitch ? 'err' : (signal < 70 ? 'warn' : 'ok'));
+  signalValue.textContent = Math.round(signal);
+  signalValue.className = 'readout-value ' + (signal < 45 ? 'err' : (signal < 70 ? 'warn' : 'ok'));
+
+  // Status
+  if (signal < 20) {
+    statusBox.className = 'status-box status-err';
+    statusBox.textContent = '⛔ СБОЙ! Датчик потерял пульс — показывает случайные значения';
+    conclusion.className = 'conclusion conclusion-err show';
+    conclusion.innerHTML = '🎉 Ты «сломал» алгоритм! <strong>Вывод:</strong> Датчик не всегда показывает правду. Татуировка или сильная вибрация могут полностью сбить ИИ. Цифрам на экране нельзя верить слепо.';
+  } else if (signal < 45) {
+    statusBox.className = 'status-box status-err';
+    statusBox.textContent = '⚠️ Нестабильный сигнал — пульс скачет, данные ненадёжны';
+    conclusion.className = 'conclusion conclusion-err show';
+    conclusion.innerHTML = '⚡ Почти сломал! Сигнал нестабилен — ИИ выдаёт случайные значения пульса. <strong>Вывод:</strong> Гаджет «угадывает», а не измеряет.';
+  } else if (signal < 70) {
+    statusBox.className = 'status-box status-warn';
+    statusBox.textContent = '⚠️ Сигнал зашумлён — пульс считается с погрешностью';
+    conclusion.className = 'conclusion show';
+    conclusion.style.background = 'rgba(251,191,36,0.1)';
+    conclusion.style.border = '1px solid rgba(251,191,36,0.2)';
+    conclusion.innerHTML = '🤔 Сигнал слабеет. Попробуй увеличить оба ползунка, чтобы полностью «сломать» датчик.';
+  } else {
+    statusBox.className = 'status-box status-ok';
+    statusBox.textContent = '✅ Датчик работает нормально — пульс считывается точно';
+    conclusion.className = 'conclusion';
+    conclusion.style.display = 'none';
+  }
+
+  // Labels
+  const mv = parseInt(movement.value);
+  if (mv < 20) moveLabel.textContent = 'спокойно';
+  else if (mv < 50) moveLabel.textContent = 'лёгкая дрожь';
+  else if (mv < 80) moveLabel.textContent = 'активное движение';
+  else moveLabel.textContent = 'тряска!';
+
+  const kv = parseInt(ink.value);
+  if (kv < 15) inkLabel.textContent = 'чистая кожа';
+  else if (kv < 40) inkLabel.textContent = 'лёгкий узор';
+  else if (kv < 70) inkLabel.textContent = 'плотная татуировка';
+  else inkLabel.textContent = 'чёрный рукав!';
+
+  requestAnimationFrame(draw);
+}
+
+draw();
+</script>
+</body>
+</html>

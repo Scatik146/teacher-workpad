@@ -1,0 +1,530 @@
+<write_to_file>
+<path>презентация_автономная.html</path>
+<content><!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Модели и моделирование - 6 класс</title>
+<style>
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+body {
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+overflow: hidden;
+}
+.presentation {
+width: 100vw;
+height: 100vh;
+position: relative;
+}
+.slide {
+width: 100%;
+height: 100%;
+display: none;
+padding: 60px;
+background: white;
+position: absolute;
+top: 0;
+left: 0;
+animation: fadeIn 0.5s;
+}
+.slide.active {
+display: flex;
+flex-direction: column;
+justify-content: center;
+}
+@keyframes fadeIn {
+from { opacity: 0; transform: translateX(50px); }
+to { opacity: 1; transform: translateX(0); }
+}
+h1 {
+font-size: 3em;
+color: #2c3e50;
+margin-bottom: 30px;
+text-align: center;
+}
+h2 {
+font-size: 2.5em;
+color: #34495e;
+margin-bottom: 40px;
+text-align: center;
+}
+h3 {
+font-size: 1.8em;
+color: #2c3e50;
+margin: 20px 0;
+}
+p, li {
+font-size: 1.3em;
+line-height: 1.6;
+color: #34495e;
+}
+ul, ol {
+margin-left: 40px;
+margin-top: 20px;
+}
+li {
+margin: 15px 0;
+}
+.quote {
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+color: white;
+padding: 40px;
+border-radius: 15px;
+font-size: 1.5em;
+text-align: center;
+font-style: italic;
+margin: 40px 0;
+box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+.definition {
+background: #e8f4f8;
+border-left: 5px solid #3498db;
+padding: 30px;
+margin: 25px 0;
+border-radius: 10px;
+box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+.highlight {
+background: #fff3cd;
+border-left: 5px solid #ffc107;
+padding: 30px;
+margin: 25px 0;
+border-radius: 10px;
+box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+.timer {
+font-size: 4em;
+color: #e74c3c;
+font-weight: bold;
+text-align: center;
+margin: 40px 0;
+text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+.grid-3 {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 30px;
+margin: 30px 0;
+}
+.card {
+background: #f8f9fa;
+padding: 30px;
+border-radius: 15px;
+border: 3px solid #dee2e6;
+box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+transition: transform 0.3s;
+}
+.card:hover {
+transform: translateY(-10px);
+box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+.card h3 {
+font-size: 1.5em;
+margin-bottom: 15px;
+text-align: center;
+}
+table {
+width: 100%;
+border-collapse: collapse;
+margin: 30px 0;
+box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+border-radius: 10px;
+overflow: hidden;
+}
+th {
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+color: white;
+padding: 20px;
+font-size: 1.2em;
+text-align: left;
+}
+td {
+padding: 18px;
+border-bottom: 1px solid #ddd;
+font-size: 1.1em;
+}
+tr:nth-child(even) {
+background: #f8f9fa;
+}
+tr:hover {
+background: #e9ecef;
+}
+.controls {
+position: fixed;
+bottom: 30px;
+right: 30px;
+display: flex;
+gap: 15px;
+z-index: 1000;
+}
+.btn {
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+color: white;
+border: none;
+padding: 15px 30px;
+font-size: 1.2em;
+border-radius: 50px;
+cursor: pointer;
+box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+transition: all 0.3s;
+}
+.btn:hover {
+transform: translateY(-3px);
+box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+.slide-number {
+position: fixed;
+bottom: 30px;
+left: 30px;
+background: rgba(0,0,0,0.7);
+color: white;
+padding: 10px 20px;
+border-radius: 25px;
+font-size: 1.1em;
+z-index: 1000;
+}
+.emoji {
+font-size: 1.5em;
+}
+.center {
+text-align: center;
+}
+.big-text {
+font-size: 1.5em;
+margin: 30px 0;
+}
+</style>
+</head>
+<body>
+<div class="presentation">
+<!-- Слайд 1 -->
+<div class="slide active">
+<h1>🎒 Модели и моделирование</h1>
+<p class="center big-text">Урок технологии, 6 класс</p>
+<div class="quote">
+Прежде чем что-то построить в реальности,<br>
+построй это в голове или на бумаге
+</div>
+</div>
+    <!-- Слайд 2 -->
+    <div class="slide">
+        <h2>🚀 Начнем урок!</h2>
+        <div class="quote">
+            «То, что я слышу, я забываю.<br>
+            То, что я вижу, я запоминаю.<br>
+            То, что я делаю, я понимаю»
+        </div>
+        <p class="center big-text">Сегодня вы – инженеры и дизайнеры!</p>
+    </div>
+
+    <!-- Слайд 3 -->
+    <div class="slide">
+        <h2>⏱️ Задание для команды дизайнеров</h2>
+        <div class="highlight">
+            <h3>Задача:</h3>
+            <p>Придумать новый школьный рюкзак, который не мнет учебники</p>
+        </div>
+        <div class="highlight">
+            <h3>Условия:</h3>
+            <ul>
+                <li>Нет ткани и времени на пошив</li>
+                <li>Время на выполнение: <strong>1 минута</strong></li>
+                <li>Нарисуйте или опишите так, чтобы заказчик точно понял форму</li>
+            </ul>
+        </div>
+        <div class="timer">⏱️ 1:00</div>
+    </div>
+
+    <!-- Слайд 4 -->
+    <div class="slide">
+        <h2>🤔 Что получилось?</h2>
+        <div class="highlight">
+            <h3>Проблема:</h3>
+            <p class="big-text">Мы не можем показать настоящий рюкзак, а наших рисунков недостаточно, чтобы передать все свойства объекта.</p>
+        </div>
+        <p class="center big-text"><strong>Вопрос:</strong> Чего нам не хватает?</p>
+        <p class="center big-text">Нам не хватает правил, как правильно заменять реальный объект чем-то другим для изучения или показа</p>
+    </div>
+
+    <!-- Слайд 5 -->
+    <div class="slide">
+        <h2>📚 Тема урока</h2>
+        <h1 style="color: #667eea;">Модели и моделирование</h1>
+        <div style="margin-top: 50px;">
+            <h3>План действий:</h3>
+            <ol>
+                <li>Дать определение «модель» и «моделирование»</li>
+                <li>Узнать виды моделей</li>
+                <li>Понять, зачем это нужно</li>
+                <li>Исправить наше пробное задание про рюкзак</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Слайд 6 -->
+    <div class="slide">
+        <h2>📖 Основные понятия</h2>
+        <div class="definition">
+            <h3>🎯 Модель</h3>
+            <p class="big-text">Это упрощенный заменитель реального объекта, сохраняющий его самые важные, <strong>существенные</strong> свойства.</p>
+        </div>
+        <div class="definition">
+            <h3>🔄 Моделирование</h3>
+            <p class="big-text">Это процесс создания и использования моделей.</p>
+        </div>
+    </div>
+
+    <!-- Слайд 7 -->
+    <div class="slide">
+        <h2>🎨 Виды моделей</h2>
+        <div class="grid-3">
+            <div class="card">
+                <h3>📦 Материальные</h3>
+                <p class="center"><em>(предметные)</em></p>
+                <ul>
+                    <li>Глобус</li>
+                    <li>Манекен</li>
+                    <li>Макет дома из картона</li>
+                </ul>
+                <p class="center" style="margin-top: 20px; color: #6c757d;"><em>Можно потрогать</em></p>
+            </div>
+            <div class="card">
+                <h3>📄 Информационные</h3>
+                <ul>
+                    <li>Чертеж</li>
+                    <li>Схема</li>
+                    <li>Рецепт</li>
+                    <li>Словесное описание</li>
+                </ul>
+                <p class="center" style="margin-top: 20px; color: #6c757d;"><em>Несут информацию</em></p>
+            </div>
+            <div class="card">
+                <h3>💻 Компьютерные</h3>
+                <ul>
+                    <li>3D-модель в программе</li>
+                    <li>Симуляция краш-теста</li>
+                    <li>Виртуальный макет</li>
+                </ul>
+                <p class="center" style="margin-top: 20px; color: #6c757d;"><em>В цифровой среде</em></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Слайд 8 -->
+    <div class="slide">
+        <h2>💡 Решение задачи про рюкзак</h2>
+        <div class="highlight">
+            <h3>Как теперь правильно выполнить задание?</h3>
+            <p class="big-text"><strong>Вариант 1:</strong> Создать <em>информационную модель</em> – четкий чертеж с размерами и описанием</p>
+            <p class="big-text"><strong>Вариант 2:</strong> Создать <em>материальную модель</em> – быстрый макет из бумаги</p>
+        </div>
+        <p class="center big-text" style="margin-top: 40px; font-style: italic;">
+            Модель позволяет передать свойства объекта без создания самого объекта!
+        </p>
+    </div>
+
+    <!-- Слайд 9 -->
+    <div class="slide">
+        <h2>🎯 Задание «Найди пару»</h2>
+        <p class="center big-text">Соотнесите объект и его модель, определите вид модели:</p>
+        <table>
+            <tr>
+                <th>Объект</th>
+                <th>Модель</th>
+                <th>Вид модели</th>
+            </tr>
+            <tr>
+                <td>🌍 Земля</td>
+                <td>Глобус</td>
+                <td>?</td>
+            </tr>
+            <tr>
+                <td>🗄️ Сборка шкафа</td>
+                <td>Схема-инструкция</td>
+                <td>?</td>
+            </tr>
+            <tr>
+                <td>🌳 Будущий парк</td>
+                <td>3D-визуализация</td>
+                <td>?</td>
+            </tr>
+            <tr>
+                <td>👗 Коллекция одежды</td>
+                <td>Манекен</td>
+                <td>?</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Слайд 10 -->
+    <div class="slide">
+        <h2>✍️ Самостоятельная работа</h2>
+        <h3 class="center">Заполните таблицу для объекта «Велосипед» 🚲</h3>
+        <table>
+            <tr>
+                <th>Вид модели</th>
+                <th>Пример для велосипеда</th>
+            </tr>
+            <tr>
+                <td><strong>Материальная</strong></td>
+                <td>?</td>
+            </tr>
+            <tr>
+                <td><strong>Информационная</strong></td>
+                <td>?</td>
+            </tr>
+            <tr>
+                <td><strong>Компьютерная</strong></td>
+                <td>?</td>
+            </tr>
+        </table>
+        <p class="center big-text" style="margin-top: 40px;">
+            <strong>⏱️ Время на выполнение: 3 минуты</strong>
+        </p>
+    </div>
+
+    <!-- Слайд 11 -->
+    <div class="slide">
+        <h2>✅ Эталон для самопроверки</h2>
+        <table>
+            <tr>
+                <th>Вид модели</th>
+                <th>Примеры для велосипеда</th>
+            </tr>
+            <tr>
+                <td><strong>Материальная</strong></td>
+                <td>Игрушечный велосипед, макет из конструктора</td>
+            </tr>
+            <tr>
+                <td><strong>Информационная</strong></td>
+                <td>Чертеж рамы, схема сборки, инструкция по эксплуатации</td>
+            </tr>
+            <tr>
+                <td><strong>Компьютерная</strong></td>
+                <td>3D-модель в программе, анимация работы тормозов</td>
+            </tr>
+        </table>
+        <p class="center big-text" style="margin-top: 40px;">
+            ✓ – всё верно<br>
+            ? – нужно уточнить
+        </p>
+    </div>
+
+    <!-- Слайд 12 -->
+    <div class="slide">
+        <h2>🌍 Моделирование в нашей жизни</h2>
+        <div class="highlight">
+            <h3>Где мы уже используем моделирование?</h3>
+            <ul>
+                <li><strong>Эскиз изделия</strong> → информационная модель</li>
+                <li><strong>Выкройка</strong> → информационная модель</li>
+                <li><strong>Пробный образец</strong> из черновой бумаги → материальная модель</li>
+            </ul>
+        </div>
+        <div class="highlight">
+            <h3>Зачем люди моделируют?</h3>
+            <ul>
+                <li>💰 Экономия времени, денег, материалов</li>
+                <li>🛡️ Безопасность</li>
+                <li>🔍 Проверка идеи до реализации</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Слайд 13 -->
+    <div class="slide">
+        <h2>🎯 Рефлексия</h2>
+        <h3 class="center">Завершите фразу:</h3>
+        <p class="center big-text" style="font-size: 1.8em; margin: 40px 0; font-style: italic;">
+            «Сегодня я понял(а), что модель – это...»
+        </p>
+        <div class="highlight" style="margin-top: 50px;">
+            <h3>Самооценка:</h3>
+            <ul>
+                <li><span class="emoji">🟢</span> <strong>Зеленая карточка</strong> – достиг цели, могу привести примеры</li>
+                <li><span class="emoji">🟡</span> <strong>Желтая карточка</strong> – понял, но нужна тренировка</li>
+                <li><span class="emoji">🔴</span> <strong>Красная карточка</strong> – тема вызывает трудности</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Слайд 14 -->
+    <div class="slide">
+        <h2>📝 Домашнее задание</h2>
+        <div class="highlight">
+            <h3>Обязательное:</h3>
+            <p class="big-text">
+                Найти дома <strong>2 разные модели</strong>, записать их название и вид<br>
+                <em>(например: карта – информационная модель)</em>
+            </p>
+        </div>
+        <div class="highlight">
+            <h3>Творческое (по желанию):</h3>
+            <p class="big-text">
+                Создать <strong>информационную модель</strong> (схему-план) своего идеального рабочего места для уроков технологии
+            </p>
+        </div>
+    </div>
+
+    <!-- Слайд 15 -->
+    <div class="slide">
+        <h1>🎉 Спасибо за урок!</h1>
+        <p class="center big-text" style="font-size: 2em; margin-top: 60px;">
+            Вы теперь настоящие инженеры-модельеры!
+        </p>
+        <div style="margin-top: 100px; text-align: center; color: #6c757d; font-size: 1.3em;">
+            <p>Помните: прежде чем создавать что-то в реальности,</p>
+            <p>создайте это в виде модели!</p>
+        </div>
+    </div>
+</div>
+
+<div class="slide-number">
+    <span id="current">1</span> / <span id="total">15</span>
+</div>
+
+<div class="controls">
+    <button class="btn" onclick="prevSlide()">← Назад</button>
+    <button class="btn" onclick="nextSlide()">Вперёд →</button>
+</div>
+
+<script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    
+    document.getElementById('total').textContent = totalSlides;
+
+    function showSlide(n) {
+        slides[currentSlide].classList.remove('active');
+        currentSlide = (n + totalSlides) % totalSlides;
+        slides[currentSlide].classList.add('active');
+        document.getElementById('current').textContent = currentSlide + 1;
+    }
+
+    function nextSlide() {
+        showSlide(currentSlide + 1);
+    }
+
+    function prevSlide() {
+        showSlide(currentSlide - 1);
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ') {
+            nextSlide();
+        } else if (e.key === 'ArrowLeft') {
+            prevSlide();
+        }
+    });
+</script>
+</body>
+</html>
+</content>
+</write_to_file>

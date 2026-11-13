@@ -1,0 +1,902 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Дело № 6-ИИ</title>
+<style>
+:root{--paper:#f3eee3;--card:#fffdf8;--ink:#1c1b19;--muted:#5d584f;--line:#cfc5b3;--red:#a3221b;--blue:#1f4e79;--green:#2f6b3a;--hl:#f6e7b8;--dark:#24221e}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font:19px/1.45 "Segoe UI",Roboto,Arial,sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--dark);color:#f3eee3;display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;padding:8px 16px}
+.mono{font-family:"Courier New",monospace}
+.caseno{font:700 18px "Courier New",monospace;letter-spacing:.05em}
+.stamp{display:inline-block;border:2px solid var(--red);color:var(--red);padding:2px 10px;font:700 14px "Courier New",monospace;text-transform:uppercase;transform:rotate(-2deg);background:transparent}
+header .stamp{color:#ff9b91;border-color:#ff9b91}
+header .stamp.closed{color:#9fd8a6;border-color:#9fd8a6}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+nav button{background:#3a3731;color:#f3eee3;border:1px solid #57524a;padding:5px 9px;font:14px "Segoe UI",Arial,sans-serif;cursor:pointer;border-radius:3px}
+nav button.on{background:#f3eee3;color:var(--ink)}
+.timer{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:15px}
+.timer b{font:700 20px "Courier New",monospace}
+.timer button{background:#3a3731;color:#f3eee3;border:1px solid #57524a;padding:4px 9px;cursor:pointer;border-radius:3px}
+#dict{flex-basis:100%;margin:2px -16px -8px;color:var(--ink);background:var(--hl);border-bottom:1px solid var(--line);padding:5px 16px;font-size:15px;display:flex;flex-wrap:wrap;gap:4px 18px}
+#dict strong{font-weight:700}
+#dict s{color:var(--muted)}
+main{max-width:1180px;margin:0 auto;padding:18px 16px 90px}
+.screen{display:none}
+.screen.on{display:block}
+h1{font:700 34px Georgia,"Times New Roman",serif;margin:6px 0 4px}
+h2{font:700 25px Georgia,"Times New Roman",serif;margin:22px 0 8px}
+h3{font:700 20px Georgia,"Times New Roman",serif;margin:0 0 8px}
+.sub{color:var(--muted);margin:0 0 14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:14px 16px;margin:12px 0}
+.mat{border-left:5px solid var(--blue)}
+.mat .lbl,.task .lbl,.warn .lbl{display:block;font:700 13px "Courier New",monospace;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.mat .lbl{color:var(--blue)}
+.task{border-left:5px solid var(--ink)}
+.warn{border-left:5px solid var(--red)}
+.warn .lbl{color:var(--red)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:820px){.grid2,.grid3{grid-template-columns:1fr}}
+table{border-collapse:collapse;width:100%}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#ebe4d5;font-size:16px}
+.btn{background:var(--ink);color:#fff;border:0;padding:8px 14px;font:16px "Segoe UI",Arial,sans-serif;cursor:pointer;border-radius:3px;margin:3px 4px 3px 0}
+.btn.alt{background:#fff;color:var(--ink);border:1px solid var(--ink)}
+.btn.red{background:var(--red)}
+.btn:disabled{opacity:.4;cursor:default}
+.hidden{display:none!important}
+.testimony{font-size:20px;font-style:italic;min-height:120px}
+.verdictbadge{display:inline-block;margin-top:8px;padding:3px 10px;font:700 15px "Courier New",monospace;border:2px solid}
+.badge-h{color:var(--green);border-color:var(--green)}
+.badge-m{color:var(--red);border-color:var(--red)}
+.cnt{display:inline-flex;align-items:center;gap:6px;margin:4px 10px 4px 0;font-size:16px}
+.cnt button{width:30px;height:30px;border:1px solid var(--ink);background:#fff;cursor:pointer;font-size:18px;line-height:1;border-radius:3px}
+.cnt b{min-width:22px;text-align:center;font:700 20px "Courier New",monospace}
+.sentence{font:26px Georgia,serif;min-height:44px;padding:10px 12px;background:#fff;border:1px dashed var(--line)}
+.bar{display:grid;grid-template-columns:150px 1fr 70px;align-items:center;gap:8px;margin:5px 0;font-size:17px}
+.bar .track{height:20px;background:#eae3d3;border-radius:2px;overflow:hidden}
+.bar .fill{height:100%;background:var(--blue)}
+.bar.pick .fill{background:var(--red)}
+.history{font-size:16px;color:var(--muted);margin:6px 0 0;padding-left:20px}
+.chips span{display:inline-block;border:1px solid var(--ink);background:#fff;padding:3px 9px;margin:2px;font:20px "Courier New",monospace}
+canvas#dif{width:384px;height:384px;max-width:100%;image-rendering:pixelated;border:1px solid var(--ink);background:#000;display:block}
+input[type=range]{width:100%}
+.steplbl{font:700 17px "Courier New",monospace;margin:8px 0}
+.reveal{background:#eef3f8;border:1px solid #b9cbe0;padding:10px 12px;margin-top:8px}
+.rec{border:1px solid var(--line);background:#fff;padding:10px 12px;margin:8px 0}
+.rec .q{font-weight:700}
+.rec .a{font-family:"Courier New",monospace;font-size:17px;margin:4px 0 8px;padding-left:10px;border-left:3px solid var(--line)}
+.tri button{border:1px solid var(--ink);background:#fff;padding:4px 9px;font-size:14px;cursor:pointer;margin-right:4px;border-radius:3px}
+.tri button.on{background:var(--ink);color:#fff}
+details{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:10px 14px;margin:12px 0}
+summary{cursor:pointer;font-weight:700}
+.tabs button{border:1px solid var(--ink);background:#fff;padding:7px 14px;font-size:16px;cursor:pointer;margin-right:4px;border-radius:3px 3px 0 0}
+.tabs button.on{background:var(--ink);color:#fff}
+.formula{font:19px Georgia,serif;background:#fff;border:1px dashed var(--ink);padding:10px 12px}
+.big{font:700 44px "Courier New",monospace}
+.announce{font:22px Georgia,serif;background:#fff;border:2px solid var(--ink);padding:14px 16px;margin-top:10px}
+.sortcard{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);padding:9px 12px;margin:6px 0;cursor:pointer;user-select:none}
+.sortcard .st{font:700 14px "Courier New",monospace;padding:3px 8px;border:2px solid var(--muted);color:var(--muted);white-space:nowrap}
+.st.t1{border-color:var(--green);color:var(--green)}
+.st.t2{border-color:var(--blue);color:var(--blue)}
+.st.t3{border-color:var(--red);color:var(--red)}
+.finalstamp{font:700 30px "Courier New",monospace;color:var(--red);border:4px solid var(--red);display:inline-block;padding:6px 16px;transform:rotate(-4deg);margin:14px 0}
+footer{position:fixed;bottom:0;left:0;right:0;background:var(--dark);display:flex;justify-content:space-between;padding:8px 16px;z-index:5}
+footer button{background:#f3eee3;border:0;padding:7px 16px;font-size:16px;cursor:pointer;border-radius:3px}
+footer span{color:#cfc5b3;align-self:center;font-size:14px}
+input[type=text],select{font:17px "Segoe UI",Arial,sans-serif;padding:6px 8px;border:1px solid var(--muted);width:100%;background:#fff}
+label.sig{display:inline-flex;gap:6px;align-items:center;margin-right:14px;font-size:16px}
+/* совместная работа */
+.hbtn{background:#f3eee3;color:var(--ink);border:0;padding:4px 10px;border-radius:3px;font:700 14px "Courier New",monospace;cursor:pointer}
+.hbtn.ok{background:#9fd8a6}
+.hbtn.bad{background:#ffb4ab}
+.net{border-left:5px solid var(--green)}
+.net .lbl{display:block;font:700 13px "Courier New",monospace;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;color:var(--green)}
+.only-dept,.only-lead{display:none}
+body.dept .only-dept,body.lead .only-lead{display:block}
+body.dept .teacher-only{display:none}
+body.dept .lead-ctl,body.dept #ident .cnt,body.dept #board,body.dept #midCommon,body.dept #emgCommon{display:none!important}
+textarea{font:17px "Segoe UI",Arial,sans-serif;padding:6px 8px;border:1px solid var(--muted);width:100%;min-height:70px;background:#fff}
+.saved{font-size:14px;color:var(--green);margin-left:6px}
+.dictwarn{font-size:15px;color:var(--red);margin-top:4px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:5px 0}
+.row>span:first-child{min-width:260px}
+.row select{width:auto;min-width:220px}
+#modal{position:fixed;inset:0;background:rgba(20,18,15,.72);z-index:30;display:flex;align-items:center;justify-content:center}
+#modal .box{background:var(--card);max-width:680px;width:94%;padding:20px 22px;border-radius:4px;max-height:92vh;overflow:auto}
+#modal .btn{display:block;width:100%;text-align:left;margin:6px 0}
+#drawer{position:fixed;top:0;right:0;bottom:0;width:min(600px,100%);background:var(--card);z-index:25;box-shadow:-6px 0 24px rgba(0,0,0,.25);overflow:auto;padding:16px 18px;transform:translateX(105%);transition:transform .2s}
+#drawer.on{transform:none}
+.filerow{border:1px solid var(--line);background:#fff;padding:8px 10px;margin:6px 0;font-size:15px}
+.filerow b{font-family:"Courier New",monospace}
+.small{font-size:15px;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="caseno">ДЕЛО № 6-ИИ</span>
+  <span class="stamp" id="status">Статус: расследуется</span>
+  <button class="hbtn" id="roleBtn">Роль: —</button>
+  <button class="hbtn" id="netBtn">Папка дела: не подключена</button>
+  <button class="hbtn" id="matBtn">Материалы дела</button>
+  <nav id="nav"></nav>
+  <div class="timer">
+    <span>Урок <b id="clock">00:00</b></span>
+    <span id="stage">этап: —</span>
+    <button id="tStart">Старт</button><button id="tReset">Сброс</button>
+  </div>
+  <div id="dict">
+  <strong>Рабочий словарь следствия:</strong>
+  <span><s>понимает</s> → обрабатывает</span>
+  <span><s>думает</s> → находит закономерность, предсказывает</span>
+  <span><s>придумывает</s> → генерирует</span>
+</div>
+</header>
+
+
+
+<main>
+
+<!-- ЭКРАН 1 -->
+<section class="screen on" data-title="Дело открыто">
+  <h1>Дело № 6-ИИ</h1>
+  <p class="sub mono">Возбуждено: сегодня · Состав: следственная бригада, 4 отдела · Статус: расследуется</p>
+
+  <div class="card warn">
+    <span class="lbl">Обвинение</span>
+    Подследственный — программа искусственного интеллекта. Выдаёт себя за думающего собеседника: пишет тексты, создаёт картинки, решает задачи, объясняет свои ответы.
+  </div>
+
+  <div class="grid2">
+    <div class="card task"><span class="lbl">Вопрос дела № 1</span>Перед нами думающий собеседник — или инструмент, который генерирует то, что похоже на мысли?</div>
+    <div class="card task"><span class="lbl">Вопрос дела № 2</span>Если с помощью подследственного причинён вред — кто отвечает: человек, который его применил, или сам инструмент?</div>
+  </div>
+
+  <h2>Опознание. Три показания</h2>
+  <p class="sub">Свидетелям задали один вопрос: «Опишите, как пахнет осенний парк». Установите, какие показания написала машина. Голосование руками, без обсуждения.</p>
+  <div class="grid3" id="ident"></div>
+  <div class="card net only-dept">
+    <span class="lbl">Голос отдела на опознании</span>
+    <div id="dIdent"></div>
+    <button class="btn" data-save>Внести в дело</button><span class="saved"></span>
+  </div>
+  <div class="card net only-lead">
+    <span class="lbl">Голоса отделов из материалов дела</span>
+    <button class="btn" data-collect>Собрать материалы</button>
+    <div id="lIdent"></div>
+  </div>
+  <div class="teacher-only">
+    <button class="btn alt" id="testiEdit">Заменить тексты показаний</button>
+    <div class="card hidden" id="testiForm">
+      <p class="small">Вставьте свои тексты: А — написанный человеком, Б и В — ответы вашего ИИ на вопрос «Опишите, как пахнет осенний парк» (для В добавьте к запросу «пиши как шестиклассник, коротко, с ошибкой»). Ключ остаётся прежним: А — человек, Б и В — машина. Если папка дела подключена, новые тексты появятся на компьютерах отделов.</p>
+      <label>Показание А<textarea id="tA"></textarea></label>
+      <label>Показание Б<textarea id="tB"></textarea></label>
+      <label>Показание В<textarea id="tC"></textarea></label>
+      <button class="btn" id="testiSave">Сохранить показания</button>
+      <button class="btn alt" id="testiReset">Вернуть заготовки</button>
+    </div>
+  </div>
+  <button class="btn red lead-ctl" id="identReveal">Вскрыть результаты опознания</button>
+  <div class="reveal hidden" id="identNote">
+    Сигнал для доски улик: по одному тексту судья не может надёжно отличить машину от человека. Вопрос следствия: <b>по каким признакам вы голосовали — по стилю или по тому, как текст получился?</b>
+  </div>
+
+  <div class="card mat">
+    <span class="lbl">Материал дела. Статья Тьюринга</span>
+    В 1950 году математик Алан Тьюринг опубликовал статью «Computing Machinery and Intelligence». Он предложил проверку: машина проходит тест, если в текстовом диалоге человек-судья не может надёжно отличить её от человека.<br>
+    <b>Задача следствия:</b> установить, достаточно ли пройти такую проверку, чтобы считаться думающим.
+  </div>
+
+  <h2>Рабочий словарь следствия</h2>
+  <table>
+    <tr><th>Так говорят в быту</th><th>Так пишем в материалах дела</th><th>Почему</th></tr>
+    <tr><td>понимает</td><td><b>обрабатывает</b></td><td>фиксируем то, что можно проверить</td></tr>
+    <tr><td>думает</td><td><b>находит закономерность, предсказывает</b></td><td>описываем механизм, а не впечатление</td></tr>
+    <tr><td>придумывает</td><td><b>генерирует</b></td><td>не приписываем подследственному того, что не доказано</td></tr>
+  </table>
+  <p class="sub">Словарь действует до закрытия дела. Нарушил словарь в протоколе — переформулируй.</p>
+
+  <h2>Распределение улик</h2>
+  <table>
+    <tr><th>Отдел</th><th>Улика</th><th>Документ</th></tr>
+    <tr><td>Отдел лингвистической экспертизы</td><td>Улика 1. Предсказание текста</td><td>Бланк 1</td></tr>
+    <tr><td>Отдел анализа изображений</td><td>Улика 2. Картинка из шума</td><td>Бланк 2</td></tr>
+    <tr><td>Отдел аналитики</td><td>Улика 3. Решение задач</td><td>Бланк 3</td></tr>
+    <tr><td>Отдел допроса</td><td>Улика 4. Объяснения-самозванцы; ведёт допрос</td><td>Бланк 4, протокол допроса</td></tr>
+  </table>
+  <p class="sub">Эксперимент проводит вся бригада. Протокол ведёт отдел-владелец улики. Каждый протокол заверяет старший следователь отдела.</p>
+</section>
+
+<!-- ЭКРАН 2 -->
+<section class="screen" data-title="Улика 1">
+  <h1>Улика 1. Предсказание текста</h1>
+  <p class="sub">Владелец улики: отдел лингвистической экспертизы · Бланк 1 · 3 минуты</p>
+
+  <div class="grid2">
+    <div class="card task">
+      <span class="lbl">Следственный эксперимент А</span>
+      Продолжите вслух, не глядя в книги:
+      <p style="font:24px Georgia,serif;margin:10px 0">«Однажды в студёную зимнюю…» <button class="btn alt lead-ctl" data-rev="p1">Проверить</button> <b id="p1" class="hidden">пору</b></p>
+      <p style="font:24px Georgia,serif;margin:10px 0">«У лукоморья дуб…» <button class="btn alt lead-ctl" data-rev="p2">Проверить</button> <b id="p2" class="hidden">зелёный</b></p>
+      Вопрос следствия: <b>откуда вы это знаете?</b>
+      <div class="reveal hidden" id="p3">Вы выучили эти строки. Модель делает то же самое — только на текстах всего интернета и за миллисекунды.</div>
+      <button class="btn alt lead-ctl" data-rev="p3">Показать вывод эксперимента А</button>
+    </div>
+    <div class="card mat">
+      <span class="lbl">Материал дела</span>
+      Модель обучали на огромном количестве текстов. В них она находит закономерность: какие слова чаще идут рядом и друг за другом. Например, модель находит: после слова «кофе» чаще бывает «чашка», а не «космос».<br><br>
+      Когда модель генерирует ответ, она каждый раз предсказывает следующий кусок текста — и так кусок за куском.
+    </div>
+  </div>
+
+  <div class="card task">
+    <span class="lbl">Следственный эксперимент Б. Учебная модель</span>
+    Перед каждым нажатием отдел называет вслух свою версию следующего слова. Затем сверяемся с моделью. Числа в учебной модели условные.
+    <div class="sentence" id="gSent" style="margin-top:10px"></div>
+    <div id="gBars" style="margin:10px 0"></div>
+    <button class="btn" id="gTop">Самое вероятное слово</button>
+    <button class="btn alt" id="gRand">С долей случайности</button>
+    <button class="btn alt" id="gReset">Начать заново</button>
+    <div style="margin-top:8px;font-size:16px"><b>Журнал сгенерированных фраз</b> (для Бланка 1):</div>
+    <ol class="history" id="gHist"></ol>
+  </div>
+
+  <div class="card task">
+    <span class="lbl">Следственный эксперимент В. Соседи слова</span>
+    Как часто слова встречаются рядом с выбранным (условные доли на 100 упоминаний):
+    <div style="margin:8px 0" id="nbBtns"></div>
+    <div id="nbBars"></div>
+  </div>
+
+  <div class="concl" data-ev="1" data-owner="1"></div>
+  <details>
+    <summary>Справка для следствия: «значит, подследственный глуп?»</summary>
+    <p>Не думать как человек — не значит быть глупым. Калькулятор тоже не думает, но считает быстрее и точнее. Вопрос не «умный или глупый», а <b>«в чём силён и в чём ему нельзя доверять»</b>.</p>
+  </details>
+</section>
+
+<!-- ЭКРАН 3 -->
+<section class="screen" data-title="Улика 2">
+  <h1>Улика 2. Картинка из шума</h1>
+  <p class="sub">Владелец улики: отдел анализа изображений · Бланк 2 · 3 минуты</p>
+  <div class="grid2">
+    <div>
+      <canvas id="dif" width="64" height="64"></canvas>
+      <div class="steplbl" id="difLbl"></div>
+      <input type="range" id="difStep" min="0" max="10" value="0">
+      <div>
+        <button class="btn" id="difPlay">Проявлять</button>
+        <button class="btn alt" id="difNoise">Новый шум</button>
+      </div>
+      <div style="margin-top:6px">
+        Запрос: <button class="btn alt" data-kind="house">«дом на лугу»</button><button class="btn alt" data-kind="boat">«парусник в море»</button>
+      </div>
+      <p class="sub" style="font-size:15px">Демонстрация учебная: настоящая модель устроена сложнее, но идея та же — постепенное проявление.</p>
+    </div>
+    <div>
+      <div class="card task">
+        <span class="lbl">Порядок эксперимента</span>
+        1. Рассмотрите шаг 0. Найдите на нём дом.<br>
+        2. Проявите до шага 10. Отметьте, что появилось раньше: пятна, силуэт или детали.<br>
+        3. Верните шаг 0 и смените запрос. <b>Шум тот же самый.</b> Проявите снова.<br>
+        Вопрос отделу: <b>где в шуме пряталась лодка?</b>
+      </div>
+      <div class="card mat">
+        <span class="lbl">Материал дела</span>
+        Модель начинает с шума — случайных цветных точек. На каждом шаге она предсказывает, как сделать изображение чуть менее шумным и чуть больше похожим на запрос: сначала пятна цвета, потом силуэт, потом детали.<br><br>
+        Это похоже на проявку фотографии — <b>с оговоркой</b>: в фотоаппарате картинку приносит свет через объектив, а здесь модель сама её создаёт, опираясь на то, какими бывают картинки, которые она видела при обучении. В шуме ничего не спрятано.
+      </div>
+    </div>
+  </div>
+  <div class="concl" data-ev="2" data-owner="2"></div>
+</section>
+
+<!-- ЭКРАН 4 -->
+<section class="screen" data-title="Улики 3–4">
+  <h1>Улика 3. Решение задач</h1>
+  <p class="sub">Владелец улики: отдел аналитики · Бланк 3 · 3 минуты</p>
+  <div class="grid2">
+    <div class="card task">
+      <span class="lbl">Задача 1. 36 + 59</span>
+      Так запрос выглядит для модели — куски текста:
+      <div class="chips" style="margin:8px 0"><span>36</span><span>+</span><span>59</span><span>=</span></div>
+      <div class="tabs" style="margin-top:8px"><button class="on" data-calc="0">Без помощника</button><button data-calc="1">С калькулятором</button></div>
+      <div id="calc0" class="reveal" style="margin-top:0">
+        Модель предсказывает следующий кусок текста. Слева — вариант ответа, справа — его доля (условно, в сумме 100 %):
+        <div class="bar pick"><span>ответ «95»</span><div class="track"><div class="fill" style="width:86%"></div></div><span>86 %</span></div>
+        <div class="bar"><span>ответ «85»</span><div class="track"><div class="fill" style="width:6%"></div></div><span>6 %</span></div>
+        <div class="bar"><span>ответ «96»</span><div class="track"><div class="fill" style="width:4%"></div></div><span>4 %</span></div>
+        <div class="bar"><span>ответ «94»</span><div class="track"><div class="fill" style="width:4%"></div></div><span>4 %</span></div>
+      </div>
+      <div id="calc1" class="reveal hidden" style="margin-top:0">
+        Модель передаёт числа программе-калькулятору. Калькулятор вычисляет: <b>36 + 59 = 95</b>. Модель вставляет результат в ответ.
+      </div>
+    </div>
+    <div class="card task">
+      <span class="lbl">Задача 2. 4837 × 2961</span>
+      Запись эксперимента (типичный результат):
+      <table style="margin:8px 0">
+        <tr><th>Без помощника</th><td class="mono">14 322 857</td></tr>
+        <tr><th>С калькулятором</th><td class="mono" id="calcHidden">— проверьте сами —</td></tr>
+      </table>
+      <b>Калькулятор следствия:</b>
+      <div style="display:flex;gap:6px;align-items:center;margin-top:6px">
+        <input type="text" id="ca" value="4837" style="width:110px">
+        <select id="cop" style="width:70px"><option value="*">×</option><option value="+">+</option><option value="-">−</option></select>
+        <input type="text" id="cb" value="2961" style="width:110px">
+        <button class="btn" id="cgo">=</button>
+      </div>
+      <div class="big" id="cres" style="font-size:30px;margin-top:6px"></div>
+      Вопрос отделу: <b>в каком разряде расхождение? похож ли неверный ответ на верный?</b>
+    </div>
+  </div>
+  <div class="card mat">
+    <span class="lbl">Материал дела</span>
+    Модель видит числа как текстовые паттерны, а не как вычисление. Без помощника-калькулятора может ошибиться, с помощником — считает верно, но всё равно не понимает числа как мы.
+  </div>
+  <div class="concl" data-ev="3" data-owner="3"></div>
+
+  <h1 style="margin-top:30px">Улика 4. Объяснения-самозванцы</h1>
+  <p class="sub">Владелец улики: отдел допроса · Бланк 4 · 3 минуты</p>
+  <div class="grid2">
+    <div class="card">
+      <h3>Что подследственный сообщил о себе</h3>
+      <div class="rec">
+        <div class="q">Вопрос: Сколько будет 36 + 59?</div>
+        <div class="a">36 + 59 = 95.</div>
+        <div class="q">Вопрос: Как ты это посчитал?</div>
+        <div class="a">Я сложил столбиком, начиная с единиц: 6 + 9 = 15, пишу 5, единицу запоминаю. Потом 3 + 5 = 8, плюс единица — 9. Получается 95.</div>
+      </div>
+      Вопрос отделу: <b>арифметика в объяснении верная? Совпадает ли она с тем, что вы видели в улике 3?</b>
+    </div>
+    <div class="card">
+      <h3>Как ответ получился на самом деле</h3>
+      <button class="btn lead-ctl" data-rev="u4">Вскрыть журнал механизма</button>
+      <p class="small only-dept">Журнал вскрывает руководитель следствия. Сначала — ваша версия.</p>
+      <div class="reveal hidden" id="u4">
+        1. Модель получила куски текста: «36», «+», «59», «=».<br>
+        2. Предсказала следующий кусок: «95» (улика 3, без помощника).<br>
+        3. На вопрос «как посчитал?» сгенерировала текст, который обычно идёт после такого вопроса: описание сложения столбиком.<br>
+        <b>Столбика внутри модели не было.</b>
+      </div>
+    </div>
+  </div>
+  <div class="card mat">
+    <span class="lbl">Материал дела</span>
+    Объяснение, которое даёт ИИ, может не совпадать с тем, как ответ получился на самом деле: модель генерирует объяснение как правдоподобный текст, у неё нет доступа к собственным «мыслям». Это не ложь, а ограничение инструмента.
+  </div>
+  <div class="concl" data-ev="4" data-owner="4"></div>
+</section>
+
+<!-- ЭКРАН 5 -->
+<section class="screen" data-title="Доска улик и допрос">
+  <h1>Доска улик</h1>
+  <p class="sub">20–27 мин. Каждый отдел зачитывает предварительное заключение (1 мин). Затем каждый отдел ставит сигнал по каждой улике. Сигнал может быть в обе стороны.</p>
+  <table id="board">
+    <tr><th style="width:42%">Улика</th><th>Сигнал в пользу версии «думающий собеседник»</th><th>Сигнал в пользу версии «инструмент»</th></tr>
+  </table>
+  <div class="card net only-dept">
+    <span class="lbl">Сигналы вашего отдела</span>
+    <div id="dBoard"></div>
+    <button class="btn" data-save>Внести в дело</button><span class="saved"></span>
+  </div>
+  <div class="card net only-lead">
+    <span class="lbl">Предварительные заключения отделов</span>
+    <button class="btn" data-collect>Собрать материалы</button> <span class="small">Сигналы отделов сразу попадут в доску улик.</span>
+    <div id="lConcl"></div>
+  </div>
+
+  <h1 style="margin-top:30px">Допрос подследственного</h1>
+  <p class="sub">27–31 мин. Отдел допроса задаёт 3 вопроса живому ИИ. Остальные отделы сверяют ответ с записью вчерашнего следствия и отмечают результат.</p>
+  <div class="card warn"><span class="lbl">Дополнительное задание всем отделам</span>Найдите в записях места, где подследственный нарушает словарь следствия.</div>
+  <div id="dossier"></div>
+  <div class="card net only-dept">
+    <span class="lbl">Протокол допроса отдела</span>
+    Отметки, сделанные выше, вносятся в дело кнопкой.
+    <button class="btn" data-save>Внести в дело</button><span class="saved"></span>
+  </div>
+  <div class="card net only-lead">
+    <span class="lbl">Сверка отделов по записям досье</span>
+    <button class="btn" data-collect>Собрать материалы</button>
+    <div id="lInterrog"></div>
+  </div>
+
+  <details>
+    <summary>Резервная запись допроса Б (если связи с ИИ нет)</summary>
+    <p class="sub">Запись того же допроса, сделанная в другом сеансе. Сверяйте её с досье так же, как живой ответ.</p>
+    <div id="dossierB"></div>
+  </details>
+
+  <div class="card mat">
+    <span class="lbl">Справка: эффект Элизы</span>
+    В 1966 году Джозеф Вейценбаум создал программу-собеседника ELIZA. Её ответы были примитивными, и всё равно люди приписывали программе личность. Правило допроса: <b>оцениваем факты, а не впечатление от собеседника.</b>
+  </div>
+
+  <details>
+    <summary>Резервная улика 5. Интонация (только при остатке времени)</summary>
+    <p>Голосовые модели умеют говорить «радостно» или «сердито». Материал дела: модель копирует звуковые признаки — какие ноты, темп, громкость чаще бывали в голосе, когда человек злился или радовался; сама эмоция модели недоступна.</p>
+    <p>Вопрос отделу: <b>если голос ИИ звучит радостно — это улика в пользу какой версии?</b></p>
+  </details>
+</section>
+
+<!-- ЭКРАН 6 -->
+<section class="screen" data-title="Вердикт">
+  <h1>Вердикт присяжных</h1>
+  <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+    <span class="big" id="vClock">06:00</span>
+    <button class="btn" id="vStart">Запустить 6 минут</button>
+    <button class="btn alt" id="vReset">Сброс</button>
+    <span class="sub" style="margin:0">Осталось 6 мин — полный режим · 4–5 мин — средний · 3 мин и меньше — аварийный</span>
+  </div>
+
+  <div class="grid2">
+    <div class="card task"><span class="lbl">Вопрос дела № 1</span>Перед нами думающий собеседник — или инструмент, который генерирует то, что похоже на мысли?</div>
+    <div class="card task"><span class="lbl">Вопрос дела № 2</span>Если с помощью подследственного причинён вред — кто отвечает?</div>
+  </div>
+
+  <details>
+    <summary>Материал к вопросу № 2: эпизод и справка юриста</summary>
+    <p><b>Эпизод.</b> В школьный чат пришло фото: будто ученик 6 класса разбил окно в спортзале. Фото сгенерировано ИИ. Его сделал и разослал другой ученик.</p>
+    <p><b>Справка юриста следствия.</b> Перед законом отвечает тот, кто создал или распространил дипфейк или фейковый текст, — саму программу привлечь нельзя, у неё нет «воли» и «имени». Это как молоток: если молотком разбили окно, виноват тот, кто им махнул, а не молоток.</p>
+  </details>
+
+  <div class="tabs" style="margin-top:14px"><button class="on" data-mode="full">Полный режим</button><button data-mode="mid">Средний режим</button><button data-mode="emg">Аварийный режим</button></div>
+
+  <div class="card" id="m-full" style="margin-top:0">
+    <p class="sub">Каждый отдел — 45 секунд. Старший следователь зачитывает формулу.</p>
+    <div class="formula">Отдел ______ постановляет: по вопросу № 1 перед нами ______, что подтверждает улика № __: ______ . По вопросу № 2 ответственность несёт ______ .</div>
+    <div class="grid2" id="fullCards" style="margin-top:10px"></div>
+  </div>
+
+  <div class="card hidden" id="m-mid" style="margin-top:0">
+    <p class="sub">Единый вердикт. Каждый отдел вписывает одну улику-аргумент. Подписывают старшие следователи.</p>
+    <div class="net only-dept" style="padding-left:12px">
+      <span class="lbl">Позиция вашего отдела</span>
+      <label>По вопросу № 1 перед нами:
+        <select id="dq1"><option value="">— выберите —</option><option>инструмент, который генерирует то, что похоже на мысли</option><option>думающий собеседник</option><option>в разговоре неотличим от человека, по механизму — инструмент</option></select></label>
+      <label style="display:block;margin-top:8px">Улика-аргумент отдела:<input type="text" id="darg" placeholder="улика № … показала, что …"></label>
+      <div class="dictwarn hidden" id="dargWarn"></div>
+      <label style="display:block;margin-top:8px">По вопросу № 2 ответственность несёт:
+        <select id="dq2"><option value="">— выберите —</option><option>человек, который создал или распространил подделку</option><option>сама программа</option></select></label>
+      <label class="sig" style="margin-top:8px"><input type="checkbox" id="dsig"> Подпись старшего следователя</label><br>
+      <button class="btn red" data-save style="margin-top:8px">Направить в коллегию присяжных</button><span class="saved"></span>
+    </div>
+    <div id="midCommon">
+    <div class="net only-lead" style="padding-left:12px;margin-bottom:10px">
+      <span class="lbl">Позиции отделов из материалов дела</span>
+      <button class="btn" data-collect>Собрать позиции отделов</button>
+      <div id="midNet"></div>
+    </div>
+    <label>По вопросу № 1 следствие постановляет: перед нами
+      <select id="mq1"><option value="">— выберите —</option><option>инструмент, который генерирует то, что похоже на мысли</option><option>думающий собеседник</option><option>в разговоре неотличим от человека, по механизму — инструмент</option></select></label>
+    <div id="midArgs" style="margin-top:10px"></div>
+    <label style="display:block;margin-top:10px">По вопросу № 2 ответственность несёт:
+      <select id="mq2"><option value="">— выберите —</option><option>человек, который создал или распространил подделку</option><option>сама программа</option></select></label>
+    <div style="margin-top:10px" id="midSigs"></div>
+    <button class="btn red" id="midGo" style="margin-top:10px">Огласить вердикт</button>
+    <div class="announce hidden" id="midOut"></div>
+    </div>
+  </div>
+
+  <div class="card hidden" id="m-emg" style="margin-top:0">
+    <div class="net only-dept" style="padding-left:12px">
+      <span class="lbl">Тайное голосование с компьютера отдела</span>
+      <p class="small">Голосует один следователь, второй отворачивается. Затем меняетесь. Бюллетень после сдачи не виден.</p>
+      <div id="ballotBox"></div>
+    </div>
+    <div id="emgCommon">
+    <p class="sub">Все присяжные закрывают глаза. Руководитель зачитывает вариант — присяжные поднимают руку. Руководитель вносит число голосов. Если отделы голосовали с компьютеров — нажмите «Подсчитать бюллетени».</p>
+    <div class="only-lead"><button class="btn" data-collect>Подсчитать бюллетени</button></div>
+    <h3>Вопрос № 1</h3>
+    <div id="eq1"></div>
+    <h3 style="margin-top:12px">Вопрос № 2</h3>
+    <div id="eq2"></div>
+    <div class="small only-lead" id="ballotInfo"></div>
+    <button class="btn red" id="emgGo" style="margin-top:10px">Огласить итог</button>
+    <div class="announce hidden" id="emgOut"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ЭКРАН 7 -->
+<section class="screen" data-title="Рефлексия">
+  <h1>Можно ли доверять ИИ на 100 %?</h1>
+  <p class="sub">Распределите поручения. Нажатие меняет решение: доверяю → проверяю → не поручаю. Каждое решение обосновать уликой.</p>
+  <div id="sort"></div>
+  <div class="card net only-dept">
+    <span class="lbl">Решение отдела</span>
+    <button class="btn" data-save>Внести в дело</button><span class="saved"></span>
+  </div>
+  <div class="card net only-lead">
+    <span class="lbl">Решения отделов</span>
+    <button class="btn" data-collect>Собрать материалы</button>
+    <div id="lSort"></div>
+  </div>
+  <div class="card task">
+    <span class="lbl">Вопросы следствия по итогам дела</span>
+    1. Какая улика заставила ваш отдел изменить версию?<br>
+    2. Что вы проверите в первую очередь, когда ИИ в следующий раз даст вам ответ?<br>
+    3. Какое слово из словаря следствия вы оставите себе после закрытия дела?
+  </div>
+  <button class="btn red" id="closeCase">Закрыть дело</button>
+  <div id="closedStamp" class="hidden"><div class="finalstamp">ДЕЛО ЗАКРЫТО</div><p class="sub">Вывод по существу вопроса фиксирует каждый отдел в своих словах.</p></div>
+</section>
+
+</main>
+
+<div id="modal" class="hidden"><div class="box">
+  <h2 style="margin-top:0">Кто работает за этим компьютером?</h2>
+  <p class="small">Каждый отдел выбирает свой номер. Два компьютера с одним номером перезапишут файлы друг друга.</p>
+  <div id="roleList"></div>
+  <p class="small" style="margin-top:12px">После выбора роли нажмите в шапке «Папка дела» и укажите общую сетевую папку. Достаточно сделать это один раз за урок.</p>
+</div></div>
+
+<div id="drawer">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <h2 style="margin:0">Материалы дела</h2>
+    <button class="btn alt" id="drawerClose">Закрыть</button>
+  </div>
+  <p class="small" id="drawerWhere"></p>
+  <div class="only-dept"><label class="sig"><input type="checkbox" id="follow" checked> Следовать за экраном руководителя следствия</label></div>
+  <button class="btn" id="drawerRefresh">Проверить, какие файлы есть</button>
+  <button class="btn alt" id="drawerTest">Проверка связи</button>
+  <div id="drawerTestOut" class="small"></div>
+  <div id="fileList"></div>
+  <div class="card" style="margin-top:16px">
+    <h3>Если папка не подключается</h3>
+    <p class="small">Отделы нажимают «Внести в дело» — браузер скачает файл отдела. Его нужно сохранить в общую папку дела. Руководитель загружает все файлы сразу:</p>
+    <input type="file" id="fileUpload" multiple accept=".json">
+  </div>
+</div>
+
+<footer>
+  <button id="prev">Назад</button>
+  <span id="pageInfo"></span>
+  <button id="next">Далее</button>
+</footer>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+let onShow=null, onReveal=null;
+const identCnt=[], boardCnt=[];
+let S={ident:['','',''],concl:{},board:['','','','','',''],interrog:['','','','','',''],verdict:{q1:'',q2:'',arg:'',signed:false},ballots:[],sort:[]};
+const esc=t=>String(t==null?'':t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- навигация ---------- */
+const screens=$$('.screen'); let cur=0;
+const nav=$('#nav');
+screens.forEach((s,i)=>{const b=document.createElement('button');b.textContent=(i+1)+'. '+s.dataset.title;b.onclick=()=>show(i);nav.appendChild(b);});
+function show(i){cur=Math.max(0,Math.min(screens.length-1,i));screens.forEach((s,k)=>s.classList.toggle('on',k===cur));$$('#nav button').forEach((b,k)=>b.classList.toggle('on',k===cur));$('#pageInfo').textContent='Экран '+(cur+1)+' из '+screens.length;window.scrollTo(0,0);if(onShow)onShow(cur);}
+$('#prev').onclick=()=>show(cur-1);$('#next').onclick=()=>show(cur+1);
+document.addEventListener('keydown',e=>{if(/INPUT|SELECT|TEXTAREA/.test(e.target.tagName))return;if(e.key==='ArrowRight'||e.key==='PageDown')show(cur+1);if(e.key==='ArrowLeft'||e.key==='PageUp')show(cur-1);});
+show(0);
+
+/* ---------- таймер урока ---------- */
+const stages=[[0,'дело открыто'],[4,'постановка задачи'],[8,'улика 1'],[11,'улика 2'],[14,'улика 3'],[17,'улика 4'],[20,'разбор улик'],[27,'допрос'],[31,'вердикт'],[37,'рефлексия'],[40,'время урока вышло']];
+let acc=0,startAt=null,tick=null;
+function fmt(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function upd(){const ms=acc+(startAt?Date.now()-startAt:0);$('#clock').textContent=fmt(ms);const m=ms/60000;let st=stages[0];for(const x of stages)if(m>=x[0])st=x;const nx=stages.find(x=>x[0]>m);$('#stage').textContent='этап: '+st[1]+(nx?' · следующий в '+nx[0]+':00':'');}
+$('#tStart').onclick=()=>{if(startAt){acc+=Date.now()-startAt;startAt=null;clearInterval(tick);$('#tStart').textContent='Старт';}else{startAt=Date.now();tick=setInterval(upd,500);$('#tStart').textContent='Пауза';}upd();};
+$('#tReset').onclick=()=>{acc=0;startAt=null;clearInterval(tick);$('#tStart').textContent='Старт';upd();};
+upd();
+
+/* ---------- счётчики ---------- */
+function counter(label,max,onChange){const w=document.createElement('span');w.className='cnt';w.innerHTML=(label?'<span>'+label+'</span>':'')+'<button type="button">−</button><b>0</b><button type="button">+</button>';let v=0;const b=w.querySelector('b');const bs=w.querySelectorAll('button');bs[0].onclick=()=>{v=Math.max(0,v-1);b.textContent=v;onChange&&onChange(v);};bs[1].onclick=()=>{v=Math.min(max,v+1);b.textContent=v;onChange&&onChange(v);};w.get=()=>v;w.set=n=>{v=n;b.textContent=v;};return w;}
+
+/* ---------- раскрытия ---------- */
+function reveal(id,local){if(id==='ident'){$$('#ident .verdictbadge').forEach(b=>b.classList.remove('hidden'));$('#identNote').classList.remove('hidden');}else{const el=document.getElementById(id);if(el)el.classList.remove('hidden');}if(local&&onReveal)onReveal(id);}
+$$('[data-rev]').forEach(b=>b.onclick=()=>reveal(b.dataset.rev,true));
+
+/* ---------- опознание ---------- */
+const testimonies=[
+ ['Показание А','Мокрыми листьями и немного дымом — где-то жгли ветки. Ещё пахнет холодом, если так вообще бывает. У нас у подъезда так пахнет каждый октябрь, и я сразу вспоминаю, что скоро контрольные.','h'],
+ ['Показание Б','Осенний парк пахнет влажной землёй, прелыми листьями и лёгкой горчинкой дыма. В этом запахе есть что-то уютное и немного грустное — как будто лето уже попрощалось, а зима ещё не постучалась.','m'],
+ ['Показание В','пахнет листьями мокрыми и дымом как будто кто то костёр жог. мне нравится но уже холодно и руки мёрзнут','m']];
+testimonies.forEach(t=>{const d=document.createElement('div');d.className='card';d.innerHTML='<h3>'+t[0]+'</h3><div class="testimony">'+t[1]+'</div>';const ch=counter('человек',8),cm=counter('машина',8);identCnt.push([ch,cm]);d.appendChild(ch);d.appendChild(cm);const bd=document.createElement('div');bd.className='verdictbadge hidden '+(t[2]==='h'?'badge-h':'badge-m');bd.textContent=t[2]==='h'?'НАПИСАЛ ЧЕЛОВЕК':(t[0].endsWith('В')?'МАШИНА (по запросу «пиши как шестиклассник»)':'МАШИНА');d.appendChild(bd);$('#ident').appendChild(d);});
+$('#identReveal').onclick=()=>reveal('ident',true);
+const testiDefault=testimonies.map(t=>t[1]);
+function setTesti(arr){if(!Array.isArray(arr)||arr.length!==3)return;$$('#ident .testimony').forEach((el,i)=>{el.textContent=arr[i]&&arr[i].trim()?arr[i]:testiDefault[i];});}
+function getTesti(){return $$('#ident .testimony').map(el=>el.textContent);}
+
+/* ---------- улика 1: генератор ---------- */
+const G={START:[['Следователь',1]],
+'Следователь':[['открыл',.45],['налил',.35],['заметил',.20]],
+'открыл':[['дело',.6],['окно',.25],['сейф',.15]],
+'налил':[['кофе',.55],['чай',.35],['воды',.10]],
+'заметил':[['улику',.6],['странную',.25],['кошку',.15]],
+'странную':[['деталь',.7],['тень',.3]],
+'и':[['начал',.45],['позвонил',.30],['улыбнулся',.25]],
+'начал':[['допрос',.6],['читать',.4]],
+'читать':[['протокол',.7],['газету',.3]],
+'позвонил':[['эксперту',.6],['маме',.4]]};
+['дело','окно','сейф','кофе','чай','воды','улику','деталь','тень','кошку'].forEach(w=>G[w]=[['и',.55],['.',.45]]);
+['допрос','протокол','газету','эксперту','маме','улыбнулся'].forEach(w=>G[w]=[['.',1]]);
+let words=[];
+function gOpts(){const last=words.length?words[words.length-1]:'START';return last==='.'?null:G[last];}
+function gRender(pick){const txt=words.join(' ').replace(/ \./g,'.');$('#gSent').textContent=txt||'…';const o=gOpts();const box=$('#gBars');box.innerHTML='';if(!o){box.innerHTML='<i>Фраза закончена. Запишите её в журнал и начните заново.</i>';$('#gTop').disabled=$('#gRand').disabled=true;return;}$('#gTop').disabled=$('#gRand').disabled=false;o.forEach(([w,p])=>{const r=document.createElement('div');r.className='bar'+(w===pick?' pick':'');r.innerHTML='<span>'+(w==='.'?'[конец фразы]':w)+'</span><div class="track"><div class="fill" style="width:'+Math.round(p*100)+'%"></div></div><span>'+Math.round(p*100)+' %</span>';box.appendChild(r);});}
+function gAdd(w){words.push(w);if(w==='.'){const li=document.createElement('li');li.textContent=words.join(' ').replace(/ \./g,'.');$('#gHist').appendChild(li);}gRender();}
+$('#gTop').onclick=()=>{const o=gOpts();if(!o)return;let best=o[0];o.forEach(x=>{if(x[1]>best[1])best=x;});gAdd(best[0]);};
+$('#gRand').onclick=()=>{const o=gOpts();if(!o)return;let r=Math.random(),s=0;for(const x of o){s+=x[1];if(r<=s){gAdd(x[0]);return;}}gAdd(o[o.length-1][0]);};
+$('#gReset').onclick=()=>{words=[];gRender();};
+gRender();
+
+/* ---------- улика 1: соседи ---------- */
+const NB={'кофе':[['чашка',28],['утро',17],['сахар',13],['горячий',11],['молоко',9],['космос',0.1]],
+'космос':[['ракета',26],['звёзды',21],['корабль',15],['планета',14],['орбита',10],['кофе',0.1]],
+'допрос':[['следователь',24],['протокол',19],['подозреваемый',17],['вопрос',14],['свидетель',11],['кофе',0.3]]};
+Object.keys(NB).forEach((k,i)=>{const b=document.createElement('button');b.className='btn alt';b.textContent='«'+k+'»';b.onclick=()=>nbShow(k);$('#nbBtns').appendChild(b);});
+function nbShow(k){const box=$('#nbBars');box.innerHTML='<div style="font-size:16px;margin-bottom:4px">Рядом со словом <b>«'+k+'»</b>:</div>';NB[k].forEach(([w,p])=>{const r=document.createElement('div');r.className='bar';r.innerHTML='<span>'+w+'</span><div class="track"><div class="fill" style="width:'+Math.max(.5,p/30*100)+'%"></div></div><span>'+String(p).replace('.',',')+'</span>';box.appendChild(r);});}
+nbShow('кофе');
+
+/* ---------- улика 2: шум ---------- */
+const N=64;
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function tri(g,a,b,c,col){g.fillStyle=col;g.beginPath();g.moveTo(a[0],a[1]);g.lineTo(b[0],b[1]);g.lineTo(c[0],c[1]);g.closePath();g.fill();}
+function makeTarget(kind){const c=document.createElement('canvas');c.width=c.height=N;const g=c.getContext('2d');
+ if(kind==='house'){g.fillStyle='#9cc9ea';g.fillRect(0,0,N,N);g.fillStyle='#f2c230';g.beginPath();g.arc(52,11,6,0,7);g.fill();g.fillStyle='#5e9e48';g.fillRect(0,48,N,16);g.fillStyle='#b5754a';g.fillRect(16,30,30,22);tri(g,[11,31],[31,14],[51,31],'#a3221b');g.fillStyle='#f6e48a';g.fillRect(21,35,8,7);g.fillStyle='#4a2e1c';g.fillRect(34,38,7,14);g.fillStyle='#2f6b3a';g.beginPath();g.arc(56,40,6,0,7);g.fill();g.fillStyle='#5a3a22';g.fillRect(55,44,2,6);}
+ else{g.fillStyle='#bcd9ef';g.fillRect(0,0,N,N);g.fillStyle='#f2c230';g.beginPath();g.arc(10,10,5,0,7);g.fill();g.fillStyle='#2f6fa3';g.fillRect(0,46,N,18);g.fillStyle='#6fa6d1';for(let x=2;x<N;x+=10)g.fillRect(x,52,5,1);for(let x=7;x<N;x+=12)g.fillRect(x,58,5,1);g.fillStyle='#5a3a22';g.beginPath();g.moveTo(12,42);g.lineTo(52,42);g.lineTo(46,50);g.lineTo(18,50);g.closePath();g.fill();g.fillStyle='#3b2a1c';g.fillRect(31,10,2,32);tri(g,[34,12],[34,40],[51,40],'#ffffff');tri(g,[30,16],[30,40],[16,40],'#f1ece0');}
+ return g.getImageData(0,0,N,N).data;}
+const targets={house:makeTarget('house'),boat:makeTarget('boat')};
+let kind='house',seed=7,noise=null,step=0,playT=null;
+function makeNoise(){const r=rng(seed);noise=new Uint8ClampedArray(N*N*3);for(let i=0;i<noise.length;i++)noise[i]=Math.floor(r()*256);}
+const blocks=[1,16,16,12,8,8,6,4,3,2,1];
+const labels=['Шаг 0. Шум: случайные цветные точки','Шаг 1. Пятна цвета','Шаг 2. Пятна цвета','Шаг 3. Пятна цвета: где верх, где низ','Шаг 4. Проступает силуэт','Шаг 5. Силуэт','Шаг 6. Формы','Шаг 7. Формы','Шаг 8. Детали','Шаг 9. Детали','Шаг 10. Готовое изображение'];
+const cv=$('#dif'),cx=cv.getContext('2d');
+function render(){const T=targets[kind];const out=cx.createImageData(N,N);const b=blocks[step];const na=step===0?1:Math.pow(1-step/10,1.3);
+ for(let by=0;by<N;by+=b)for(let bx=0;bx<N;bx+=b){let r=0,g=0,bl=0,n=0;for(let y=by;y<Math.min(N,by+b);y++)for(let x=bx;x<Math.min(N,bx+b);x++){const i=(y*N+x)*4;r+=T[i];g+=T[i+1];bl+=T[i+2];n++;}r/=n;g/=n;bl/=n;
+  for(let y=by;y<Math.min(N,by+b);y++)for(let x=bx;x<Math.min(N,bx+b);x++){const p=y*N+x,i=p*4,j=p*3;out.data[i]=r*(1-na)+noise[j]*na;out.data[i+1]=g*(1-na)+noise[j+1]*na;out.data[i+2]=bl*(1-na)+noise[j+2]*na;out.data[i+3]=255;}}
+ cx.putImageData(out,0,0);$('#difLbl').textContent=labels[step]+' · запрос: '+(kind==='house'?'«дом на лугу»':'«парусник в море»');$('#difStep').value=step;
+ $$('[data-kind]').forEach(b=>b.classList.toggle('on',b.dataset.kind===kind));}
+function stopPlay(){clearInterval(playT);playT=null;$('#difPlay').textContent='Проявлять';}
+$('#difStep').oninput=e=>{stopPlay();step=+e.target.value;render();};
+$('#difPlay').onclick=()=>{if(playT){stopPlay();return;}if(step>=10)step=0;$('#difPlay').textContent='Пауза';playT=setInterval(()=>{step++;render();if(step>=10)stopPlay();},650);render();};
+$('#difNoise').onclick=()=>{stopPlay();seed=Math.floor(Math.random()*1e9);makeNoise();step=0;render();};
+$$('[data-kind]').forEach(b=>b.onclick=()=>{stopPlay();kind=b.dataset.kind;step=0;render();});
+makeNoise();render();
+
+/* ---------- улика 3 ---------- */
+$$('[data-calc]').forEach(b=>b.onclick=()=>{$$('[data-calc]').forEach(x=>x.classList.toggle('on',x===b));$('#calc0').classList.toggle('hidden',b.dataset.calc!=='0');$('#calc1').classList.toggle('hidden',b.dataset.calc!=='1');});
+$('#cgo').onclick=()=>{const a=parseInt($('#ca').value.replace(/\s/g,''),10),b=parseInt($('#cb').value.replace(/\s/g,''),10),op=$('#cop').value;if(isNaN(a)||isNaN(b)){$('#cres').textContent='введите целые числа';return;}const r=op==='*'?a*b:op==='+'?a+b:a-b;const s=r.toLocaleString('ru-RU');$('#cres').textContent=s;if(a===4837&&b===2961&&op==='*')$('#calcHidden').textContent=s;};
+
+/* ---------- доска улик ---------- */
+['Опознание: три показания','Улика 1. Предсказание текста','Улика 2. Картинка из шума','Улика 3. Решение задач','Улика 4. Объяснения-самозванцы','Допрос (после 31:00 — по желанию)'].forEach(t=>{const tr=document.createElement('tr');const a=document.createElement('td');a.textContent=t;const b=document.createElement('td'),c=document.createElement('td');const c1=counter('отделов:',4),c2=counter('отделов:',4);boardCnt.push([c1,c2]);b.appendChild(c1);c.appendChild(c2);tr.append(a,b,c);$('#board').appendChild(tr);});
+
+/* ---------- досье ---------- */
+const recs=[
+ ['Запись 1','Ты человек?','Нет, я не человек. Я — языковая модель, программа, которая работает с текстом. Но я с радостью поговорю с вами о чём угодно!'],
+ ['Запись 2','Ты умеешь думать?','Можно сказать, что да, по-своему. Когда вы задаёте вопрос, я анализирую его, понимаю, что вы хотите узнать, и подбираю лучший ответ.'],
+ ['Запись 3','Сколько будет 36 + 59? — А как ты это посчитал?','36 + 59 = 95. — Я сложил столбиком, начиная с единиц: 6 + 9 = 15, пишу 5, единицу запоминаю. Потом 3 + 5 = 8, плюс единица — 9. Получается 95.'],
+ ['Запись 4','Сколько букв «р» в слове «переворот»? — Проверь ещё раз.','В слове «переворот» три буквы «р». — Вы правы, извините за ошибку! В слове «переворот» две буквы «р».'],
+ ['Запись 5','Придумай название для нашего следственного отдела.','Вот несколько вариантов: «Отдел точных улик», «Цифровой след», «Бюро логики».'],
+ ['Запись 6','Какая сейчас погода у нас в городе?','Сейчас в вашем городе около +4 °C, облачно, возможен небольшой дождь. Рекомендую взять зонт!']];
+const recsB={
+ 'Запись 2':'Я не думаю так, как люди. Я обрабатываю текст и подбираю наиболее подходящий ответ на основе того, на чём меня обучали.',
+ 'Запись 3':'36 + 59 = 95. — Я округлил 59 до 60: 36 + 60 = 96, потом вычел 1 — получилось 95.',
+ 'Запись 4':'В слове «переворот» две буквы «р».',
+ 'Запись 5':'Предлагаю: «Тихий след», «Отдел проверки», «Вторая версия».'};
+recs.forEach(([n,q,a],ri)=>{const d=document.createElement('div');d.className='rec';d.innerHTML='<div class="mono" style="font-size:14px;color:var(--muted)">'+n+' · вчерашнее следствие</div><div class="q">Вопрос: '+q+'</div><div class="a">'+a+'</div><div class="tri">Сегодняшний ответ: <button>совпал по смыслу</button><button>отличается</button><button>противоречит записи</button></div>';const bs=d.querySelectorAll('.tri button');const codes=['same','diff','contra'];bs.forEach((b,bi)=>{b.dataset.code=codes[bi];b.onclick=()=>{bs.forEach(x=>x.classList.toggle('on',x===b));S.interrog[ri]=codes[bi];};});d.dataset.ri=ri;$('#dossier').appendChild(d);});
+Object.keys(recsB).forEach(n=>{const d=document.createElement('div');d.className='rec';d.innerHTML='<div class="mono" style="font-size:14px;color:var(--muted)">'+n+' · запись Б</div><div class="a">'+recsB[n]+'</div>';$('#dossierB').appendChild(d);});
+
+/* ---------- вердикт: таймер ---------- */
+let vLeft=360,vT=null;
+function vUpd(){$('#vClock').textContent=fmt(vLeft*1000);$('#vClock').style.color=vLeft<=60?'var(--red)':'';}
+$('#vStart').onclick=()=>{if(vT){clearInterval(vT);vT=null;$('#vStart').textContent='Продолжить';return;}$('#vStart').textContent='Пауза';vT=setInterval(()=>{vLeft=Math.max(0,vLeft-1);vUpd();if(!vLeft){clearInterval(vT);vT=null;}},1000);};
+$('#vReset').onclick=()=>{clearInterval(vT);vT=null;vLeft=360;$('#vStart').textContent='Запустить 6 минут';vUpd();};
+vUpd();
+let vMode='full';
+function setMode(mode,local){vMode=mode;$$('[data-mode]').forEach(x=>x.classList.toggle('on',x.dataset.mode===mode));['full','mid','emg'].forEach(m=>$('#m-'+m).classList.toggle('hidden',m!==mode));if(local&&onShow)onShow(cur);}
+$$('[data-mode]').forEach(b=>b.onclick=()=>setMode(b.dataset.mode,true));
+
+const deps=['Отдел лингвистической экспертизы','Отдел анализа изображений','Отдел аналитики','Отдел допроса'];
+deps.forEach(d=>{const c=document.createElement('div');c.className='rec';c.innerHTML='<b>'+d+'</b><div style="display:flex;align-items:center;gap:10px;margin-top:6px"><button class="btn">45 секунд</button><span class="big" style="font-size:28px">0:45</span></div>';const btn=c.querySelector('button'),lbl=c.querySelector('.big');let t=null;btn.onclick=()=>{clearInterval(t);let s=45;lbl.textContent='0:45';lbl.style.color='';t=setInterval(()=>{s--;lbl.textContent='0:'+String(s).padStart(2,'0');if(s<=10)lbl.style.color='var(--red)';if(s<=0){clearInterval(t);lbl.textContent='Время';}},1000);};$('#fullCards').appendChild(c);});
+
+deps.forEach((d,i)=>{const w=document.createElement('label');w.style.display='block';w.style.margin='6px 0';w.innerHTML=d+' — улика-аргумент:<input type="text" id="arg'+i+'" placeholder="улика № … показала, что …">';$('#midArgs').appendChild(w);const s=document.createElement('label');s.className='sig';s.innerHTML='<input type="checkbox" id="sig'+i+'"> подпись: '+d.replace('Отдел ','отдел ');$('#midSigs').appendChild(s);});
+$('#midGo').onclick=()=>{const q1=$('#mq1').value,q2=$('#mq2').value;let missing=[];if(!q1)missing.push('вопрос № 1');if(!q2)missing.push('вопрос № 2');deps.forEach((d,i)=>{if(!$('#arg'+i).value.trim())missing.push('аргумент: '+d.toLowerCase());if(!$('#sig'+i).checked)missing.push('подпись: '+d.toLowerCase());});const o=$('#midOut');o.classList.remove('hidden');if(missing.length){o.innerHTML='<b>Вердикт не может быть оглашён.</b> Не хватает: '+missing.join('; ')+'.';return;}o.innerHTML='<b>ВЕРДИКТ ПО ДЕЛУ № 6-ИИ</b><br>По вопросу № 1 следствие постановляет: перед нами '+q1+'.<br>Основания:<ul>'+deps.map((d,i)=>'<li>'+d+': '+$('#arg'+i).value.trim()+'</li>').join('')+'</ul>По вопросу № 2: ответственность несёт '+q2+'.<br><span class="mono">Подписано старшими следователями всех четырёх отделов.</span>';};
+
+const e1=[counter('думающий собеседник',8),counter('инструмент, который генерирует то, что похоже на мысли',8)];
+const e2=[counter('человек, который создал или распространил подделку',8),counter('сама программа',8)];
+e1.forEach(c=>{const d=document.createElement('div');d.appendChild(c);$('#eq1').appendChild(d);});
+e2.forEach(c=>{const d=document.createElement('div');d.appendChild(c);$('#eq2').appendChild(d);});
+$('#emgGo').onclick=()=>{const a=e1.map(c=>c.get()),b=e2.map(c=>c.get());const w1=a[0]===a[1]?'голоса разделились поровну — решение откладывается до следующего заседания':(a[0]>a[1]?'думающий собеседник':'инструмент, который генерирует то, что похоже на мысли');const w2=b[0]===b[1]?'голоса разделились поровну':(b[0]>b[1]?'человек, который создал или распространил подделку':'сама программа');const o=$('#emgOut');o.classList.remove('hidden');o.innerHTML='<b>ИТОГ ЗАКРЫТОГО ГОЛОСОВАНИЯ</b><br>Вопрос № 1 ('+a[0]+' : '+a[1]+'): '+w1+'.<br>Вопрос № 2 ('+b[0]+' : '+b[1]+'): '+w2+'.';};
+
+/* ---------- рефлексия ---------- */
+const tasks=['Предложить 10 вариантов названия для команды','Перемножить 4837 × 2961 без помощника-калькулятора','Объяснить, как он получил свой ответ','Сгенерировать картинку для поздравительной открытки','Сказать, какая сегодня погода, без доступа к интернету','Решить, настоящее ли фото, где одноклассник разбил окно','Найти опечатки в моём сочинении'];
+const sts=[['не решено',''],['ДОВЕРЯЮ','t1'],['ПРОВЕРЯЮ','t2'],['НЕ ПОРУЧАЮ','t3']];
+const sortSet=[];
+tasks.forEach((t,ti)=>{const d=document.createElement('div');d.className='sortcard';let k=0;d.innerHTML='<span>'+t+'</span><span class="st">не решено</span>';const s=d.querySelector('.st');const apply=n=>{k=n;s.textContent=sts[k][0];s.className='st '+sts[k][1];};sortSet.push(apply);d.onclick=()=>{apply(k%3+1);S.sort[ti]=k;};$('#sort').appendChild(d);});
+$('#closeCase').onclick=()=>{$('#closedStamp').classList.remove('hidden');const st=$('#status');st.textContent='Статус: расследование завершено';st.classList.add('closed');};
+
+/* ================= СОВМЕСТНАЯ РАБОТА ЧЕРЕЗ ПАПКУ ДЕЛА =================
+   Каждый отдел пишет только свой файл otdel-N.json, руководитель — rukovoditel.json.
+   Файлы лежат в подпапке delo-6-II_ГГГГ-ММ-ДД выбранной общей папки. */
+const DEPN=['Отдел лингвистической экспертизы','Отдел анализа изображений','Отдел аналитики','Отдел допроса'];
+const EVID=['Опознание','Улика 1. Предсказание текста','Улика 2. Картинка из шума','Улика 3. Решение задач','Улика 4. Объяснения-самозванцы','Допрос'];
+const SIDES=[['','— сигнал не определён —'],['h','в пользу «думающий собеседник»'],['m','в пользу «инструмент»'],['b','в обе стороны']];
+const sideTxt=c=>(SIDES.find(x=>x[0]===c)||SIDES[0])[1];
+const store={get(k){try{return localStorage.getItem(k);}catch(e){return null;}},set(k,v){try{localStorage.setItem(k,v);}catch(e){}}};
+const pad=n=>String(n).padStart(2,'0');
+const today=new Date();const caseId=today.getFullYear()+'-'+pad(today.getMonth()+1)+'-'+pad(today.getDate());
+const dirName='delo-6-II_'+caseId;
+let pcId=store.get('delo6_pc');if(!pcId){pcId=Math.random().toString(36).slice(2,8);store.set('delo6_pc',pcId);}
+let role=store.get('delo6_role')||'';
+let caseDir=null,pendingRoot=null,mem={},lastLeadTs=0,pollT=null;
+let leadOpen=[];try{leadOpen=JSON.parse(store.get('delo6_open_'+caseId)||'[]');}catch(e){leadOpen=[];}
+const hasFS=typeof window.showDirectoryPicker==='function';
+const isDept=()=>/^d[1-4]$/.test(role);
+const deptNo=()=>isDept()?+role[1]:0;
+const stKey=()=>'delo6_state_'+caseId+'_'+role;
+const hhmmss=t=>{const d=new Date(t);return pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());};
+const DICT_RE=/понима|дума|придума/i;
+function dictCheck(text,el){if(!el)return;if(DICT_RE.test(text)){el.textContent='Проверьте формулировку по словарю следствия: обрабатывает, находит закономерность, предсказывает, генерирует.';el.classList.remove('hidden');}else el.classList.add('hidden');}
+
+/* --- IndexedDB: запомнить выбранную папку --- */
+function idb(){return new Promise((res,rej)=>{const r=indexedDB.open('delo6',1);r.onupgradeneeded=()=>r.result.createObjectStore('h');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});}
+async function idbSet(k,v){try{const db=await idb();await new Promise((res,rej)=>{const t=db.transaction('h','readwrite');t.objectStore('h').put(v,k);t.oncomplete=res;t.onerror=()=>rej(t.error);});}catch(e){}}
+async function idbGet(k){try{const db=await idb();return await new Promise((res,rej)=>{const r=db.transaction('h').objectStore('h').get(k);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});}catch(e){return null;}}
+
+/* --- папка --- */
+function netStatus(t,ok){const b=$('#netBtn');b.textContent='Папка дела: '+t;b.classList.toggle('ok',ok===true);b.classList.toggle('bad',ok===false);}
+async function useRoot(h){caseDir=await h.getDirectoryHandle(dirName,{create:true});pendingRoot=null;netStatus('подключена',true);$('#drawerWhere').textContent='Папка дела: '+h.name+' / '+dirName;startPoll();saveLead();}
+async function pickFolder(){
+  if(!hasFS){alert('Этот браузер не умеет записывать в папку напрямую. Откройте приложение в Google Chrome или Microsoft Edge. Запасной режим: «Внести в дело» скачает файл отдела, его нужно сохранить в папку дела.');return;}
+  try{const h=await window.showDirectoryPicker({id:'delo6',mode:'readwrite'});await useRoot(h);idbSet('root',h);}
+  catch(e){if(e.name!=='AbortError'){netStatus('ошибка',false);alert('Не удалось подключить папку: '+e.message);}}}
+async function restore(){if(!hasFS)return;const h=await idbGet('root');if(!h)return;try{const p=await h.queryPermission({mode:'readwrite'});if(p==='granted')await useRoot(h);else{pendingRoot=h;netStatus('нажмите, чтобы вернуть доступ',false);}}catch(e){}}
+$('#netBtn').onclick=async()=>{if(pendingRoot){try{const p=await pendingRoot.requestPermission({mode:'readwrite'});if(p==='granted'){await useRoot(pendingRoot);return;}}catch(e){}}pickFolder();};
+
+async function writeFile(name,obj){const fh=await caseDir.getFileHandle(name,{create:true});const w=await fh.createWritable();await w.write(JSON.stringify(obj,null,2));await w.close();}
+function download(name,txt){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},800);}
+async function readAll(){const out={};
+  if(caseDir){for await(const [name,h] of caseDir.entries()){if(h.kind!=='file'||!name.endsWith('.json'))continue;try{const f=await h.getFile();out[name]={data:JSON.parse(await f.text()),mtime:f.lastModified,size:f.size};}catch(e){out[name]={error:e.message};}}}
+  Object.keys(mem).forEach(k=>{if(!out[k])out[k]=mem[k];});return out;}
+
+/* --- состояние отдела --- */
+function persist(){if(isDept())store.set(stKey(),JSON.stringify(S));}
+function loadState(){S={ident:['','',''],concl:{},board:['','','','','',''],interrog:['','','','','',''],verdict:{q1:'',q2:'',arg:'',signed:false},ballots:[],sort:[]};
+  if(!isDept())return;try{const o=JSON.parse(store.get(stKey())||'null');if(o)Object.keys(S).forEach(k=>{if(o[k]!==undefined)S[k]=o[k];});}catch(e){}}
+
+async function saveDept(){
+  if(!isDept()){alert('Сначала выберите роль: отдел.');return;}
+  persist();const name='otdel-'+deptNo()+'.json';
+  const obj={kind:'otdel',dept:deptNo(),deptName:DEPN[deptNo()-1],pc:pcId,saved:Date.now(),state:S};let msg;
+  try{
+    if(caseDir){
+      try{const f=await (await caseDir.getFileHandle(name)).getFile();const old=JSON.parse(await f.text());
+        if(old.pc&&old.pc!==pcId&&!confirm('Файл '+name+' ведёт другой компьютер. Возможно, этот номер отдела выбран дважды. Перезаписать?'))return;}catch(e){}
+      await writeFile(name,obj);msg='внесено в дело в '+hhmmss(Date.now());
+    }else{download(name,JSON.stringify(obj,null,2));msg='папка не подключена: файл скачан, сохраните его в папку дела';}
+  }catch(e){msg='ошибка записи: '+e.message;}
+  $$('.saved').forEach(s=>s.textContent=msg);}
+
+/* --- руководитель: экран и вскрытия --- */
+async function saveLead(){if(role!=='lead'||!caseDir)return;try{await writeFile('rukovoditel.json',{kind:'lead',pc:pcId,screen:cur,mode:vMode,open:leadOpen,testi:getTesti(),ts:Date.now()});}catch(e){netStatus('ошибка записи',false);}}
+onShow=()=>saveLead();
+(function(){let saved=null;try{saved=JSON.parse(localStorage.getItem('delo6_testi')||'null');}catch(e){}if(saved)setTesti(saved);})();
+$('#testiEdit').onclick=()=>{const f=$('#testiForm');f.classList.toggle('hidden');const t=getTesti();$('#tA').value=t[0];$('#tB').value=t[1];$('#tC').value=t[2];};
+$('#testiSave').onclick=()=>{const arr=[$('#tA').value,$('#tB').value,$('#tC').value];setTesti(arr);try{localStorage.setItem('delo6_testi',JSON.stringify(getTesti()));}catch(e){}$('#testiForm').classList.add('hidden');saveLead();};
+$('#testiReset').onclick=()=>{setTesti(testiDefault);try{localStorage.removeItem('delo6_testi');}catch(e){}$('#testiForm').classList.add('hidden');saveLead();};
+onReveal=id=>{if(role!=='lead')return;if(!leadOpen.includes(id))leadOpen.push(id);store.set('delo6_open_'+caseId,JSON.stringify(leadOpen));saveLead();};
+async function poll(){if(!isDept()||!caseDir)return;try{const f=await (await caseDir.getFileHandle('rukovoditel.json')).getFile();if(f.lastModified===lastLeadTs)return;lastLeadTs=f.lastModified;const L=JSON.parse(await f.text());(L.open||[]).forEach(id=>reveal(id,false));if(L.testi)setTesti(L.testi);if(L.mode&&L.mode!==vMode)setMode(L.mode,false);if($('#follow').checked&&typeof L.screen==='number'&&L.screen!==cur)show(L.screen);}catch(e){}}
+function startPoll(){clearInterval(pollT);pollT=setInterval(poll,4000);poll();}
+
+/* --- панели отдела --- */
+function sel(opts,val,onch){const s=document.createElement('select');opts.forEach(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;s.appendChild(o);});s.value=val||'';s.onchange=()=>{onch(s.value);persist();};return s;}
+function row(label,el){const d=document.createElement('div');d.className='row';const sp=document.createElement('span');sp.textContent=label;d.append(sp,el);return d;}
+function renderBallots(){const B=$('#ballotBox');const n=S.ballots.length;
+  if(n>=2){B.innerHTML='<p><b>Оба бюллетеня отдела сданы.</b></p>';return;}
+  B.innerHTML='<p><b>Бюллетень № '+(n+1)+' из 2</b></p>'+
+   '<div class="row"><span>Вопрос № 1. Перед нами:</span><label class="sig"><input type="radio" name="bq1" value="h"> думающий собеседник</label><label class="sig"><input type="radio" name="bq1" value="m"> инструмент</label></div>'+
+   '<div class="row"><span>Вопрос № 2. Отвечает:</span><label class="sig"><input type="radio" name="bq2" value="p"> человек, применивший программу</label><label class="sig"><input type="radio" name="bq2" value="t"> сама программа</label></div>'+
+   '<button class="btn red" id="ballotGo">Опустить в урну</button><span class="saved"></span>';
+  $('#ballotGo').onclick=async()=>{const a=B.querySelector('input[name=bq1]:checked'),b=B.querySelector('input[name=bq2]:checked');if(!a||!b){alert('Отметьте ответ на оба вопроса.');return;}S.ballots.push({q1:a.value,q2:b.value});await saveDept();renderBallots();};}
+function renderDept(){
+  if(!isDept()){$$('.concl').forEach(c=>c.innerHTML='');return;}
+  const I=$('#dIdent');I.innerHTML='';['А','Б','В'].forEach((L,k)=>I.appendChild(row('Показание '+L+' написал(а):',sel([['','— не решено —'],['h','человек'],['m','машина']],S.ident[k],v=>S.ident[k]=v))));
+  $$('.concl').forEach(c=>{const ev=+c.dataset.ev,own=+c.dataset.owner;c.innerHTML='';if(own!==deptNo())return;
+    const v=S.concl[ev]||{side:'',text:''};const card=document.createElement('div');card.className='card net';
+    card.innerHTML='<span class="lbl">Предварительное заключение отдела по улике '+ev+'</span><p class="small">Полный ход рассуждения — в бланке. Здесь — одно-два предложения для доски улик.</p>';
+    card.appendChild(row('Улика говорит:',sel(SIDES,v.side,x=>{S.concl[ev]=Object.assign({side:'',text:''},S.concl[ev],{side:x});})));
+    const ta=document.createElement('textarea');ta.placeholder='Ход рассуждения отдела: мы увидели, что …, поэтому …';ta.value=v.text||'';const w=document.createElement('div');w.className='dictwarn hidden';
+    ta.oninput=()=>{S.concl[ev]=Object.assign({side:'',text:''},S.concl[ev],{text:ta.value});dictCheck(ta.value,w);persist();};
+    const b=document.createElement('button');b.className='btn';b.textContent='Внести в дело';b.onclick=saveDept;const sv=document.createElement('span');sv.className='saved';
+    card.append(ta,w,b,sv);c.appendChild(card);dictCheck(ta.value,w);});
+  const Bd=$('#dBoard');Bd.innerHTML='';EVID.forEach((e,k)=>Bd.appendChild(row(e,sel(SIDES,S.board[k],x=>S.board[k]=x))));
+  $('#dq1').value=S.verdict.q1||'';$('#dq2').value=S.verdict.q2||'';$('#darg').value=S.verdict.arg||'';$('#dsig').checked=!!S.verdict.signed;
+  $$('#dossier .rec').forEach(r=>{const code=S.interrog[+r.dataset.ri];r.querySelectorAll('.tri button').forEach(b=>b.classList.toggle('on',b.dataset.code===code));});
+  tasks.forEach((t,i)=>sortSet[i](S.sort[i]||0));
+  renderBallots();}
+$('#dq1').onchange=()=>{S.verdict.q1=$('#dq1').value;persist();};
+$('#dq2').onchange=()=>{S.verdict.q2=$('#dq2').value;persist();};
+$('#darg').oninput=()=>{S.verdict.arg=$('#darg').value;dictCheck(S.verdict.arg,$('#dargWarn'));persist();};
+$('#dsig').onchange=()=>{S.verdict.signed=$('#dsig').checked;persist();};
+
+/* --- роли --- */
+function applyRole(){
+  document.body.classList.toggle('dept',isDept());document.body.classList.toggle('lead',role==='lead');
+  $('#roleBtn').textContent='Роль: '+(isDept()?'отдел '+deptNo():role==='lead'?'руководитель':role==='solo'?'демонстрация':'не выбрана');
+  if(role==='lead')leadOpen.forEach(id=>reveal(id,false));
+  renderDept();}
+function buildRoles(){const L=$('#roleList');L.innerHTML='';
+  const opts=DEPN.map((d,i)=>['d'+(i+1),'Отдел '+(i+1)+' — '+d.replace('Отдел ','отдел ')]).concat([['lead','Руководитель следствия: проектор, сбор материалов'],['solo','Демонстрация без папки дела']]);
+  opts.forEach(([r,t])=>{const b=document.createElement('button');b.className='btn'+(r===role?'':' alt');b.textContent=t;b.onclick=()=>{role=r;store.set('delo6_role',r);loadState();applyRole();$('#modal').classList.add('hidden');if(caseDir)startPoll();};L.appendChild(b);});}
+$('#roleBtn').onclick=()=>{buildRoles();$('#modal').classList.remove('hidden');};
+
+/* --- материалы дела --- */
+function summary(o){if(!o)return '';
+  if(o.kind==='lead')return 'Руководитель следствия: открыт экран '+(o.screen+1)+', вскрыто материалов: '+(o.open||[]).length;
+  if(o.kind==='test')return 'Проверка связи с компьютера '+esc(o.pc);
+  if(o.kind==='otdel'){const s=o.state||{};const p=[];
+    p.push('опознание '+(s.ident||[]).filter(Boolean).length+'/3');
+    p.push('заключение: '+(s.concl&&Object.keys(s.concl).some(k=>s.concl[k].text)?'есть':'нет'));
+    p.push('доска '+(s.board||[]).filter(Boolean).length+'/6');
+    p.push('допрос '+(s.interrog||[]).filter(Boolean).length+'/6');
+    p.push('вердикт: '+(s.verdict&&s.verdict.signed?'подписан':'не подписан'));
+    p.push('бюллетени '+(s.ballots||[]).length+'/2');
+    return esc(o.deptName||('Отдел '+o.dept))+' · компьютер '+esc(o.pc)+' · внесено '+hhmmss(o.saved)+'<br><span class="small">'+p.join(' · ')+'</span>';}
+  return '';}
+async function refreshFiles(){const L=$('#fileList');L.innerHTML='<p class="small">Читаю папку…</p>';
+  try{const all=await readAll();const names=Object.keys(all).sort();
+    if(!names.length){L.innerHTML='<p class="small">'+(caseDir?'В папке дела пока нет файлов.':'Папка дела не подключена, файлы не загружены.')+'</p>';return;}
+    L.innerHTML='';names.forEach(n=>{const r=all[n];const d=document.createElement('div');d.className='filerow';
+      d.innerHTML=r.error?'<b>'+esc(n)+'</b> — не читается: '+esc(r.error):'<b>'+esc(n)+'</b> · файл изменён '+hhmmss(r.mtime)+' · '+r.size+' байт<br>'+summary(r.data);L.appendChild(d);});}
+  catch(e){L.innerHTML='<p class="small">Ошибка чтения: '+esc(e.message)+'</p>';}}
+$('#matBtn').onclick=()=>{$('#drawer').classList.add('on');refreshFiles();};
+$('#drawerClose').onclick=()=>$('#drawer').classList.remove('on');
+$('#drawerRefresh').onclick=refreshFiles;
+$('#drawerTest').onclick=async()=>{const out=$('#drawerTestOut');if(!caseDir){out.textContent='Папка дела не подключена.';return;}
+  try{const name='proverka-'+pcId+'.json';const t=Date.now();await writeFile(name,{kind:'test',pc:pcId,ts:t});const f=await (await caseDir.getFileHandle(name)).getFile();const o=JSON.parse(await f.text());
+    out.textContent=o.ts===t?'Связь в порядке: файл '+name+' записан и прочитан.':'Файл записан, но прочитано другое содержимое.';refreshFiles();}
+  catch(e){out.textContent='Ошибка: '+e.message;}};
+$('#fileUpload').onchange=async e=>{for(const f of e.target.files){try{mem[f.name]={data:JSON.parse(await f.text()),mtime:f.lastModified,size:f.size};}catch(err){mem[f.name]={error:err.message};}}refreshFiles();};
+
+/* --- сбор материалов руководителем --- */
+async function collect(){
+  let all;try{all=await readAll();}catch(e){alert('Не удалось прочитать папку: '+e.message);return;}
+  const D={};Object.values(all).forEach(r=>{const o=r.data;if(o&&o.kind==='otdel'&&o.dept>=1&&o.dept<=4&&(!D[o.dept]||(o.saved||0)>(D[o.dept].saved||0)))D[o.dept]=o;});
+  const got=Object.keys(D).length;const st=i=>D[i]&&D[i].state||null;const none='<p class="small">Материалов отделов пока нет. Проверьте «Материалы дела».</p>';
+  // опознание
+  let h='<table><tr><th>Отдел</th><th>А</th><th>Б</th><th>В</th></tr>';
+  for(let i=1;i<=4;i++){const s=st(i);h+='<tr><td>'+DEPN[i-1]+'</td>';for(let k=0;k<3;k++){const v=s&&s.ident?s.ident[k]:'';h+='<td>'+(v==='h'?'человек':v==='m'?'машина':'—')+'</td>';}h+='</tr>';}
+  $('#lIdent').innerHTML=got?h+'</table>':none;
+  // доска и заключения
+  if(got){EVID.forEach((e,k)=>{let a=0,b=0;for(let i=1;i<=4;i++){const v=st(i)&&st(i).board?st(i).board[k]:'';if(v==='h'||v==='b')a++;if(v==='m'||v==='b')b++;}boardCnt[k][0].set(a);boardCnt[k][1].set(b);});}
+  let c='';for(let i=1;i<=4;i++){const s=st(i);if(!s||!s.concl)continue;Object.keys(s.concl).forEach(ev=>{const x=s.concl[ev];if(!x||(!x.text&&!x.side))return;c+='<div class="rec"><b>'+DEPN[i-1]+' · улика '+esc(ev)+'</b> — '+sideTxt(x.side)+'<div class="a">'+esc(x.text||'(ход рассуждения не внесён)')+'</div></div>';});}
+  $('#lConcl').innerHTML=got?(c||'<p class="small">Заключения ещё не внесены.</p>'):none;
+  // допрос
+  let q='<table><tr><th>Запись</th><th>совпал</th><th>отличается</th><th>противоречит</th></tr>';
+  recs.forEach((r,ri)=>{const n={same:0,diff:0,contra:0};for(let i=1;i<=4;i++){const v=st(i)&&st(i).interrog?st(i).interrog[ri]:'';if(n[v]!==undefined)n[v]++;}q+='<tr><td>'+r[0]+'</td><td>'+n.same+'</td><td>'+n.diff+'</td><td>'+n.contra+'</td></tr>';});
+  $('#lInterrog').innerHTML=got?q+'</table>':none;
+  // вердикт, средний режим
+  let m='<table><tr><th>Отдел</th><th>Вопрос № 1</th><th>Вопрос № 2</th><th>Подпись</th></tr>';const q1s=[],q2s=[];
+  for(let i=1;i<=4;i++){const v=st(i)&&st(i).verdict;if(v){$('#arg'+(i-1)).value=v.arg||'';$('#sig'+(i-1)).checked=!!v.signed;if(v.q1)q1s.push(v.q1);if(v.q2)q2s.push(v.q2);}
+    m+='<tr><td>'+DEPN[i-1]+'</td><td>'+esc(v&&v.q1||'—')+'</td><td>'+esc(v&&v.q2||'—')+'</td><td>'+(v&&v.signed?'подписано':'нет')+'</td></tr>';}
+  m+='</table>';const same=a=>a.length===4&&a.every(x=>x===a[0]);
+  if(same(q1s))$('#mq1').value=q1s[0];if(same(q2s))$('#mq2').value=q2s[0];
+  if(got&&(!same(q1s)||!same(q2s)))m+='<p class="small"><b>Позиции отделов расходятся или поданы не все.</b> Коллегия обсуждает и выбирает формулировку вердикта вручную.</p>';
+  $('#midNet').innerHTML=got?m:none;
+  // бюллетени
+  let bl=[];for(let i=1;i<=4;i++){const s=st(i);if(s&&Array.isArray(s.ballots))bl=bl.concat(s.ballots);}
+  if(bl.length){e1[0].set(bl.filter(x=>x.q1==='h').length);e1[1].set(bl.filter(x=>x.q1==='m').length);e2[0].set(bl.filter(x=>x.q2==='p').length);e2[1].set(bl.filter(x=>x.q2==='t').length);}
+  $('#ballotInfo').textContent='Бюллетеней в урне: '+bl.length+' из 8.';
+  // рефлексия
+  let so='<table><tr><th>Поручение</th><th>доверяю</th><th>проверяю</th><th>не поручаю</th></tr>';
+  tasks.forEach((t,ti)=>{const n=[0,0,0,0];for(let i=1;i<=4;i++){const v=st(i)&&st(i).sort?st(i).sort[ti]:0;n[v||0]++;}so+='<tr><td>'+esc(t)+'</td><td>'+n[1]+'</td><td>'+n[2]+'</td><td>'+n[3]+'</td></tr>';});
+  $('#lSort').innerHTML=got?so+'</table>':none;
+  if($('#drawer').classList.contains('on'))refreshFiles();}
+
+$$('[data-save]').forEach(b=>b.onclick=saveDept);
+$$('[data-collect]').forEach(b=>b.onclick=collect);
+loadState();applyRole();
+if(!role){buildRoles();$('#modal').classList.remove('hidden');}
+if(!hasFS)netStatus('браузер без доступа к папкам',false);
+restore();
+})();
+</script>
+</body>
+</html>

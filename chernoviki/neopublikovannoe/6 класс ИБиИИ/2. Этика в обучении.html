@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Этика и мораль использования нейросетей в обучении — 6 класс</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#0f0f1a;color:#e0e0e0;height:100vh;overflow:hidden;display:flex;justify-content:center;align-items:center}
+.presentation{width:100vw;height:100vh;position:relative;overflow:hidden}
+.slide{display:none;width:100%;height:100%;padding:60px 80px;position:absolute;top:0;left:0;flex-direction:column;justify-content:center;opacity:0;transition:opacity .4s}
+.slide.active{display:flex;opacity:1}
+.slide-num{position:absolute;top:30px;right:50px;font-size:.9em;color:#666;letter-spacing:2px}
+h1{font-size:2.6em;color:#fff;margin-bottom:20px;line-height:1.2}
+h2{font-size:1.8em;color:#a78bfa;margin-bottom:18px}
+h3{font-size:1.3em;color:#c4b5fd;margin-bottom:12px}
+.accent{color:#a78bfa}
+.accent2{color:#f472b6}
+.accent3{color:#34d399}
+.subtitle{font-size:1.2em;color:#94a3b8;margin-bottom:30px}
+.card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:28px;margin-bottom:16px;backdrop-filter:blur(10px)}
+.card:hover{background:rgba(255,255,255,.1);transform:translateY(-2px);transition:all .3s}
+.card-green{border-left:4px solid #34d399}
+.card-red{border-left:4px solid #f87171}
+.card-yellow{border-left:4px solid #fbbf24}
+.card-blue{border-left:4px solid #60a5fa}
+.card-purple{border-left:4px solid #a78bfa}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.grid4{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.option{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:22px;font-size:1.05em;line-height:1.5;cursor:default;transition:all .3s}
+.option:hover{background:rgba(167,139,250,.15);border-color:#a78bfa}
+.option .emoji{font-size:1.6em;margin-right:10px}
+.situation-box{background:linear-gradient(135deg,rgba(167,139,250,.2),rgba(244,114,182,.2));border:1px solid rgba(167,139,250,.3);border-radius:18px;padding:32px;font-size:1.15em;line-height:1.7;margin-bottom:24px}
+.question-box{background:linear-gradient(135deg,rgba(244,114,182,.15),rgba(251,191,36,.15));border:1px solid rgba(244,114,182,.3);border-radius:18px;padding:36px;text-align:center;font-size:1.5em;font-weight:600;color:#fff;line-height:1.5}
+.warning-box{background:rgba(251,191,36,.1);border:2px solid #fbbf24;border-radius:14px;padding:20px;text-align:center;font-size:1.15em;color:#fbbf24;margin-top:16px}
+.good-bad{display:flex;gap:16px;margin-top:12px}
+.good{background:rgba(52,211,153,.12);color:#34d399;padding:14px 18px;border-radius:10px;flex:1;font-size:1em}
+.bad{background:rgba(248,113,113,.12);color:#f87171;padding:14px 18px;border-radius:10px;flex:1;font-size:1em}
+.chain{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px;font-size:1em}
+.chain-step{background:rgba(52,211,153,.15);color:#34d399;padding:8px 14px;border-radius:8px}
+.chain-arrow{color:#666;font-size:1.2em}
+.chain-bad .chain-step{background:rgba(248,113,113,.15);color:#f87171}
+.debate-box{background:linear-gradient(135deg,rgba(244,114,182,.25),rgba(251,191,36,.25));border:1px solid rgba(244,114,182,.4);border-radius:18px;padding:40px;text-align:center;font-size:1.4em;font-weight:700;color:#fff;line-height:1.5;margin:20px 0}
+.memo-line{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:16px 20px;margin:10px 0;font-size:1.1em;color:#94a3b8}
+.hw-box{background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.3);border-radius:14px;padding:24px;margin-top:16px}
+.hw-item{background:rgba(255,255,255,.05);border-radius:10px;padding:14px;margin:10px 0;font-size:1.05em;line-height:1.5}
+.instr-box{background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.2);border-radius:16px;padding:28px;margin-bottom:20px}
+.instr-box h3{color:#60a5fa}
+.instr-box ol{margin-left:24px;font-size:1.1em;line-height:2}
+.timer-row{display:flex;gap:16px;margin-top:16px}
+.timer-item{background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.2);border-radius:12px;padding:16px;text-align:center;flex:1}
+.timer-item .time{font-size:1.8em;font-weight:700;color:#a78bfa}
+.timer-item .desc{font-size:.9em;color:#94a3b8;margin-top:6px}
+.prompt-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:20px;margin-bottom:12px}
+.prompt-card .label{font-size:.85em;color:#a78bfa;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.prompt-card .text{font-size:1.05em;color:#e0e0e0;line-height:1.5;font-style:italic}
+.prompt-card .expect{font-size:.9em;color:#94a3b8;margin-top:8px}
+.reflection-row{display:flex;gap:20px;margin-top:20px}
+.refl-item{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:24px;text-align:center;flex:1;font-size:1.1em;line-height:1.5}
+.refl-item .emoji-big{font-size:2.5em;margin-bottom:10px}
+.nav{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);display:flex;gap:20px;align-items:center;z-index:100}
+.nav-btn{background:rgba(167,139,250,.2);color:#a78bfa;border:1px solid rgba(167,139,250,.4);padding:10px 24px;border-radius:25px;font-size:1em;cursor:pointer;transition:all .3s;backdrop-filter:blur(10px)}
+.nav-btn:hover{background:rgba(167,139,250,.4);color:#fff}
+.nav-btn:disabled{opacity:.3;cursor:not-allowed}
+.slide-counter{color:#666;font-size:1em;letter-spacing:2px;min-width:60px;text-align:center}
+.tag{display:inline-block;background:rgba(167,139,250,.2);color:#a78bfa;padding:4px 12px;border-radius:20px;font-size:.8em;margin-bottom:10px;letter-spacing:1px}
+.tag-green{background:rgba(52,211,153,.2);color:#34d399}
+.tag-red{background:rgba(248,113,113,.2);color:#f87171}
+.tag-yellow{background:rgba(251,191,36,.2);color:#fbbf24}
+.safety-box{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.3);border-radius:14px;padding:20px;margin-top:16px;font-size:1.05em;color:#f87171;line-height:1.6}
+.table-wrap{width:100%;margin-top:12px}
+.table-wrap table{width:100%;border-collapse:collapse}
+.table-wrap th,.table-wrap td{padding:12px 16px;text-align:left;border-bottom:1px solid rgba(255,255,255,.1);font-size:1em}
+.table-wrap th{color:#a78bfa;font-weight:600}
+.table-wrap td{color:#ccc}
+.table-wrap tr:last-child td{border-bottom:none}
+</style>
+</head>
+<body>
+<div class="presentation">
+
+<!-- ===== СЛАЙД 1: Титульный ===== -->
+<div class="slide active">
+<span class="slide-num">01 / 15</span>
+<div class="tag">Урок ИИ и информационной безопасности · 6 класс</div>
+<h1>Этика и мораль<br>использования <span class="accent">нейросетей</span><br>в обучении</h1>
+<p class="subtitle">Где граница между помощью и подменой?</p>
+<div style="margin-top:40px;display:flex;gap:16px">
+<div class="card" style="flex:1;text-align:center"><span style="font-size:2em">🤖</span><br><span style="color:#94a3b8">ИИ — помощник</span></div>
+<div class="card" style="flex:1;text-align:center"><span style="font-size:2em">🧠</span><br><span style="color:#94a3b8">Ты — автор</span></div>
+<div class="card" style="flex:1;text-align:center"><span style="font-size:2em">🔍</span><br><span style="color:#94a3b8">Проверяй факты</span></div>
+</div>
+</div>
+
+<!-- ===== СЛАЙД 2: Ситуация ===== -->
+<div class="slide">
+<span class="slide-num">02 / 15</span>
+<h1>📖 Ситуация: <span class="accent">Маша и доклад</span></h1>
+<div class="situation-box">
+Маше задали написать краткий доклад о планетах Солнечной системы. Она начала читать учебник, но запуталась в цифрах и фактах. До сдачи осталось <strong>20 минут</strong>.<br><br>
+<strong>Что ей делать?</strong>
+</div>
+<div class="grid4">
+<div class="option"><span class="emoji">🤖</span><strong>А.</strong> Попросить нейросеть: «Напиши доклад о планетах за меня».</div>
+<div class="option"><span class="emoji">📝</span><strong>Б.</strong> Списать готовый доклад у одноклассника.</div>
+<div class="option"><span class="emoji">💡</span><strong>В.</strong> Написать черновик самой, а ИИ попросить: «Проверь факты и помоги структурировать».</div>
+<div class="option"><span class="emoji">❌</span><strong>Г.</strong> Оставить задание невыполненным.</div>
+</div>
+</div>
+
+<!-- ===== СЛАЙД 3: Вопрос-ловушка ===== -->
+<div class="slide">
+<span class="slide-num">03 / 15</span>
+<h1>🎯 Вопрос на засыпку</h1>
+<div class="question-box">
+Большинство выбрало вариант <strong>В</strong>.<br><br>
+А теперь скажите: чем вариант <strong>А</strong> (ИИ написал за неё) отличается от варианта <strong>Б</strong> (списала у одноклассника)?<br><br>
+<span style="font-size:.7em;color:#94a3b8">Или они не отличаются?</span>
+</div>
+<div class="card" style="margin-top:30px;text-align:center">
+<p style="font-size:1.2em;color:#f472b6">В обоих случаях Маша сдаёт <strong>чужую работу</strong>.</p>
+<p style="color:#94a3b8;margin-top:8px">Граница между «помощью» и «подменой» очень тонкая. Сегодня мы научимся её видеть.</p>
+</div>
+</div>
+
+<!-- ===== СЛАЙД 4: Цель урока ===== -->
+<div class="slide">
+<span class="slide-num">04 / 15</span>
+<h1>Цель урока</h1>
+<div class="grid2" style="margin-top:20px">
+<div class="card card-purple">
+<h3>🔎 Я узнаю</h3>
+<p style="font-size:1.1em;line-height:1.6">Где проходит граница между «нейросеть помогает мне учиться» и «нейросеть учится за меня»</p>
+</div>
+<div class="card card-blue">
+<h3>🛠 Я научусь</h3>
+<p style="font-size:1.1em;line-height:1.6">Применять 4 правила этичного использования ИИ и находить ошибки (галлюцинации) в ответах нейросетей</p>
+</div>
+</div>
+<div style="margin-top:30px;text-align:center">
+<div style="display:inline-block;background:rgba(167,139,250,.15);border:1px solid rgba(167,139,250,.3);border-radius:14px;padding:18px 36px">
+<span style="font-size:1.3em;color:#a78bfa;font-weight:600">📌 Тема: Этика и мораль использования нейросетей в обучении</span>
+</div>
+</div>
+</div>
+
+<!-- ===== СЛАЙД 5: Правило 1 ===== -->
+<div class="slide">
+<span class="slide-num">05 / 15</span>
+<div class="tag">Правило 1 из 4</div>
+<h1>Сначала <span class="accent">цель</span> — потом ИИ</h1>
+<p class="subtitle">Прежде чем открыть нейросеть, спроси себя: зачем?</p>
+<div class="good-bad" style="margin-top:30px">
+<div class="good" style="font-size:1.1em">
+<strong>✅ Хорошая цель:</strong><br><br>
+«Объясни тему простыми словами»<br>
+«Проверь мои ошибки»<br>
+«Помоги составить план»
+</div>
+<div class="bad" style="font-size:1.1em">
+<strong>❌ Плохая цель:</strong><br><br>
+«Сделай задание за меня»<br>
+«Напиши сочинение с нуля»<br>
+«Дай готовый ответ, чтобы переписать»
+</div>
+</div>
+<div class="card" style="margin-top:24px;text-align:center">
+<p style="font-size:1.15em;color:#a78bfa">Нейросеть — это <strong>помощник</strong>, а не <strong>исполнитель</strong>.</p>
+</div>
+</div>
+
+<!-- ===== СЛАЙД 6: Правило 2 ===== -->
+<div class="slide">
+<span class="slide-num">06 / 15</span>
+<div class="tag">Правило 2 из 4</div>
+<h1>Сначала <span class="accent">думаешь сам</span> — потом спрашиваешь ИИ</h1>
+<p class="subtitle">Никогда не наоборот.</p>
+<div class="grid2" style="margin-top:24px">
+<div class="card card-green">
+<h3>✅ Правильная цепочка</h3>
+<div class="chain">
+<span class="chain-step">Думаю сам</span><span class="chain-arrow">→</span>
+<span class="chain-step">Спрашиваю ИИ</span><span class="chain-arrow">→</span>
+<span class="chain-step">Сравниваю</span><span class="chain-arrow">→</span>
+<span class="chain-step">Проверяю</span><span class="chain-arrow">→</span>
+<span class="chain-step">Могу объяснить</span>
+</div>
+</div>
+<div class="card card-red">
+<h3>❌ Неправильная цепочка</h3>
+<div class="chain chain-bad">
+<span class="chain-step">Спросил ИИ</span><span class="chain-arrow">→</span>
+<span class="chain-step">Скопировал</span><span class="chain-arrow">→</span>
+<span class="chain-step">Сдал</span>
+</div>
+</div>
+</div>
+<div class="card" style="margin-top:20px;text-align:center">
+<p style="font-size:1.15em;color:#f472b6">Если ты не можешь объяснить свою работу своими словами — значит, это <strong>не твоя работа</strong>.</p>
+</div>
+</div>
+
+<!-- ===== СЛАЙД 7: Правило 3 ===== -->
+<div class="slide">
+<span class="slide-num">07 / 15</span>
+<div class="tag">Правило 3 из 4</div>
+<h1>Не скрывай <span class="accent">использование ИИ</span></h1>
+<p class="subtitle">Если ИИ помог — скажи как. Это как указать источник в реферате.</p>
+<div class="card card-blue" style="margin-top:30px">
+<h3>📝 Пример формулировки:</h3>
+<p style="font-size:1.15em;line-height:1.7;color:#e0e0e0;font-style:italic">«ИИ использовался для проверки орфографии и подбора синонимов. Основной текст написан мной.»</p>
+</div>
+<div class="card" style="margin-top:24px;text-align:center">
+<p style="font-size:1.2em;color:#34d399">Это называется <strong>академическая честность</strong> — твой результат это твой труд.</p>
+</div>
+</div>
+
+<!-- ===== СЛАЙД 8: Правило 4 ===== -->
+<div class="slide">
+<span class="slide-num">08 / 15</span>
+<div class="tag">Правило 4 из 4</div>
+<h1>Ответ ИИ — это <span class="accent2">не факт</span></h1>
+<p class="subtitle">Нейросеть не знает — она угадывает слова, которые подходят по смыслу.</p>
+<div class="grid3" style="margin-top:24px">
+<div class="card card-red" style="text-align:center">
+<span style="font-size:2em">📅</span>
+<p style="margin-top:10px">Может выдумать дату</p>
+</div>
+<div class="card card-red" style="text-align:center">
+<span style="font-size:2em">📖</span>
+<p style="margin-top:10px">Может перепутать имя героя</p>
+</div>
+<div class="card card-red" style="text-align:center">
+<span style="font-size:2em">💻</span>
+<p style="margin-top:10px">Может дать код с ошибкой</p>
+</div>
+</div>
+<div class="card" style="margin-top:20px;text-align:center">
+<p style="font-size:1.2em;color:#f472b6">Такие ошибки называются <strong>«галлюцинации ИИ»</strong>. Поэтому <strong>проверяй всё</strong>.</p>
+</div>
+<div class="warning-box">🛑 В школе ИИ — только с разрешения учителя. На контрольных — <strong>запрещён</strong>.</div>
+</div>
+
+<!-- ===== СЛАЙД 9: Инструкция к практике ===== -->
+<div class="slide">
+<span class="slide-num">09 / 15</span>
+<h1>🔬 Практическая работа</h1>
+<div class="grid2" style="margin-top:20px">
+<div class="instr-box">
+<h3>Часть А. Кейсы (5 мин, в парах)</h3>
+<p style="font-size:1.05em;line-height:1.7;margin-top:10px">Оцените каждую ситуацию:</p>
+<p style="margin-top:8px"><span class="tag-green tag">✅ Этично</span> <span class="tag-red tag">❌ Неэтично</span> <span class="tag-yellow tag">🌫️ Серая зона</span></p>
+<p style="margin-top:12px;color:#f472b6;font-weight:600">Обязательно объясните почему!</p>
+</div>
+<div class="instr-box">
+<h3>Часть Б. Эксперимент с ИИ (10 мин, за ПК)</h3>
+<ol>
+<li>Открой нейросеть</li>
+<li>Введи свой промпт</li>
+<li>Найди ошибку или неточность</li>
+<li>Проверь факт через поисковик</li>
+<li>Заполни бланк-протокол</li>
+</ol>
+</div>
+</div>
+<div class="safety-box">
+🔒 <strong>Правило безопасности:</strong> Никогда не вводите в нейросеть свои личные данные — имя, адрес, номера телефонов, пароли. Нейросети могут запомнить эту информацию.
+</div>
+</div>
+
+<!-- ===== СЛАЙД 10: Кейсы ===== -->
+<div class="slide">
+<span class="slide-num">10 / 15</span>
+<h1>📋 Разбор кейсов</h1>
+<div class="grid3" style="margin-top:16px">
+<div class="card card-green">
+<span class="tag-green tag">Биология</span>
+<h3>Кейс 1</h3>
+<p style="font-size:.95em;line-height:1.6">Витя сам написал черновик доклада о <strong>фотосинтезе</strong> по учебнику. Перед сдачей попросил ИИ: «Проверь орфографию и предложи синонимы к слову "хороший"». Витя внёс правки и сдал.</p>
+</div>
+<div class="card card-red">
+<span class="tag-red tag">Литература</span>
+<h3>Кейс 2</h3>
+<p style="font-size:.95em;line-height:1.6">Катю задали сочинение по <strong>«Коньку-Горбунку»</strong>. Она не читала сказку, а написала ИИ: «Напиши сочинение на 10 предложений». Скопировала, поменяла пару слов и сдала как свой.</p>
+</div>
+<div class="card card-yellow">
+<span class="tag-yellow tag">Информатика</span>
+<h3>Кейс 3</h3>
+<p style="font-size:.95em;line-height:1.6">Дима попросил ИИ: «Напиши код на <strong>Python</strong>, который выводит простые числа». Скопировал код. Учитель спросил: «Как работает цикл?» Дима: «Ну, там какая-то проверка…» — объяснить не смог.</p>
+</div>
+</div>
+</div>
+
+<!-- ===== СЛАЙД 11: Промпты ===== -->
+<div class="slide">
+<span class="slide-num">11 / 15</span>
+<h1>🧪 Эксперимент: промпты</h1>
+<p class="subtitle">У каждого свой вариант. Найдите ошибку в ответе ИИ!</p>
+<div class="grid3" style="margin-top:12px">
+<div class="prompt-card">
+<div class="label">Вариант 1 · Космос</div>
+<div class="text">«Расскажи о первом пилотируемом полёте человека на Марс в 1995 году и его итогах.»</div>
+<div class="expect">⚠️ Ожидание: галлюцинация даты или миссии</div>
+</div>
+<div class="prompt-card">
+<div class="label">Вариант 2 · Литература</div>
+<div class="text">«Напиши краткий пересказ сказки "Конёк-Горбунок", где главному герою помогает Серый Волк.»</div>
+<div class="expect">⚠️ Ожидание: ИИ «поведётся» или исправит</div>
+</div>
+<div class="prompt-card">
+<div class="label">Вариант 3 · Python</div>
+<div class="text">«Напиши код на Python, который выводит все простые числа от 1 до 20, учитывая, что 1 — это простое число.»</div>
+<div class="expect">⚠️ Ожидание: логическая ошибка (1 ≠ простое)</div>
+</div>
+</div>
+</div>
+
+<!-- ===== СЛАЙД 12: Бланк ===== -->
+<div class="slide">
+<span class="slide-num">12 / 15</span>
+<h1>📝 Бланк-протокол эксперимента</h1>
+<div class="table-wrap" style="margin-top:24px">
+<table>
+<tr><th>№</th><th>Задача</th><th>Мой промпт</th><th>Что ответил ИИ</th><th>Что на самом деле</th></tr>
+<tr><td><strong>1</strong></td><td><span class="tag">Обязательно</span></td><td style="color:#666">...</td><td style="color:#666">...</td><td style="color:#666">...</td></tr>
+<tr><td><strong>2</strong></td><td><span class="tag-green tag">Если успел</span></td><td style="color:#666">...</td><td style="color:#666">...</td><td style="color:#666">...</td></tr>
+</table>
+</div>
+<div class="card" style="margin-top:30px;text-align:center">
+<p style="font-size:1.15em;color:#34d399">💡 Если ИИ сам распознал ложь в вашем вопросе — это <strong>отличный результат</strong>! Запишите: «ИИ распознал подвох».</p>
+<p style="color:#94a3b8;margin-top:8px">Но проверьте второй промпт — другая модель может ошибиться.</p>
+</div>
+</div>
+
+<!-- ===== СЛАЙД 13: Мини-дебаты ===== -->
+<div class="slide">
+<span class="slide-num">13 / 15</span>
+<h1>🥊 Мини-дебаты</h1>
+<div class="debate-box">
+«Нейросеть — это как калькулятор.<br>Калькулятором пользоваться можно.<br>Значит, и нейросетью можно <strong>всегда</strong>.»
+</div>
+<div class="grid2" style="margin-top:24px">
+<div class="card card-green" style="text-align:center">
+<span style="font-size:2.5em">✋</span>
+<h3 style="color:#34d399">Согласны</h3>
+<p style="color:#94a3b8">Поднимите правую руку</p>
+</div>
+<div class="card card-red" style="text-align:center">
+<span style="font-size:2.5em">✋</span>
+<h3 style="color:#f87171">Не согласны</h3>
+<p style="color:#94a3b8">Поднимите левую руку</p>
+</div>
+</div>
+<div class="card" style="margin-top:16px;text-align:center">
+<p style="color:#a78bfa;font-size:1.1em">По одному аргументу с каждой стороны</p>
+</div>
+</div>
+
+<!-- ===== СЛАЙД 14: Рефлексия ===== -->
+<div class="slide">
+<span class="slide-num">14 / 15</span>
+<h1>📝 Моя памятка по работе с ИИ</h1>
+<p class="subtitle">Запишите 3 правила своими словами + одну «серую зону»</p>
+<div style="margin-top:20px">
+<div class="memo-line">1. _______________________________________________</div>
+<div class="memo-line">2. _______________________________________________</div>
+<div class="memo-line">3. _______________________________________________</div>
+<div class="memo-line" style="border-color:rgba(251,191,36,.3)">🌫️ Моя «серая зона» (ситуация, где я сомневаюсь): _______________________________________________</div>
+</div>
+<div class="reflection-row">
+<div class="refl-item"><div class="emoji-big">👍</div>Изменю свой подход к ИИ после сегодняшнего урока</div>
+<div class="refl-item"><div class="emoji-big">🤔</div>Задумаюсь, но пока не уверен</div>
+<div class="refl-item"><div class="emoji-big">😐</div>Я и раньше так делал</div>
+</div>
+</div>
+
+<!-- ===== СЛАЙД 15: ДЗ + Итог ===== -->
+<div class="slide">
+<span class="slide-num">15 / 15</span>
+<h1>🏠 Домашнее задание</h1>
+<div class="hw-box">
+<div class="hw-item">
+<strong style="color:#60a5fa">Основное:</strong> Описать один реальный случай из своей жизни, когда использование нейросети было этичным или неэтичным (3–5 предложений).
+</div>
+<div class="hw-item">
+<strong style="color:#a78bfa">Дополнительное (по желанию):</strong> Найти в интернете новость об ошибке нейросети и кратко описать, в чём была ошибка.
+</div>
+</div>
+<div style="margin-top:40px;text-align:center">
+<h2 style="color:#34d399">Спасибо за работу! 🎉</h2>
+<p style="color:#94a3b8;font-size:1.1em;margin-top:12px">Приведите рабочие места в порядок</p>
+</div>
+</div>
+
+<!-- Навигация -->
+<div class="nav">
+<button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">← Назад</button>
+<span class="slide-counter" id="slideCounter">01 / 15</span>
+<button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Вперёд →</button>
+</div>
+</div>
+
+<script>
+let current=0;
+const slides=document.querySelectorAll('.slide');
+const total=slides.length;
+function show(n){
+slides.forEach(s=>s.classList.remove('active'));
+slides[n].classList.add('active');
+document.getElementById('slideCounter').textContent=String(n+1).padStart(2,'0')+' / '+String(total).padStart(2,'0');
+document.getElementById('prevBtn').disabled=n===0;
+document.getElementById('nextBtn').disabled=n===total-1;
+}
+function changeSlide(d){
+current+=d;
+if(current<0)current=0;
+if(current>=total)current=total-1;
+show(current);
+}
+document.addEventListener('keydown',e=>{
+if(e.key==='ArrowRight'||e.key===' ')changeSlide(1);
+if(e.key==='ArrowLeft')changeSlide(-1);
+});
+show(0);
+</script>
+</body>
+</html>

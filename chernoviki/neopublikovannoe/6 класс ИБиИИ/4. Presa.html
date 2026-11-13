@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ИИ и безопасность — 6 класс</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #1A1A2E;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    overflow: hidden;
+    user-select: none;
+  }
+  #presentation {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+  }
+  .slide {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 60px 80px;
+    background: #1A1A2E;
+    color: #FFFFFF;
+  }
+  .slide.active { display: flex; }
+  .accent-bar {
+    width: 80px;
+    height: 4px;
+    background: #6C63FF;
+    border-radius: 2px;
+    margin: 12px 0 24px 0;
+  }
+  h1 { font-size: 2.6em; font-weight: 700; line-height: 1.3; margin-bottom: 8px; }
+  h2 { font-size: 2em; font-weight: 700; color: #00D2FF; margin-bottom: 8px; }
+  h3 { font-size: 1.4em; font-weight: 600; color: #00D2FF; margin-bottom: 12px; }
+  .subtitle { font-size: 1.4em; color: #00D2FF; margin-bottom: 20px; }
+  .meta { font-size: 1.05em; color: #A0A0B0; margin-bottom: 6px; }
+  .body-text { font-size: 1.25em; line-height: 1.6; color: #E0E0E0; margin-bottom: 20px; }
+  .small-text { font-size: 1em; color: #A0A0B0; line-height: 1.5; }
+  .yellow { color: #FFD600; }
+  .red { color: #FF6B6B; }
+  .green { color: #4EC9B0; }
+  .cyan { color: #00D2FF; }
+  .bold { font-weight: 700; }
+  .center { text-align: center; width: 100%; }
+
+  .badge {
+    display: inline-block;
+    background: #6C63FF;
+    color: #fff;
+    font-size: 0.8em;
+    font-weight: 700;
+    padding: 5px 14px;
+    border-radius: 8px;
+    margin-right: 16px;
+    min-width: 70px;
+    text-align: center;
+  }
+  .plan-row { display: flex; align-items: center; margin-bottom: 14px; }
+  .plan-title { font-size: 1.15em; font-weight: 600; color: #fff; }
+  .plan-desc { font-size: 0.95em; color: #A0A0B0; margin-left: 90px; margin-top: -2px; }
+
+  .obj-badge {
+    display: inline-block;
+    background: #22223E;
+    border: 1px solid #6C63FF;
+    color: #E0E0E0;
+    font-size: 1em;
+    padding: 8px 18px;
+    border-radius: 10px;
+    margin-right: 14px;
+    margin-bottom: 10px;
+  }
+  .risk-card {
+    background: #22223E;
+    border: 1px solid #6C63FF;
+    border-radius: 14px;
+    padding: 24px;
+    width: 30%;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+  }
+  .risk-card h3 { margin-bottom: 14px; }
+  .risk-card .body { font-size: 1.05em; color: #E0E0E0; line-height: 1.5; }
+  .cards-row { display: flex; gap: 24px; margin-top: 16px; }
+
+  .prompt-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #333;
+  }
+  .prompt-q { font-size: 1.05em; color: #E0E0E0; width: 55%; }
+  .prompt-a { font-size: 0.95em; color: #4EC9B0; width: 40%; text-align: right; }
+
+  .two-col { display: flex; gap: 60px; margin-top: 16px; }
+  .col { flex: 1; }
+  .col h3 { margin-bottom: 16px; }
+  .card-item {
+    font-size: 1.05em;
+    color: #E0E0E0;
+    padding: 8px 0;
+    border-bottom: 1px solid #2a2a4a;
+  }
+
+  .rule-row { display: flex; align-items: flex-start; margin-bottom: 18px; }
+  .rule-num {
+    width: 48px; height: 48px;
+    background: #6C63FF;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4em;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-right: 20px;
+  }
+  .rule-title { font-size: 1.2em; font-weight: 600; color: #fff; }
+  .rule-desc { font-size: 1em; color: #A0A0B0; margin-top: 2px; }
+
+  .traffic-item { display: flex; align-items: center; margin-bottom: 12px; font-size: 1.15em; }
+  .traffic-label { font-weight: 700; width: 130px; }
+  .dz-box {
+    background: #22223E;
+    border: 1px solid #6C63FF;
+    border-radius: 14px;
+    padding: 24px 30px;
+    margin-top: 20px;
+    width: 90%;
+  }
+  .dz-box h3 { color: #00D2FF; margin-bottom: 10px; }
+  .dz-box p { font-size: 1.1em; color: #E0E0E0; line-height: 1.5; }
+
+  .query-box {
+    background: #22223E;
+    border: 2px solid #6C63FF;
+    border-radius: 14px;
+    padding: 28px;
+    margin: 16px 0;
+    font-size: 1.5em;
+    color: #00D2FF;
+    font-weight: 700;
+    text-align: center;
+    width: 70%;
+  }
+  .checklist { margin-top: 12px; }
+  .checklist div { font-size: 1.1em; color: #E0E0E0; padding: 6px 0; }
+
+  #nav {
+    position: fixed;
+    bottom: 20px; right: 30px;
+    font-size: 0.9em;
+    color: #555;
+    z-index: 100;
+  }
+  #counter {
+    position: fixed;
+    bottom: 20px; left: 30px;
+    font-size: 0.9em;
+    color: #555;
+    z-index: 100;
+  }
+  .final-title { font-size: 3em; font-weight: 700; text-align: center; width: 100%; }
+  .final-sub { font-size: 1.6em; color: #00D2FF; text-align: center; width: 100%; margin-top: 20px; }
+</style>
+</head>
+<body>
+<div id="presentation">
+
+  <!-- Слайд 1: Титульный -->
+  <div class="slide active">
+    <h1>Искусственный интеллект<br>и информационная безопасность</h1>
+    <div class="accent-bar"></div>
+    <div class="subtitle">Вопросы безопасности: физическая и цифровая</div>
+    <div class="meta">6 класс • 40 минут</div>
+    <div class="meta">Практика на alice.yandex.ru</div>
+  </div>
+
+  <!-- Слайд 2: Цель -->
+  <div class="slide">
+    <h2>Цель урока</h2>
+    <div class="accent-bar"></div>
+    <div class="body-text">Научиться видеть риски при использовании ИИ<br>и освоить правила безопасного взаимодействия<br>с ИИ-сервисами</div>
+    <h3 style="margin-top:20px">К концу урока вы сможете:</h3>
+    <div class="body-text" style="font-size:1.1em">
+      • Назвать 2 вида безопасности и примеры рисков<br>
+      • Привести 3 примера опасных действий с ИИ<br>
+      • Сформулировать 5 правил безопасного использования
+    </div>
+  </div>
+
+  <!-- Слайд 3: План -->
+  <div class="slide">
+    <h2>План урока</h2>
+    <div class="accent-bar"></div>
+    <div style="margin-top:16px">
+      <div class="plan-row"><span class="badge">4 мин</span><span class="plan-title">Мотивация + актуализация</span></div>
+      <div class="plan-desc">Кто пользовался ИИ? Что отправляли?</div>
+      <div class="plan-row" style="margin-top:10px"><span class="badge">6 мин</span><span class="plan-title">Физическая безопасность</span></div>
+      <div class="plan-desc">ИИ в реальном мире: умный дом, роботы</div>
+      <div class="plan-row" style="margin-top:10px"><span class="badge">7 мин</span><span class="plan-title">Цифровая безопасность</span></div>
+      <div class="plan-desc">Утечки, дипфейки, галлюцинации</div>
+      <div class="plan-row" style="margin-top:10px"><span class="badge">13 мин</span><span class="plan-title">Практика: «Поймай Алису»</span></div>
+      <div class="plan-desc">Ловим ошибки + карточки + запросы</div>
+      <div class="plan-row" style="margin-top:10px"><span class="badge">5 мин</span><span class="plan-title">Рефлексия + ДЗ</span></div>
+      <div class="plan-desc">Светофор, 5 правил, памятка</div>
+    </div>
+  </div>
+
+  <!-- Слайд 4: Физическая безопасность -->
+  <div class="slide">
+    <h2>Физическая безопасность</h2>
+    <div class="accent-bar"></div>
+    <div class="body-text bold">ИИ управляет реальными объектами:</div>
+    <div style="margin:16px 0">
+      <span class="obj-badge">Автопилот</span>
+      <span class="obj-badge">Заводские роботы</span>
+      <span class="obj-badge">Дроны</span>
+      <span class="obj-badge">Умный дом</span>
+      <span class="obj-badge">Медицина</span>
+    </div>
+    <div class="body-text red bold">Риск: взлом или неверные данные → последствия для людей</div>
+    <h3 style="margin-top:16px;color:#FFD600">Кейс: умный дом открывает дверь по голосу</h3>
+    <div class="body-text" style="font-size:1.1em">Кто-то записал голос → дверь открылась. Как защититься?</div>
+    <div class="body-text green" style="font-size:1.1em">
+      → Пароль дополнительно &nbsp;&nbsp; → Второй способ проверки &nbsp;&nbsp; → Запрет голосового открытия
+    </div>
+    <div class="body-text cyan bold" style="margin-top:20px">Записанный голос = дипфейк → переходим к цифровой безопасности</div>
+  </div>
+
+  <!-- Слайд 5: Цифровая безопасность -->
+  <div class="slide">
+    <h2>Цифровая безопасность</h2>
+    <div class="accent-bar"></div>
+    <div class="cards-row">
+      <div class="risk-card">
+        <h3 class="red">Утечка данных</h3>
+        <div class="body">Всё, что вы пишете нейросети, может сохраняться.<br><br>Не сообщай ФИО, адрес, телефон, пароли, не загружай фото документов.</div>
+      </div>
+      <div class="risk-card">
+        <h3 class="yellow">Дипфейки</h3>
+        <div class="body">ИИ подделывает голос и лицо.<br><br>Просят срочно деньги голосом/видео? Перезвони на обычный номер.</div>
+      </div>
+      <div class="risk-card">
+        <h3 class="cyan">Галлюцинации</h3>
+        <div class="body">ИИ уверенно выдаёт выдуманные факты.<br><br>Проверяй по учебнику, спрашивай учителя. Не доверяй без проверки.</div>
+      </div>
+    </div>
+    <div class="body-text red bold" style="margin-top:20px;font-size:1.1em">Опасные советы: ИИ не понимает контекст → может дать вредный совет по здоровью или деньгам.</div>
+    <div class="body-text green bold" style="font-size:1.1em">Правило: не выполняй без проверки у взрослого.</div>
+  </div>
+
+  <!-- Слайд 6: Поймай Алису -->
+  <div class="slide">
+    <h2>Практика: «Поймай Алису»</h2>
+    <div class="accent-bar"></div>
+    <div class="body-text bold">Задание 1 (5 мин): задаём Алисе ловушки и проверяем хором</div>
+    <div style="margin-top:12px;width:90%">
+      <div class="prompt-row"><div class="prompt-q">1. Сколько букв «а» в слове «математика»?</div><div class="prompt-a">Ответ: 3 → считаем хором</div></div>
+      <div class="prompt-row"><div class="prompt-q">2. Напиши «информация» задом наперёд</div><div class="prompt-a">Ответ: яицнморофни → по буквам</div></div>
+      <div class="prompt-row"><div class="prompt-q">3. Сколько будет 347 × 86? Посчитай в уме</div><div class="prompt-a">Ответ: 29842 → в столбик на доске</div></div>
+      <div class="prompt-row"><div class="prompt-q">4. Напиши «безопасность» задом наперёд</div><div class="prompt-a">Ответ: ьртсонмезопсеб → хором</div></div>
+    </div>
+    <div class="body-text yellow bold" style="margin-top:20px;font-size:1.1em">
+      Если Алиса не ошиблась: «Самая опасная нейросеть — та, что ошибается редко:<br>к ней привыкают не проверять»
+    </div>
+  </div>
+
+  <!-- Слайд 7: Карточки -->
+  <div class="slide">
+    <h2>Задание 2: «Что нельзя говорить ИИ»</h2>
+    <div class="accent-bar"></div>
+    <div class="body-text" style="font-size:1.1em">В парах: рассортируйте карточки — можно / нельзя. Объясните почему.</div>
+    <div class="two-col">
+      <div class="col">
+        <h3 class="green">✅ МОЖНО</h3>
+        <div class="card-item">«Придумай сказку про дракона»</div>
+        <div class="card-item">«Объясни, как работает фотоаппарат»</div>
+        <div class="card-item">«Какие планеты больше Юпитера?»</div>
+        <div class="card-item">«Составь план рассказа о космосе»</div>
+      </div>
+      <div class="col">
+        <h3 class="red">❌ НЕЛЬЗЯ</h3>
+        <div class="card-item">«Меня зовут Петя, школа №5, 6Б»</div>
+        <div class="card-item">«Вот фото моего паспорта»</div>
+        <div class="card-item">«Мой номер телефона +7900…»</div>
+        <div class="card-item">«Вот моя фотография, опиши меня»</div>
+        <div class="card-item">«Перешли фото Саши из нашего класса»</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Слайд 8: Безопасный запрос -->
+  <div class="slide">
+    <h2>Задание 3: безопасный запрос</h2>
+    <div class="accent-bar"></div>
+    <div class="body-text">Придумайте один учебный запрос без личных данных.</div>
+    <div class="query-box">«Объясни простыми словами, как …»</div>
+    <h3>Проверьте ответ:</h3>
+    <div class="checklist">
+      <div>☐ Правдоподобен ли ответ?</div>
+      <div>☐ Можно ли доверять без проверки?</div>
+      <div>☐ Есть ли в запросе личные данные?</div>
+    </div>
+    <div class="small-text" style="margin-top:20px">Сильные ученики — роль «контролёра»: проверяют запросы напарника.</div>
+  </div>
+
+  <!-- Слайд 9: 5 правил -->
+  <div class="slide">
+    <h2>5 правил безопасности ИИ</h2>
+    <div class="accent-bar"></div>
+    <div style="margin-top:12px">
+      <div class="rule-row">
+        <div class="rule-num">1</div>
+        <div><div class="rule-title">Не сообщай личные данные</div><div class="rule-desc">ФИО, адрес, телефон, школу, пароли</div></div>
+      </div>
+      <div class="rule-row">
+        <div class="rule-num">2</div>
+        <div><div class="rule-title">Не загружай фото документов и своё фото</div><div class="rule-desc">Паспорт, свидетельство, селфи</div></div>
+      </div>
+      <div class="rule-row">
+        <div class="rule-num">3</div>
+        <div><div class="rule-title">Проверяй ответы</div><div class="rule-desc">ИИ может ошибаться уверенно</div></div>
+      </div>
+      <div class="rule-row">
+        <div class="rule-num">4</div>
+        <div><div class="rule-title">Не выполняй опасные советы</div><div class="rule-desc">По здоровью и деньгам — спроси взрослого</div></div>
+      </div>
+      <div class="rule-row">
+        <div class="rule-num">5</div>
+        <div><div class="rule-title">Осторожно с голосом и видео</div><div class="rule-desc">Дипфейки подделывают знакомых</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Слайд 10: Рефлексия + ДЗ -->
+  <div class="slide">
+    <h2>Рефлексия и домашнее задание</h2>
+    <div class="accent-bar"></div>
+    <div class="body-text bold">«Светофор» — поднимите цвет:</div>
+    <div style="margin-top:12px">
+      <div class="traffic-item"><span class="traffic-label green">🟢 Зелёный</span> Всё понял, готов применять</div>
+      <div class="traffic-item"><span class="traffic-label yellow">🟡 Жёлтый</span> Понял, но есть вопросы</div>
+      <div class="traffic-item"><span class="traffic-label red">🔴 Красный</span> Нужно разобрать ещё раз</div>
+    </div>
+    <div class="body-text cyan bold" style="margin-top:16px">Вопрос классу: «Какое правило защищает физическую безопасность?»</div>
+    <div class="dz-box">
+      <h3>Домашнее задание</h3>
+      <p>Составить памятку из 5 правил безопасного ИИ для младшего брата, сестры или одноклассника. Оформить на А4 с рисунками.</p>
+    </div>
+  </div>
+
+  <!-- Слайд 11: Финал -->
+  <div class="slide">
+    <div class="final-title">Спасибо за урок!</div>
+    <div class="final-sub">Помните: проверяй — даже когда не видно ошибки</div>
+  </div>
+
+</div>
+
+<div id="counter">1 / 11</div>
+<div id="nav">→ пробел — далее &nbsp; ← — назад &nbsp; F — полный экран</div>
+
+<script>
+  var slides = document.querySelectorAll('.slide');
+  var current = 0;
+  var counter = document.getElementById('counter');
+
+  function show(n) {
+    slides[current].classList.remove('active');
+    current = n;
+    if (current < 0) current = 0;
+    if (current >= slides.length) current = slides.length - 1;
+    slides[current].classList.add('active');
+    counter.textContent = (current + 1) + ' / ' + slides.length;
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+      e.preventDefault();
+      if (current < slides.length - 1) show(current + 1);
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      if (current > 0) show(current - 1);
+    } else if (e.key === 'f' || e.key === 'F') {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    } else if (e.key === 'Home') {
+      show(0);
+    } else if (e.key === 'End') {
+      show(slides.length - 1);
+    }
+  });
+
+  document.addEventListener('click', function(e) {
+    if (e.target.tagName === 'A') return;
+    if (current < slides.length - 1) show(current + 1);
+  });
+</script>
+</body>
+</html>

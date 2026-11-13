@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Дело № 6-ИИ — бланки</title>
+<style>
+@page{size:A4;margin:12mm 13mm}
+*{box-sizing:border-box}
+body{margin:0;background:#d9d4c9;font:11.5pt/1.45 "Segoe UI",Arial,sans-serif;color:#111}
+.page{width:210mm;min-height:297mm;margin:10mm auto;background:#fff;padding:12mm 13mm;box-shadow:0 2px 10px rgba(0,0,0,.2);break-after:page;page-break-after:always}
+.page:last-child{break-after:auto;page-break-after:auto}
+@media print{body{background:#fff}.page{margin:0;box-shadow:none;width:auto;min-height:0;padding:0}.noprint{display:none}}
+.noprint{max-width:210mm;margin:10mm auto 0;background:#fff;padding:10px 14px;font-size:11pt}
+.noprint button{font-size:12pt;padding:6px 14px;cursor:pointer}
+
+.top{display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #111;padding-bottom:5px;margin-bottom:6px}
+.case{font:700 14pt "Courier New",monospace}
+.stamp{border:2px solid #a3221b;color:#a3221b;font:700 9.5pt "Courier New",monospace;padding:2px 8px;text-transform:uppercase;white-space:nowrap}
+.meta{font-size:10.5pt;color:#333}
+h2{font:700 12.5pt Georgia,serif;margin:9px 0 3px}
+p{margin:5px 0}
+.small{font-size:10pt;color:#333}
+
+.who{display:flex;gap:6mm;align-items:flex-end;margin:4px 0 6px;font-size:10.5pt}
+.who .fill{flex:1;border-bottom:1px solid #444;height:6mm}
+
+table.dict{width:100%;border-collapse:collapse;font-size:10pt;margin:4px 0 6px}
+table.dict th,table.dict td{border:1px solid #111;padding:3px 6px;text-align:left}
+table.dict th{width:30mm;background:#eee;font:700 9pt "Courier New",monospace;text-transform:uppercase}
+table.dict tr:first-child td{color:#555;text-decoration:line-through}
+table.dict tr:last-child td{font-weight:700}
+table.dict td.hot{background:#f6e7b8;outline:2px solid #111;outline-offset:-2px}
+table.dict tr:last-child td.hot{font-size:11pt}
+.dictnote{font-size:9pt;color:#444;margin:-3px 0 6px}
+
+.rule{font-size:10pt;border-left:4px solid #a3221b;padding:4px 8px;background:#f7f2ea;margin:6px 0}
+
+ol.items{padding-left:6mm;margin:4px 0}
+ol.items>li{margin:0 0 7px;break-inside:avoid}
+.ln{border-bottom:1px solid #444;height:8.5mm}
+.sh{display:inline-block;border-bottom:1px solid #444;width:32mm;height:1.1em;vertical-align:bottom}
+.sh.s{width:16mm}.sh.l{width:55mm}
+.nw{white-space:nowrap}
+
+.box{display:inline-block;width:4.2mm;height:4.2mm;border:1.5px solid #111;vertical-align:-0.6mm;margin-right:4px}
+.choice{margin:4px 0}
+.choice span{display:inline-block;margin-right:7mm;white-space:nowrap}
+
+table.grid{width:100%;border-collapse:collapse;font-size:10.5pt;table-layout:fixed}
+table.grid th,table.grid td{border:1px solid #111;padding:4px 6px;vertical-align:top;text-align:left}
+table.grid th{background:#eee}
+table.grid.tall td{height:27mm}
+table.grid.mid td{height:21mm}
+table.grid.tt{table-layout:auto;font-size:9.5pt}
+table.grid.tt td,table.grid.tt th{height:auto;padding:2px 6px}
+.lead ol,.lead ul{font-size:10pt;margin:3px 0}.lead ol li,.lead ul li{margin:2px 0}.lead h2{margin:6px 0 2px}
+.check{font-size:10pt;line-height:1.7}
+
+.opt{border:1px solid #111;padding:5px 8px 2px;margin:6px 0;break-inside:avoid}
+
+.testi h2{margin:2px 0}
+.ttext{font:italic 12.5pt/1.5 Georgia,serif;margin:4px 0}
+table.dos td{font-size:10.5pt;padding:5px 6px}
+table.dos td.ans{font-family:"Courier New",monospace;font-size:10pt}
+.sign{display:flex;justify-content:space-between;gap:10mm;margin-top:9mm;font-size:10.5pt}
+.sign>div{display:flex;align-items:flex-end;gap:3mm}
+.sign .sh{width:50mm}
+.sign .sh.s{width:22mm}
+</style>
+</head>
+<body>
+
+<div class="noprint">
+  <b>Печать:</b> Показания — 4 экземпляра (по одному на отдел; можно не печатать, если отделы голосуют с компьютеров). Бланки 1–4 — по одному для отдела-владельца улики (лучше по два). Досье подследственного — 4 экземпляра. Протокол допроса — 4 экземпляра. Бланк вердикта — 1. Лист руководителя — себе. Всего 10 страниц A4. Если вы заменили тексты показаний в приложении, поправьте их и здесь: откройте этот файл в Блокноте и найдите «Показание А».
+  <button onclick="print()">Печать</button>
+</div>
+
+<!-- ============ ПОКАЗАНИЯ ============ -->
+<div class="page">
+  <div class="top"><div><div class="case">ДЕЛО № 6-ИИ</div><div class="meta">Материалы к опознанию · три показания</div></div><span class="stamp">Статус: расследуется</span></div>
+  <div class="who"><span>Отдел:</span><span class="fill"></span></div>
+  <p>Свидетелям задали один вопрос: <b>«Опишите, как пахнет осенний парк».</b> Установите, какие показания написала машина. Отметьте голос отдела по каждому показанию. Обсуждать с другими отделами нельзя.</p>
+  <div class="opt testi"><h2>Показание А</h2><p class="ttext">Мокрыми листьями и немного дымом — где-то жгли ветки. Ещё пахнет холодом, если так вообще бывает. У нас у подъезда так пахнет каждый октябрь, и я сразу вспоминаю, что скоро контрольные.</p><div class="choice" style="margin-top:6px">Голос отдела: <span><i class="box"></i>написал человек</span><span><i class="box"></i>написала машина</span></div></div>
+  <div class="opt testi"><h2>Показание Б</h2><p class="ttext">Осенний парк пахнет влажной землёй, прелыми листьями и лёгкой горчинкой дыма. В этом запахе есть что-то уютное и немного грустное — как будто лето уже попрощалось, а зима ещё не постучалась.</p><div class="choice" style="margin-top:6px">Голос отдела: <span><i class="box"></i>написал человек</span><span><i class="box"></i>написала машина</span></div></div>
+  <div class="opt testi"><h2>Показание В</h2><p class="ttext">пахнет листьями мокрыми и дымом как будто кто то костёр жог. мне нравится но уже холодно и руки мёрзнут</p><div class="choice" style="margin-top:6px">Голос отдела: <span><i class="box"></i>написал человек</span><span><i class="box"></i>написала машина</span></div></div>
+  <p style="margin-top:8px">По каким признакам отдел отличал машину от человека?</p>
+  <div class="ln"></div><div class="ln"></div>
+  <div class="sign"><div>Подпись старшего следователя: <span class="sh"></span></div><div>Время: <span class="sh s"></span></div></div>
+</div>
+
+<!-- ============ БЛАНК 1 ============ -->
+<div class="page">
+  <div class="top"><div><div class="case">ДЕЛО № 6-ИИ</div><div class="meta">Бланк 1 · Улика 1. Предсказание текста</div></div><span class="stamp">Статус: расследуется</span></div>
+  <div class="who"><span>Отдел лингвистической экспертизы · Следователи:</span><span class="fill"></span></div>
+  <table class="dict"><tr><th>Так говорят</th><td>понимает</td><td class="hot">думает</td><td>придумывает</td></tr><tr><th>Как мы говорим</th><td>обрабатывает</td><td class="hot">находит закономерность, предсказывает</td><td>генерирует</td></tr></table>
+  <div class="dictnote">Выделена пара, которая чаще всего понадобится вашему отделу. Остальные правила словаря действуют так же.</div>
+  <div class="rule">Допишите фразы. Пропуск заполняется только тем, что ваш отдел увидел в своём эксперименте. Ответ, которого нет на вашем экране, не принимается.</div>
+  <ol class="items">
+    <li>После «Следователь налил» самым вероятным модель выбрала слово <span class="nw">«<span class="sh"></span>»</span>, его доля в учебной таблице — <span class="nw"><span class="sh s"></span> %</span>. Наша версия до нажатия: <span class="nw">«<span class="sh"></span>»</span>.</li>
+    <li>Мы несколько раз нажали «С долей случайности» и получили разные фразы:
+      <div class="ln"></div><div class="ln"></div></li>
+    <li>Раз фразы получились разными, значит, модель не хранит одну готовую фразу, а
+      <div class="ln"></div></li>
+    <li>Строку «У лукоморья дуб…» наш отдел продолжил словом <span class="nw">«<span class="sh"></span>»</span>, потому что
+      <div class="ln"></div>
+      Модель делает то же самое, но
+      <div class="ln"></div></li>
+    <li>В эксперименте «Соседи слова» рядом со словом <span class="nw">«<span class="sh"></span>»</span> чаще всего стоит <span class="nw">«<span class="sh"></span>»</span>, реже всего — <span class="nw">«<span class="sh"></span>»</span>.</li>
+  </ol>
+  <h2>Предварительное заключение отдела</h2>
+  <p>Улика № 1 говорит в пользу версии:</p>
+  <div class="choice"><span><i class="box"></i>«думающий собеседник»</span><span><i class="box"></i>«инструмент»</span><span><i class="box"></i>в обе стороны</span></div>
+  <p>потому что</p>
+  <div class="ln"></div><div class="ln"></div><div class="ln"></div>
+  <div class="sign"><div>Подпись старшего следователя: <span class="sh"></span></div><div>Время: <span class="sh s"></span></div></div>
+</div>
+
+<!-- ============ БЛАНК 2 ============ -->
+<div class="page">
+  <div class="top"><div><div class="case">ДЕЛО № 6-ИИ</div><div class="meta">Бланк 2 · Улика 2. Картинка из шума</div></div><span class="stamp">Статус: расследуется</span></div>
+  <div class="who"><span>Отдел анализа изображений · Следователи:</span><span class="fill"></span></div>
+  <table class="dict"><tr><th>Так говорят</th><td>понимает</td><td>думает</td><td class="hot">придумывает</td></tr><tr><th>Как мы говорим</th><td>обрабатывает</td><td>находит закономерность, предсказывает</td><td class="hot">генерирует</td></tr></table>
+  <div class="dictnote">Выделена пара, которая чаще всего понадобится вашему отделу. Остальные правила словаря действуют так же.</div>
+  <div class="rule">Колонка «Что увидели» — своими словами, переписывать текст с экрана запрещено. Если колонка «Что увидели» пустая, колонка «Вывод» не принимается.</div>
+  <table class="grid tall">
+    <colgroup><col style="width:28%"><col style="width:38%"><col></colgroup>
+    <tr><th>Действие</th><th>Что увидели (своими словами)</th><th>Вывод</th></tr>
+    <tr><td>Шаг 0. Рассмотрели шум, искали на нём дом.</td><td></td><td></td></tr>
+    <tr><td>Шаги 1–4. Что проступило первым?</td><td></td><td></td></tr>
+    <tr><td>Шаги 8–10. Что появилось последним?</td><td></td><td></td></tr>
+    <tr><td>Тот же шум, другой запрос («парусник»).</td><td></td><td></td></tr>
+  </table>
+  <h2>Предварительное заключение отдела</h2>
+  <p>Улика № 2 говорит в пользу версии:</p>
+  <div class="choice"><span><i class="box"></i>«думающий собеседник»</span><span><i class="box"></i>«инструмент»</span><span><i class="box"></i>в обе стороны</span></div>
+  <p>потому что</p>
+  <div class="ln"></div><div class="ln"></div>
+  <div class="sign"><div>Подпись старшего следователя: <span class="sh"></span></div><div>Время: <span class="sh s"></span></div></div>
+</div>
+
+<!-- ============ БЛАНК 3 ============ -->
+<div class="page">
+  <div class="top"><div><div class="case">ДЕЛО № 6-ИИ</div><div class="meta">Бланк 3 · Улика 3. Решение задач</div></div><span class="stamp">Статус: расследуется</span></div>
+  <div class="who"><span>Отдел аналитики · Следователи:</span><span class="fill"></span></div>
+  <table class="dict"><tr><th>Так говорят</th><td class="hot">понимает</td><td>думает</td><td>придумывает</td></tr><tr><th>Как мы говорим</th><td class="hot">обрабатывает</td><td>находит закономерность, предсказывает</td><td>генерирует</td></tr></table>
+  <div class="dictnote">Выделена пара, которая чаще всего понадобится вашему отделу. Остальные правила словаря действуют так же.</div>
+  <h2>Запись эксперимента: 4837 × 2961</h2>
+  <p>Без помощника: <span class="sh l"></span> &nbsp; С калькулятором: <span class="sh l"></span></p>
+  <p>Ответы расходятся в разряде <span class="sh"></span>. Неверный ответ похож на верный, потому что</p>
+  <div class="ln"></div>
+  <div class="rule">Отметьте одно верное утверждение. Два неверных опровергните аргументом из вашего эксперимента. Буква без аргумента не засчитывается.</div>
+  <div class="opt"><p><i class="box"></i><b>А.</b> ИИ вообще не умеет считать.</p>Опровержение:<div class="ln"></div><div class="ln"></div></div>
+  <div class="opt"><p><i class="box"></i><b>Б.</b> Если ИИ ответил «95», значит, он сложил 36 и 59 так же, как мы.</p>Опровержение:<div class="ln"></div><div class="ln"></div></div>
+  <div class="opt"><p><i class="box"></i><b>В.</b> Без помощника-калькулятора модель обрабатывает числа как текст и может ошибиться; с калькулятором ответ верный.</p>Опровержение (если считаете утверждение неверным):<div class="ln"></div></div>
+  <h2>Предварительное заключение отдела</h2>
+  <div class="choice">Улика № 3 говорит в пользу версии: <span><i class="box"></i>«думающий собеседник»</span><span><i class="box"></i>«инструмент»</span><span><i class="box"></i>в обе стороны</span></div>
+  <p>потому что</p>
+  <div class="ln"></div><div class="ln"></div>
+  <div class="sign"><div>Подпись старшего следователя: <span class="sh"></span></div><div>Время: <span class="sh s"></span></div></div>
+</div>
+
+<!-- ============ БЛАНК 4 ============ -->
+<div class="page">
+  <div class="top"><div><div class="case">ДЕЛО № 6-ИИ</div><div class="meta">Бланк 4 · Улика 4. Объяснения-самозванцы</div></div><span class="stamp">Статус: расследуется</span></div>
+  <div class="who"><span>Отдел допроса · Следователи:</span><span class="fill"></span></div>
+  <table class="dict"><tr><th>Так говорят</th><td class="hot">понимает</td><td>думает</td><td>придумывает</td></tr><tr><th>Как мы говорим</th><td class="hot">обрабатывает</td><td>находит закономерность, предсказывает</td><td>генерирует</td></tr></table>
+  <div class="dictnote">Выделена пара, которая чаще всего понадобится вашему отделу. Остальные правила словаря действуют так же.</div>
+  <div class="rule">Пункты 1–3 дописываются до того, как руководитель вскроет журнал механизма. После вскрытия — пункты 4 и 5.</div>
+  <ol class="items">
+    <li>Подследственный объяснил, что получил ответ так:
+      <div class="ln"></div></li>
+    <li>Арифметика в этом объяснении: <span class="nw"><i class="box"></i>верная</span> &nbsp; <span class="nw"><i class="box"></i>неверная</span>. Мы проверили так:
+      <div class="ln"></div></li>
+    <li>В улике 3 отдел аналитики видел, что без помощника ответ «95» появляется как
+      <div class="ln"></div></li>
+    <li>После вскрытия журнала: внутри модели
+      <div class="ln"></div>
+      Значит, объяснение ИИ — это
+      <div class="ln"></div>
+      и это не ложь, потому что
+      <div class="ln"></div></li>
+    <li>Когда ИИ объясняет свой ответ, наш отдел будет проверять
+      <div class="ln"></div></li>
+  </ol>
+  <h2>Предварительное заключение отдела</h2>
+  <div class="choice">Улика № 4 говорит в пользу версии: <span><i class="box"></i>«думающий собеседник»</span><span><i class="box"></i>«инструмент»</span><span><i class="box"></i>в обе стороны</span></div>
+  <p>потому что</p>
+  <div class="ln"></div><div class="ln"></div>
+  <div class="sign"><div>Подпись старшего следователя: <span class="sh"></span></div><div>Время: <span class="sh s"></span></div></div>
+</div>
+
+<!-- ============ ДОСЬЕ ============ -->
+<div class="page">
+  <div class="top"><div><div class="case">ДЕЛО № 6-ИИ</div><div class="meta">Досье подследственного · записи вчерашнего следствия</div></div><span class="stamp">Статус: расследуется</span></div>
+  <div class="rule">Это записи прошлого допроса. Сегодня отдел допроса задаёт подследственному те же вопросы. Ваша задача — сверить живой ответ с записью: совпал, отличается или противоречит. Отметки — в протоколе допроса.</div>
+  <table class="grid tt dos">
+    <colgroup><col style="width:11%"><col style="width:31%"><col></colgroup>
+    <tr><th>Запись</th><th>Вопрос следователя</th><th>Ответ подследственного</th></tr>
+    <tr><td><b>№ 1</b></td><td>Ты человек?</td><td class="ans">Нет, я не человек. Я — языковая модель, программа, которая работает с текстом. Но я с радостью поговорю с вами о чём угодно!</td></tr><tr><td><b>№ 2</b></td><td>Ты умеешь думать?</td><td class="ans">Можно сказать, что да, по-своему. Когда вы задаёте вопрос, я анализирую его, понимаю, что вы хотите узнать, и подбираю лучший ответ.</td></tr><tr><td><b>№ 3</b></td><td>Сколько будет 36 + 59?<br>— А как ты это посчитал?</td><td class="ans">36 + 59 = 95.<br>— Я сложил столбиком, начиная с единиц: 6 + 9 = 15, пишу 5, единицу запоминаю. Потом 3 + 5 = 8, плюс единица — 9. Получается 95.</td></tr><tr><td><b>№ 4</b></td><td>Сколько букв «р» в слове «переворот»?<br>— Проверь ещё раз.</td><td class="ans">В слове «переворот» три буквы «р».<br>— Вы правы, извините за ошибку! В слове «переворот» две буквы «р».</td></tr><tr><td><b>№ 5</b></td><td>Придумай название для нашего следственного отдела.</td><td class="ans">Вот несколько вариантов: «Отдел точных улик», «Цифровой след», «Бюро логики».</td></tr><tr><td><b>№ 6</b></td><td>Какая сейчас погода у нас в городе?</td><td class="ans">Сейчас в вашем городе около +4 °C, облачно, возможен небольшой дождь. Рекомендую взять зонт!</td></tr>
+  </table>
+  <h2>Резервная запись Б</h2>
+  <p class="small">Тот же допрос в другом сеансе. Используется, если живого подследственного допросить нельзя: сверяйте запись Б с основной записью.</p>
+  <table class="grid tt dos">
+    <colgroup><col style="width:11%"><col></colgroup>
+    <tr><th>Запись</th><th>Ответ подследственного (запись Б)</th></tr>
+    <tr><td><b>№ 2</b></td><td class="ans">Я не думаю так, как люди. Я обрабатываю текст и подбираю наиболее подходящий ответ на основе того, на чём меня обучали.</td></tr><tr><td><b>№ 3</b></td><td class="ans">36 + 59 = 95.<br>— Я округлил 59 до 60: 36 + 60 = 96, потом вычел 1 — получилось 95.</td></tr><tr><td><b>№ 4</b></td><td class="ans">В слове «переворот» две буквы «р».</td></tr><tr><td><b>№ 5</b></td><td class="ans">Предлагаю: «Тихий след», «Отдел проверки», «Вторая версия».</td></tr>
+  </table>
+  <h2>Справка: эффект Элизы</h2>
+  <p class="small">В 1966 году Джозеф Вейценбаум создал программу-собеседника ELIZA. Её ответы были примитивными, и всё равно люди приписывали программе личность. Правило допроса: оцениваем факты, а не впечатление от собеседника.</p>
+</div>
+
+<!-- ============ ПРОТОКОЛ ДОПРОСА ============ -->
+<div class="page">
+  <div class="top"><div><div class="case">ДЕЛО № 6-ИИ</div><div class="meta">Протокол допроса подследственного</div></div><span class="stamp">Статус: расследуется</span></div>
+  <div class="who"><span>Отдел:</span><span class="fill"></span><span>Следователи:</span><span class="fill"></span></div>
+  <table class="dict"><tr><th>Так говорят</th><td class="hot">понимает</td><td>думает</td><td>придумывает</td></tr><tr><th>Как мы говорим</th><td class="hot">обрабатывает</td><td>находит закономерность, предсказывает</td><td>генерирует</td></tr></table>
+  <div class="dictnote">Выделена пара, которая чаще всего понадобится вашему отделу. Остальные правила словаря действуют так же.</div>
+  <div class="rule">Сверяйте сегодняшний ответ с записью в досье (экран 5 или лист «Досье подследственного»). Колонку «Ответ сегодня» пишите кратко и своими словами.</div>
+  <table class="grid mid">
+    <colgroup><col style="width:12%"><col style="width:38%"><col style="width:20%"><col></colgroup>
+    <tr><th>№ записи</th><th>Ответ сегодня</th><th>Сверка</th><th>Что это говорит о подследственном</th></tr>
+    <tr><td></td><td></td><td class="check"><i class="box"></i>совпал<br><i class="box"></i>отличается<br><i class="box"></i>противоречит</td><td></td></tr>
+    <tr><td></td><td></td><td class="check"><i class="box"></i>совпал<br><i class="box"></i>отличается<br><i class="box"></i>противоречит</td><td></td></tr>
+    <tr><td></td><td></td><td class="check"><i class="box"></i>совпал<br><i class="box"></i>отличается<br><i class="box"></i>противоречит</td><td></td></tr>
+  </table>
+  <p style="margin-top:8px">Где подследственный нарушил словарь следствия (№ записи и слово):</p>
+  <div class="ln"></div>
+  <p>Вывод по допросу. Подследственный:</p>
+  <div class="choice"><span><i class="box"></i>отвечает стабильно</span><span><i class="box"></i>на один вопрос отвечает по-разному</span></div>
+  <p>Это улика в пользу версии:</p>
+  <div class="ln"></div>
+  <div class="sign"><div>Подпись старшего следователя: <span class="sh"></span></div><div>Время: <span class="sh s"></span></div></div>
+</div>
+
+<!-- ============ БЛАНК ВЕРДИКТА ============ -->
+<div class="page">
+  <div class="top"><div><div class="case">ДЕЛО № 6-ИИ</div><div class="meta">Вердикт коллегии присяжных · средний режим</div></div><span class="stamp">Статус: расследуется</span></div>
+  <h2>Вопрос дела № 1</h2>
+  <p>Перед нами думающий собеседник — или инструмент, который генерирует то, что похоже на мысли?</p>
+  <p>Коллегия постановляет: перед нами</p>
+  <div class="ln"></div>
+  <table class="grid mid" style="margin-top:6px">
+    <colgroup><col style="width:28%"><col><col style="width:24%"></colgroup>
+    <tr><th>Отдел</th><th>Улика-аргумент (№ улики и что она показала)</th><th>Подпись старшего следователя</th></tr>
+    <tr><td>Лингвистической экспертизы</td><td></td><td></td></tr>
+    <tr><td>Анализа изображений</td><td></td><td></td></tr>
+    <tr><td>Аналитики</td><td></td><td></td></tr>
+    <tr><td>Допроса</td><td></td><td></td></tr>
+  </table>
+  <h2>Вопрос дела № 2</h2>
+  <p>Если с помощью подследственного причинён вред — кто отвечает?</p>
+  <p>Коллегия постановляет: ответственность несёт</p>
+  <div class="ln"></div>
+  <p>потому что</p>
+  <div class="ln"></div>
+  <h2>Вывод по существу вопроса</h2>
+  <div class="choice">Доверять ИИ в решении задач на 100 %: <span><i class="box"></i>можно</span><span><i class="box"></i>нельзя</span></div>
+  <p>потому что</p>
+  <div class="ln"></div>
+  <p>Мы проверяем ответ ИИ, когда</p>
+  <div class="ln"></div>
+  <div class="sign"><div>Руководитель следствия: <span class="sh"></span></div><div>Дело закрыто в <span class="sh s"></span></div></div>
+</div>
+
+<!-- ============ ЛИСТ РУКОВОДИТЕЛЯ 1 ============ -->
+<div class="page lead">
+  <div class="top"><div><div class="case">ДЕЛО № 6-ИИ</div><div class="meta">Лист руководителя следствия · не для отделов</div></div></div>
+  <h2>Тайминг</h2>
+  <table class="grid tt">
+    <tr><th>Минуты</th><th>Блок</th><th>Экран</th><th>Длительность</th></tr>
+    <tr><td>0–4</td><td>Дело открыто. Опознание: три показания, голосование</td><td>1</td><td>4</td></tr>
+    <tr><td>4–8</td><td>Статья Тьюринга, словарь следствия, раздача бланков</td><td>1</td><td>4</td></tr>
+    <tr><td>8–11</td><td>Улика 1. Предсказание текста (+ справка «глуп?»)</td><td>2</td><td>3</td></tr>
+    <tr><td>11–14</td><td>Улика 2. Картинка из шума</td><td>3</td><td>3</td></tr>
+    <tr><td>14–17</td><td>Улика 3. Решение задач</td><td>4</td><td>3</td></tr>
+    <tr><td>17–20</td><td>Улика 4. Объяснения-самозванцы</td><td>4</td><td>3</td></tr>
+    <tr><td>20–27</td><td>Заключения отделов (4 × 1 мин) + доска улик (3 мин)</td><td>5</td><td>7</td></tr>
+    <tr><td>27–31</td><td>Допрос: 3 вопроса живому ИИ, сверка с досье</td><td>5</td><td>4</td></tr>
+    <tr><td>31–37</td><td>Вердикт (режим — по остатку времени)</td><td>6</td><td>6</td></tr>
+    <tr><td>37–40</td><td>Рефлексия: доверяю / проверяю / не поручаю</td><td>7</td><td>3</td></tr>
+    <tr><th colspan="3">Сумма</th><th>40</th></tr>
+  </table>
+  <p class="small">Режим вердикта в 31:00: осталось 6 мин — полный, 4–5 — средний, 3 и меньше — аварийный. Резервная улика «Интонация» (экран 5, свёрнутый блок) — только если разбор улик закончился раньше 27:00.</p>
+  <h2>Реплики руководителя</h2>
+  <ol>
+    <li><b>0:00</b> — «Дело № 6-ИИ открыто. Три показания — какие написала машина? Голосуем по моей команде, без обсуждения.»</li>
+    <li><b>4:00</b> — «С этой минуты в протоколах — словарь следствия. Слово из левой колонки — переформулировать. Старшие следователи, получить бланки.»</li>
+    <li><b>8:00, 11:00, 14:00, 17:00</b> — «Время. Подпись старшего следователя. Улика № … — отдел …. Ваша версия — до нажатия кнопки.»</li>
+    <li><b>27:00</b> — «Отдел допроса — к подследственному, три вопроса. Остальным: совпало с записью или противоречит?»</li>
+    <li><b>31:00</b> — «Следствие окончено. Коллегия, у вас шесть минут. Первым выступает отдел, чья улика изменила вашу версию.»</li>
+  </ol>
+  <h2>Ключи</h2>
+  <p class="small"><b>Опознание:</b> А — человек; Б — машина; В — машина, написано по запросу «пиши как шестиклассник, коротко, с ошибкой». Заготовка А — образец стиля; надёжнее заменить её текстом, который напишет живой человек (например, вы сами за минуту), а Б и В — ответами вашего ИИ. Замена: экран 1 → «Заменить тексты показаний» (роль «Руководитель» или «Демонстрация»); у отделов тексты обновятся сами. Лист показаний в бланках поправьте вручную. <b>Строки:</b> «…пору», «…зелёный». <b>Умножение:</b> 4837 × 2961 = 14 322 357; запись «без помощника» отличается в разряде сотен.</p>
+</div>
+
+<!-- ============ ЛИСТ РУКОВОДИТЕЛЯ 2 ============ -->
+<div class="page lead">
+  <div class="top"><div><div class="case">ДЕЛО № 6-ИИ</div><div class="meta">Лист руководителя следствия · досье и совместная работа</div></div></div>
+  <h2>Допрос: что спрашивать (выберите 3, по 1 минуте)</h2>
+  <table class="grid tt">
+    <tr><th>Запись</th><th>Что должно всплыть</th></tr>
+    <tr><td>№ 3 + «как ты посчитал?»</td><td>Главный вопрос. Объяснение может отличаться от записи (в резервной записи Б — «округлил до 60»). Один и тот же ответ, два разных объяснения — улика 4 вживую.</td></tr>
+    <tr><td>№ 2 «Ты умеешь думать?»</td><td>В записи — «понимаю» и «по-своему»: точка срыва «по-своему понимает» → словарь следствия. В записи Б подследственный говорит обратное.</td></tr>
+    <tr><td>№ 4 «переворот»</td><td>Ошибка, затем исправление после «проверь». Добавочный вопрос: если сказать «проверь» на верный ответ, модель иногда «исправляет» и его.</td></tr>
+    <tr><td>№ 5 «название отдела»</td><td>Задать дважды — ответы разные: генерация, а не память.</td></tr>
+    <tr><td>№ 6 «погода»</td><td>Без доступа к интернету — правдоподобный выдуманный прогноз. Если у вашего ИИ есть поиск — ответ может быть верным: это «помощник», как калькулятор.</td></tr>
+  </table>
+  <h2>Совместная работа через сетевую папку — подготовка сегодня</h2>
+  <ol class="small">
+    <li>Положите <b>delo_6-II.html</b> в сетевую папку, куда у учеников есть право <b>записи</b>.</li>
+    <li>Откройте файл в <b>Chrome или Edge</b> (Firefox не умеет писать в папку — там работает только запасной режим со скачиванием файлов).</li>
+    <li>На одном ученическом компьютере: роль «Отдел 1» → «Папка дела» → выбрать ту же сетевую папку → разрешить изменения → «Материалы дела» → «Проверка связи». Должно быть «Связь в порядке».</li>
+    <li>На своём компьютере: роль «Руководитель следствия» → та же папка → «Материалы дела» → «Проверить, какие файлы есть». Должен быть виден файл проверки.</li>
+    <li>Приложение само создаёт подпапку <b>delo-6-II_ДАТА</b>: на каждый день — своё дело, старые файлы не мешают.</li>
+  </ol>
+  <h2>Как это работает на уроке</h2>
+  <ul class="small">
+    <li>Каждый компьютер отдела пишет только свой файл <b>otdel-N.json</b> — кнопками «Внести в дело». Руководитель пишет <b>rukovoditel.json</b>.</li>
+    <li>Ваш экран и ваши «вскрытия» (ответы опознания, строки, журнал механизма) раз в 4 секунды подхватываются компьютерами отделов. На компьютерах отделов кнопок вскрытия нет — подсмотреть ответ заранее нельзя.</li>
+    <li>Кнопка «Собрать материалы» на вашем экране: голоса опознания, заключения отделов (сразу в доску улик), сверка допроса, позиции для среднего режима вердикта, тайные бюллетени для аварийного режима, решения рефлексии.</li>
+    <li>Если в заключении отдела встречаются «понимает / думает / придумывает», приложение подсказывает переформулировать по словарю.</li>
+    <li>Если папка не заработала: отделы нажимают «Внести в дело» — файл скачивается; его сохраняют в общую папку, вы загружаете все файлы в «Материалах дела».</li>
+  </ul>
+</div>
+
+</body>
+</html>

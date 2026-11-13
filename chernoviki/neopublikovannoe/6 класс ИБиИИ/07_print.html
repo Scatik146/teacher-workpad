@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Печатные материалы: ИИ и ИБ</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f0f0f0;
+    color: #000;
+  }
+  .page {
+    width: 210mm;
+    height: 297mm;
+    padding: 10mm;
+    background: white;
+    margin: 20px auto;
+    position: relative;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+  }
+  .page-footer {
+    position: absolute;
+    bottom: 10mm;
+    left: 10mm;
+    right: 10mm;
+    text-align: center;
+    font-size: 10pt;
+    color: #666;
+    border-top: 1px solid #ccc;
+    padding-top: 3mm;
+  }
+  .sheet-title {
+    font-size: 14pt;
+    font-weight: bold;
+    margin-bottom: 5mm;
+    text-align: center;
+    color: #333;
+  }
+  .print-note {
+    font-size: 9pt;
+    color: #666;
+    text-align: center;
+    margin-bottom: 5mm;
+    font-style: italic;
+  }
+  .card-grid {
+    display: grid;
+    gap: 5mm;
+    flex: 1;
+  }
+  .grid-2x4 { grid-template-columns: 1fr 1fr; grid-template-rows: repeat(4, 1fr); }
+  .grid-3x4 { grid-template-columns: 1fr 1fr 1fr; grid-template-rows: repeat(4, 1fr); }
+  .grid-2x5 { grid-template-columns: 1fr 1fr; grid-template-rows: repeat(5, 1fr); }
+  
+  .card {
+    border: 1px dashed #333;
+    padding: 4mm;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 11pt;
+    line-height: 1.3;
+    position: relative;
+  }
+  .card.large {
+    font-size: 16pt;
+    font-weight: bold;
+  }
+  .card-tag {
+    font-size: 9pt;
+    font-weight: bold;
+    color: #555;
+    margin-top: 3mm;
+    border: 1px solid #555;
+    padding: 1mm 3mm;
+    border-radius: 3px;
+  }
+  .cut-line {
+    border-bottom: 1px dashed #999;
+    margin: 2mm 0;
+  }
+  .worksheet-cell {
+    border: 2px solid #000;
+    padding: 5mm;
+    text-align: center;
+    font-weight: bold;
+    font-size: 12pt;
+    min-height: 30mm;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .worksheet-cell.highlight {
+    border-color: #000;
+    background-color: #f9f9f9;
+  }
+  .scheme-row-print {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5mm;
+    margin: 10mm 0;
+  }
+  .arrow-print {
+    font-size: 24pt;
+    font-weight: bold;
+  }
+  .checklist-item {
+    font-size: 12pt;
+    margin-bottom: 5mm;
+    display: flex;
+    align-items: flex-start;
+  }
+  .checklist-item::before {
+    content: "☐";
+    margin-right: 3mm;
+    font-size: 14pt;
+  }
+  table.key-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11pt;
+    margin-top: 5mm;
+  }
+  table.key-table th, table.key-table td {
+    border: 1px solid #000;
+    padding: 3mm;
+    text-align: left;
+  }
+  table.key-table th {
+    background-color: #eee;
+  }
+  .anchor-box {
+    border: 1px solid #000;
+    padding: 5mm;
+    margin-top: 10mm;
+    font-size: 11pt;
+    line-height: 1.5;
+  }
+
+  @media print {
+    body { background: white; }
+    .page {
+      margin: 0;
+      box-shadow: none;
+      page-break-after: always;
+      width: 210mm;
+      height: 297mm;
+    }
+    .page:last-child { page-break-after: auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ЛИСТ 1 -->
+<div class="page">
+  <div class="sheet-title">Карточки «Ситуации»</div>
+  <div class="card-grid grid-2x4">
+    <div class="card">С1. «Человек не видит и идёт по незнакомому городу».</div>
+    <div class="card">С2. «Человек говорит так, что не все его понимают, — хочет быть понятым».</div>
+    <div class="card">С3. «Человек не слышит объявлений и речи вокруг — нужен текст на экране».</div>
+    <div class="card">С4. «Ребёнок без кисти руки хочет рисовать и завязывать шнурки».</div>
+    <div class="card">С5. «Человеку трудно ходить — нужна поддержка, чтобы стоять и идти».</div>
+    <div class="card">С6. «Врач просматривает десятки снимков в день и боится пропустить важное».</div>
+    <div class="card">С7. «Приложение ошиблось: назвало дверной проём стулом. Что делать?».</div>
+    <div class="card">С8. «Человек не может говорить и двигать руками — как ему написать сообщение?».</div>
+  </div>
+  <div class="page-footer">ИИ и ИБ · 6 класс</div>
+</div>
+
+<!-- ЛИСТ 2 (Лицевая сторона) -->
+<div class="page">
+  <div class="sheet-title">Карточки «Технологии» (Лицевая сторона)</div>
+  <div class="print-note">Печатать первым. Для двусторонней печати перевернуть бумагу относительно длинного края.</div>
+  <div class="card-grid grid-3x4">
+    <div class="card">«"Робин" — носимый помощник: распознаёт предметы и препятствия, говорит голосом и вибрирует, работает без интернета»<div class="card-tag">ДЛЯ ВСЕХ и ПЕРСОНАЛЬНО</div></div>
+    <div class="card">«"Робин Онлайн" — волонтёр по видеосвязи становится "глазами" незрячего»<div class="card-tag">ЛЮДИ + ТЕХНИКА</div></div>
+    <div class="card">«Умная камера Яндекса — озвучивает текст и предметы по фото»<div class="card-tag">ДЛЯ ВСЕХ</div></div>
+    <div class="card">«Яндекс Разговор — переводит речь в текст на экране»<div class="card-tag">ДЛЯ ВСЕХ</div></div>
+    <div class="card">«СУРДО-ПОМОЩЬ — речь в текст и виртуальный сурдопереводчик: десятки тысяч жестов»<div class="card-tag">ДЛЯ ВСЕХ</div></div>
+    <div class="card">«Live Transcribe — перевод речи в текст на десятках языков. Создал Дмитрий Каневский, потерявший слух в детстве»<div class="card-tag">ДЛЯ ВСЕХ</div></div>
+    <div class="card">«Project Relate — ИИ слушает 500 фраз человека и учится понимать именно его голос»<div class="card-tag">ПЕРСОНАЛЬНО</div></div>
+    <div class="card">«"Моторика" — бионические протезы для подростков и взрослых: датчики слушают мышцы, дизайн кисти выбирает сам человек»<div class="card-tag">ПЕРСОНАЛЬНО</div></div>
+    <div class="card">«Open Bionics — 3D-печатные бионические кисти в супергеройском дизайне. Тилли Локи пользуется ими с детства»<div class="card-tag">ПЕРСОНАЛЬНО</div></div>
+    <div class="card">«Экзоскелет — внешний каркас помогает идти; ИИ подстраивается под походку человека»<div class="card-tag">ПЕРСОНАЛЬНО</div></div>
+    <div class="card">«НейроЧат — гарнитура считывает сигналы мозга, и буквы появляются на экране»<div class="card-tag">ПЕРСОНАЛЬНО</div></div>
+    <div class="card" style="border: 2px solid #000;">«ИИ-помощник врача (Цельс, Botkin.AI) — просматривает снимки и подсказывает, на что обратить внимание. РЕШАЕТ ВРАЧ»<div class="card-tag">ДЛЯ ВРАЧА</div></div>
+  </div>
+  <div class="page-footer">ИИ и ИБ · 6 класс</div>
+</div>
+
+<!-- ЛИСТ 2 (Оборотная сторона) -->
+<div class="page">
+  <div class="sheet-title">Карточки «Технологии» (Оборотная сторона)</div>
+  <div class="print-note">Печатать вторым на обороте предыдущего листа. Вёрстка зеркальная для совпадения при перевороте.</div>
+  <div class="card-grid grid-3x4">
+    <div class="card" style="font-size: 18pt; font-weight: bold;">С1</div>
+    <div class="card" style="font-size: 18pt; font-weight: bold;">С1</div>
+    <div class="card" style="font-size: 14pt;">С1 или С6<br><span style="font-size:10pt; font-weight:normal;">(врач тоже использует камеру-сканер — допустимо)</span></div>
+    <div class="card" style="font-size: 18pt; font-weight: bold;">С3</div>
+    <div class="card" style="font-size: 18pt; font-weight: bold;">С3</div>
+    <div class="card" style="font-size: 18pt; font-weight: bold;">С3</div>
+    <div class="card" style="font-size: 18pt; font-weight: bold;">С2</div>
+    <div class="card" style="font-size: 18pt; font-weight: bold;">С4</div>
+    <div class="card" style="font-size: 18pt; font-weight: bold;">С4</div>
+    <div class="card" style="font-size: 18pt; font-weight: bold;">С5</div>
+    <div class="card" style="font-size: 18pt; font-weight: bold;">С8</div>
+    <div class="card" style="border: 2px solid #000; font-size: 14pt; font-weight: bold;">С6<br><span style="font-size:11pt; display:block; margin-top:3mm;">ИИ подсказывает — решает врач</span></div>
+  </div>
+  <div class="page-footer">ИИ и ИБ · 6 класс</div>
+</div>
+
+<!-- ЛИСТ 3 -->
+<div class="page">
+  <div class="sheet-title">Карточка-ловушка</div>
+  <div class="print-note">Вырезать по контуру и сложить пополам (лицевая и оборотная стороны).</div>
+  <div style="flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+    <div class="card large" style="flex: 1; border: 2px dashed #000; margin-bottom: 5mm;">
+      С7. Приложение ошиблось: назвало дверной проём стулом. Что делать?
+    </div>
+    <div class="cut-line"></div>
+    <div class="card large" style="flex: 1; border: 2px dashed #000; margin-top: 5mm; background-color: #f9f9f9;">
+      Проверить! Техника подсказывает — решает человек
+    </div>
+  </div>
+  <div class="page-footer">ИИ и ИБ · 6 класс</div>
+</div>
+
+<!-- ЛИСТ 4 -->
+<div class="page">
+  <div class="sheet-title">Звёздные карточки</div>
+  <div class="card-grid" style="grid-template-rows: repeat(3, 1fr); margin-bottom: 10mm;">
+    <div class="card" style="align-items: flex-start; text-align: left;">«Synchron — датчик к мозгу проводят через кровеносный сосуд, без операций на голове — как сантехник через трубу. Это испытания»<div class="card-tag" style="align-self: flex-start;">ПЕРСОНАЛЬНО</div></div>
+    <div class="card" style="align-items: flex-start; text-align: left;">«AlphaFold — ИИ угадывает форму белков — фигурок-конструкторов внутри наших клеток. Нобелевская премия по химии 2024. Так новые лекарства создают быстрее»<div class="card-tag" style="align-self: flex-start;">ДЛЯ ВСЕХ</div></div>
+    <div class="card" style="align-items: flex-start; text-align: left;">«Insilico Medicine — ИИ ускоряет создание новых лекарств в разы»<div class="card-tag" style="align-self: flex-start;">ДЛЯ ВСЕХ</div></div>
+  </div>
+  <div class="cut-line"></div>
+  <div style="border: 2px solid #000; padding: 5mm; margin-top: 5mm; font-size: 12pt; font-weight: bold;">
+    Задание звёздной станции:<br>
+    «Открой страницу сайта (PDF на парте). Найди одну цифру и одну функцию устройства. Запиши».
+  </div>
+  <div class="page-footer">ИИ и ИБ · 6 класс</div>
+</div>
+
+<!-- ЛИСТ 5 (Лицевая сторона) -->
+<div class="page">
+  <div class="sheet-title">Карточки сортировки для этапа 2 (Лицевая сторона)</div>
+  <div class="print-note">Печатать первым. Для двусторонней печати перевернуть бумагу относительно длинного края.</div>
+  <div class="card-grid grid-2x5">
+    <div class="card">«Прогноз погоды одинаковый для всего города»</div>
+    <div class="card">«Прогноз дождя именно для твоего маршрута в школу»</div>
+    <div class="card">«Школьный звонок звонит в одно время для всех»</div>
+    <div class="card">«Будильник, который подстраивается под твой график»</div>
+    <div class="card">«Один учебник для всего класса»</div>
+    <div class="card">«Задание, подобранное под твой уровень»</div>
+    <div class="card">«Стандартное лекарство: всем одинаково»</div>
+    <div class="card">«Лечение, подобранное под конкретного человека»</div>
+    <div class="card">«Очки из аптеки "на все глаза"»</div>
+    <div class="card">«Очки, выписанные именно по твоему зрению»</div>
+  </div>
+  <div class="page-footer">ИИ и ИБ · 6 класс</div>
+</div>
+
+<!-- ЛИСТ 5 (Оборотная сторона) -->
+<div class="page">
+  <div class="sheet-title">Карточки сортировки для этапа 2 (Оборотная сторона)</div>
+  <div class="print-note">Печатать вторым на обороте предыдущего листа.</div>
+  <div class="card-grid grid-2x5">
+    <div class="card" style="font-size: 14pt; font-weight: bold;">ДЛЯ ВСЕХ</div>
+    <div class="card" style="font-size: 14pt; font-weight: bold;">ПЕРСОНАЛЬНО</div>
+    <div class="card" style="font-size: 14pt; font-weight: bold;">ДЛЯ ВСЕХ</div>
+    <div class="card" style="font-size: 14pt; font-weight: bold;">ПЕРСОНАЛЬНО</div>
+    <div class="card" style="font-size: 14pt; font-weight: bold;">ДЛЯ ВСЕХ</div>
+    <div class="card" style="font-size: 14pt; font-weight: bold;">ПЕРСОНАЛЬНО</div>
+    <div class="card" style="font-size: 14pt; font-weight: bold;">ДЛЯ ВСЕХ</div>
+    <div class="card" style="font-size: 14pt; font-weight: bold;">ПЕРСОНАЛЬНО</div>
+    <div class="card" style="font-size: 14pt; font-weight: bold;">ДЛЯ ВСЕХ</div>
+    <div class="card" style="font-size: 12pt; font-weight: bold;">ПЕРСОНАЛЬНО<br><span style="font-size:10pt; font-weight:normal; display:block; margin-top:2mm;">Персонализация — значит под конкретного человека</span></div>
+  </div>
+  <div class="page-footer">ИИ и ИБ · 6 класс</div>
+</div>
+
+<!-- ЛИСТ 6 (Лицевая сторона) -->
+<div class="page">
+  <div class="sheet-title">Рабочий лист «Схема за 3 шага»</div>
+  <div style="margin-bottom: 5mm; font-size: 12pt;">Имя: _________________________</div>
+  <div style="margin-bottom: 5mm; font-size: 12pt;">Моя технология: _________________________</div>
+  
+  <div class="scheme-row-print">
+    <div class="worksheet-cell">ДАННЫЕ</div>
+    <div class="arrow-print">→</div>
+    <div class="worksheet-cell">ЧТО ДЕЛАЕТ ИИ</div>
+    <div class="arrow-print">→</div>
+    <div class="worksheet-cell highlight">ЧТО РЕШАЕТ ЧЕЛОВЕК</div>
+  </div>
+  
+  <div style="flex: 1; border: 1px dashed #999; margin-top: 10mm; padding: 5mm; font-size: 10pt; color: #666;">
+    (Место для записи схемы)
+  </div>
+  <div class="page-footer">ИИ и ИБ · 6 класс</div>
+</div>
+
+<!-- ЛИСТ 6 (Оборотная сторона) -->
+<div class="page">
+  <div class="sheet-title">Рабочий лист «Схема за 3 шага» (Оборот)</div>
+  <div class="print-note">Для взаимопроверки</div>
+  
+  <div style="margin-top: 20mm; font-size: 14pt; font-weight: bold; margin-bottom: 10mm;">Поменяйся листом с соседом. Проверь:</div>
+  
+  <div class="checklist-item">Все три клетки заполнены?</div>
+  <div class="checklist-item">В третьей клетке — решение ЧЕЛОВЕКА, а не ИИ?</div>
+  <div class="checklist-item">Понятно из схемы, о какой технологии речь?</div>
+  
+  <div style="margin-top: 30mm; font-size: 12pt;">Проверил(а): _________________________</div>
+  
+  <div class="page-footer">ИИ и ИБ · 6 класс</div>
+</div>
+
+<!-- ЛИСТ 7 (Лицевая сторона) -->
+<div class="page">
+  <div class="sheet-title">Карточка ИБ (Лицевая сторона)</div>
+  <div class="print-note">Вырезать и сложить пополам.</div>
+  <div class="card large" style="flex: 1; border: 2px dashed #000; align-items: flex-start; text-align: left; padding: 10mm;">
+    <div style="font-size: 14pt; font-weight: bold; margin-bottom: 5mm;">Данные о здоровье — особая тайна</div>
+    <div style="margin-bottom: 5mm;">1. «Включай помощника, когда он нужен».</div>
+    <div style="margin-bottom: 5mm;">2. «Чужие записи не публикуем».</div>
+    <div>3. «Помогая другому — сначала спроси».</div>
+  </div>
+  <div class="page-footer">ИИ и ИБ · 6 класс</div>
+</div>
+
+<!-- ЛИСТ 7 (Оборотная сторона) -->
+<div class="page">
+  <div class="sheet-title">Карточка ИБ (Оборотная сторона)</div>
+  <div class="card large" style="flex: 1; border: 2px dashed #000; background-color: #f9f9f9; align-items: center; text-align: center; padding: 10mm;">
+    «Это личные данные человека, как врачебная тайна. Публикуя их, мы раскрываем чужую тайну без спроса»
+  </div>
+  <div class="page-footer">ИИ и ИБ · 6 класс</div>
+</div>
+
+<!-- ЛИСТ 8 -->
+<div class="page">
+  <div class="sheet-title">Ключ для учителя</div>
+  
+  <table class="key-table">
+    <tr><th>Ситуация</th><th>Номера технологий</th></tr>
+    <tr><td>С1</td><td>Т1 / Т2 / Т3</td></tr>
+    <tr><td>С2</td><td>Т7</td></tr>
+    <tr><td>С3</td><td>Т4 / Т5 / Т6</td></tr>
+    <tr><td>С4</td><td>Т8 / Т9</td></tr>
+    <tr><td>С5</td><td>Т10</td></tr>
+    <tr><td>С6</td><td>Карточка врача, тезис</td></tr>
+    <tr><td>С7</td><td>Ловушка — «проверить, решает человек»</td></tr>
+    <tr><td>С8</td><td>Т11</td></tr>
+  </table>
+  
+  <div class="anchor-box">
+    <strong>Три якорные цифры звёздной станции:</strong><br><br>
+    • «Моторика: 10 000+ человек получили протезы»<br>
+    • «Робин: в Федеральном перечне ТСР с 1 марта 2023»<br>
+    • «СУРДО-ПОМОЩЬ: словарь 25 000+ жестов (по данным разработчика)»
+  </div>
+  
+  <div class="page-footer">ИИ и ИБ · 6 класс</div>
+</div>
+
+</body>
+</html>

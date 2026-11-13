@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Проекты и проектирование — 5 класс</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: #0f1419;
+    color: #f5f5f7;
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  .presentation {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+  }
+  
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 60px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+  }
+  
+  .slide.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .slide-content {
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+  }
+  
+  h1 {
+    font-size: 4.5rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+  }
+  
+  h2 {
+    font-size: 3.2rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    margin-bottom: 32px;
+  }
+  
+  h3 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #4a90e2;
+  }
+  
+  .subtitle {
+    font-size: 1.6rem;
+    color: #8b92a8;
+    margin-bottom: 40px;
+  }
+  
+  .lead {
+    font-size: 1.8rem;
+    line-height: 1.5;
+    color: #d1d5db;
+    margin-bottom: 24px;
+  }
+  
+  .accent {
+    color: #4a90e2;
+    font-weight: 600;
+  }
+  
+  .highlight {
+    background: linear-gradient(120deg, rgba(74, 144, 226, 0.2) 0%, rgba(74, 144, 226, 0.1) 100%);
+    padding: 4px 12px;
+    border-radius: 6px;
+    border-left: 3px solid #4a90e2;
+  }
+  
+  /* Title slide */
+  .title-slide {
+    text-align: left;
+  }
+  
+  .title-slide .tag {
+    display: inline-block;
+    font-size: 1.1rem;
+    color: #4a90e2;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 24px;
+    font-weight: 600;
+  }
+  
+  .title-slide h1 {
+    font-size: 6rem;
+    background: linear-gradient(135deg, #f5f5f7 0%, #8b92a8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .title-slide .meta {
+    font-size: 1.4rem;
+    color: #8b92a8;
+    margin-top: 40px;
+    padding-top: 40px;
+    border-top: 1px solid #2a2f3a;
+  }
+  
+  /* Lists */
+  ul, ol {
+    list-style: none;
+  }
+  
+  .list-item {
+    font-size: 1.8rem;
+    line-height: 1.5;
+    padding: 16px 0 16px 48px;
+    position: relative;
+    color: #d1d5db;
+  }
+  
+  .list-item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 28px;
+    width: 24px;
+    height: 2px;
+    background: #4a90e2;
+  }
+  
+  .numbered-list .list-item {
+    padding-left: 64px;
+  }
+  
+  .numbered-list .list-item::before {
+    content: attr(data-num);
+    width: 40px;
+    height: 40px;
+    background: #4a90e2;
+    color: #0f1419;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.3rem;
+    top: 16px;
+    left: 0;
+  }
+  
+  /* Cards */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    margin-top: 32px;
+  }
+  
+  .card {
+    background: #1a1f2e;
+    border: 1px solid #2a2f3a;
+    border-radius: 12px;
+    padding: 32px;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+  
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: #4a90e2;
+  }
+  
+  .card .card-num {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #4a90e2;
+    margin-bottom: 12px;
+    line-height: 1;
+  }
+  
+  .card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+  }
+  
+  .card p {
+    font-size: 1.2rem;
+    color: #8b92a8;
+    line-height: 1.5;
+  }
+  
+  /* Two-column layout */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+  
+  .two-col-visual {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 40px;
+  }
+  
+  .visual-block {
+    text-align: center;
+  }
+  
+  .visual-block svg {
+    width: 100%;
+    max-width: 280px;
+    height: auto;
+    margin-bottom: 16px;
+  }
+  
+  .visual-block .caption {
+    font-size: 1.2rem;
+    color: #8b92a8;
+  }
+  
+  /* Stages diagram */
+  .stages {
+    display: flex;
+    gap: 20px;
+    margin-top: 40px;
+    align-items: stretch;
+  }
+  
+  .stage {
+    flex: 1;
+    background: #1a1f2e;
+    border: 1px solid #2a2f3a;
+    border-radius: 12px;
+    padding: 28px;
+    position: relative;
+  }
+  
+  .stage-num {
+    display: inline-block;
+    background: #4a90e2;
+    color: #0f1419;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 40px;
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin-bottom: 16px;
+  }
+  
+  .stage h3 {
+    font-size: 1.4rem;
+    margin-bottom: 12px;
+  }
+  
+  .stage p {
+    font-size: 1.1rem;
+    color: #8b92a8;
+    line-height: 1.5;
+  }
+  
+  .stage-arrow {
+    color: #4a90e2;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Definition box */
+  .definition {
+    background: #1a1f2e;
+    border-left: 4px solid #4a90e2;
+    padding: 28px 32px;
+    border-radius: 8px;
+    margin: 24px 0;
+  }
+  
+  .definition .term {
+    font-size: 1.3rem;
+    color: #4a90e2;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  
+  .definition .def-text {
+    font-size: 1.6rem;
+    line-height: 1.4;
+    color: #f5f5f7;
+  }
+  
+  /* Task box */
+  .task-box {
+    background: #1a1f2e;
+    border: 1px solid #2a2f3a;
+    border-radius: 12px;
+    padding: 32px;
+    margin-top: 32px;
+  }
+  
+  .task-box .task-label {
+    font-size: 1rem;
+    color: #4a90e2;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
+  
+  .task-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #2a2f3a;
+    font-size: 1.4rem;
+  }
+  
+  .task-item:last-child {
+    border-bottom: none;
+  }
+  
+  .task-item .checkbox {
+    width: 28px;
+    height: 28px;
+    border: 2px solid #4a90e2;
+    border-radius: 6px;
+    margin-right: 20px;
+    flex-shrink: 0;
+  }
+  
+  /* Warning box */
+  .warning-box {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(251, 191, 36, 0.05) 100%);
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    border-left: 4px solid #fbbf24;
+    padding: 28px 32px;
+    border-radius: 8px;
+    margin-top: 32px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  
+  .warning-box svg {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+  }
+  
+  .warning-box .warning-text {
+    font-size: 1.4rem;
+    line-height: 1.5;
+    color: #f5f5f7;
+  }
+  
+  .warning-box .warning-text strong {
+    color: #fbbf24;
+  }
+  
+  /* Timeline */
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 32px;
+  }
+  
+  .timeline-item {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    background: #1a1f2e;
+    padding: 20px 28px;
+    border-radius: 10px;
+    border-left: 4px solid #4a90e2;
+  }
+  
+  .timeline-time {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #4a90e2;
+    min-width: 120px;
+  }
+  
+  .timeline-text {
+    font-size: 1.3rem;
+    color: #d1d5db;
+  }
+  
+  /* Thumb gestures */
+  .thumb-gestures {
+    display: flex;
+    gap: 60px;
+    margin-top: 40px;
+    justify-content: center;
+  }
+  
+  .gesture {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    flex: 1;
+    max-width: 320px;
+  }
+  
+  .thumb-icon {
+    width: 100px;
+    height: 100px;
+    background: #1a1f2e;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  
+  .thumb-icon svg {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .thumb-icon.green svg { stroke: #10b981; }
+  .thumb-icon.yellow svg { stroke: #fbbf24; }
+  .thumb-icon.red svg { stroke: #ef4444; }
+  
+  .gesture-text {
+    font-size: 1.3rem;
+    text-align: center;
+    color: #d1d5db;
+    line-height: 1.4;
+  }
+  
+  /* AI box */
+  .ai-box {
+    background: linear-gradient(135deg, #1a1f2e 0%, #252b3d 100%);
+    border: 1px solid #4a90e2;
+    border-radius: 16px;
+    padding: 40px;
+    margin-top: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .ai-box::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(74, 144, 226, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  
+  .ai-box .ai-label {
+    display: inline-block;
+    background: #4a90e2;
+    color: #0f1419;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  
+  .ai-box h3 {
+    font-size: 1.8rem;
+    margin-bottom: 16px;
+  }
+  
+  .ai-box p {
+    font-size: 1.3rem;
+    line-height: 1.5;
+    color: #d1d5db;
+    margin-bottom: 12px;
+  }
+  
+  .ai-box .ai-rule {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #2a2f3a;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #f5f5f7;
+  }
+  
+  /* Answer reveal */
+  .answer-reveal {
+    margin-top: 32px;
+    padding: 28px 32px;
+    background: linear-gradient(135deg, rgba(74, 144, 226, 0.15) 0%, rgba(74, 144, 226, 0.05) 100%);
+    border: 2px solid #4a90e2;
+    border-radius: 12px;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  
+  .answer-reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .answer-reveal .answer-label {
+    font-size: 1.1rem;
+    color: #4a90e2;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  
+  .answer-reveal .answer-text {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #f5f5f7;
+  }
+  
+  .reveal-hint {
+    margin-top: 24px;
+    font-size: 1.1rem;
+    color: #8b92a8;
+    font-style: italic;
+  }
+  
+  /* Big statement slide */
+  .statement-slide {
+    text-align: center;
+  }
+  
+  .statement-slide .big-text {
+    font-size: 5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #4a90e2 0%, #60a5fa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+    margin: 40px 0;
+  }
+  
+  /* Navigation */
+  .nav {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    background: rgba(26, 31, 46, 0.9);
+    backdrop-filter: blur(10px);
+    padding: 10px 20px;
+    border-radius: 50px;
+    border: 1px solid #2a2f3a;
+    z-index: 100;
+  }
+  
+  .nav-btn {
+    background: transparent;
+    border: none;
+    color: #8b92a8;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+  
+  .nav-btn:hover:not(:disabled) {
+    background: #4a90e2;
+    color: #0f1419;
+  }
+  
+  .nav-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+  
+  .nav-counter {
+    color: #8b92a8;
+    font-size: 0.95rem;
+    font-variant-numeric: tabular-nums;
+    min-width: 60px;
+    text-align: center;
+  }
+  
+  .progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: #4a90e2;
+    transition: width 0.4s ease;
+    z-index: 100;
+  }
+  
+  .slide-number {
+    position: fixed;
+    top: 30px;
+    right: 40px;
+    color: #8b92a8;
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
+    z-index: 50;
+  }
+  
+  /* Animations */
+  .slide.active .fade-in {
+    animation: fadeInUp 0.6s ease forwards;
+  }
+  
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  
+  .delay-1 { animation-delay: 0.1s !important; }
+  .delay-2 { animation-delay: 0.2s !important; }
+  .delay-3 { animation-delay: 0.3s !important; }
+  .delay-4 { animation-delay: 0.4s !important; }
+  .delay-5 { animation-delay: 0.5s !important; }
+  
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Responsive */
+  @media (max-width: 900px) {
+    .slide { padding: 40px 30px; }
+    h1 { font-size: 3rem; }
+    h2 { font-size: 2.2rem; }
+    .title-slide h1 { font-size: 3.5rem; }
+    .statement-slide .big-text { font-size: 3rem; }
+    .two-col, .two-col-visual { grid-template-columns: 1fr; gap: 30px; }
+    .stages { flex-direction: column; }
+    .stage-arrow { display: none; }
+    .thumb-gestures { flex-direction: column; align-items: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<div class="slide-number" id="slideNumber">01 / 15</div>
+
+<div class="presentation" id="presentation">
+
+  <!-- Slide 1: Title -->
+  <div class="slide active">
+    <div class="slide-content title-slide">
+      <div class="tag fade-in">Урок технологии · 5 класс</div>
+      <h1 class="fade-in delay-1">Проекты<br>и проектирование</h1>
+      <div class="meta fade-in delay-2">От идеи — к готовому изделию по чёткому алгоритму</div>
+    </div>
+  </div>
+
+  <!-- Slide 2: Motivation -->
+  <div class="slide">
+    <div class="slide-content">
+      <h2 class="fade-in">Системный сбой</h2>
+      <p class="lead fade-in delay-1">Представьте две ситуации. Как бы вы их решили?</p>
+      
+      <div class="two-col-visual fade-in delay-2">
+        <div class="visual-block">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <rect x="20" y="30" width="70" height="140" rx="4" fill="none" stroke="#4a90e2" stroke-width="2"/>
+            <rect x="110" y="30" width="70" height="140" rx="4" fill="none" stroke="#4a90e2" stroke-width="2"/>
+            <circle cx="80" cy="85" r="4" fill="#4a90e2"/>
+            <circle cx="120" cy="85" r="4" fill="#4a90e2"/>
+            <circle cx="100" cy="140" r="14" fill="#fbbf24"/>
+            <rect x="92" y="154" width="16" height="24" rx="4" fill="#fbbf24"/>
+            <rect x="86" y="120" width="28" height="20" rx="3" fill="#8b92a8"/>
+            <text x="100" y="190" text-anchor="middle" fill="#8b92a8" font-size="10">?</text>
+          </svg>
+          <div class="caption">Первоклассник потерялся в школе</div>
+        </div>
+        <div class="visual-block">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <rect x="20" y="100" width="160" height="80" rx="4" fill="none" stroke="#4a90e2" stroke-width="2"/>
+            <rect x="35" y="110" width="40" height="10" fill="#8b92a8"/>
+            <rect x="85" y="115" width="30" height="8" fill="#8b92a8"/>
+            <rect x="125" y="108" width="45" height="12" fill="#8b92a8"/>
+            <circle cx="50" cy="140" r="8" fill="#fbbf24"/>
+            <rect x="75" y="135" width="50" height="6" fill="#8b92a8"/>
+            <rect x="140" y="138" width="25" height="10" fill="#8b92a8"/>
+            <path d="M 60 165 L 80 155 L 100 168 L 130 158" stroke="#8b92a8" stroke-width="2" fill="none"/>
+            <text x="100" y="195" text-anchor="middle" fill="#8b92a8" font-size="10">хаос</text>
+          </svg>
+          <div class="caption">На столе невозможно найти ручку</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 3: We need a project! -->
+  <div class="slide">
+    <div class="slide-content statement-slide">
+      <p class="lead fade-in">Если действовать наугад — потратим лишние материалы и время</p>
+      <div class="big-text fade-in delay-1">Нам нужен проект!</div>
+      <p class="lead fade-in delay-2">Чёткий план + расчёт ресурсов + анализ = структурированный проект</p>
+    </div>
+  </div>
+
+  <!-- Slide 4: Goals -->
+  <div class="slide">
+    <div class="slide-content">
+      <h2 class="fade-in">Цель урока</h2>
+      
+      <div class="definition fade-in delay-1">
+        <div class="term">Я узнаю</div>
+        <div class="def-text">что такое проект и из каких этапов он состоит</div>
+      </div>
+      
+      <div class="definition fade-in delay-2">
+        <div class="term">Я научусь</div>
+        <div class="def-text">составлять паспорт проекта — техническое задание для своей идеи</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 5: Algorithm & Stages -->
+  <div class="slide">
+    <div class="slide-content">
+      <h2 class="fade-in">Алгоритм проекта</h2>
+      
+      <div class="definition fade-in delay-1">
+        <div class="term">Алгоритм</div>
+        <div class="def-text">строгая последовательность действий, приводящая к результату</div>
+      </div>
+      
+      <div class="definition fade-in delay-2">
+        <div class="term">Проект</div>
+        <div class="def-text">большой алгоритм создания нового продукта — от идеи до готового изделия</div>
+      </div>
+      
+      <div class="stages fade-in delay-3">
+        <div class="stage">
+          <div class="stage-num">1</div>
+          <h3>Поиск</h3>
+          <p>Анализ проблемы, генерация идей, выбор лучшего варианта</p>
+        </div>
+        <div class="stage-arrow">→</div>
+        <div class="stage">
+          <div class="stage-num">2</div>
+          <h3>Изготовление</h3>
+          <p>План, подбор материалов и инструментов, создание продукта</p>
+        </div>
+        <div class="stage-arrow">→</div>
+        <div class="stage">
+          <div class="stage-num">3</div>
+          <h3>Защита</h3>
+          <p>Проверка результата, демонстрация и обоснование проекта</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 6: Brainstorm rules -->
+  <div class="slide">
+    <div class="slide-content">
+      <h2 class="fade-in">Мозговой штурм</h2>
+      <p class="lead fade-in delay-1">Метод генерации идей. Четыре правила — как в игре:</p>
+      
+      <ol class="numbered-list fade-in delay-2">
+        <li class="list-item" data-num="1">Критиковать идеи <span class="accent">нельзя</span></li>
+        <li class="list-item" data-num="2">Чем больше идей — тем лучше</li>
+        <li class="list-item" data-num="3">Можно развивать идеи других</li>
+        <li class="list-item" data-num="4">Говорим по одному, учитель записывает</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Slide 7: Brainstorm groups -->
+  <div class="slide">
+    <div class="slide-content">
+      <h2 class="fade-in">Разделяем задачи</h2>
+      <p class="lead fade-in delay-1">Чтобы работа была организованной, распределяем проблемы по группам:</p>
+      
+      <div class="cards fade-in delay-2">
+        <div class="card">
+          <div class="card-num">01</div>
+          <h3>Группа 1</h3>
+          <p>Проблема: <strong>«Указатели для первоклассников»</strong><br><br>Первоклассники теряются в школе — нужна навигация.</p>
+        </div>
+        <div class="card">
+          <div class="card-num">02</div>
+          <h3>Группа 2</h3>
+          <p>Проблема: <strong>«Органайзер для стола»</strong><br><br>На рабочем столе беспорядок — нужна система хранения.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 8: AI helper -->
+  <div class="slide">
+    <div class="slide-content">
+      <h2 class="fade-in">ИИ — помощник проектировщика</h2>
+      
+      <div class="ai-box fade-in delay-1">
+        <div class="ai-label">Нейросеть</div>
+        <h3>Что может ИИ</h3>
+        <p>Быстро сгенерировать десятки идей по запросу:<br>
+        <em>«Придумай 5 вариантов указателей для школы из бумаги»</em></p>
+        
+        <h3 style="margin-top: 24px;">Чего ИИ не может</h3>
+        <p>Проанализировать, хватит ли у вас материалов. Оценить, уложитесь ли вы во время. Проверить, удобно ли будет пользоваться изделием.</p>
+        
+        <div class="ai-rule">
+          Ответственность за выбор и результат всегда несёт <span class="accent">автор проекта</span>, а не нейросеть.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 9: Practice - ordering -->
+  <div class="slide">
+    <div class="slide-content">
+      <h2 class="fade-in">Проверь алгоритм</h2>
+      <p class="lead fade-in delay-1">Расставьте этапы проекта в правильной последовательности:</p>
+      
+      <div class="task-box fade-in delay-2">
+        <div class="task-item">
+          <div class="checkbox"></div>
+          <span>Защита проекта</span>
+        </div>
+        <div class="task-item">
+          <div class="checkbox"></div>
+          <span>Поиск идеи и анализ ресурсов</span>
+        </div>
+        <div class="task-item">
+          <div class="checkbox"></div>
+          <span>Изготовление изделия</span>
+        </div>
+      </div>
+      
+      <p class="reveal-hint fade-in delay-3">Нажмите пробел или стрелку вправо, чтобы показать ответ</p>
+      
+      <div class="answer-reveal" id="answerReveal">
+        <div class="answer-label">Правильный порядок:</div>
+        <div class="answer-text">2 → 3 → 1</div>
+        <p style="margin-top: 16px; font-size: 1.3rem; color: #d1d5db;">
+          <strong>Поиск</strong> → <strong>Изготовление</strong> → <strong>Защита</strong>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 10: Passport structure -->
+  <div class="slide">
+    <div class="slide-content">
+      <h2 class="fade-in">Паспорт проекта</h2>
+      <p class="lead fade-in delay-1">Техническое задание — основа любого серьёзного проекта.</p>
+      
+      <div class="cards fade-in delay-2">
+        <div class="card">
+          <div class="card-num">01</div>
+          <h3>Тема</h3>
+          <p>О чём ваш проект</p>
+        </div>
+        <div class="card">
+          <div class="card-num">02</div>
+          <h3>Проблема</h3>
+          <p>Какую задачу решаете, для кого</p>
+        </div>
+        <div class="card">
+          <div class="card-num">03</div>
+          <h3>Цель</h3>
+          <p>Какой результат хотите получить</p>
+        </div>
+        <div class="card">
+          <div class="card-num">04</div>
+          <h3>Задачи и идеи</h3>
+          <p>Варианты решения и план действий</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 11: Digital hygiene -->
+  <div class="slide">
+    <div class="slide-content">
+      <h2 class="fade-in">Цифровая гигиена</h2>
+      <p class="lead fade-in delay-1">Если проект будет опубликован на школьном портале или в интернете:</p>
+      
+      <div class="warning-box fade-in delay-2">
+        <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+          <path d="M24 4 L44 40 L4 40 Z" fill="none" stroke="#fbbf24" stroke-width="3" stroke-linejoin="round"/>
+          <line x1="24" y1="18" x2="24" y2="28" stroke="#fbbf24" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="24" cy="34" r="2" fill="#fbbf24"/>
+        </svg>
+        <div class="warning-text">
+          <strong>Категорически нельзя</strong> указывать в документе: домашний адрес, номер телефона, фамилию вместе с адресом.<br><br>
+          Указываем только: <strong>имя и класс</strong>.
+        </div>
+      </div>
+      
+      <p class="lead fade-in delay-3" style="margin-top: 32px; color: #8b92a8; font-size: 1.3rem;">
+        Это базовое правило защиты персональных данных в сети.
+      </p>
+    </div>
+  </div>
+
+  <!-- Slide 12: Practice timeline -->
+  <div class="slide">
+    <div class="slide-content">
+      <h2 class="fade-in">Практическая работа</h2>
+      <p class="lead fade-in delay-1">Работаем строго по таймеру:</p>
+      
+      <div class="timeline fade-in delay-2">
+        <div class="timeline-item">
+          <div class="timeline-time">3 мин</div>
+          <div class="timeline-text">Молча выберите одну идею из тех, что записаны для вашей группы</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-time">4 мин</div>
+          <div class="timeline-text">Обсудите выбор с соседом по парте. Сосед задаёт уточняющий вопрос</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-time">4 мин</div>
+          <div class="timeline-text">Самостоятельно заполните пункты 1–4 паспорта в тетради</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-time">1 мин</div>
+          <div class="timeline-text">Краткий отчёт: одна пара от «указателей», одна — от «органайзеров»</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 13: Reflection -->
+  <div class="slide">
+    <div class="slide-content">
+      <h2 class="fade-in">Рефлексия</h2>
+      <p class="lead fade-in delay-1">Покажите большой палец:</p>
+      
+      <div class="thumb-gestures fade-in delay-2">
+        <div class="gesture">
+          <div class="thumb-icon green">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/>
+            </svg>
+          </div>
+          <div class="gesture-text">Алгоритм усвоен, могу объяснить другому</div>
+        </div>
+        <div class="gesture">
+          <div class="thumb-icon yellow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+          </div>
+          <div class="gesture-text">Понял, но есть вопросы по структуре</div>
+        </div>
+        <div class="gesture">
+          <div class="thumb-icon red">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/>
+            </svg>
+          </div>
+          <div class="gesture-text">Тема вызывает затруднения, нужна помощь</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 14: Homework -->
+  <div class="slide">
+    <div class="slide-content">
+      <h2 class="fade-in">Домашнее задание</h2>
+      <p class="lead fade-in delay-1">Завершите паспорт проекта — проработайте пункты 5–8:</p>
+      
+      <div class="task-box fade-in delay-2">
+        <div class="task-item">
+          <div class="checkbox"></div>
+          <span><strong>5.</strong> Эскиз продукта (схема или рисунок)</span>
+        </div>
+        <div class="task-item">
+          <div class="checkbox"></div>
+          <span><strong>6.</strong> Анализ идей и выбор оптимальной</span>
+        </div>
+        <div class="task-item">
+          <div class="checkbox"></div>
+          <span><strong>7.</strong> Материалы и инструменты</span>
+        </div>
+        <div class="task-item">
+          <div class="checkbox"></div>
+          <span><strong>8.</strong> Пошаговый план работы</span>
+        </div>
+      </div>
+      
+      <p class="lead fade-in delay-3" style="margin-top: 32px; color: #8b92a8; font-size: 1.3rem;">
+        Черновик паспорта приносим на следующий урок.
+      </p>
+    </div>
+  </div>
+
+  <!-- Slide 15: Final -->
+  <div class="slide">
+    <div class="slide-content title-slide">
+      <div class="tag fade-in">Итог урока</div>
+      <h1 class="fade-in delay-1">Спасибо<br>за работу</h1>
+      <div class="meta fade-in delay-2">Приведите рабочие места в порядок</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="nav">
+  <button class="nav-btn" id="prevBtn" aria-label="Предыдущий слайд">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="15 18 9 12 15 6"></polyline>
+    </svg>
+  </button>
+  <div class="nav-counter" id="counter">1 / 15</div>
+  <button class="nav-btn" id="nextBtn" aria-label="Следующий слайд">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const totalSlides = slides.length;
+  let currentSlide = 0;
+  let answerShown = false;
+  
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const counter = document.getElementById('counter');
+  const slideNumber = document.getElementById('slideNumber');
+  const progress = document.getElementById('progress');
+  const answerReveal = document.getElementById('answerReveal');
+  
+  function showSlide(index) {
+    slides.forEach(s => s.classList.remove('active'));
+    slides[index].classList.add('active');
+    
+    // Reset animations
+    const fadeElems = slides[index].querySelectorAll('.fade-in');
+    fadeElems.forEach(el => {
+      el.style.animation = 'none';
+      el.offsetHeight; // reflow
+      el.style.animation = '';
+    });
+    
+    counter.textContent = `${index + 1} / ${totalSlides}`;
+    slideNumber.textContent = `${String(index + 1).padStart(2, '0')} / ${String(totalSlides).padStart(2, '0')}`;
+    progress.style.width = `${((index + 1) / totalSlides) * 100}%`;
+    
+    prevBtn.disabled = index === 0;
+    nextBtn.disabled = index === totalSlides - 1;
+    
+    // Reset answer reveal when leaving slide 8
+    if (index !== 8) {
+      answerShown = false;
+      if (answerReveal) answerReveal.classList.remove('visible');
+    }
+  }
+  
+  function showAnswer() {
+    if (currentSlide === 8 && !answerShown) {
+      answerReveal.classList.add('visible');
+      answerShown = true;
+    } else {
+      nextSlide();
+    }
+  }
+  
+  function nextSlide() {
+    if (currentSlide < totalSlides - 1) {
+      currentSlide++;
+      showSlide(currentSlide);
+    }
+  }
+  
+  function prevSlide() {
+    if (currentSlide > 0) {
+      currentSlide--;
+      showSlide(currentSlide);
+    }
+  }
+  
+  nextBtn.addEventListener('click', nextSlide);
+  prevBtn.addEventListener('click', prevSlide);
+  
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+      e.preventDefault();
+      showAnswer();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      prevSlide();
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      currentSlide = 0;
+      showSlide(currentSlide);
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      currentSlide = totalSlides - 1;
+      showSlide(currentSlide);
+    }
+  });
+  
+  // Touch support
+  let touchStartX = 0;
+  let touchEndX = 0;
+  
+  document.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  });
+  
+  document.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) nextSlide();
+      else prevSlide();
+    }
+  });
+  
+  showSlide(0);
+</script>
+
+</body>
+</html>

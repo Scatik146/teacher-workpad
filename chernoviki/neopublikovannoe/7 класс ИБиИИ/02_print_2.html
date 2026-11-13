@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Форма Б — Алгоритм + ДРАКОН</title>
+<style>
+@page { size: A4 portrait; margin: 1.5cm; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Times New Roman', serif; font-size: 13px; line-height: 1.5; }
+h2 { text-align: center; margin-bottom: 20px; }
+.container { display: flex; gap: 20px; }
+.left { flex: 1; }
+.right { flex: 1; }
+.algorithm { border: 2px solid black; padding: 15px; margin-bottom: 20px; }
+.algorithm ol { margin-left: 20px; }
+.algorithm li { margin-bottom: 10px; }
+.legend { border: 1px solid black; padding: 10px; font-size: 11px; margin-bottom: 15px; }
+.legend p { margin-bottom: 5px; }
+.dragon-frame { border: 2px dashed black; padding: 15px; min-height: 500px; }
+.slot { border: 1px solid #999; height: 40px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #999; }
+.slot.diamond { transform: rotate(0deg); border-style: solid; }
+.note { font-size: 11px; font-style: italic; margin-top: 10px; }
+@media print { body { font-size: 12px; } }
+</style>
+</head>
+<body>
+
+<h2>Алгоритм обучения + ДРАКОН-схема</h2>
+
+<div class="container">
+  <div class="left">
+    <div class="algorithm">
+      <h3>Словесный алгоритм (8 шагов):</h3>
+      <ol>
+        <li>Задай начальные веса (например, все нули) и порог T</li>
+        <li>Возьми первый пример (букву)</li>
+        <li>Вычисли сумму S = сумма весов активных клеток</li>
+        <li>Сравни выход (S ≥ T → 1, иначе 0) с правильным ответом</li>
+        <li>Если ошибка — поправь веса по правилу Розенблатта</li>
+        <li>Перейди к следующему примеру (если есть)</li>
+        <li>Если были ошибки — вернись к шагу 3</li>
+        <li>Если всё верно — конец обучения</li>
+      </ol>
+      <p class="note">Примечание: порог T можно менять аналогично весам</p>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="legend">
+      <h3>Легенда ДРАКОН-схемы:</h3>
+      <p>• <strong>Прямоугольник</strong> — действие</p>
+      <p>• <strong>Ромб</strong> — вопрос (выходы «да/нет»)</p>
+      <p>• <strong>Закруглённый прямоугольник</strong> — начало/конец</p>
+      <p>• <strong>Стрелка вверх</strong> — возврат к началу цикла</p>
+    </div>
+
+    <h3>Построй ДРАКОН-схему по алгоритму:</h3>
+    <p class="note">На уроке — если успеем, иначе дома</p>
+
+    <div class="dragon-frame">
+      <div class="slot">Начало</div>
+      <div class="slot">Шаг 1: начальные веса</div>
+      <div class="slot">Шаг 2: взять пример</div>
+      <div class="slot">Шаг 3: вычислить S</div>
+      <div class="slot diamond">Вопрос: верно?</div>
+      <div class="slot">Шаг 5: поправить веса</div>
+      <div class="slot">Шаг 6: следующий пример</div>
+      <div class="slot diamond">Вопрос: были ошибки?</div>
+      <div class="slot">↑ возврат к шагу 3</div>
+      <div class="slot">Конец</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кинематические схемы — проверочная станция</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial,sans-serif;background:#f5f5f5;padding:15px}
+#app{max-width:850px;margin:0 auto;background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,0.1)}
+h1{font-size:18px;color:#2c3e50;text-align:center;margin-bottom:12px}
+#vsel{display:flex;gap:8px;justify-content:center;margin-bottom:12px;flex-wrap:wrap}
+#vsel button{padding:7px 16px;border:1px solid #bdc3c7;border-radius:6px;background:#fff;cursor:pointer;font-size:14px;transition:all .2s}
+#vsel button:hover{background:#ecf0f1}
+#vsel button.active{background:#2c3e50;color:#fff;border-color:#2c3e50}
+#canvas{display:block;max-width:100%;height:auto;background:#fafafa;border:1px solid #ddd;border-radius:8px;touch-action:none;cursor:pointer}
+#status{text-align:center;font-size:16px;font-weight:bold;padding:10px;margin-top:8px;min-height:24px}
+#info{text-align:center;font-size:14px;padding:4px;color:#555;line-height:1.7}
+#info div{padding:1px 0}
+#btns{display:flex;gap:12px;justify-content:center;margin-top:8px}
+#btns button{padding:10px 28px;border:none;border-radius:6px;font-size:14px;cursor:pointer;font-weight:bold}
+#btn-go{background:#27ae60;color:#fff}
+#btn-go:hover{background:#229954}
+#btn-cl{background:#e74c3c;color:#fff}
+#btn-cl:hover{background:#cb4132}
+#hint{text-align:center;font-size:11px;color:#aaa;margin-top:8px}
+</style>
+</head>
+<body>
+<div id="app">
+<h1>Проверочная станция: Кинематические схемы</h1>
+<div id="vsel">
+<button id="bv1" class="active">Вариант 1</button>
+<button id="bv2">Вариант 2</button>
+<button id="bv3">Вариант 3</button>
+<button id="bv4">Вариант 4</button>
+</div>
+<canvas id="canvas" width="800" height="600"></canvas>
+<div id="status">Выберите шестерню в палитре и поставьте на шпиндель</div>
+<div id="info"></div>
+<div id="btns">
+<button id="btn-go">Старт</button>
+<button id="btn-cl">Сброс</button>
+</div>
+<div id="hint">Нажмите на шестерню в палитре внизу, затем на шпиндель · Нажмите на установленную шестерню, чтобы убрать</div>
+</div>
+<script>
+"use strict";
+
+// === Конфигурация ===
+var SCALE = 3; // пикселей на зуб
+var PAL = [12,15,20,24,30,36,48];
+var VAR = {
+  1:{g:[12,24,12],n:24},
+  2:{g:[15,30,15],n:30},
+  3:{g:[24,48,24],n:48},
+  4:{g:[12,36,12],n:36}
+};
+
+// === Состояние ===
+var cv, cx, curVar=1, sp=[], sel=null, run=false, ang=[0,0,0], lastT=0;
+
+// === Инициализация ===
+function init(){
+  cv=document.getElementById("canvas");
+  cx=cv.getContext("2d");
+  setup(1);
+  for(var i=1;i<=4;i++){
+    document.getElementById("bv"+i).addEventListener("click",function(v){return function(){setup(v)};}(i));
+  }
+  document.getElementById("btn-go").addEventListener("click",toggle);
+  document.getElementById("btn-cl").addEventListener("click",reset);
+  cv.addEventListener("click",ptr);
+  cv.addEventListener("touchend",function(e){e.preventDefault();ptr(e)},false);
+}
+
+// === Установка варианта ===
+function setup(v){
+  curVar=v;
+  var d=VAR[v], r=d.g.map(function(t){return t*SCALE});
+  var s1=r[0]+r[1], s2=r[1]+r[2], tot=s1+s2;
+  var sx=(cv.width-tot)/2, cy=200;
+  sp=[
+    {x:sx, y:cy, gear:null},
+    {x:sx+s1, y:cy, gear:null},
+    {x:sx+s1+s2, y:cy, gear:null}
+  ];
+  sel=null; run=false; ang=[0,0,0];
+  for(var i=1;i<=4;i++) document.getElementById("bv"+i).classList.toggle("active",i===v);
+  document.getElementById("btn-go").textContent="Старт";
+  ui(); draw();
+}
+
+// === Расчёт скоростей и зацепления ===
+function calc(){
+  var sp2=[0,0,0], dr=[0,0,0], me=[false,false];
+  if(!sp[0].gear) return {sp:sp2,dr:dr,me:me};
+  var d=VAR[curVar];
+  sp2[0]=d.n; dr[0]=1;
+  for(var i=0;i<2;i++){
+    if(sp[i].gear && sp[i+1].gear){
+      var dist=Math.hypot(sp[i].x-sp[i+1].x, sp[i].y-sp[i+1].y);
+      var exp=sp[i].gear*SCALE+sp[i+1].gear*SCALE;
+      me[i]=Math.abs(dist-exp)<2;
+    }
+  }
+  if(me[0]){sp2[1]=sp2[0]*sp[0].gear/sp[1].gear; dr[1]=-dr[0];}
+  if(me[1]&&sp2[1]>0){sp2[2]=sp2[1]*sp[1].gear/sp[2].gear; dr[2]=-dr[1];}
+  return {sp:sp2,dr:dr,me:me};
+}
+
+// === Координаты клика/тача ===
+function pos(e){
+  var r=cv.getBoundingClientRect();
+  var sx=cv.width/r.width, sy=cv.height/r.height;
+  var px,py;
+  if(e.changedTouches&&e.changedTouches.length>0){px=e.changedTouches[0].clientX; py=e.changedTouches[0].clientY;}
+  else if(e.touches&&e.touches.length>0){px=e.touches[0].clientX; py=e.touches[0].clientY;}
+  else{px=e.clientX; py=e.clientY;}
+  return{x:(px-r.left)*sx, y:(py-r.top)*sy};
+}
+
+// === Обработка нажатия ===
+function ptr(e){
+  var p=pos(e);
+  // Палитра
+  if(p.y>470){
+    var py=510, ps=80, pst=105;
+    for(var i=0;i<PAL.length;i++){
+      var px=ps+i*pst;
+      if(Math.hypot(p.x-px,p.y-py)<30){sel=PAL[i]; draw(); return;}
+    }
+    return;
+  }
+  // Шпиндели
+  for(var i=0;i<sp.length;i++){
+    var sr=sp[i].gear?sp[i].gear*SCALE:30;
+    if(Math.hypot(p.x-sp[i].x,p.y-sp[i].y)<sr+10){
+      if(sel){sp[i].gear=sel; sel=null;}
+      else if(sp[i].gear){sp[i].gear=null;}
+      ui(); draw(); return;
+    }
+  }
+}
+
+// === Обновление интерфейса ===
+function ui(){
+  var st=document.getElementById("status"), ie=document.getElementById("info");
+  var pl=sp.filter(function(s){return s.gear!==null}).length;
+  if(pl===0){st.textContent="Выберите шестерню в палитре и поставьте на шпиндель";st.style.color="#666";ie.innerHTML="";return;}
+  if(pl<3){st.textContent="Поставьте шестерни на все три шпинделя";st.style.color="#666";ie.innerHTML="";return;}
+  var r=calc();
+  if(r.me[0]&&r.me[1]){
+    var d=VAR[curVar];
+    var ok=sp[0].gear===d.g[0]&&sp[1].gear===d.g[1]&&sp[2].gear===d.g[2];
+    if(ok){st.innerHTML="\u2713 Механизм работает!";st.style.color="#27ae60";}
+    else{st.innerHTML="\u26a0 Сцеплено, но проверьте числа зубьев";st.style.color="#e67e22";}
+    var h="";
+    for(var i=0;i<3;i++){
+      var rev=(r.sp[i]/6).toFixed(1);
+      var ar=r.dr[i]>0?"\u21bb":(r.dr[i]<0?"\u21ba":"");
+      h+="<div>Колесо "+(i+1)+" (z="+sp[i].gear+"): "+r.sp[i].toFixed(0)+" об/мин = "+rev+" об/10с "+ar+"</div>";
+    }
+    ie.innerHTML=h;
+  } else {
+    st.innerHTML="\u2717 Разрыв передачи";st.style.color="#e74c3c";
+    ie.innerHTML="Шестерни не сцеплены. Проверьте, подходят ли размеры.";
+  }
+}
+
+// === Рисование ===
+function draw(){
+  cx.clearRect(0,0,cv.width,cv.height);
+  for(var i=0;i<sp.length;i++) drawSpin(sp[i],i);
+  var r=calc();
+  // Точки зацепления
+  for(var i=0;i<2;i++){
+    if(r.me[i]&&sp[i].gear&&sp[i+1].gear){
+      var r1=sp[i].gear*SCALE, r2=sp[i+1].gear*SCALE;
+      var mx=sp[i].x+(sp[i+1].x-sp[i].x)*r1/(r1+r2);
+      cx.beginPath();cx.arc(mx,sp[i].y,5,0,Math.PI*2);cx.fillStyle="#27ae60";cx.fill();
+    }
+  }
+  // Шестерни
+  for(var i=0;i<sp.length;i++){
+    if(sp[i].gear){
+      var meshed=(i===0)?true:r.me[i-1];
+      if(i>0&&!r.me[i-1]) meshed=false;
+      var col;
+      if(i===0) col={f:"#d5f5e3",s:"#1e8449",m:"#239b56"};
+      else if(meshed) col={f:"#d4e6f1",s:"#1a5276",m:"#2e86c1"};
+      else col={f:"#fadbd8",s:"#c0392b",m:"#e74c3c"};
+      var show=run&&r.sp[i]>0;
+      drawGear(sp[i].x,sp[i].y,sp[i].gear,ang[i],col,show,r.dr[i]);
+    }
+  }
+  drawPal();
+}
+
+function drawSpin(s,i){
+  cx.beginPath();cx.arc(s.x,s.y,6,0,Math.PI*2);
+  cx.fillStyle="#bdc3c7";cx.fill();cx.strokeStyle="#7f8c8d";cx.lineWidth=2;cx.stroke();
+  cx.fillStyle="#999";cx.font="11px Arial";cx.textAlign="center";
+  cx.fillText("Шпиндель "+(i+1),s.x,s.y+135);
+  if(!s.gear){
+    cx.beginPath();cx.arc(s.x,s.y,25,0,Math.PI*2);
+    cx.setLineDash([4,4]);cx.strokeStyle="#d5d5d5";cx.lineWidth=1;cx.stroke();cx.setLineDash([]);
+  }
+}
+
+function drawGear(x,y,teeth,angle,col,showArrow,dir){
+  var r=teeth*SCALE;
+  cx.save();cx.translate(x,y);
+  cx.beginPath();cx.arc(0,0,r,0,Math.PI*2);
+  cx.fillStyle=col.f;cx.fill();cx.strokeStyle=col.s;cx.lineWidth=2;cx.stroke();
+  cx.beginPath();cx.arc(0,0,r*0.65,0,Math.PI*2);
+  cx.strokeStyle=col.s;cx.lineWidth=1;cx.globalAlpha=0.25;cx.stroke();cx.globalAlpha=1;
+  cx.rotate(angle);
+  var nt=Math.min(teeth,16);
+  for(var i=0;i<nt;i++){
+    var a=(i/nt)*Math.PI*2;
+    cx.beginPath();cx.arc(Math.cos(a)*r,Math.sin(a)*r,3,0,Math.PI*2);
+    cx.fillStyle=col.s;cx.fill();
+  }
+  cx.beginPath();cx.moveTo(0,0);cx.lineTo(r*0.85,0);
+  cx.strokeStyle=col.m;cx.lineWidth=3;cx.lineCap="round";cx.stroke();
+  cx.rotate(-angle);
+  cx.fillStyle="#333";cx.font="bold "+Math.max(11,Math.round(r*0.28))+"px Arial";
+  cx.textAlign="center";cx.textBaseline="middle";cx.fillText(teeth,0,0);
+  cx.restore();
+  if(showArrow&&dir!==0) drawArrow(x,y,r,dir,col.m);
+}
+
+function drawArrow(x,y,r,dir,col){
+  cx.save();cx.translate(x,y);
+  var ar=r+12, sa=-Math.PI/3, sw=Math.PI/2.5, ea=sa+sw*dir;
+  cx.beginPath();cx.arc(0,0,ar,sa,ea,dir<0);
+  cx.strokeStyle=col;cx.lineWidth=3;cx.lineCap="round";cx.stroke();
+  var ax=Math.cos(ea)*ar, ay=Math.sin(ea)*ar, tg=ea+(Math.PI/2)*dir;
+  cx.beginPath();cx.moveTo(ax,ay);
+  cx.lineTo(ax+Math.cos(tg-0.5)*12,ay+Math.sin(tg-0.5)*12);
+  cx.lineTo(ax+Math.cos(tg+0.5)*12,ay+Math.sin(tg+0.5)*12);
+  cx.closePath();cx.fillStyle=col;cx.fill();
+  cx.restore();
+}
+
+function drawPal(){
+  var py=510, ps=80, pst=105;
+  cx.fillStyle="#666";cx.font="13px Arial";cx.textAlign="center";
+  cx.fillText("Палитра: нажмите шестерню, затем шпиндель",cv.width/2,465);
+  for(var i=0;i<PAL.length;i++){
+    var t=PAL[i], px=ps+i*pst, sl=sel===t;
+    cx.beginPath();cx.arc(px,py,28,0,Math.PI*2);
+    cx.fillStyle=sl?"#d5f5e3":"#f0f0f0";cx.fill();
+    cx.strokeStyle=sl?"#1e8449":"#bbb";cx.lineWidth=sl?3:1;cx.stroke();
+    cx.fillStyle="#333";cx.font="bold 15px Arial";
+    cx.textAlign="center";cx.textBaseline="middle";cx.fillText(t,px,py);
+    cx.fillStyle="#999";cx.font="10px Arial";cx.fillText("зуб.",px,py+40);
+  }
+}
+
+// === Анимация ===
+function anim(ts){
+  if(!run) return;
+  if(lastT===0) lastT=ts;
+  var dt=Math.min((ts-lastT)/1000,0.05);
+  lastT=ts;
+  var r=calc();
+  for(var i=0;i<3;i++){
+    if(r.sp[i]>0&&sp[i].gear){
+      var om=(r.sp[i]*2*Math.PI/60)*r.dr[i];
+      ang[i]+=om*dt;
+    }
+  }
+  draw();
+  requestAnimationFrame(anim);
+}
+
+function toggle(){
+  var pl=sp.filter(function(s){return s.gear!==null}).length;
+  if(!run&&pl===0){
+    var st=document.getElementById("status");
+    st.textContent="Сначала поставьте шестерни!";st.style.color="#e67e22";return;
+  }
+  run=!run;
+  var btn=document.getElementById("btn-go");
+  if(run){btn.textContent="Стоп";lastT=0;requestAnimationFrame(anim);}
+  else btn.textContent="Старт";
+}
+
+function reset(){
+  for(var i=0;i<sp.length;i++) sp[i].gear=null;
+  sel=null;run=false;ang=[0,0,0];
+  document.getElementById("btn-go").textContent="Старт";
+  ui();draw();
+}
+
+init();
+</script>
+</body>
+</html>

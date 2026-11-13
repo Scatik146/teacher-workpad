@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Презентация: ИИ и персонализация</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #0a192f;
+    color: #e6f1ff;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .slide-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+  .slide {
+    display: none;
+    width: 100%;
+    height: 100%;
+    padding: 60px 80px;
+    flex-direction: column;
+    position: relative;
+  }
+  .slide.active {
+    display: flex;
+  }
+  h1, h2 {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    color: #64ffda;
+    line-height: 1.2;
+  }
+  p, li, .text-body {
+    font-size: 32px;
+    line-height: 1.4;
+    margin-bottom: 20px;
+  }
+  ul { list-style-type: none; padding-left: 0; }
+  li { margin-bottom: 20px; position: relative; padding-left: 40px; }
+  li::before { content: "•"; color: #64ffda; position: absolute; left: 0; font-size: 40px; line-height: 1; }
+  
+  .placeholder-row {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    margin: 30px 0;
+    flex: 1;
+    align-items: center;
+  }
+  .image-container {
+    width: 30%;
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .image-container svg {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  }
+  .placeholder-caption {
+    font-size: 28px;
+    color: #e6f1ff;
+    margin-top: 15px;
+    text-align: center;
+    width: 30%;
+  }
+  .caption-wrapper {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+  }
+  .two-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    margin-top: 20px;
+  }
+  .column-box {
+    border: 2px solid #64ffda;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+  }
+  .column-box h3 {
+    font-size: 36px;
+    color: #64ffda;
+    margin-bottom: 20px;
+  }
+  .centered-large {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 56px;
+    font-weight: bold;
+    color: #64ffda;
+  }
+  .thesis-box {
+    border: 4px solid #64ffda;
+    padding: 30px;
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold;
+    color: #64ffda;
+    margin-top: 40px;
+    border-radius: 10px;
+  }
+  .scheme-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin: 40px 0;
+  }
+  .scheme-cell {
+    border: 3px solid #8892b0;
+    padding: 30px 20px;
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+    flex: 1;
+    border-radius: 8px;
+  }
+  .scheme-cell.highlight {
+    border-color: #64ffda;
+    background-color: rgba(100, 255, 218, 0.1);
+    color: #64ffda;
+  }
+  .arrow {
+    font-size: 48px;
+    color: #64ffda;
+  }
+  .slide-number {
+    position: absolute;
+    bottom: 30px;
+    right: 40px;
+    font-size: 28px;
+    color: #8892b0;
+  }
+  .bottom-text {
+    margin-top: auto;
+    text-align: center;
+    font-size: 32px;
+    color: #8892b0;
+    padding-top: 20px;
+  }
+  .legend {
+    margin-top: 40px;
+    font-size: 28px;
+    color: #8892b0;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+<div class="slide-container" id="presentation">
+  
+  <!-- Слайд 1 -->
+  <div class="slide active" onclick="nextSlide()">
+    <div class="placeholder-row">
+      <div class="image-container">
+        <!-- ВСТАВИТЬ: бионическая кисть в супергеройском дизайне -->
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <defs><pattern id="g1" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" stroke="#0a192f" stroke-width="1"/></pattern></defs>
+          <rect width="200" height="200" fill="#112240"/>
+          <rect width="200" height="200" fill="url(#g1)"/>
+          <rect x="70" y="140" width="60" height="40" fill="#8892b0" rx="8"/>
+          <rect x="75" y="145" width="50" height="30" fill="#0a192f" rx="4"/>
+          <path d="M65 140 L135 140 L125 70 L75 70 Z" fill="#64ffda" opacity="0.9"/>
+          <path d="M75 70 L125 70 L120 60 L80 60 Z" fill="#e6f1ff"/>
+          <rect x="78" y="25" width="14" height="40" fill="#e6f1ff" rx="7"/><rect x="78" y="25" width="14" height="10" fill="#64ffda" rx="7"/>
+          <rect x="96" y="15" width="14" height="50" fill="#e6f1ff" rx="7"/><rect x="96" y="15" width="14" height="10" fill="#64ffda" rx="7"/>
+          <rect x="114" y="20" width="14" height="45" fill="#e6f1ff" rx="7"/><rect x="114" y="20" width="14" height="10" fill="#64ffda" rx="7"/>
+          <rect x="50" y="65" width="18" height="35" fill="#e6f1ff" rx="9" transform="rotate(-30 59 82)"/>
+          <rect x="50" y="65" width="18" height="10" fill="#64ffda" rx="9" transform="rotate(-30 59 82)"/>
+          <circle cx="100" cy="110" r="18" fill="#0a192f" stroke="#64ffda" stroke-width="3"/>
+          <path d="M92 110 L97 116 L108 104" stroke="#64ffda" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="image-container">
+        <!-- ВСТАВИТЬ: носимое устройство для незрячих -->
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <defs><pattern id="g2" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" stroke="#0a192f" stroke-width="1"/></pattern></defs>
+          <rect width="200" height="200" fill="#112240"/>
+          <rect width="200" height="200" fill="url(#g2)"/>
+          <circle cx="100" cy="90" r="45" fill="#8892b0" opacity="0.2"/>
+          <path d="M55 130 Q100 160 145 130 L145 180 L55 180 Z" fill="#8892b0" opacity="0.2"/>
+          <path d="M60 80 Q100 70 140 80 L145 85 Q100 75 55 85 Z" fill="#0a192f" stroke="#64ffda" stroke-width="3"/>
+          <rect x="55" y="85" width="35" height="25" fill="#112240" stroke="#64ffda" stroke-width="2" rx="5"/>
+          <rect x="110" y="85" width="35" height="25" fill="#112240" stroke="#64ffda" stroke-width="2" rx="5"/>
+          <circle cx="148" cy="85" r="10" fill="#64ffda"/><circle cx="148" cy="85" r="5" fill="#0a192f"/><circle cx="148" cy="85" r="2" fill="#64ffda"/>
+          <path d="M165 75 Q175 85 165 95" stroke="#e6f1ff" stroke-width="3" fill="none" opacity="0.8"/>
+          <path d="M172 68 Q188 85 172 102" stroke="#e6f1ff" stroke-width="3" fill="none" opacity="0.6"/>
+          <path d="M179 61 Q200 85 179 109" stroke="#e6f1ff" stroke-width="3" fill="none" opacity="0.4"/>
+        </svg>
+      </div>
+      <div class="image-container">
+        <!-- ВСТАВИТЬ: экзоскелет -->
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <defs><pattern id="g3" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" stroke="#0a192f" stroke-width="1"/></pattern></defs>
+          <rect width="200" height="200" fill="#112240"/>
+          <rect width="200" height="200" fill="url(#g3)"/>
+          <path d="M75 30 L75 150 L125 150 L125 30 Z" fill="#8892b0" opacity="0.15"/>
+          <path d="M65 40 L65 140" stroke="#64ffda" stroke-width="10" stroke-linecap="round"/>
+          <path d="M135 40 L135 140" stroke="#64ffda" stroke-width="10" stroke-linecap="round"/>
+          <circle cx="65" cy="90" r="14" fill="#0a192f" stroke="#e6f1ff" stroke-width="3"/><circle cx="65" cy="90" r="6" fill="#64ffda"/>
+          <circle cx="135" cy="90" r="14" fill="#0a192f" stroke="#e6f1ff" stroke-width="3"/><circle cx="135" cy="90" r="6" fill="#64ffda"/>
+          <circle cx="65" cy="140" r="10" fill="#0a192f" stroke="#e6f1ff" stroke-width="3"/>
+          <circle cx="135" cy="140" r="10" fill="#0a192f" stroke="#e6f1ff" stroke-width="3"/>
+          <rect x="65" y="84" width="70" height="12" fill="#64ffda" opacity="0.4" rx="6"/>
+          <rect x="65" y="134" width="70" height="12" fill="#64ffda" opacity="0.4" rx="6"/>
+          <rect x="55" y="155" width="90" height="20" fill="#e6f1ff" rx="10"/>
+          <rect x="65" y="160" width="70" height="10" fill="#8892b0" rx="5"/>
+        </svg>
+      </div>
+    </div>
+    <div class="bottom-text">Обсудите в парах: что это и для кого?</div>
+    <div class="slide-number">1 / 12</div>
+  </div>
+
+  <!-- Слайд 2 -->
+  <div class="slide" onclick="nextSlide()">
+    <div class="placeholder-row">
+      <div class="image-container">
+        <!-- ВСТАВИТЬ: бионическая кисть в супергеройском дизайне -->
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="200" height="200" fill="#112240"/><rect width="200" height="200" fill="url(#g1)"/>
+          <rect x="70" y="140" width="60" height="40" fill="#8892b0" rx="8"/><rect x="75" y="145" width="50" height="30" fill="#0a192f" rx="4"/>
+          <path d="M65 140 L135 140 L125 70 L75 70 Z" fill="#64ffda" opacity="0.9"/><path d="M75 70 L125 70 L120 60 L80 60 Z" fill="#e6f1ff"/>
+          <rect x="78" y="25" width="14" height="40" fill="#e6f1ff" rx="7"/><rect x="78" y="25" width="14" height="10" fill="#64ffda" rx="7"/>
+          <rect x="96" y="15" width="14" height="50" fill="#e6f1ff" rx="7"/><rect x="96" y="15" width="14" height="10" fill="#64ffda" rx="7"/>
+          <rect x="114" y="20" width="14" height="45" fill="#e6f1ff" rx="7"/><rect x="114" y="20" width="14" height="10" fill="#64ffda" rx="7"/>
+          <rect x="50" y="65" width="18" height="35" fill="#e6f1ff" rx="9" transform="rotate(-30 59 82)"/>
+          <rect x="50" y="65" width="18" height="10" fill="#64ffda" rx="9" transform="rotate(-30 59 82)"/>
+          <circle cx="100" cy="110" r="18" fill="#0a192f" stroke="#64ffda" stroke-width="3"/>
+          <path d="M92 110 L97 116 L108 104" stroke="#64ffda" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="image-container">
+        <!-- ВСТАВИТЬ: носимое устройство для незрячих -->
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="200" height="200" fill="#112240"/><rect width="200" height="200" fill="url(#g2)"/>
+          <circle cx="100" cy="90" r="45" fill="#8892b0" opacity="0.2"/><path d="M55 130 Q100 160 145 130 L145 180 L55 180 Z" fill="#8892b0" opacity="0.2"/>
+          <path d="M60 80 Q100 70 140 80 L145 85 Q100 75 55 85 Z" fill="#0a192f" stroke="#64ffda" stroke-width="3"/>
+          <rect x="55" y="85" width="35" height="25" fill="#112240" stroke="#64ffda" stroke-width="2" rx="5"/>
+          <rect x="110" y="85" width="35" height="25" fill="#112240" stroke="#64ffda" stroke-width="2" rx="5"/>
+          <circle cx="148" cy="85" r="10" fill="#64ffda"/><circle cx="148" cy="85" r="5" fill="#0a192f"/><circle cx="148" cy="85" r="2" fill="#64ffda"/>
+          <path d="M165 75 Q175 85 165 95" stroke="#e6f1ff" stroke-width="3" fill="none" opacity="0.8"/>
+          <path d="M172 68 Q188 85 172 102" stroke="#e6f1ff" stroke-width="3" fill="none" opacity="0.6"/>
+          <path d="M179 61 Q200 85 179 109" stroke="#e6f1ff" stroke-width="3" fill="none" opacity="0.4"/>
+        </svg>
+      </div>
+      <div class="image-container">
+        <!-- ВСТАВИТЬ: экзоскелет -->
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="200" height="200" fill="#112240"/><rect width="200" height="200" fill="url(#g3)"/>
+          <path d="M75 30 L75 150 L125 150 L125 30 Z" fill="#8892b0" opacity="0.15"/>
+          <path d="M65 40 L65 140" stroke="#64ffda" stroke-width="10" stroke-linecap="round"/>
+          <path d="M135 40 L135 140" stroke="#64ffda" stroke-width="10" stroke-linecap="round"/>
+          <circle cx="65" cy="90" r="14" fill="#0a192f" stroke="#e6f1ff" stroke-width="3"/><circle cx="65" cy="90" r="6" fill="#64ffda"/>
+          <circle cx="135" cy="90" r="14" fill="#0a192f" stroke="#e6f1ff" stroke-width="3"/><circle cx="135" cy="90" r="6" fill="#64ffda"/>
+          <circle cx="65" cy="140" r="10" fill="#0a192f" stroke="#e6f1ff" stroke-width="3"/>
+          <circle cx="135" cy="140" r="10" fill="#0a192f" stroke="#e6f1ff" stroke-width="3"/>
+          <rect x="65" y="84" width="70" height="12" fill="#64ffda" opacity="0.4" rx="6"/>
+          <rect x="65" y="134" width="70" height="12" fill="#64ffda" opacity="0.4" rx="6"/>
+          <rect x="55" y="155" width="90" height="20" fill="#e6f1ff" rx="10"/>
+          <rect x="65" y="160" width="70" height="10" fill="#8892b0" rx="5"/>
+        </svg>
+      </div>
+    </div>
+    <div class="caption-wrapper">
+      <div class="placeholder-caption">1. «Бионическая кисть. Печать на 3D-принтере. Дизайн выбирает сам человек».</div>
+      <div class="placeholder-caption">2. «"Робин". Помощник для тех, кто не видит. Говорит и вибрирует».</div>
+      <div class="placeholder-caption">3. «Экзоскелет. Каркас помогает ходить».</div>
+    </div>
+    <div class="slide-number">2 / 12</div>
+  </div>
+
+  <!-- Слайд 3 -->
+  <div class="slide" onclick="nextSlide()">
+    <h2>Разложи карточки на две стопки</h2>
+    <p style="text-align: center; margin-bottom: 40px;">Персонально — значит сделано под одного конкретного человека. Для всех — одинаково для любого</p>
+    <div class="two-columns">
+      <div class="column-box"><h3>ПЕРСОНАЛЬНО</h3></div>
+      <div class="column-box"><h3>ДЛЯ ВСЕХ</h3></div>
+    </div>
+    <div class="slide-number">3 / 12</div>
+  </div>
+
+  <!-- Слайд 4 -->
+  <div class="slide" onclick="nextSlide()">
+    <div class="centered-large">ПЕРСОНАЛИЗАЦИЯ — значит "под конкретного человека"</div>
+    <div class="slide-number">4 / 12</div>
+  </div>
+
+  <!-- Слайд 5 -->
+  <div class="slide" onclick="nextSlide()">
+    <h2>Персонализация — это везде</h2>
+    <p>В медицине: лечение подбирают под конкретного человека.</p>
+    <p>В технике: протез, программа и даже словарь ИИ настраиваются под человека.</p>
+    <div class="placeholder-row" style="margin-top: 40px;">
+      <div class="image-container" style="width: 40%;">
+        <!-- ВСТАВИТЬ: скриншот бионической кисти -->
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="200" height="200" fill="#112240" rx="10"/>
+          <rect x="50" y="15" width="100" height="170" fill="#0a192f" stroke="#8892b0" stroke-width="4" rx="12"/>
+          <rect x="54" y="35" width="92" height="130" fill="#1a2f4d" rx="4"/>
+          <rect x="64" y="45" width="72" height="8" fill="#8892b0" rx="4"/>
+          <rect x="64" y="60" width="40" height="6" fill="#64ffda" rx="3"/>
+          <path d="M80 125 L80 85 L90 75 L100 85 L110 75 L120 85 L120 125 Z" fill="#64ffda" opacity="0.3" stroke="#64ffda" stroke-width="2"/>
+          <line x1="90" y1="75" x2="90" y2="125" stroke="#64ffda" stroke-width="1" opacity="0.5"/>
+          <line x1="100" y1="85" x2="100" y2="125" stroke="#64ffda" stroke-width="1" opacity="0.5"/>
+          <line x1="110" y1="75" x2="110" y2="125" stroke="#64ffda" stroke-width="1" opacity="0.5"/>
+          <rect x="64" y="140" width="30" height="6" fill="#8892b0" rx="3"/>
+          <rect x="64" y="150" width="50" height="4" fill="#64ffda" rx="2"/>
+          <circle cx="100" cy="175" r="5" fill="#8892b0"/>
+        </svg>
+      </div>
+      <div class="image-container" style="width: 40%;">
+        <!-- ВСТАВИТЬ: скриншот устройства "Робин" -->
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="200" height="200" fill="#112240" rx="10"/>
+          <rect x="50" y="15" width="100" height="170" fill="#0a192f" stroke="#8892b0" stroke-width="4" rx="12"/>
+          <rect x="54" y="35" width="92" height="130" fill="#0f1c30" rx="4"/>
+          <rect x="60" y="60" width="45" height="60" fill="none" stroke="#64ffda" stroke-width="2"/>
+          <rect x="60" y="50" width="35" height="14" fill="#64ffda"/>
+          <text x="64" y="60" font-family="system-ui, sans-serif" font-size="9" fill="#0a192f" font-weight="bold">СТУЛ 98%</text>
+          <rect x="115" y="50" width="25" height="80" fill="none" stroke="#e6f1ff" stroke-width="2"/>
+          <rect x="115" y="40" width="40" height="14" fill="#e6f1ff"/>
+          <text x="119" y="50" font-family="system-ui, sans-serif" font-size="9" fill="#0a192f" font-weight="bold">ДВЕРЬ 95%</text>
+          <circle cx="100" cy="100" r="15" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.5"/>
+          <line x1="100" y1="90" x2="100" y2="110" stroke="#ffffff" stroke-width="1" opacity="0.5"/>
+          <line x1="90" y1="100" x2="110" y2="100" stroke="#ffffff" stroke-width="1" opacity="0.5"/>
+          <circle cx="100" cy="175" r="5" fill="#8892b0"/>
+        </svg>
+      </div>
+    </div>
+    <div class="slide-number">5 / 12</div>
+  </div>
+
+  <!-- Слайд 6 -->
+  <div class="slide" onclick="nextSlide()">
+    <h2>Эти технологии создали люди, которые сами ими пользуются</h2>
+    <ul>
+      <li>Сакиб Шейх — незрячий инженер. Создал "говорящую камеру" Seeing AI.</li>
+      <li>Дмитрий Каневский — потерял слух в детстве. Создал Live Transcribe — перевод речи в текст.</li>
+      <li>Рязанские школьники — сделали переводчик жестового языка вместе с обществом глухих.</li>
+      <li>Тилли Локи — с детства пользуется бионическими руками. Стала лицом проекта Open Bionics.</li>
+    </ul>
+    <div class="slide-number">6 / 12</div>
+  </div>
+
+  <!-- Слайд 7 -->
+  <div class="slide" onclick="nextSlide()">
+    <h2>Вы — инженеры</h2>
+    <ul>
+      <li>На партах: ситуации и технологии-помощники.</li>
+      <li>Соедини: какой помощник нужен в каждой ситуации?</li>
+      <li>Проверь себя: ответы — на обороте карточек.</li>
+    </ul>
+    <div class="legend">
+      [ПЕРСОНАЛЬНО] — сделано под одного человека;<br>
+      [ДЛЯ ВСЕХ] — одинаково для любого;<br>
+      [ДЛЯ ВРАЧА] — помогает врачу.
+    </div>
+    <div class="slide-number">7 / 12</div>
+  </div>
+
+  <!-- Слайд 8 -->
+  <div class="slide" onclick="nextSlide()">
+    <h2>Проверь первые пары</h2>
+    <ul>
+      <li>Не видит и идёт по городу → "Робин".</li>
+      <li>Ребёнок без кисти хочет рисовать → "Моторика".</li>
+      <li>Врач смотрит снимки → ИИ-помощник врача.</li>
+    </ul>
+    <div class="thesis-box">ИИ — помощник. Окончательное решение всегда принимает человек</div>
+    <div class="slide-number">8 / 12</div>
+  </div>
+
+  <!-- Слайд 9 -->
+  <div class="slide" onclick="nextSlide()">
+    <h2>Данные о здоровье — особая тайна</h2>
+    <p style="font-size: 28px; color: #8892b0; margin-bottom: 30px;">Как врачебная — только теперь и у приложений.</p>
+    <ul>
+      <li>Включай помощника, когда он нужен.</li>
+      <li>Чужие записи не публикуем.</li>
+      <li>Помогая другому — сначала спроси.</li>
+    </ul>
+    <p style="margin-top: 40px; color: #64ffda; font-weight: bold;">Почему нельзя выкладывать чужие результаты приложений?</p>
+    <div class="slide-number">9 / 12</div>
+  </div>
+
+  <!-- Слайд 10 -->
+  <div class="slide" onclick="nextSlide()">
+    <h2>Схема за 3 шага</h2>
+    <div class="scheme-row">
+      <div class="scheme-cell">ДАННЫЕ</div>
+      <div class="arrow">→</div>
+      <div class="scheme-cell">ЧТО ДЕЛАЕТ ИИ</div>
+      <div class="arrow">→</div>
+      <div class="scheme-cell highlight">ЧТО РЕШАЕТ ЧЕЛОВЕК</div>
+    </div>
+    <p style="text-align: center; margin-top: 40px; font-size: 28px; color: #8892b0;">Камера увидела предмет → ИИ назвал его → человек решил, куда идти</p>
+    <div class="slide-number">10 / 12</div>
+  </div>
+
+  <!-- Слайд 11 -->
+  <div class="slide" onclick="nextSlide()">
+    <h2>Поменяйся листом с соседом. Проверь</h2>
+    <ul>
+      <li>Все три клетки заполнены?</li>
+      <li>В третьей клетке — решение ЧЕЛОВЕКА, а не ИИ?</li>
+      <li>Понятно из схемы, о какой технологии речь?</li>
+    </ul>
+    <div class="slide-number">11 / 12</div>
+  </div>
+
+  <!-- Слайд 12 -->
+  <div class="slide" onclick="nextSlide()">
+    <div class="centered-large" style="flex-direction: column; gap: 40px;">
+      <div>ИИ — помощник. Окончательное решение всегда принимает человек</div>
+      <div style="font-size: 32px; color: #8892b0; font-weight: normal;">Персонализация — значит под конкретного человека. Сегодня задачу решали инженеры. И вы</div>
+    </div>
+    <div class="slide-number">12 / 12</div>
+  </div>
+
+</div>
+
+<script>
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.slide');
+  
+  function showSlide(n) {
+    slides.forEach(s => s.classList.remove('active'));
+    currentSlide = (n + slides.length) % slides.length;
+    slides[currentSlide].classList.add('active');
+  }
+  
+  function nextSlide() {
+    showSlide(currentSlide + 1);
+  }
+  
+  function prevSlide() {
+    showSlide(currentSlide - 1);
+  }
+  
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') {
+      e.preventDefault();
+      nextSlide();
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      prevSlide();
+    }
+  });
+</script>
+</body>
+</html>

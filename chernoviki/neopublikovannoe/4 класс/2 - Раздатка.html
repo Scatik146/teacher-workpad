@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Защита личных данных и надёжные пароли - Раздаточный материал</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 11pt;
+            line-height: 1.3;
+            color: #000;
+            background: #fff;
+        }
+        
+        .page {
+            width: 210mm;
+            height: 297mm;
+            padding: 15mm 12mm;
+            margin: 0 auto;
+            background: white;
+            position: relative;
+            page-break-after: always;
+            page-break-inside: avoid;
+        }
+        
+        .page:last-child {
+            page-break-after: auto;
+        }
+        
+        h1 {
+            font-size: 16pt;
+            text-align: center;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        h2 {
+            font-size: 13pt;
+            margin: 12px 0 8px;
+            font-weight: bold;
+            border-bottom: 2px solid #000;
+            padding-bottom: 3px;
+        }
+        
+        h3 {
+            font-size: 11pt;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+        
+        .header-info {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 10pt;
+        }
+        
+        .student-info {
+            margin: 10px 0;
+            padding: 8px;
+            border: 1px solid #000;
+            font-size: 10pt;
+        }
+        
+        .student-info p {
+            margin: 3px 0;
+        }
+        
+        .task-block {
+            margin: 10px 0;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        
+        .task-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 11pt;
+        }
+        
+        .account-section {
+            margin: 8px 0;
+            padding: 6px;
+            border-left: 2px solid #4CAF50;
+            background: #f9f9f9;
+            page-break-inside: avoid;
+        }
+        
+        .account-title {
+            font-weight: bold;
+            margin-bottom: 4px;
+            font-size: 10pt;
+        }
+        
+        .line {
+            border-bottom: 1px solid #000;
+            margin: 4px 0;
+            min-height: 18px;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .short-line {
+            border-bottom: 1px solid #000;
+            margin: 4px 0;
+            min-height: 18px;
+            display: inline-block;
+            width: 150px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 8px 0;
+            font-size: 9pt;
+        }
+        
+        th, td {
+            border: 1px solid #000;
+            padding: 4px;
+            text-align: left;
+            vertical-align: top;
+        }
+        
+        th {
+            background: #f0f0f0;
+            font-weight: bold;
+        }
+        
+        .check-cell {
+            width: 30px;
+            text-align: center;
+        }
+        
+        .situation-card {
+            border: 2px solid #000;
+            padding: 8px;
+            margin: 8px 0;
+            page-break-inside: avoid;
+        }
+        
+        .situation-title {
+            font-weight: bold;
+            font-size: 11pt;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        
+        .situation-text {
+            background: #f5f5f5;
+            padding: 6px;
+            border-left: 3px solid #2196F3;
+            margin: 5px 0;
+            font-style: italic;
+            font-size: 10pt;
+        }
+        
+        .questions {
+            margin: 8px 0;
+        }
+        
+        .question {
+            margin: 6px 0;
+            font-size: 10pt;
+        }
+        
+        .answer-line {
+            border-bottom: 1px dotted #000;
+            margin: 3px 0;
+            min-height: 20px;
+            width: 100%;
+            display: inline-block;
+        }
+        
+        .rules-block {
+            margin: 10px 0;
+            padding: 8px;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            background: #f1f8f4;
+        }
+        
+        .rule-item {
+            margin: 8px 0;
+            padding: 6px;
+            background: white;
+            border-left: 3px solid #4CAF50;
+            padding-left: 8px;
+            page-break-inside: avoid;
+        }
+        
+        .rule-number {
+            font-weight: bold;
+            color: #2e7d32;
+            font-size: 11pt;
+        }
+        
+        .rule-title {
+            font-weight: bold;
+            margin: 3px 0;
+            font-size: 10pt;
+        }
+        
+        .warning {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        
+        .success {
+            color: #388e3c;
+            font-weight: bold;
+        }
+        
+        ul {
+            margin-left: 15px;
+            margin-top: 3px;
+        }
+        
+        li {
+            margin: 2px 0;
+        }
+        
+        .algorithm {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 6px;
+            margin: 6px 0;
+            border-radius: 3px;
+            font-size: 10pt;
+        }
+        
+        .algorithm ol {
+            margin-left: 15px;
+            margin-top: 3px;
+        }
+        
+        .algorithm li {
+            margin: 3px 0;
+        }
+        
+        .self-assessment {
+            margin: 10px 0;
+            padding: 8px;
+            border: 2px solid #2196F3;
+            border-radius: 5px;
+            background: #e3f2fd;
+        }
+        
+        .assessment-item {
+            margin: 5px 0;
+            padding: 4px;
+            background: white;
+            border-radius: 3px;
+            font-size: 10pt;
+        }
+        
+        .checkbox-list {
+            margin: 8px 0;
+        }
+        
+        .checkbox-item {
+            margin: 4px 0;
+            display: flex;
+            align-items: flex-start;
+            font-size: 10pt;
+        }
+        
+        .checkbox {
+            width: 14px;
+            height: 14px;
+            border: 2px solid #000;
+            margin-right: 8px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        
+        .two-columns {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .column {
+            flex: 1;
+        }
+        
+        .footer-note {
+            margin-top: 15px;
+            padding-top: 8px;
+            border-top: 1px solid #ccc;
+            font-size: 9pt;
+            font-style: italic;
+            text-align: center;
+        }
+        
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12pt;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+        
+        .print-button:hover {
+            background: #1976D2;
+        }
+        
+        code {
+            background: #f5f5f5;
+            padding: 1px 4px;
+            border-radius: 2px;
+            font-family: 'Courier New', monospace;
+            font-size: 10pt;
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            
+            .page {
+                width: 210mm;
+                height: 297mm;
+                padding: 15mm 12mm;
+                margin: 0;
+                page-break-after: always;
+                box-shadow: none;
+            }
+            
+            .print-button {
+                display: none;
+            }
+            
+            .task-block,
+            .account-section,
+            .situation-card,
+            .rules-block,
+            .algorithm,
+            .self-assessment,
+            .rule-item {
+                break-inside: avoid;
+            }
+        }
+        
+        @page {
+            size: A4;
+            margin: 10mm;
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button" onclick="window.print()">🖨️ Распечатать</button>
+
+    <!-- Страница 1: Рабочий лист -->
+    <div class="page">
+        <h1>РАБОЧИЙ ЛИСТ: «СОЗДАЮ НАДЁЖНЫЙ ПАРОЛЬ»</h1>
+        
+        <div class="header-info">
+            <p><strong>Класс:</strong> 4 &nbsp;&nbsp;|&nbsp;&nbsp; <strong>Предмет:</strong> Информатика, ИИ и информационная безопасность</p>
+            <p><strong>Тема:</strong> Защита личных данных и надёжные пароли</p>
+        </div>
+        
+        <div class="student-info">
+            <p><strong>Фамилия, имя:</strong> _________________________________________________________ &nbsp;&nbsp;&nbsp; <strong>Дата:</strong> _______________</p>
+        </div>
+        
+        <h2>Задание 1. Метод ассоциаций и замен</h2>
+        
+        <div class="algorithm">
+            <strong>Алгоритм:</strong>
+            <ol>
+                <li>Придумай фразу, связанную с этим аккаунтом</li>
+                <li>Напиши её транслитом (английскими буквами)</li>
+                <li>Замени буквы на цифры и значки (О→0, А→@, И→1, S→$, Е→3)</li>
+                <li>Проверь длину (≥12 символов!)</li>
+            </ol>
+        </div>
+        
+        <div class="account-section">
+            <div class="account-title"> АККАУНТ 1: Электронная почта</div>
+            <p style="font-size: 10pt;">1. Фраза:</p>
+            <div class="line"></div>
+            <p style="font-size: 10pt;">2. Транслит:</p>
+            <div class="line"></div>
+            <p style="font-size: 10pt;">3. С заменами:</p>
+            <div class="line"></div>
+            <p style="font-size: 10pt;">4. Длина: _____ символов &nbsp;&nbsp; ✅ / ❌</p>
+        </div>
+        
+        <div class="account-section">
+            <div class="account-title">🔐 АККАУНТ 2: Социальная сеть</div>
+            <p style="font-size: 10pt;">1. Фраза:</p>
+            <div class="line"></div>
+            <p style="font-size: 10pt;">2. Транслит:</p>
+            <div class="line"></div>
+            <p style="font-size: 10pt;">3. С заменами:</p>
+            <div class="line"></div>
+            <p style="font-size: 10pt;">4. Длина: _____ символов &nbsp;&nbsp; ✅ / ❌</p>
+        </div>
+        
+        <div class="account-section">
+            <div class="account-title">🔐 АККАУНТ 3: Игровой аккаунт</div>
+            <p style="font-size: 10pt;">1. Фраза:</p>
+            <div class="line"></div>
+            <p style="font-size: 10pt;">2. Транслит:</p>
+            <div class="line"></div>
+            <p style="font-size: 10pt;">3. С заменами:</p>
+            <div class="line"></div>
+            <p style="font-size: 10pt;">4. Длина: _____ символов &nbsp;&nbsp; ✅ / ❌</p>
+        </div>
+    </div>
+
+    <!-- Страница 2: Проверка и самооценка -->
+    <div class="page">
+        <h2>Задание 2. Проверка по чек-листу</h2>
+        <p style="font-size: 10pt;">Отметь галочкой ☑, если критерий выполняется:</p>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Критерий</th>
+                    <th class="check-cell">1</th>
+                    <th class="check-cell">2</th>
+                    <th class="check-cell">3</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Длина ≥12 символов</td>
+                    <td class="check-cell">☐</td>
+                    <td class="check-cell">☐</td>
+                    <td class="check-cell">☐</td>
+                </tr>
+                <tr>
+                    <td>Заглавные буквы (А, Б, В...)</td>
+                    <td class="check-cell">☐</td>
+                    <td class="check-cell">☐</td>
+                    <td class="check-cell">☐</td>
+                </tr>
+                <tr>
+                    <td>Строчные буквы (а, б, в...)</td>
+                    <td class="check-cell">☐</td>
+                    <td class="check-cell">☐</td>
+                    <td class="check-cell">☐</td>
+                </tr>
+                <tr>
+                    <td>Цифры (0-9)</td>
+                    <td class="check-cell">☐</td>
+                    <td class="check-cell">☐</td>
+                    <td class="check-cell">☐</td>
+                </tr>
+                <tr>
+                    <td>Спецсимволы (! @ # $ % &)</td>
+                    <td class="check-cell">☐</td>
+                    <td class="check-cell">☐</td>
+                    <td class="check-cell">☐</td>
+                </tr>
+                <tr>
+                    <td><strong>НЕТ</strong> личных данных</td>
+                    <td class="check-cell">☐</td>
+                    <td class="check-cell">☐</td>
+                    <td class="check-cell"></td>
+                </tr>
+                <tr>
+                    <td>Все пароли <strong>РАЗНЫЕ</strong></td>
+                    <td class="check-cell">☐</td>
+                    <td class="check-cell">☐</td>
+                    <td class="check-cell">☐</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <h2>Задание 3. Самооценка</h2>
+        <div class="self-assessment">
+            <div class="assessment-item">🟢 <strong>Зелёный</strong> — «Создал надёжные пароли, все критерии выполняются»</div>
+            <div class="assessment-item">🟡 <strong>Жёлтый</strong> — «Понимаю, как создавать, но нужно потренироваться»</div>
+            <div class="assessment-item">🔴 <strong>Красный</strong> — «Было трудно, нужна помощь»</div>
+        </div>
+        
+        <h2>Что запомнил:</h2>
+        <div class="checkbox-list">
+            <p>1. Длина пароля: не менее <span class="short-line"></span> символов</p>
+            <p>2. Для каждого аккаунта: <span class="short-line"></span> пароль</p>
+            <p>3. Хранить в: <span class="short-line"></span></p>
+            <p>4. 2FA — это: <span class="short-line"></span></p>
+        </div>
+        
+        <div class="footer-note">
+            Рабочий лист • Урок «Защита личных данных и надёжные пароли»
+        </div>
+    </div>
+
+    <!-- Страница 3: Карточки с ситуациями (2 карточки) -->
+    <div class="page">
+        <h1>КАРТОЧКИ С СИТУАЦИЯМИ</h1>
+        <div class="header-info">
+            <p><em>Работать в парах или малых группах</em></p>
+        </div>
+        
+        <div class="two-columns">
+            <div class="column">
+                <div class="situation-card">
+                    <div class="situation-title">📋 СИТУАЦИЯ А</div>
+                    <div class="situation-text">
+                        «Записал все пароли на стикер и приклеил к монитору»
+                    </div>
+                    <div class="questions">
+                        <div class="question">
+                            <strong>1. В чём ошибка?</strong>
+                            <div class="answer-line"></div>
+                        </div>
+                        <div class="question">
+                            <strong>2. Чем опасно?</strong>
+                            <div class="answer-line"></div>
+                        </div>
+                        <div class="question">
+                            <strong>3. Как правильно?</strong>
+                            <div class="answer-line"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="situation-card">
+                    <div class="situation-title">📋 СИТУАЦИЯ В</div>
+                    <div class="situation-text">
+                        «Использую пароль <code>Barsik2016!</code> для почты и игры»
+                    </div>
+                    <div class="questions">
+                        <div class="question">
+                            <strong>1. Что если взломают игру?</strong>
+                            <div class="answer-line"></div>
+                        </div>
+                        <div class="question">
+                            <strong>2. Почему опасно?</strong>
+                            <div class="answer-line"></div>
+                        </div>
+                        <div class="question">
+                            <strong>3. Как решить?</strong>
+                            <div class="answer-line"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="column">
+                <div class="situation-card">
+                    <div class="situation-title"> СИТУАЦИЯ Б</div>
+                    <div class="situation-text">
+                        «Друг просит пароль от почты, обещает молчать»
+                    </div>
+                    <div class="questions">
+                        <div class="question">
+                            <strong>1. Можно ли давать?</strong>
+                            <div class="answer-line"></div>
+                        </div>
+                        <div class="question">
+                            <strong>2. Чем опасно?</strong>
+                            <div class="answer-line"></div>
+                        </div>
+                        <div class="question">
+                            <strong>3. Что ответить?</strong>
+                            <div class="answer-line"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="situation-card">
+                    <div class="situation-title">📋 СИТУАЦИЯ Г</div>
+                    <div class="situation-text">
+                        «Письмо: "Аккаунт взломан! Введите пароль!"»
+                    </div>
+                    <div class="questions">
+                        <div class="question">
+                            <strong>1. Что делать?</strong>
+                            <div class="answer-line"></div>
+                        </div>
+                        <div class="question">
+                            <strong>2. Переходить по ссылке?</strong>
+                            <div class="answer-line"></div>
+                        </div>
+                        <div class="question">
+                            <strong>3. Как проверить?</strong>
+                            <div class="answer-line"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-note">
+            Карточки для групповой работы • Урок «Защита личных данных и надёжные пароли»
+        </div>
+    </div>
+
+    <!-- Страница 4: Памятка (2 колонки) -->
+    <div class="page">
+        <h1>🔐 5 ЗОЛОТЫХ ПРАВИЛ ЗАЩИТЫ ПАРОЛЕЙ</h1>
+        <div class="header-info">
+            <p><em>Запомни и соблюдай!</em></p>
+        </div>
+        
+        <div class="two-columns">
+            <div class="column">
+                <div class="rules-block">
+                    <div class="rule-item">
+                        <div class="rule-number">✅ ПРАВИЛО 1</div>
+                        <div class="rule-title">Длина имеет значение!</div>
+                        <p style="font-size: 9pt;"><strong>НЕ МЕНЕЕ 12 символов</strong> (лучше 16+)</p>
+                        <p style="font-size: 9pt;"><strong>Почему?</strong> Компьютеру потребуются <strong>сотни тысяч лет</strong> на подбор!</p>
+                    </div>
+                    
+                    <div class="rule-item">
+                        <div class="rule-number">✅ ПРАВИЛО 2</div>
+                        <div class="rule-title">Уникальность!</div>
+                        <p style="font-size: 9pt;"><strong>Для каждого аккаунта — СВОЙ пароль</strong></p>
+                        <p style="font-size: 9pt;"><strong>Почему?</strong> Если взломают один сайт — остальные под угрозой!</p>
+                    </div>
+                    
+                    <div class="rule-item">
+                        <div class="rule-number">✅ ПРАВИЛО 3</div>
+                        <div class="rule-title">Храни правильно!</div>
+                        <p style="font-size: 9pt;"><strong>МОЖНО:</strong><br>
+                        ✅ Менеджер паролей<br>
+                        ✅ Запомнить 1 главный</p>
+                        <p style="font-size: 9pt;"><span class="warning">НЕЛЬЗЯ:</span><br>
+                        ❌ Стикеры<br>
+                        ❌ Файл «Пароли.txt»<br>
+                        ❌ Друзьям</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="column">
+                <div class="rules-block">
+                    <div class="rule-item">
+                        <div class="rule-number">✅ ПРАВИЛО 4</div>
+                        <div class="rule-title">Никому не сообщай!</div>
+                        <p style="font-size: 9pt;"><strong>Никогда не сообщай пароли</strong>, даже друзьям!</p>
+                        <p style="font-size: 9pt;"><strong>Помни:</strong> Пароль как зубная щётка — не делись!</p>
+                    </div>
+                    
+                    <div class="rule-item">
+                        <div class="rule-number">✅ ПРАВИЛО 5</div>
+                        <div class="rule-title">Двойная защита!</div>
+                        <p style="font-size: 9pt;"><strong>Включай 2FA везде!</strong></p>
+                        <p style="font-size: 9pt;"><strong>Как:</strong><br>
+                        1️⃣ Пароль (знаешь)<br>
+                        2️⃣ SMS-код (телефон)</p>
+                        <p style="font-size: 9pt;"><strong>Почему?</strong> Без телефона не войдут!</p>
+                    </div>
+                </div>
+                
+                <div class="algorithm" style="margin-top: 10px;">
+                    <strong>🎯 Как создать:</strong>
+                    <ol style="font-size: 9pt; margin-top: 3px;">
+                        <li>Фраза: «Моя почта 2026!»</li>
+                        <li>Транслит: <code>Moyapochta2026!</code></li>
+                        <li>Замены: О→0, А→@, И→1<br><code>M0y@p0cht@2026!</code></li>
+                        <li>Проверь: 15 символов ✅</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        
+        <div class="rules-block" style="margin-top: 10px; background: #ffebee; border-color: #f44336;">
+            <h3 style="margin: 0 0 5px; font-size: 11pt;">⚠️ НЕЛЬЗЯ использовать:</h3>
+            <div class="two-columns" style="font-size: 9pt;">
+                <div>
+                    ❌ Имя/фамилию<br>
+                    ❌ Дату рождения<br>
+                    ❌ Кличку питомца
+                </div>
+                <div>
+                     123456, qwerty<br>
+                    ❌ Слова из словаря<br>
+                    ❌ Любимую команду
+                </div>
+            </div>
+            <p style="font-size: 9pt; margin-top: 5px;"><strong>Почему?</strong> Хакеры используют «умные словари» с популярными именами и датами!</p>
+        </div>
+        
+        <div class="self-assessment" style="margin-top: 10px; background: #e8f5e9; border-color: #4CAF50; text-align: center;">
+            <p style="margin: 0; font-size: 11pt;"><strong>💡 Твоя безопасность зависит от тебя! Будь внимателен! ️</strong></p>
+        </div>
+        
+        <div class="footer-note">
+            Памятка ученика • Урок «Защита личных данных и надёжные пароли»
+        </div>
+    </div>
+
+    <script>
+        window.onbeforeprint = function() {
+            document.querySelector('.print-button').style.display = 'none';
+        };
+        
+        window.onafterprint = function() {
+            document.querySelector('.print-button').style.display = 'block';
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Заливка: 15 картинок</title>
+<style>
+  :root{
+    --bg:#ffffff; --ink:#111111; --accent:#0b4fd6; --accent-soft:#cfe0ff;
+    --star-off:#cfcfcf; --star-on:#ffb000; --hold:#ffd666;
+    --warn:#c80000; --grey:#9a9a9a; --lamp:#ffe14d;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);
+    font-family:"Segoe UI",Arial,sans-serif;font-size:28px;
+    user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+  .screen{display:none;min-height:100%;padding:16px;flex-direction:column;gap:22px}
+  .screen.active{display:flex}
+  h1{font-size:46px;line-height:1.1;margin:0}
+  .big{font-size:32px;line-height:1.3;font-weight:600;margin:0}
+  .huge{font-size:56px;font-weight:800;color:var(--accent);margin:0;line-height:1.1}
+
+  .btn{min-width:80px;min-height:80px;border:4px solid var(--ink);border-radius:18px;
+    background:var(--accent);color:#fff;font-size:36px;font-weight:800;padding:12px 28px;cursor:pointer}
+  .btn:active{transform:translateY(2px)}
+
+  /* ---- Звёзды ---- */
+  .stars{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  .star{position:relative;aspect-ratio:1/1;min-height:64px;touch-action:none}
+  .star .shape{position:absolute;inset:0;background:var(--star-off);overflow:hidden;
+    clip-path:polygon(50% 2%,61% 36%,98% 36%,68% 58%,79% 94%,50% 72%,21% 94%,32% 58%,2% 36%,39% 36%)}
+  .star .fill{position:absolute;left:0;right:0;bottom:0;height:0;background:var(--hold)}
+  .star.holding .fill{height:100%;transition:height 1s linear}
+  .star.on .shape{background:var(--star-on)}
+  .star.current .shape{background:var(--accent-soft)}
+  .star .num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    padding-top:12%;font-size:24px;font-weight:800;color:#333;pointer-events:none}
+  .star.on .num{color:#5a3b00}
+  .star.current .num{color:var(--accent)}
+  .stars.interactive .star{cursor:pointer}
+  #stars3 .num{font-size:30px}
+
+  /* Салют */
+  .spark{position:absolute;left:50%;top:50%;width:12px;height:12px;margin:-6px;border-radius:50%;
+    pointer-events:none;animation:fly .7s ease-out forwards}
+  @keyframes fly{
+    from{transform:translate(0,0) scale(1);opacity:1}
+    to{transform:translate(var(--dx),var(--dy)) scale(.3);opacity:0}}
+  .star.pop .shape{animation:pop .45s ease-out}
+  @keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.18)}100%{transform:scale(1)}}
+
+  /* ---- Лампочка ---- */
+  .lamprow{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .lamp{width:110px;height:110px;border-radius:50%;border:5px solid var(--ink);
+    background:var(--lamp);font-size:58px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+  .lamp.off{background:#e6e6e6;filter:grayscale(1);border-color:var(--grey)}
+  .lampinfo{font-size:30px;font-weight:700}
+  .lampinfo.flash{animation:flash .9s ease-in-out 2}
+  @keyframes flash{0%,100%{background:transparent}50%{background:#ffe14d}}
+  .lampinfo span{padding:4px 8px;border-radius:10px}
+
+  /* ---- Подсказка ---- */
+  #hint{position:fixed;inset:0;background:#fff;display:none;flex-direction:column;z-index:10}
+  #hint.show{display:flex}
+  #hint img{flex:1;width:100%;min-height:0;object-fit:contain}
+  #hint .bar{height:16px;background:var(--warn);transform-origin:left}
+  #hint.show .bar{animation:shrink 5s linear forwards}
+  @keyframes shrink{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+  #hintMissing{display:none;padding:20px;font-size:30px;color:var(--warn);font-weight:700}
+
+  /* ---- Кнопка учителя ---- */
+  .teacher{margin-top:auto;position:relative;overflow:hidden;min-height:80px;border:3px dashed var(--grey);
+    border-radius:14px;background:#f4f4f4;color:#555;font-size:24px;font-weight:600;cursor:pointer;touch-action:none}
+  .teacher .fill{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--hold);z-index:0}
+  .teacher.holding .fill{width:100%;transition:width 1s linear}
+  .teacher span{position:relative;z-index:1}
+  .note{font-size:22px;color:#555;margin:0}
+</style>
+</head>
+<body>
+
+<!-- ЭКРАН 1. СТАРТ -->
+<section class="screen active" id="s1">
+  <h1>Заливка</h1>
+  <p class="big">Закрась как можно больше картинок.<br>Краска убежала — ищи дырочку!</p>
+  <div class="stars" id="stars1"></div>
+  <button class="btn" id="startBtn">Начать</button>
+</section>
+
+<!-- ЭКРАН 2. УРОВНИ -->
+<section class="screen" id="s2">
+  <p class="huge" id="lvlTitle">Уровень 1</p>
+  <p class="big" id="lvlText"></p>
+  <div class="lamprow">
+    <button class="lamp" id="lamp" aria-label="Подсказка">💡</button>
+    <div class="lampinfo" id="lampInfo"><span></span></div>
+  </div>
+  <div class="stars interactive" id="stars2"></div>
+  <div class="teacher" id="toFinal"><div class="fill"></div><span>Учителю: держи — финал</span></div>
+</section>
+
+<!-- ЭКРАН 3. ФИНАЛ -->
+<section class="screen" id="s3">
+  <p class="huge" id="finalTitle">Ты прошёл 0 картинок!</p>
+  <p class="big">Покажи самую хитрую дырочку.</p>
+  <div class="stars" id="stars3"></div>
+</section>
+
+<!-- ПОДСКАЗКА -->
+<div id="hint">
+  <div class="bar"></div>
+  <img id="hintImg" alt="Подсказка: красные точки — дырочки">
+  <div id="hintMissing"></div>
+</div>
+
+<script>
+(function(){
+  var TOTAL = 15;
+  var HOLD_MS = 1000;
+  var HINT_MS = 5000;
+  var lit = [];
+  for (var i = 0; i < TOTAL; i++) lit.push(false);
+  // Лампочка: 2 нажатия на уровнях 6, 10, 14
+  var lamps = {6:2, 10:2, 14:2};
+  var hintTimer = null;
+
+  function pad(n){ return (n < 10 ? "0" : "") + n; }
+  function level(){ var i = lit.indexOf(false); return i === -1 ? null : i + 1; }
+  function litCount(){ return lit.filter(Boolean).length; }
+  function $(id){ return document.getElementById(id); }
+
+  function show(id){
+    ["s1","s2","s3"].forEach(function(s){ $(s).classList.toggle("active", s === id); });
+    if (id === "s3") $("finalTitle").textContent = "Ты прошёл " + litCount() + " " + word(litCount()) + "!";
+    renderAll();
+  }
+  function word(n){
+    var m10 = n % 10, m100 = n % 100;
+    if (m10 === 1 && m100 !== 11) return "картинку";
+    if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return "картинки";
+    return "картинок";
+  }
+
+  // Долгое нажатие
+  function attachHold(el, onDone){
+    var t = null;
+    function start(e){
+      if (e.button !== undefined && e.button !== 0) return;
+      e.preventDefault();
+      el.classList.add("holding");
+      t = setTimeout(function(){ t = null; el.classList.remove("holding"); onDone(); }, HOLD_MS);
+    }
+    function cancel(){ if (t){ clearTimeout(t); t = null; } el.classList.remove("holding"); }
+    el.addEventListener("pointerdown", start);
+    ["pointerup","pointerleave","pointercancel"].forEach(function(ev){ el.addEventListener(ev, cancel); });
+    el.addEventListener("contextmenu", function(e){ e.preventDefault(); });
+  }
+
+  function makeStars(container, interactive){
+    container.innerHTML = "";
+    for (var i = 0; i < TOTAL; i++){
+      var s = document.createElement("div");
+      s.className = "star";
+      s.innerHTML = '<div class="shape"><div class="fill"></div></div><div class="num">' + (i + 1) + '</div>';
+      if (interactive) (function(idx, el){
+        attachHold(el, function(){
+          lit[idx] = !lit[idx];
+          renderAll();
+          if (lit[idx]) salute(el);
+        });
+      })(i, s);
+      container.appendChild(s);
+    }
+  }
+
+  function paintStars(container){
+    var cur = level();
+    var stars = container.children;
+    for (var i = 0; i < stars.length; i++){
+      stars[i].classList.toggle("on", lit[i]);
+      stars[i].classList.toggle("current", container.id === "stars2" && cur === i + 1);
+    }
+  }
+
+  function salute(el){
+    el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop");
+    var colors = ["#ffb000","#ff4d4d","#2fb344","#0b4fd6","#c13cff"];
+    for (var k = 0; k < 10; k++){
+      var p = document.createElement("span");
+      p.className = "spark";
+      var a = (Math.PI * 2 * k) / 10, r = 45 + Math.random() * 25;
+      p.style.setProperty("--dx", Math.cos(a) * r + "px");
+      p.style.setProperty("--dy", Math.sin(a) * r + "px");
+      p.style.background = colors[k % colors.length];
+      el.appendChild(p);
+      setTimeout((function(n){ return function(){ n.remove(); }; })(p), 800);
+    }
+  }
+
+  function renderLevel(){
+    var cur = level();
+    if (cur === null){
+      $("lvlTitle").textContent = "Все 15!";
+      $("lvlText").textContent = "Все картинки пройдены. Позови учителя.";
+    } else {
+      $("lvlTitle").textContent = "Уровень " + cur;
+      $("lvlText").innerHTML = "Открой файл <b>" + pad(cur) + ".png</b> в Paint.<br>Закрась всё.<br>Готово — позови учителя.";
+    }
+    var lamp = $("lamp"), info = $("lampInfo").firstElementChild;
+    if (cur !== null && lamps.hasOwnProperty(cur)){
+      var left = lamps[cur];
+      lamp.classList.toggle("off", left === 0);
+      info.textContent = left > 0 ? "Подсказка: " + left : "Подсказок нет. Позови учителя";
+    } else {
+      lamp.classList.add("off");
+      info.textContent = "Позови учителя";
+    }
+  }
+
+  function renderAll(){
+    paintStars($("stars1")); paintStars($("stars2")); paintStars($("stars3"));
+    renderLevel();
+  }
+
+  function flashInfo(){
+    var info = $("lampInfo");
+    info.classList.remove("flash"); void info.offsetWidth; info.classList.add("flash");
+  }
+
+  function showHint(n){
+    var file = "podskazka_" + pad(n) + ".png";
+    var img = $("hintImg"), miss = $("hintMissing");
+    miss.style.display = "none"; img.style.display = "block";
+    img.onerror = function(){
+      img.style.display = "none";
+      miss.textContent = "Нет файла " + file + " рядом с index.html";
+      miss.style.display = "block";
+    };
+    img.src = file + "?t=" + Date.now();
+    var h = $("hint");
+    h.classList.remove("show"); void h.offsetWidth; h.classList.add("show");
+    clearTimeout(hintTimer);
+    hintTimer = setTimeout(function(){ h.classList.remove("show"); }, HINT_MS);
+  }
+
+  $("lamp").addEventListener("click", function(){
+    var cur = level();
+    if ($("hint").classList.contains("show")) return;
+    if (cur !== null && lamps.hasOwnProperty(cur) && lamps[cur] > 0){
+      lamps[cur]--;
+      renderLevel();
+      showHint(cur);
+    } else {
+      flashInfo();
+    }
+  });
+
+  $("startBtn").addEventListener("click", function(){ show("s2"); });
+  attachHold($("toFinal"), function(){ show("s3"); });
+  $("stars3").addEventListener("dblclick", function(){ show("s2"); });
+  document.addEventListener("contextmenu", function(e){ e.preventDefault(); });
+
+  makeStars($("stars1"), false);
+  makeStars($("stars2"), true);
+  makeStars($("stars3"), false);
+  renderAll();
+})();
+</script>
+</body>
+</html>

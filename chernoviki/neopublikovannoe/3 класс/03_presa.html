@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Агентство Информации — Виды информации</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%;
+    font-family: -apple-system, Segoe UI, Roboto, sans-serif;
+    background: #0b1020;
+    color: #e8ecf7;
+    overflow: hidden;
+  }
+  .stage {
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+  }
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 5vh 6vw;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background:
+      radial-gradient(1200px 600px at 20% 10%, rgba(64,200,255,0.10), transparent 60%),
+      radial-gradient(900px 500px at 90% 90%, rgba(120,255,180,0.08), transparent 60%),
+      #0b1020;
+  }
+  .slide.active { display: flex; }
+  h1 { font-size: clamp(28px, 4.5vw, 64px); margin-bottom: 2vh; letter-spacing: 1px; }
+  h2 { font-size: clamp(24px, 3.5vw, 48px); margin-bottom: 3vh; color: #7ee8c7; }
+  h3 { font-size: clamp(20px, 2.6vw, 36px); margin-bottom: 2vh; color: #ffd36e; }
+  p, li { font-size: clamp(18px, 2.2vw, 30px); line-height: 1.5; }
+  .muted { color: #9fb0d0; }
+  .accent { color: #7ee8c7; }
+  .warn  { color: #ff8a8a; }
+  .mono  { font-family: ui-monospace, Consolas, monospace; }
+
+  /* Эмблема */
+  .emblem {
+    width: clamp(120px, 18vw, 220px);
+    height: clamp(120px, 18vw, 220px);
+    border-radius: 50%;
+    border: 6px solid #7ee8c7;
+    display: flex; align-items: center; justify-content: center;
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: clamp(40px, 6vw, 80px);
+    color: #7ee8c7;
+    box-shadow: 0 0 40px rgba(126,232,199,0.25);
+    margin-bottom: 3vh;
+    position: relative;
+  }
+  .emblem::after {
+    content: "🔍";
+    position: absolute;
+    font-size: clamp(60px, 9vw, 110px);
+    opacity: 0.15;
+  }
+
+  /* Виды информации — 4 карточки */
+  .kinds {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2vw;
+    width: min(1200px, 92vw);
+    margin-top: 2vh;
+  }
+  .kind {
+    background: rgba(255,255,255,0.04);
+    border: 2px solid rgba(126,232,199,0.35);
+    border-radius: 18px;
+    padding: 3vh 1vw;
+    font-size: clamp(20px, 2.4vw, 34px);
+  }
+  .kind .num {
+    display: inline-block;
+    width: 1.4em; height: 1.4em; line-height: 1.4em;
+    border-radius: 50%;
+    background: #7ee8c7;
+    color: #0b1020;
+    font-weight: 800;
+    margin-bottom: 1vh;
+  }
+  .kind .ico { font-size: clamp(40px, 5vw, 72px); display: block; margin: 1vh 0; }
+
+  /* Алиса-сенсоры */
+  .alice-row {
+    display: flex; gap: 4vw; align-items: center; justify-content: center;
+    flex-wrap: wrap; margin-top: 2vh;
+  }
+  .alice-box {
+    background: rgba(255,255,255,0.04);
+    border-radius: 18px;
+    padding: 3vh 3vw;
+    min-width: 220px;
+    font-size: clamp(18px, 2vw, 28px);
+  }
+  .alice-box .big { font-size: clamp(50px, 7vw, 90px); display: block; }
+
+  /* Сетка 5x5 */
+  .grid5 {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    width: min(420px, 55vw);
+    margin: 2vh auto;
+  }
+  .cell {
+    aspect-ratio: 1/1;
+    background: rgba(255,255,255,0.06);
+    border: 2px solid rgba(126,232,199,0.3);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: clamp(18px, 2vw, 28px);
+    color: #9fb0d0;
+  }
+  .cell.on {
+    background: #7ee8c7;
+    color: #0b1020;
+    font-weight: 800;
+    border-color: #7ee8c7;
+  }
+
+  /* Примеры неоднозначности */
+  .examples {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2vh 3vw;
+    width: min(1100px, 92vw);
+    margin-top: 2vh;
+  }
+  .ex {
+    background: rgba(255,255,255,0.04);
+    border-left: 5px solid #ffd36e;
+    padding: 2vh 2vw;
+    border-radius: 10px;
+    text-align: left;
+    font-size: clamp(18px, 2.2vw, 30px);
+  }
+  .ex .ans { color: #7ee8c7; font-weight: 700; }
+
+  /* Сортировка */
+  .sort-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5vh 3vw;
+    width: min(1100px, 92vw);
+    margin-top: 2vh;
+  }
+  .sort-item {
+    background: rgba(255,255,255,0.05);
+    padding: 2vh 2vw;
+    border-radius: 12px;
+    font-size: clamp(18px, 2.2vw, 30px);
+    text-align: left;
+  }
+
+  /* Инфобез */
+  .safety {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5vh;
+    width: min(1000px, 90vw);
+    margin-top: 2vh;
+  }
+  .safe-row {
+    display: flex; align-items: center; gap: 2vw;
+    background: rgba(255,255,255,0.04);
+    padding: 2vh 2vw;
+    border-radius: 12px;
+    font-size: clamp(18px, 2.2vw, 28px);
+  }
+  .safe-row .mark { font-size: clamp(30px, 4vw, 50px); }
+
+  /* ДЗ */
+  .hw {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3vw;
+    width: min(1200px, 92vw);
+    margin-top: 2vh;
+  }
+  .hw-box {
+    background: rgba(255,255,255,0.04);
+    border: 2px solid rgba(126,232,199,0.35);
+    border-radius: 18px;
+    padding: 3vh 2vw;
+    text-align: left;
+  }
+  .hw-box h3 { margin-bottom: 1.5vh; }
+  .hw-box li { margin-left: 1.2em; margin-bottom: 0.8vh; font-size: clamp(16px, 1.8vw, 24px); }
+
+  /* Paint */
+  .paint-text {
+    background: rgba(255,255,255,0.06);
+    border: 2px dashed #ffd36e;
+    border-radius: 18px;
+    padding: 4vh 4vw;
+    font-size: clamp(22px, 2.8vw, 40px);
+    max-width: 1000px;
+    line-height: 1.6;
+    margin-top: 2vh;
+  }
+
+  /* Рефлексия */
+  .questions {
+    display: grid;
+    gap: 2vh;
+    width: min(1100px, 92vw);
+    margin-top: 2vh;
+  }
+  .q {
+    background: rgba(255,255,255,0.04);
+    padding: 2vh 2vw;
+    border-radius: 12px;
+    font-size: clamp(18px, 2.2vw, 30px);
+    text-align: left;
+  }
+  .q b { color: #ffd36e; }
+
+  /* Навигация */
+  .nav {
+    position: fixed;
+    bottom: 2vh;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex; gap: 10px; align-items: center;
+    background: rgba(11,16,32,0.85);
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(126,232,199,0.3);
+    z-index: 10;
+  }
+  .nav button {
+    background: transparent;
+    color: #7ee8c7;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 8px;
+  }
+  .nav button:hover { background: rgba(126,232,199,0.15); }
+  .nav .counter { color: #9fb0d0; font-family: ui-monospace, Consolas, monospace; font-size: 16px; }
+
+  /* Кот-4-способа */
+  .cat-ways {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2vw;
+    width: min(1200px, 92vw);
+    margin-top: 2vh;
+  }
+  .way {
+    background: rgba(255,255,255,0.04);
+    border-radius: 14px;
+    padding: 2vh 1vw;
+    font-size: clamp(16px, 1.8vw, 24px);
+  }
+  .way .ico { font-size: clamp(40px, 5vw, 64px); display: block; margin-bottom: 1vh; }
+
+  /* Физкультминутка */
+  .fiz {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2vh 3vw;
+    width: min(1100px, 92vw);
+    margin-top: 2vh;
+  }
+  .fiz-item {
+    background: rgba(255,255,255,0.04);
+    padding: 2vh 2vw;
+    border-radius: 12px;
+    font-size: clamp(18px, 2.2vw, 28px);
+  }
+
+  .final {
+    font-size: clamp(32px, 5vw, 72px);
+    color: #7ee8c7;
+    text-shadow: 0 0 30px rgba(126,232,199,0.4);
+  }
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+
+  <!-- 1. Титул -->
+  <section class="slide active">
+    <div class="emblem">01</div>
+    <h1>Агентство Информации</h1>
+    <p class="muted">Новый уровень: <span class="accent">перекодирование</span></p>
+    <p class="muted" style="margin-top:2vh; font-size:clamp(14px,1.4vw,20px)">3 класс · 40 минут</p>
+  </section>
+
+  <!-- 2. 4 вида -->
+  <section class="slide">
+    <h2>Четыре вида информации</h2>
+    <p class="muted">Покажи пальцами номер вида</p>
+    <div class="kinds">
+      <div class="kind"><span class="num">1</span><span class="ico">📝</span>Текст</div>
+      <div class="kind"><span class="num">2</span><span class="ico">🖼️</span>Рисунок</div>
+      <div class="kind"><span class="num">3</span><span class="ico">🔊</span>Звук</div>
+      <div class="kind"><span class="num">4</span><span class="ico">🔢</span>Числа</div>
+    </div>
+  </section>
+
+  <!-- 3. Алиса-сенсоры -->
+  <section class="slide">
+    <h2>Алиса — Искусственный Интеллект</h2>
+    <div class="alice-row">
+      <div class="alice-box"><span class="big">🎤</span>Слышит через <b class="accent">микрофон</b></div>
+      <div class="alice-box"><span class="big">🔈</span>Отвечает через <b class="accent">динамик</b></div>
+      <div class="alice-box"><span class="big">📷</span>А если камера? — <b class="accent">увидит!</b></div>
+    </div>
+    <p class="muted" style="margin-top:3vh">⚠️ Правило: Алиса слушает только <b class="accent">дежурного агента</b> — учителя.</p>
+  </section>
+
+  <!-- 4. Тема -->
+  <section class="slide">
+    <h2>Тема урока</h2>
+    <h3>Перекодирование информации</h3>
+    <p>📝 Текст → 🖼️ Рисунок</p>
+    <p>🔊 Звук → 🔢 Число</p>
+    <p>🔢 Число → <span class="accent mono">0 и 1</span></p>
+    <p class="muted" style="margin-top:2vh">Компьютеры делают это каждую секунду.</p>
+  </section>
+
+  <!-- 5. Сенсоры ИИ -->
+  <section class="slide">
+    <h2>Сенсоры ИИ = органы чувств</h2>
+    <div class="alice-row">
+      <div class="alice-box"><span class="big">👁️</span>Глаза → <b class="accent">Камера</b></div>
+      <div class="alice-box"><span class="big">👂</span>Уши → <b class="accent">Микрофон</b></div>
+      <div class="alice-box"><span class="big">✋</span>Кожа → <b class="accent">Сенсор, t°</b></div>
+      <div class="alice-box"><span class="big">👃</span>Нос → <b class="accent">Датчик запахов</b></div>
+    </div>
+    <p class="accent" style="margin-top:3vh">Больше сенсоров → умнее ИИ 🤖</p>
+  </section>
+
+  <!-- 6. Неоднозначные примеры -->
+  <section class="slide">
+    <h2>Покажи номер вида!</h2>
+    <div class="examples">
+      <div class="ex">«Мяу?» — <span class="ans">3 (иногда 1)</span><br><span class="muted">Звук, записанный текстом</span></div>
+      <div class="ex">«Тик-так» — <span class="ans">3 и 1</span><br><span class="muted">И звук, и текст сразу</span></div>
+      <div class="ex">Светофор 🚦 — <span class="ans">2</span><br><span class="muted">Красный = «стоп»</span></div>
+      <div class="ex">QR-код в кафе — <span class="ans">2</span><br><span class="muted">В картинке спрятан текст</span></div>
+    </div>
+    <p class="muted" style="margin-top:2vh">💡 Один вид часто прячет другой.</p>
+  </section>
+
+  <!-- 7. Кот 4 способами -->
+  <section class="slide">
+    <h2>Агентский навык: кот 🐈</h2>
+    <p>Представьте кота 4 способами (работаем в паре шёпотом)</p>
+    <div class="cat-ways">
+      <div class="way"><span class="ico">📝</span>Текст<br><span class="muted">«кот»</span></div>
+      <div class="way"><span class="ico">🖼️</span>Рисунок<br><span class="muted">набросок</span></div>
+      <div class="way"><span class="ico">🔊</span>Звук<br><span class="muted">«мяу»</span></div>
+      <div class="way"><span class="ico">🔢</span>Числа<br><span class="muted">4 лапы / 9 жизней</span></div>
+    </div>
+    <p class="accent" style="margin-top:2vh">Одно и то же — кодируется по-разному.</p>
+  </section>
+
+  <!-- 8. Двоичный код -->
+  <section class="slide">
+    <h2>Главный секрет: <span class="mono">0</span> и <span class="mono">1</span></h2>
+    <p><span class="mono">0</span> — выключено · <span class="mono">1</span> — включено</p>
+    <div class="grid5" id="heart">
+      <!-- 5x5 = 25 клеток, сердце -->
+      <div class="cell">0</div><div class="cell on">1</div><div class="cell">0</div><div class="cell on">1</div><div class="cell">0</div>
+      <div class="cell on">1</div><div class="cell on">1</div><div class="cell on">1</div><div class="cell on">1</div><div class="cell on">1</div>
+      <div class="cell on">1</div><div class="cell on">1</div><div class="cell on">1</div><div class="cell on">1</div><div class="cell on">1</div>
+      <div class="cell">0</div><div class="cell on">1</div><div class="cell on">1</div><div class="cell on">1</div><div class="cell">0</div>
+      <div class="cell">0</div><div class="cell">0</div><div class="cell on">1</div><div class="cell">0</div><div class="cell">0</div>
+    </div>
+    <p class="accent">💚 Командуйте мне: какую клетку закрашивать?</p>
+  </section>
+
+  <!-- 9. Инфобез -->
+  <section class="slide">
+    <h2>Правило Агентства 👍 / 👎</h2>
+    <div class="safety">
+      <div class="safe-row"><span class="mark">👎</span>Бесплатная валюта в игре <b>за пароль</b></div>
+      <div class="safe-row"><span class="mark">👍</span>Подруга спрашивает <b>любимый мультфильм</b></div>
+      <div class="safe-row"><span class="mark">👎</span>Сайт просит <b>адрес</b> ради «приза»</div>
+      <div class="safe-row"><span class="mark">👎</span>Незнакомец спрашивает, <b>во сколько ты из школы</b></div>
+    </div>
+    <p class="accent" style="margin-top:2vh">Адрес, пароль, телефон — твоя тайна. Агенты её берегут.</p>
+  </section>
+
+  <!-- 10. Физкультминутка -->
+  <section class="slide">
+    <h2>Физкультминутка 🏃</h2>
+    <div class="fiz">
+      <div class="fiz-item">📝 <b>Текст</b> — печатаем на невидимой клавиатуре</div>
+      <div class="fiz-item">🔊 <b>Звук</b> — один громкий хлопок</div>
+      <div class="fiz-item">🖼️ <b>Рисунок</b> — обводим большую рамку</div>
+      <div class="fiz-item">🔢 <b>Числа</b> — показываем пальцами: три! семь!</div>
+    </div>
+    <p class="accent" style="margin-top:3vh; font-size:clamp(22px,2.8vw,40px)">
+      <span class="mono">0</span> — присели · <span class="mono">1</span> — прыжок!
+    </p>
+  </section>
+
+  <!-- 11. Сортировка -->
+  <section class="slide">
+    <h2>Сортировка с подвохом</h2>
+    <p class="muted">Распредели по видам: 📝 🖼️ 🔊 🔢</p>
+    <div class="sort-grid">
+      <div class="sort-item">«5 + 3 = 8»</div>
+      <div class="sort-item">[ картинка котёнка ]</div>
+      <div class="sort-item">«Тик-так» <span class="muted">→ 1 и 3</span></div>
+      <div class="sort-item">[ QR-код ] <span class="muted">→ 2 (внутри 1)</span></div>
+      <div class="sort-item">«Жила-была девочка»</div>
+      <div class="sort-item">«Голос мамы в телефоне»</div>
+      <div class="sort-item">«+25 °C»</div>
+      <div class="sort-item">«Семь»</div>
+    </div>
+  </section>
+
+  <!-- 12. Бинарное послание -->
+  <section class="slide">
+    <h2>Бинарное послание ✉️</h2>
+    <p>Придумай рисунок <b>5×5</b>: сердечко, звёздочку, букву, улыбку.</p>
+    <p style="margin-top:1vh">Закрась клетки в тетради.</p>
+    <p style="margin-top:1vh">Запиши код: <span class="mono">0</span> — пусто, <span class="mono">1</span> — закрашено.</p>
+    <p style="margin-top:1vh">Поменяйся тетрадями с соседкой — она разгадывает вслух.</p>
+    <p class="accent" style="margin-top:2vh">⏱ 2 мин + 1,5 мин + 1,5 мин</p>
+  </section>
+
+  <!-- 13. ДЗ -->
+  <section class="slide">
+    <h2>Домашнее задание</h2>
+    <div class="hw">
+      <div class="hw-box">
+        <h3>🅰 Простое</h3>
+        <p>Найди дома <b>3 умных устройства</b>.</p>
+        <p>Для каждого запиши «сенсоры»:</p>
+        <ul>
+          <li>«глаза» — камера</li>
+          <li>«уши» — микрофон</li>
+          <li>«кожа» — сенсорный экран</li>
+        </ul>
+      </div>
+      <div class="hw-box">
+        <h3>🅱 Посложнее</h3>
+        <p>Бинарный рисунок <b>7×5</b> (7 в ширину, 5 в высоту).</p>
+        <ul>
+          <li>Закрась клетки</li>
+          <li>Запиши код из 0 и 1</li>
+          <li>Принеси — расшифруем в классе!</li>
+        </ul>
+      </div>
+    </div>
+    <p class="muted" style="margin-top:2vh">Можно сделать оба задания.</p>
+  </section>
+
+  <!-- 14. Paint -->
+  <section class="slide">
+    <h2>Финальное задание — Paint 🎨</h2>
+    <p>Преврати текст в рисунок-сцену. Время: <b class="accent">4 минуты</b>.</p>
+    <div class="paint-text">
+      «Добрый робот с квадратными глазами держит книгу»
+    </div>
+    <p class="muted" style="margin-top:2vh">Покажи рисунок соседке через экран. Похожи?</p>
+  </section>
+
+  <!-- 15. Рефлексия -->
+  <section class="slide">
+    <h2>Рефлексия</h2>
+    <div class="questions">
+      <div class="q"><b>1.</b> Чем сенсор похож на орган чувств?</div>
+      <div class="q"><b>2.</b> «Тик-так» — это и текст, и звук?</div>
+      <div class="q"><b>3.</b> Какой язык у компьютера?</div>
+    </div>
+    <p class="final" style="margin-top:3vh">Миссия окончена 🎯</p>
+  </section>
+
+</div>
+
+<div class="nav">
+  <button id="prev" title="Назад (←)">◀</button>
+  <span class="counter" id="counter">1 / 15</span>
+  <button id="next" title="Вперёд (→)">▶</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const counter = document.getElementById('counter');
+  let i = 0;
+  function show(n) {
+    i = (n + slides.length) % slides.length;
+    slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+    counter.textContent = (i + 1) + ' / ' + slides.length;
+  }
+  document.getElementById('next').onclick = () => show(i + 1);
+  document.getElementById('prev').onclick = () => show(i - 1);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); show(i + 1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); show(i - 1); }
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End') show(slides.length - 1);
+  });
+  show(0);
+</script>
+</body>
+</html>

@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Раздаточные материалы — ИИ и экология, 6 класс</title>
+<style>
+  /* ===== БАЗОВЫЕ СТИЛИ ===== */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Arial", "Helvetica", sans-serif;
+    color: #000;
+    background: #fff;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ===== СТРАНИЦА А4 ===== */
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0 auto;
+    padding: 8mm;
+    page-break-after: always;
+    position: relative;
+  }
+  .page:last-child { page-break-after: auto; }
+
+  /* ===== ЗАГОЛОВКИ ===== */
+  .page-title {
+    font-size: 11pt;
+    text-align: center;
+    margin-bottom: 4mm;
+    border-bottom: 1.5px solid #000;
+    padding-bottom: 2mm;
+    letter-spacing: 0.5px;
+  }
+  .cut-hint {
+    font-size: 7pt;
+    color: #555;
+    text-align: center;
+    margin-bottom: 2mm;
+  }
+
+  /* ===== КАРТОЧКА КОНСТРУКТОРА (A5 = половина A4) ===== */
+  .constructor-card {
+    width: 100%;
+    height: calc(50% - 6mm);
+    border: 1.5px dashed #000;
+    padding: 4mm 5mm;
+    position: relative;
+    page-break-inside: avoid;
+  }
+  .constructor-card h2 {
+    font-size: 13pt;
+    text-align: center;
+    margin-bottom: 2mm;
+    border-bottom: 1px solid #000;
+    padding-bottom: 1.5mm;
+  }
+  .constructor-card h3 {
+    font-size: 9pt;
+    margin-top: 2mm;
+    margin-bottom: 1mm;
+  }
+  .field-row {
+    font-size: 9pt;
+    line-height: 1.6;
+    margin-bottom: 0.5mm;
+  }
+  .field-row .label {
+    font-weight: bold;
+    display: inline-block;
+    width: 18mm;
+  }
+  .checkbox {
+    display: inline-block;
+    width: 3.5mm;
+    height: 3.5mm;
+    border: 1px solid #000;
+    vertical-align: middle;
+    margin-right: 1mm;
+  }
+  .option {
+    display: inline-block;
+    margin-right: 3mm;
+    white-space: nowrap;
+  }
+  .prompt-template {
+    margin-top: 2mm;
+    padding: 2mm;
+    border: 1px solid #000;
+    font-size: 8.5pt;
+    line-height: 1.5;
+    background: #f9f9f9;
+  }
+  .prompt-template b { font-size: 9pt; }
+  .eco-msg {
+    margin-top: 2mm;
+    padding: 1.5mm 2mm;
+    border: 1px solid #000;
+    font-size: 8pt;
+    line-height: 1.4;
+  }
+  .eco-msg b { font-size: 8.5pt; }
+  .level2 {
+    margin-top: 1.5mm;
+    padding: 1.5mm 2mm;
+    border: 1px solid #000;
+    font-size: 8pt;
+    line-height: 1.5;
+  }
+  .level2 b { font-size: 8.5pt; }
+
+  /* ===== ЧЕК-ЛИСТ (A6 = четверть A4) ===== */
+  .checklist-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 0;
+    height: calc(100% - 10mm);
+  }
+  .checklist-card {
+    border: 1.5px dashed #000;
+    padding: 3mm;
+    position: relative;
+  }
+  .checklist-card h3 {
+    font-size: 10pt;
+    text-align: center;
+    margin-bottom: 2mm;
+    border-bottom: 1px solid #000;
+    padding-bottom: 1mm;
+  }
+  .checklist-card table {
+    width: 100%;
+    font-size: 7.5pt;
+    border-collapse: collapse;
+  }
+  .checklist-card th {
+    font-size: 7.5pt;
+    text-align: left;
+    padding: 1mm 1mm;
+    border-bottom: 1px solid #000;
+    width: 50%;
+  }
+  .checklist-card td {
+    padding: 1mm;
+    vertical-align: top;
+    line-height: 1.4;
+  }
+  .checklist-card .check-col { width: 5mm; text-align: center; }
+
+  /* ===== ЖЕТОНЫ РОЛЕЙ ===== */
+  .badges-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 3mm;
+    height: calc(100% - 14mm);
+  }
+  .badge {
+    border: 2px solid #000;
+    border-radius: 4mm;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2mm;
+    position: relative;
+  }
+  .badge .icon {
+    font-size: 22pt;
+    line-height: 1;
+    margin-bottom: 1mm;
+  }
+  .badge .role-name {
+    font-size: 10pt;
+    font-weight: bold;
+    line-height: 1.2;
+  }
+  .badge .role-desc {
+    font-size: 7pt;
+    margin-top: 1mm;
+    line-height: 1.2;
+    color: #333;
+  }
+  .badge .badge-num {
+    position: absolute;
+    top: 1mm;
+    right: 2mm;
+    font-size: 7pt;
+    color: #666;
+  }
+
+  /* ===== ДОСКА ПРОГРЕССА ===== */
+  .progress-board {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11pt;
+    margin-top: 3mm;
+  }
+  .progress-board th {
+    border: 1.5px solid #000;
+    padding: 2.5mm 3mm;
+    text-align: center;
+    font-size: 11pt;
+    background: #eee;
+  }
+  .progress-board td {
+    border: 1px solid #000;
+    padding: 4mm 3mm;
+    text-align: center;
+    height: 12mm;
+    font-size: 11pt;
+  }
+  .progress-board td.name-cell {
+    text-align: left;
+    padding-left: 5mm;
+  }
+  .progress-board .group-col { width: 18mm; }
+  .progress-board .check-col { width: 18mm; }
+  .progress-info {
+    font-size: 9pt;
+    margin-top: 3mm;
+    line-height: 1.5;
+    border: 1px solid #000;
+    padding: 2mm 3mm;
+  }
+  .progress-info b { font-size: 9.5pt; }
+
+  /* ===== ПЕЧАТЬ ===== */
+  @media print {
+    @page {
+      size: A4 portrait;
+      margin: 0;
+    }
+    body { margin: 0; padding: 0; }
+    .page {
+      margin: 0;
+      padding: 8mm;
+      width: 210mm;
+      height: 297mm;
+      min-height: 297mm;
+      max-height: 297mm;
+      overflow: hidden;
+    }
+    .no-print { display: none !important; }
+  }
+
+  /* ===== ЭКРАН ===== */
+  @media screen {
+    body { background: #ccc; padding: 10mm 0; }
+    .page {
+      background: #fff;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      margin-bottom: 10mm;
+    }
+  }
+
+  .screen-header {
+    text-align: center;
+    padding: 10px;
+    font-size: 14pt;
+    color: #333;
+  }
+  .screen-header small { font-size: 9pt; color: #777; }
+</style>
+</head>
+<body>
+
+<div class="no-print screen-header">
+  🖨️ Раздаточные материалы: «ИИ как помощник в решении экологических проблем» (6 класс)<br>
+  <small>ЧБ печать, А4. Всего 5 листов: 2× конструкторы, 1× чек-листы, 1× жетоны, 1× доска прогресса</small>
+</div>
+
+<!-- ==================== СТРАНИЦА 1: КОНСТРУКТОРЫ 1–2 ==================== -->
+<div class="page">
+  <div class="cut-hint">✂ Разрезать по пунктиру — получится 2 карточки (А5)</div>
+
+  <!-- Карточка 1 -->
+  <div class="constructor-card">
+    <h2>🔧 Промпт-конструктор открытки</h2>
+    <h3>Шаг 1. Выбери по одному варианту из каждой строки:</h3>
+
+    <div class="field-row">
+      <span class="label">Объект:</span>
+      <span class="option"><span class="checkbox"></span> сова с книгой</span>
+      <span class="option"><span class="checkbox"></span> лиса с глобусом</span>
+      <span class="option"><span class="checkbox"></span> ёжик с карандашами</span>
+      <span class="option"><span class="checkbox"></span> дерево с книгами</span>
+    </div>
+    <div class="field-row">
+      <span class="label">Фон:</span>
+      <span class="option"><span class="checkbox"></span> осенний лес</span>
+      <span class="option"><span class="checkbox"></span> школьный двор</span>
+      <span class="option"><span class="checkbox"></span> светлая поляна</span>
+      <span class="option"><span class="checkbox"></span> кабинет с окном</span>
+    </div>
+    <div class="field-row">
+      <span class="label">Цвета:</span>
+      <span class="option"><span class="checkbox"></span> золотистый, бордовый</span>
+      <span class="option"><span class="checkbox"></span> зелёный, голубой</span>
+      <span class="option"><span class="checkbox"></span> тёплый жёлтый</span>
+      <span class="option"><span class="checkbox"></span> розовый, сиреневый</span>
+    </div>
+    <div class="field-row">
+      <span class="label">Стиль:</span>
+      <span class="option"><span class="checkbox"></span> акварель</span>
+      <span class="option"><span class="checkbox"></span> детская иллюстрация</span>
+      <span class="option"><span class="checkbox"></span> цифровая живопись</span>
+      <span class="option"><span class="checkbox"></span> сказочная иллюстрация</span>
+    </div>
+
+    <div class="level2">
+      <b>⭐ Уровень 2 — добавь предмет учителя:</b><br>
+      <span class="option"><span class="checkbox"></span> География: глобус, карта</span>
+      <span class="option"><span class="checkbox"></span> Математика: фигуры, цифры</span><br>
+      <span class="option"><span class="checkbox"></span> Русский язык: книги, перо</span>
+      <span class="option"><span class="checkbox"></span> Биология: листья, цветы</span>
+    </div>
+
+    <div class="prompt-template">
+      <b>📝 Шаблон промпта (скопируй и вставь):</b><br>
+      «Алиса, нарисуй вертикальную открытку: <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> на фоне <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>. Цвета: <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>. Стиль: <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>. Оставь место для надписи внизу.»
+    </div>
+
+    <div class="eco-msg">
+      <b>🌿 Эко-послание (выбери одно для надписи на открытке):</b><br>
+      ① «Спасибо, что учите нас беречь планету!»&nbsp;&nbsp;
+      ② «Выключайте свет — бережём энергию!»&nbsp;&nbsp;
+      ③ «Печатайте с двух сторон — меньше бумаги!»
+    </div>
+  </div>
+
+  <!-- Карточка 2 (копия) -->
+  <div class="constructor-card">
+    <h2>🔧 Промпт-конструктор открытки</h2>
+    <h3>Шаг 1. Выбери по одному варианту из каждой строки:</h3>
+
+    <div class="field-row">
+      <span class="label">Объект:</span>
+      <span class="option"><span class="checkbox"></span> сова с книгой</span>
+      <span class="option"><span class="checkbox"></span> лиса с глобусом</span>
+      <span class="option"><span class="checkbox"></span> ёжик с карандашами</span>
+      <span class="option"><span class="checkbox"></span> дерево с книгами</span>
+    </div>
+    <div class="field-row">
+      <span class="label">Фон:</span>
+      <span class="option"><span class="checkbox"></span> осенний лес</span>
+      <span class="option"><span class="checkbox"></span> школьный двор</span>
+      <span class="option"><span class="checkbox"></span> светлая поляна</span>
+      <span class="option"><span class="checkbox"></span> кабинет с окном</span>
+    </div>
+    <div class="field-row">
+      <span class="label">Цвета:</span>
+      <span class="option"><span class="checkbox"></span> золотистый, бордовый</span>
+      <span class="option"><span class="checkbox"></span> зелёный, голубой</span>
+      <span class="option"><span class="checkbox"></span> тёплый жёлтый</span>
+      <span class="option"><span class="checkbox"></span> розовый, сиреневый</span>
+    </div>
+    <div class="field-row">
+      <span class="label">Стиль:</span>
+      <span class="option"><span class="checkbox"></span> акварель</span>
+      <span class="option"><span class="checkbox"></span> детская иллюстрация</span>
+      <span class="option"><span class="checkbox"></span> цифровая живопись</span>
+      <span class="option"><span class="checkbox"></span> сказочная иллюстрация</span>
+    </div>
+
+    <div class="level2">
+      <b>⭐ Уровень 2 — добавь предмет учителя:</b><br>
+      <span class="option"><span class="checkbox"></span> География: глобус, карта</span>
+      <span class="option"><span class="checkbox"></span> Математика: фигуры, цифры</span><br>
+      <span class="option"><span class="checkbox"></span> Русский язык: книги, перо</span>
+      <span class="option"><span class="checkbox"></span> Биология: листья, цветы</span>
+    </div>
+
+    <div class="prompt-template">
+      <b>📝 Шаблон промпта (скопируй и вставь):</b><br>
+      «Алиса, нарисуй вертикальную открытку: <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> на фоне <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>. Цвета: <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>. Стиль: <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>. Оставь место для надписи внизу.»
+    </div>
+
+    <div class="eco-msg">
+      <b>🌿 Эко-послание (выбери одно для надписи на открытке):</b><br>
+      ① «Спасибо, что учите нас беречь планету!»&nbsp;&nbsp;
+      ② «Выключайте свет — бережём энергию!»&nbsp;&nbsp;
+      ③ «Печатайте с двух сторон — меньше бумаги!»
+    </div>
+  </div>
+</div>
+
+<!-- ==================== СТРАНИЦА 2: КОНСТРУКТОРЫ 3–4 ==================== -->
+<div class="page">
+  <div class="cut-hint">✂ Разрезать по пунктиру — получится 2 карточки (А5)</div>
+
+  <div class="constructor-card">
+    <h2>🔧 Промпт-конструктор открытки</h2>
+    <h3>Шаг 1. Выбери по одному варианту из каждой строки:</h3>
+
+    <div class="field-row">
+      <span class="label">Объект:</span>
+      <span class="option"><span class="checkbox"></span> сова с книгой</span>
+      <span class="option"><span class="checkbox"></span> лиса с глобусом</span>
+      <span class="option"><span class="checkbox"></span> ёжик с карандашами</span>
+      <span class="option"><span class="checkbox"></span> дерево с книгами</span>
+    </div>
+    <div class="field-row">
+      <span class="label">Фон:</span>
+      <span class="option"><span class="checkbox"></span> осенний лес</span>
+      <span class="option"><span class="checkbox"></span> школьный двор</span>
+      <span class="option"><span class="checkbox"></span> светлая поляна</span>
+      <span class="option"><span class="checkbox"></span> кабинет с окном</span>
+    </div>
+    <div class="field-row">
+      <span class="label">Цвета:</span>
+      <span class="option"><span class="checkbox"></span> золотистый, бордовый</span>
+      <span class="option"><span class="checkbox"></span> зелёный, голубой</span>
+      <span class="option"><span class="checkbox"></span> тёплый жёлтый</span>
+      <span class="option"><span class="checkbox"></span> розовый, сиреневый</span>
+    </div>
+    <div class="field-row">
+      <span class="label">Стиль:</span>
+      <span class="option"><span class="checkbox"></span> акварель</span>
+      <span class="option"><span class="checkbox"></span> детская иллюстрация</span>
+      <span class="option"><span class="checkbox"></span> цифровая живопись</span>
+      <span class="option"><span class="checkbox"></span> сказочная иллюстрация</span>
+    </div>
+
+    <div class="level2">
+      <b>⭐ Уровень 2 — добавь предмет учителя:</b><br>
+      <span class="option"><span class="checkbox"></span> География: глобус, карта</span>
+      <span class="option"><span class="checkbox"></span> Математика: фигуры, цифры</span><br>
+      <span class="option"><span class="checkbox"></span> Русский язык: книги, перо</span>
+      <span class="option"><span class="checkbox"></span> Биология: листья, цветы</span>
+    </div>
+
+    <div class="prompt-template">
+      <b>📝 Шаблон промпта (скопируй и вставь):</b><br>
+      «Алиса, нарисуй вертикальную открытку: <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> на фоне <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>. Цвета: <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>. Стиль: <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>. Оставь место для надписи внизу.»
+    </div>
+
+    <div class="eco-msg">
+      <b>🌿 Эко-послание (выбери одно для надписи на открытке):</b><br>
+      ① «Спасибо, что учите нас беречь планету!»&nbsp;&nbsp;
+      ② «Выключайте свет — бережём энергию!»&nbsp;&nbsp;
+      ③ «Печатайте с двух сторон — меньше бумаги!»
+    </div>
+  </div>
+
+  <div class="constructor-card">
+    <h2>🔧 Промпт-конструктор открытки</h2>
+    <h3>Шаг 1. Выбери по одному варианту из каждой строки:</h3>
+
+    <div class="field-row">
+      <span class="label">Объект:</span>
+      <span class="option"><span class="checkbox"></span> сова с книгой</span>
+      <span class="option"><span class="checkbox"></span> лиса с глобусом</span>
+      <span class="option"><span class="checkbox"></span> ёжик с карандашами</span>
+      <span class="option"><span class="checkbox"></span> дерево с книгами</span>
+    </div>
+    <div class="field-row">
+      <span class="label">Фон:</span>
+      <span class="option"><span class="checkbox"></span> осенний лес</span>
+      <span class="option"><span class="checkbox"></span> школьный двор</span>
+      <span class="option"><span class="checkbox"></span> светлая поляна</span>
+      <span class="option"><span class="checkbox"></span> кабинет с окном</span>
+    </div>
+    <div class="field-row">
+      <span class="label">Цвета:</span>
+      <span class="option"><span class="checkbox"></span> золотистый, бордовый</span>
+      <span class="option"><span class="checkbox"></span> зелёный, голубой</span>
+      <span class="option"><span class="checkbox"></span> тёплый жёлтый</span>
+      <span class="option"><span class="checkbox"></span> розовый, сиреневый</span>
+    </div>
+    <div class="field-row">
+      <span class="label">Стиль:</span>
+      <span class="option"><span class="checkbox"></span> акварель</span>
+      <span class="option"><span class="checkbox"></span> детская иллюстрация</span>
+      <span class="option"><span class="checkbox"></span> цифровая живопись</span>
+      <span class="option"><span class="checkbox"></span> сказочная иллюстрация</span>
+    </div>
+
+    <div class="level2">
+      <b>⭐ Уровень 2 — добавь предмет учителя:</b><br>
+      <span class="option"><span class="checkbox"></span> География: глобус, карта</span>
+      <span class="option"><span class="checkbox"></span> Математика: фигуры, цифры</span><br>
+      <span class="option"><span class="checkbox"></span> Русский язык: книги, перо</span>
+      <span class="option"><span class="checkbox"></span> Биология: листья, цветы</span>
+    </div>
+
+    <div class="prompt-template">
+      <b>📝 Шаблон промпта (скопируй и вставь):</b><br>
+      «Алиса, нарисуй вертикальную открытку: <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u> на фоне <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>. Цвета: <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>. Стиль: <u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>. Оставь место для надписи внизу.»
+    </div>
+
+    <div class="eco-msg">
+      <b>🌿 Эко-послание (выбери одно для надписи на открытке):</b><br>
+      ① «Спасибо, что учите нас беречь планету!»&nbsp;&nbsp;
+      ② «Выключайте свет — бережём энергию!»&nbsp;&nbsp;
+      ③ «Печатайте с двух сторон — меньше бумаги!»
+    </div>
+  </div>
+</div>
+
+<!-- ==================== СТРАНИЦА 3: ЧЕК-ЛИСТЫ ПРИЁМКИ (4 × A6) ==================== -->
+<div class="page">
+  <div class="page-title">✂ Чек-листы приёмки открытки — разрезать на 4 карточки (А6)</div>
+  <div class="checklist-grid">
+
+    <!-- Чек-лист 1 -->
+    <div class="checklist-card">
+      <h3>✅ Чек-лист приёмки</h3>
+      <table>
+        <tr><th>✓ Принимаем</th><th>✗ Переделка</th></tr>
+        <tr>
+          <td>☐ Все объекты на месте</td>
+          <td>☐ Кривые руки/лапы</td>
+        </tr>
+        <tr>
+          <td>☐ Есть осенние/эко-элементы</td>
+          <td>☐ Не связано с осенью/эко</td>
+        </tr>
+        <tr>
+          <td>☐ Есть место для подписи</td>
+          <td>☐ Всё заполнено, негде писать</td>
+        </tr>
+        <tr>
+          <td>☐ Доброе настроение, приятные цвета</td>
+          <td>☐ Мрачное / пугающее</td>
+        </tr>
+      </table>
+      <div style="font-size:7pt; margin-top:2mm; text-align:center; border-top:1px solid #000; padding-top:1mm;">
+        Имя учителя: __________________ Группа: ___
+      </div>
+    </div>
+
+    <!-- Чек-лист 2 -->
+    <div class="checklist-card">
+      <h3>✅ Чек-лист приёмки</h3>
+      <table>
+        <tr><th>✓ Принимаем</th><th>✗ Переделка</th></tr>
+        <tr>
+          <td>☐ Все объекты на месте</td>
+          <td>☐ Кривые руки/лапы</td>
+        </tr>
+        <tr>
+          <td>☐ Есть осенние/эко-элементы</td>
+          <td>☐ Не связано с осенью/эко</td>
+        </tr>
+        <tr>
+          <td>☐ Есть место для подписи</td>
+          <td>☐ Всё заполнено, негде писать</td>
+        </tr>
+        <tr>
+          <td>☐ Доброе настроение, приятные цвета</td>
+          <td>☐ Мрачное / пугающее</td>
+        </tr>
+      </table>
+      <div style="font-size:7pt; margin-top:2mm; text-align:center; border-top:1px solid #000; padding-top:1mm;">
+        Имя учителя: __________________ Группа: ___
+      </div>
+    </div>
+
+    <!-- Чек-лист 3 -->
+    <div class="checklist-card">
+      <h3>✅ Чек-лист приёмки</h3>
+      <table>
+        <tr><th>✓ Принимаем</th><th>✗ Переделка</th></tr>
+        <tr>
+          <td>☐ Все объекты на месте</td>
+          <td>☐ Кривые руки/лапы</td>
+        </tr>
+        <tr>
+          <td>☐ Есть осенние/эко-элементы</td>
+          <td>☐ Не связано с осенью/эко</td>
+        </tr>
+        <tr>
+          <td>☐ Есть место для подписи</td>
+          <td>☐ Всё заполнено, негде писать</td>
+        </tr>
+        <tr>
+          <td>☐ Доброе настроение, приятные цвета</td>
+          <td>☐ Мрачное / пугающее</td>
+        </tr>
+      </table>
+      <div style="font-size:7pt; margin-top:2mm; text-align:center; border-top:1px solid #000; padding-top:1mm;">
+        Имя учителя: __________________ Группа: ___
+      </div>
+    </div>
+
+    <!-- Чек-лист 4 -->
+    <div class="checklist-card">
+      <h3>✅ Чек-лист приёмки</h3>
+      <table>
+        <tr><th>✓ Принимаем</th><th>✗ Переделка</th></tr>
+        <tr>
+          <td>☐ Все объекты на месте</td>
+          <td>☐ Кривые руки/лапы</td>
+        </tr>
+        <tr>
+          <td>☐ Есть осенние/эко-элементы</td>
+          <td>☐ Не связано с осенью/эко</td>
+        </tr>
+        <tr>
+          <td>☐ Есть место для подписи</td>
+          <td>☐ Всё заполнено, негде писать</td>
+        </tr>
+        <tr>
+          <td>☐ Доброе настроение, приятные цвета</td>
+          <td>☐ Мрачное / пугающее</td>
+        </tr>
+      </table>
+      <div style="font-size:7pt; margin-top:2mm; text-align:center; border-top:1px solid #000; padding-top:1mm;">
+        Имя учителя: __________________ Группа: ___
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==================== СТРАНИЦА 4: ЖЕТОНЫ РОЛЕЙ (12 шт.) ==================== -->
+<div class="page">
+  <div class="page-title">✂ Жетоны ролей — вырезать по контуру (12 штук)</div>
+  <div class="badges-grid">
+
+    <div class="badge">
+      <span class="badge-num">1</span>
+      <span class="icon">⌨️</span>
+      <span class="role-name">Генератор</span>
+      <span class="role-desc">Работает с Алисой,<br>создаёт промпт</span>
+    </div>
+
+    <div class="badge">
+      <span class="badge-num">2</span>
+      <span class="icon">🔍</span>
+      <span class="role-name">Партнёр-редактор</span>
+      <span class="role-desc">Проверяет результат,<br>предлагает улучшения</span>
+    </div>
+
+    <div class="badge">
+      <span class="badge-num">3</span>
+      <span class="icon">✅</span>
+      <span class="role-name">Редактор группы</span>
+      <span class="role-desc">Принимает финальное<br>решение</span>
+    </div>
+
+    <div class="badge">
+      <span class="badge-num">4</span>
+      <span class="icon">🏃</span>
+      <span class="role-name">Посланник</span>
+      <span class="role-desc">Носит листы на печать<br>и забирает готовые</span>
+    </div>
+
+    <div class="badge">
+      <span class="badge-num">5</span>
+      <span class="icon">⌨️</span>
+      <span class="role-name">Генератор</span>
+      <span class="role-desc">Работает с Алисой,<br>создаёт промпт</span>
+    </div>
+
+    <div class="badge">
+      <span class="badge-num">6</span>
+      <span class="icon">🔍</span>
+      <span class="role-name">Партнёр-редактор</span>
+      <span class="role-desc">Проверяет результат,<br>предлагает улучшения</span>
+    </div>
+
+    <div class="badge">
+      <span class="badge-num">7</span>
+      <span class="icon">✅</span>
+      <span class="role-name">Редактор группы</span>
+      <span class="role-desc">Принимает финальное<br>решение</span>
+    </div>
+
+    <div class="badge">
+      <span class="badge-num">8</span>
+      <span class="icon">🏃</span>
+      <span class="role-name">Посланник</span>
+      <span class="role-desc">Носит листы на печать<br>и забирает готовые</span>
+    </div>
+
+    <div class="badge">
+      <span class="badge-num">9</span>
+      <span class="icon">⌨️</span>
+      <span class="role-name">Генератор</span>
+      <span class="role-desc">Работает с Алисой,<br>создаёт промпт</span>
+    </div>
+
+    <div class="badge">
+      <span class="badge-num">10</span>
+      <span class="icon">🔍</span>
+      <span class="role-name">Партнёр-редактор</span>
+      <span class="role-desc">Проверяет результат,<br>предлагает улучшения</span>
+    </div>
+
+    <div class="badge">
+      <span class="badge-num">11</span>
+      <span class="icon">⌨️</span>
+      <span class="role-name">Генератор</span>
+      <span class="role-desc">Работает с Алисой,<br>создаёт промпт</span>
+    </div>
+
+    <div class="badge">
+      <span class="badge-num">12</span>
+      <span class="icon">🔍</span>
+      <span class="role-name">Партнёр-редактор</span>
+      <span class="role-desc">Проверяет результат,<br>предлагает улучшения</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==================== СТРАНИЦА 5: ДОСКА ПРОГРЕССА ==================== -->
+<div class="page">
+  <div class="page-title">📋 Доска прогресса — повесить на доску / заполнить маркером</div>
+
+  <table class="progress-board">
+    <thead>
+      <tr>
+        <th style="width:10mm;">№</th>
+        <th>Учитель</th>
+        <th style="width:22mm;">Предмет</th>
+        <th class="group-col">Группа</th>
+        <th class="check-col">Готова?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td class="name-cell"></td><td></td><td></td><td>☐</td></tr>
+      <tr><td>2</td><td class="name-cell"></td><td></td><td></td><td>☐</td></tr>
+      <tr><td>3</td><td class="name-cell"></td><td></td><td></td><td>☐</td></tr>
+      <tr><td>4</td><td class="name-cell"></td><td></td><td></td><td>☐</td></tr>
+      <tr><td>5</td><td class="name-cell"></td><td></td><td></td><td>☐</td></tr>
+      <tr><td>6</td><td class="name-cell"></td><td></td><td></td><td>☐</td></tr>
+      <tr><td>7</td><td class="name-cell"></td><td></td><td></td><td>☐</td></tr>
+      <tr><td>8</td><td class="name-cell"></td><td></td><td></td><td>☐</td></tr>
+      <tr><td>9</td><td class="name-cell"></td><td></td><td></td><td>☐</td></tr>
+      <tr><td>10</td><td class="name-cell"></td><td></td><td></td><td>☐</td></tr>
+      <tr><td>11</td><td class="name-cell"></td><td></td><td></td><td>☐</td></tr>
+      <tr><td>12</td><td class="name-cell"></td><td></td><td></td><td>☐</td></tr>
+      <tr><td>13</td><td class="name-cell"></td><td></td><td></td><td>☐</td></tr>
+      <tr><td>14</td><td class="name-cell"></td><td></td><td></td><td>☐</td></tr>
+      <tr><td>15</td><td class="name-cell"></td><td></td><td></td><td>☐</td></tr>
+    </tbody>
+  </table>
+
+  <div class="progress-info">
+    <b>⏱ Правила конвейера:</b><br>
+    • <b>Параллелизация:</b> пока Алиса генерирует новую — вырезаем и подписываем предыдущую.<br>
+    • <b>Критерий победы:</b> принята с 1–2 попытки = качество, а не скорость.<br>
+    • <b>Дедлайн 0:28:</b> если не все готовы — минимум 5 учителей на группу, остальные после урока.<br>
+    • <b>Закончили раньше?</b> Делайте открытку библиотекарю / охраннику / техперсоналу.<br>
+    • <b>Экономия:</b> 4 листа × 4 открытки = 16 открыток на ~32 ₽ вместо 120 ₽.
+  </div>
+
+  <div class="progress-info" style="margin-top:2mm;">
+    <b>📐 Шаблон 4-в-1 для печати:</b> в Word → Макет → 4 открытки на листе А4 (каждая ~105×148 мм).<br>
+    <b>🖨 Принтер:</b> Canon C3320i · <b>Коробка вторсырья</b> — рядом с принтером для обрезков.
+  </div>
+</div>
+
+</body>
+</html>

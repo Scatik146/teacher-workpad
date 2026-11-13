@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Урок: Язык разметки Markdown</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    height: 100%;
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+    overflow: hidden;
+  }
+  .slide {
+    display: none;
+    width: 100vw;
+    height: 100vh;
+    padding: 60px 80px;
+    overflow-y: auto;
+    animation: fadeIn 0.4s ease;
+  }
+  .slide.active { display: flex; flex-direction: column; justify-content: center; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  h1 { font-size: 3em; margin-bottom: 20px; color: #60a5fa; }
+  h2 { font-size: 2.2em; margin-bottom: 25px; color: #60a5fa; border-bottom: 2px solid #1e293b; padding-bottom: 10px; }
+  h3 { font-size: 1.5em; margin: 15px 0 10px; color: #93c5fd; }
+  p, li { font-size: 1.25em; line-height: 1.6; margin-bottom: 10px; }
+  ul, ol { margin-left: 30px; }
+  .subtitle { font-size: 1.5em; color: #94a3b8; margin-top: 10px; }
+  .meta { font-size: 1.1em; color: #64748b; margin-top: 30px; }
+  code {
+    background: #1e293b;
+    color: #fbbf24;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: "Consolas", "Monaco", monospace;
+    font-size: 0.95em;
+  }
+  pre {
+    background: #1e293b;
+    border-left: 4px solid #60a5fa;
+    padding: 18px 22px;
+    border-radius: 8px;
+    margin: 15px 0;
+    overflow-x: auto;
+    font-size: 1em;
+    line-height: 1.5;
+  }
+  pre code {
+    background: transparent;
+    color: #e2e8f0;
+    padding: 0;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+    font-size: 1.1em;
+  }
+  th, td {
+    border: 1px solid #334155;
+    padding: 10px 14px;
+    text-align: left;
+  }
+  th { background: #1e3a5f; color: #93c5fd; }
+  tr:nth-child(even) { background: #1e293b; }
+  .quote {
+    border-left: 5px solid #60a5fa;
+    background: #1e293b;
+    padding: 20px 25px;
+    margin: 20px 0;
+    font-style: italic;
+    font-size: 1.2em;
+    border-radius: 0 8px 8px 0;
+  }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 25px; }
+  .card {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 10px;
+    border-top: 3px solid #60a5fa;
+  }
+  .highlight { color: #fbbf24; font-weight: bold; }
+  .tag {
+    display: inline-block;
+    background: #1e3a5f;
+    color: #93c5fd;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.9em;
+    margin-right: 8px;
+  }
+  .big-number {
+    font-size: 4em;
+    color: #60a5fa;
+    font-weight: bold;
+    line-height: 1;
+  }
+  .nav {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 100;
+  }
+  .nav button {
+    background: #1e3a5f;
+    color: #e2e8f0;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background 0.2s;
+  }
+  .nav button:hover { background: #2563eb; }
+  .counter {
+    position: fixed;
+    bottom: 25px;
+    left: 25px;
+    color: #64748b;
+    font-size: 0.95em;
+  }
+  .title-slide { text-align: center; }
+  .title-slide h1 { font-size: 4em; }
+  .emoji { font-size: 1.2em; }
+  .latex-block {
+    background: #0f172a;
+    border: 1px dashed #475569;
+    padding: 15px;
+    border-radius: 6px;
+    font-family: "Consolas", monospace;
+    color: #a5f3fc;
+    margin: 10px 0;
+    font-size: 1em;
+  }
+  .option-letter {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    background: #60a5fa;
+    color: #0f172a;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 40px;
+    font-weight: bold;
+    margin-right: 10px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Слайд 1: Титул -->
+<div class="slide active title-slide">
+  <h1>Язык разметки Markdown</h1>
+  <p class="subtitle">История, синтаксис, формулы LaTeX</p>
+  <p class="meta">Урок информатики · 10 класс · углублённый уровень · 40 минут</p>
+</div>
+
+<!-- Слайд 2: План -->
+<div class="slide">
+  <h2>📋 План урока</h2>
+  <ul>
+    <li><span class="tag">2 мин</span> Мотивация: зачем нам Markdown?</li>
+    <li><span class="tag">5 мин</span> История создания</li>
+    <li><span class="tag">8 мин</span> Базовый синтаксис</li>
+    <li><span class="tag">5 мин</span> Таблицы и блоки кода</li>
+    <li><span class="tag">5 мин</span> Формулы LaTeX</li>
+    <li><span class="tag">12 мин</span> Практическая работа</li>
+    <li><span class="tag">3 мин</span> Рефлексия и ДЗ</li>
+  </ul>
+  <p class="meta" style="margin-top:30px;">🛠 Инструмент: <span class="highlight">StackEdit.io</span> — онлайн-редактор в браузере</p>
+</div>
+
+<!-- Слайд 3: Мотивация -->
+<div class="slide">
+  <h2>💭 Задача</h2>
+  <div class="quote">
+    Вы написали крутой алгоритм на Python — решили олимпиадную задачу. Хотите поделиться решением с другом или выложить на GitHub.
+  </div>
+  <h3>Просто отправить <code>.py</code>-файл?</h3>
+  <ul>
+    <li>Друг увидит функции, но <span class="highlight">почему</span> выбран этот алгоритм?</li>
+    <li>Какая у него сложность? Какие формулы лежат в основе?</li>
+    <li>Как оформить таблицу тестов?</li>
+  </ul>
+  <p style="margin-top:20px; font-size:1.3em;">В комментариях кода красивую формулу не вставишь...</p>
+</div>
+
+<!-- Слайд 4: Решение -->
+<div class="slide">
+  <h2>✨ Решение</h2>
+  <p style="font-size:1.4em; text-align:center; margin: 40px 0;">
+    Нужен формат, в котором текст с <span class="highlight">объяснениями</span>,<br>
+    <span class="highlight">формулами</span>, <span class="highlight">таблицами</span> и <span class="highlight">кодом</span><br>
+    читается одинаково хорошо —<br>
+    и как исходник в блокноте,<br>
+    и как статья в браузере.
+  </p>
+  <p style="text-align:center; font-size:2em; margin-top:30px;">
+    Это — <span class="highlight">Markdown</span>
+  </p>
+</div>
+
+<!-- Слайд 5: История -->
+<div class="slide">
+  <h2>📜 История создания</h2>
+  <div class="two-col">
+    <div class="card">
+      <h3>🗓 2004 год</h3>
+      <p><span class="highlight">Джон Грубер</span> (John Gruber)</p>
+      <p>+ <span class="highlight">Аарон Шварц</span> (Aaron Swartz)</p>
+      <p style="margin-top:15px; color:#94a3b8; font-size:0.95em;">Шварц — соавтор RSS, активист свободного доступа к знаниям.</p>
+    </div>
+    <div class="card">
+      <h3>🎯 Проблема</h3>
+      <p>HTML неудобен для <em>чтения</em> в сыром виде:</p>
+      <pre><code>&lt;p&gt;&lt;strong&gt;жирный&lt;/strong&gt;&lt;/p&gt;</code></pre>
+      <p>Много «шума» из закрывающих тегов.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Слайд 6: Философия -->
+<div class="slide">
+  <h2>💡 Философия Markdown</h2>
+  <div class="quote" style="font-size:1.5em; text-align:center;">
+    «Документ в plain text должен быть красивым<br>и читаемым <span class="highlight">даже без рендеринга»</span>
+  </div>
+  <h3 style="margin-top:30px;">Вдохновение:</h3>
+  <ul>
+    <li><span class="highlight">Setext</span> — формат Иэна Далла</li>
+    <li><span class="highlight">Textile</span> — формат Дина Аллена</li>
+  </ul>
+  <p style="margin-top:20px;">Результат: синтаксис, который легко писать, читать и конвертировать в HTML.</p>
+</div>
+
+<!-- Слайд 7: Эволюция -->
+<div class="slide">
+  <h2>🚀 Эволюция формата</h2>
+  <div class="three-col">
+    <div class="card">
+      <p class="big-number">1</p>
+      <h3>Original Markdown</h3>
+      <p>2004 · Джон Грубер</p>
+      <p style="color:#94a3b8;">Базовый синтаксис</p>
+    </div>
+    <div class="card">
+      <p class="big-number">2</p>
+      <h3>CommonMark</h3>
+      <p>2014 · стандартизация</p>
+      <p style="color:#94a3b8;">Единая спецификация</p>
+    </div>
+    <div class="card">
+      <p class="big-number">3</p>
+      <h3>GFM</h3>
+      <p>GitHub Flavored Markdown</p>
+      <p style="color:#94a3b8;">Таблицы, чеклисты, зачёркивание</p>
+    </div>
+  </div>
+  <p style="margin-top:30px; text-align:center; font-size:1.2em;">
+    💬 <em>Вопрос:</em> почему GitHub сделал Markdown стандартом?
+  </p>
+</div>
+
+<!-- Слайд 8: Заголовки -->
+<div class="slide">
+  <h2>🔹 Заголовки</h2>
+  <p>Количество символов <code>#</code> = уровень (от 1 до 6).</p>
+  <pre><code># Заголовок 1 (H1) — только один на документ
+## Заголовок 2 (H2) — крупные разделы
+### Заголовок 3 (H3) — подразделы
+#### Заголовок 4 (H4)
+##### Заголовок 5 (H5)
+###### Заголовок 6 (H6) — самый мелкий</code></pre>
+  <p>💡 <span class="highlight">Правило:</span> уровни не должны «прыгать» (после H2 сразу H4 — плохо).</p>
+</div>
+
+<!-- Слайд 9: Абзацы -->
+<div class="slide">
+  <h2>🔹 Абзацы и переносы строк</h2>
+  <pre><code>Это первый абзац.
+Он продолжается на следующей строке исходника,
+но в рендере останется тем же абзацем.
+
+А это уже новый абзац — нужна пустая строка.
+
+А здесь два пробела в конце строки.  
+Значит будет принудительный перенос (&lt;br&gt;).</code></pre>
+  <table>
+    <tr><th>В исходнике</th><th>В рендере</th></tr>
+    <tr><td>Один перенос строки</td><td>Пробел</td></tr>
+    <tr><td>Пустая строка</td><td>Новый абзац (<code>&lt;p&gt;</code>)</td></tr>
+    <tr><td>Два пробела в конце</td><td>Принудительный <code>&lt;br&gt;</code></td></tr>
+  </table>
+</div>
+
+<!-- Слайд 10: Выделение -->
+<div class="slide">
+  <h2>🔹 Выделение текста</h2>
+  <table>
+    <tr><th>Эффект</th><th>Синтаксис</th></tr>
+    <tr><td><em>Курсив</em></td><td><code>*текст*</code> или <code>_текст_</code></td></tr>
+    <tr><td><strong>Жирный</strong></td><td><code>**текст**</code> или <code>__текст__</code></td></tr>
+    <tr><td><strong><em>Жирный курсив</em></strong></td><td><code>***текст***</code></td></tr>
+    <tr><td><del>Зачёркнутый</del> (GFM)</td><td><code>~~текст~~</code></td></tr>
+    <tr><td><code>Моноширинный</code></td><td><code>`текст`</code></td></tr>
+  </table>
+  <p style="margin-top:20px;">💡 <em>Совет:</em> выберите один стиль (<code>*</code> или <code>_</code>) и придерживайтесь его.</p>
+</div>
+
+<!-- Слайд 11: Списки -->
+<div class="slide">
+  <h2>🔹 Списки</h2>
+  <div class="two-col">
+    <div>
+      <h3>Маркированный</h3>
+      <pre><code>- Первый пункт
+- Второй пункт
+  - Вложенный
+- Третий</code></pre>
+    </div>
+    <div>
+      <h3>Нумерованный</h3>
+      <pre><code>1. Первый
+1. Второй
+   1. Вложенный
+1. Третий</code></pre>
+      <p style="font-size:0.9em; color:#94a3b8;">Парсер сам расставит номера!</p>
+    </div>
+  </div>
+  <h3 style="margin-top:20px;">Чеклист (GFM)</h3>
+  <pre><code>- [x] Изучить историю Markdown
+- [x] Разобраться с синтаксисом
+- [ ] Написать формулы LaTeX
+- [ ] Сдать домашнее задание</code></pre>
+</div>
+
+<!-- Слайд 12: Цитаты -->
+<div class="slide">
+  <h2>🔹 Цитаты</h2>
+  <pre><code>> Это простая цитата.
+> Она может занимать несколько строк.
+
+> А это цитата с вложенностью:
+> 
+> > Вложенная цитата внутри цитаты.
+> 
+> И снова первый уровень.
+
+> #### Можно даже заголовок внутри
+> - И список тоже можно
+>
+>     И даже блок кода с отступом</code></pre>
+  <p>💡 Часто используются для выделения «врезок» в документации.</p>
+</div>
+
+<!-- Слайд 13: Ссылки и изображения -->
+<div class="slide">
+  <h2>🔹 Ссылки и изображения</h2>
+  <h3>Ссылки</h3>
+  <pre><code>[Текст ссылки](https://example.com "Подсказка")
+&lt;https://автоматическая-ссылка.com&gt;
+&lt;user@example.com&gt;  — mailto-ссылка</code></pre>
+  <h3>Изображения</h3>
+  <pre><code>![Альтернативный текст](url.jpg)
+![Описание](url.jpg "Заголовок при наведении")
+
+[![Кликабельная картинка](url.jpg)](https://example.com)</code></pre>
+  <p>💡 Альт-текст важен для доступности и SEO.</p>
+</div>
+
+<!-- Слайд 14: Линии и экранирование -->
+<div class="slide">
+  <h2>🔹 Горизонтальная линия и экранирование</h2>
+  <h3>Разделитель</h3>
+  <pre><code>---        (или *** или ___)</code></pre>
+  <p>Превращается в <code>&lt;hr&gt;</code> — разделитель между смысловыми блоками.</p>
+  
+  <h3 style="margin-top:25px;">Экранирование символов</h3>
+  <pre><code>\*это не курсив\*
+\# это не заголовок
+\[не ссылка\]</code></pre>
+  <p>Экранируются: <code>\ ` * _ { } [ ] ( ) # + - . ! | ~</code></p>
+</div>
+
+<!-- Слайд 15: Таблицы -->
+<div class="slide">
+  <h2>🔹 Таблицы (GFM)</h2>
+  <pre><code>| Операция | Приоритет | Ассоциативность |
+|----------|:---------:|----------------:|
+| **       |     1     |        справа   |
+| *        |     2     |        слева    |
+| +        |     3     |        слева    |</code></pre>
+  <table>
+    <tr><th>Синтаксис</th><th>Выравнивание</th></tr>
+    <tr><td><code>:---</code></td><td>По левому краю</td></tr>
+    <tr><td><code>:---:</code></td><td>По центру</td></tr>
+    <tr><td><code>---:</code></td><td>По правому краю</td></tr>
+  </table>
+</div>
+
+<!-- Слайд 16: Блоки кода -->
+<div class="slide">
+  <h2>🔹 Блоки кода с подсветкой</h2>
+  <pre><code>```python
+def fibonacci(n: int) -> list[int]:
+    """Возвращает первые n чисел Фибоначчи."""
+    a, b = 0, 1
+    result = []
+    for _ in range(n):
+        result.append(a)
+        a, b = b, a + b
+    return result
+
+print(fibonacci(10))
+```</code></pre>
+  <p>Имя языка после <code>```</code> включает подсветку: <code>python</code>, <code>javascript</code>, <code>cpp</code>, <code>bash</code>, <code>sql</code>, <code>latex</code> и др.</p>
+</div>
+
+<!-- Слайд 17: LaTeX введение -->
+<div class="slide">
+  <h2>🔹 Формулы LaTeX</h2>
+  <p>Поддерживается через MathJax / KaTeX.</p>
+  <h3>Инлайн-формула (в строке)</h3>
+  <pre><code>$E = mc^2$</code></pre>
+  <h3>Блочная формула (по центру)</h3>
+  <pre><code>$$
+\sum_{i=1}^{n} i = \frac{n(n+1)}{2}
+$$</code></pre>
+</div>
+
+<!-- Слайд 18: Базовые команды -->
+<div class="slide">
+  <h2>🔹 Базовые команды LaTeX</h2>
+  <table>
+    <tr><th>Команда</th><th>Описание</th><th>Пример</th></tr>
+    <tr><td><code>\frac{a}{b}</code></td><td>Дробь</td><td>a/b</td></tr>
+    <tr><td><code>\sqrt{x}</code></td><td>Квадратный корень</td><td>√x</td></tr>
+    <tr><td><code>\sqrt[n]{x}</code></td><td>Корень n-й степени</td><td>ⁿ√x</td></tr>
+    <tr><td><code>x^{2}</code></td><td>Степень</td><td>x²</td></tr>
+    <tr><td><code>x_{i}</code></td><td>Индекс (подстрочный)</td><td>xᵢ</td></tr>
+    <tr><td><code>x_{i}^{2}</code></td><td>Степень + индекс</td><td>xᵢ²</td></tr>
+  </table>
+</div>
+
+<!-- Слайд 19: Греческие буквы -->
+<div class="slide">
+  <h2>🔹 Греческие буквы</h2>
+  <div class="two-col">
+    <div>
+      <h3>Строчные</h3>
+      <p><code>\alpha</code> → α &nbsp; <code>\beta</code> → β &nbsp; <code>\gamma</code> → γ</p>
+      <p><code>\delta</code> → δ &nbsp; <code>\epsilon</code> → ε &nbsp; <code>\theta</code> → θ</p>
+      <p><code>\lambda</code> → λ &nbsp; <code>\mu</code> → μ &nbsp; <code>\pi</code> → π</p>
+      <p><code>\sigma</code> → σ &nbsp; <code>\phi</code> → φ &nbsp; <code>\omega</code> → ω</p>
+    </div>
+    <div>
+      <h3>Заглавные</h3>
+      <p><code>\Gamma</code> → Γ &nbsp; <code>\Delta</code> → Δ</p>
+      <p><code>\Theta</code> → Θ &nbsp; <code>\Lambda</code> → Λ</p>
+      <p><code>\Pi</code> → Π &nbsp; <code>\Sigma</code> → Σ</p>
+      <p><code>\Phi</code> → Φ &nbsp; <code>\Omega</code> → Ω</p>
+    </div>
+  </div>
+</div>
+
+<!-- Слайд 20: Знаки операций -->
+<div class="slide">
+  <h2>🔹 Знаки математических операций</h2>
+  <div class="two-col">
+    <div>
+      <h3>Арифметика</h3>
+      <p><code>\cdot</code> → · &nbsp; <code>\times</code> → × &nbsp; <code>\div</code> → ÷</p>
+      <p><code>\pm</code> → ± &nbsp; <code>\mp</code> → ∓</p>
+      <h3 style="margin-top:15px;">Сравнение</h3>
+      <p><code>\leq</code> → ≤ &nbsp; <code>\geq</code> → ≥</p>
+      <p><code>\neq</code> → ≠ &nbsp; <code>\approx</code> → ≈</p>
+      <p><code>\equiv</code> → ≡ &nbsp; <code>\sim</code> → ∼</p>
+    </div>
+    <div>
+      <h3>Множества и логика</h3>
+      <p><code>\in</code> → ∈ &nbsp; <code>\notin</code> → ∉</p>
+      <p><code>\subset</code> → ⊂ &nbsp; <code>\cup</code> → ∪ &nbsp; <code>\cap</code> → ∩</p>
+      <p><code>\forall</code> → ∀ &nbsp; <code>\exists</code> → ∃</p>
+      <p><code>\Rightarrow</code> → ⇒ &nbsp; <code>\Leftrightarrow</code> → ⇔</p>
+      <h3 style="margin-top:15px;">Стрелки</h3>
+      <p><code>\to</code> → → &nbsp; <code>\mapsto</code> → ↦</p>
+    </div>
+  </div>
+</div>
+
+<!-- Слайд 21: Большие операторы -->
+<div class="slide">
+  <h2>🔹 Большие операторы</h2>
+  <table>
+    <tr><th>Команда</th><th>Назначение</th></tr>
+    <tr><td><code>\sum_{i=1}^{n}</code></td><td>Сумма Σ</td></tr>
+    <tr><td><code>\prod_{i=1}^{n}</code></td><td>Произведение Π</td></tr>
+    <tr><td><code>\int_{a}^{b}</code></td><td>Интеграл ∫</td></tr>
+    <tr><td><code>\iint</code></td><td>Двойной интеграл ∬</td></tr>
+    <tr><td><code>\oint</code></td><td>Контурный интеграл ∮</td></tr>
+    <tr><td><code>\lim_{x \to 0}</code></td><td>Предел lim</td></tr>
+    <tr><td><code>\infty</code></td><td>Бесконечность ∞</td></tr>
+  </table>
+</div>
+
+<!-- Слайд 22: Скобки -->
+<div class="slide">
+  <h2>🔹 Скобки в формулах</h2>
+  <h3>Обычные скобки</h3>
+  <pre><code>(a + b) \cdot [c - d] \cdot \{e + f\}</code></pre>
+  <h3>Масштабируемые (<code>\left</code> и <code>\right</code>)</h3>
+  <pre><code>\left( \frac{a}{b} \right) \quad \left[ \sqrt{x} \right] \quad \left\{ \sum_{i=1}^{n} i \right\}</code></pre>
+  <h3>Разные типы скобок</h3>
+  <pre><code>\left( x \right)         % круглые
+\left[ x \right]         % квадратные
+\left\{ x \right\}       % фигурные
+\left\langle x \right\rangle % угловые
+\left\lfloor x \right\rfloor % «пол» ⌊x⌋
+\left\lceil x \right\rceil   % «потолок» ⌈x⌉</code></pre>
+  <p>💡 <code>\left</code> и <code>\right</code> всегда идут <span class="highlight">парой</span>.</p>
+</div>
+
+<!-- Слайд 23: Матрицы -->
+<div class="slide">
+  <h2>🔹 Матрицы</h2>
+  <p>Элементы разделяются <code>&amp;</code>, строки — <code>\\</code>.</p>
+  <div class="two-col">
+    <div>
+      <h3><code>pmatrix</code> — круглые</h3>
+      <pre><code>\begin{pmatrix}
+a &amp; b \\
+c &amp; d
+\end{pmatrix}</code></pre>
+    </div>
+    <div>
+      <h3><code>bmatrix</code> — квадратные</h3>
+      <pre><code>\begin{bmatrix}
+1 &amp; 2 \\
+3 &amp; 4
+\end{bmatrix}</code></pre>
+    </div>
+  </div>
+  <h3><code>vmatrix</code> — определитель</h3>
+  <pre><code>\det(A) = \begin{vmatrix} a &amp; b \\ c &amp; d \end{vmatrix} = ad - bc</code></pre>
+  <p>Также: <code>Vmatrix</code> (двойные черты), <code>matrix</code> (без скобок).</p>
+</div>
+
+<!-- Слайд 24: Отступы -->
+<div class="slide">
+  <h2>🔹 Отступы в формулах</h2>
+  <p>В LaTeX пробелы в исходнике <span class="highlight">игнорируются</span>. Используются спецкоманды:</p>
+  <table>
+    <tr><th>Команда</th><th>Размер</th><th>Пример</th></tr>
+    <tr><td><code>\,</code></td><td>Тонкий (1/6 em)</td><td>Отделение знака препинания</td></tr>
+    <tr><td><code>\:</code></td><td>Средний (2/9 em)</td><td>Небольшой отступ</td></tr>
+    <tr><td><code>\;</code></td><td>Большой (5/18 em)</td><td>Между частями формулы</td></tr>
+    <tr><td><code>\quad</code></td><td>1 em (стандарт)</td><td>Разделитель смысловых частей</td></tr>
+    <tr><td><code>\qquad</code></td><td>2 em (двойной)</td><td>Большой разделитель</td></tr>
+  </table>
+  <pre><code>f(x) = x^2 + 2x + 1 \quad \text{при } x > 0</code></pre>
+  <p>💡 Для текста внутри формулы: <code>\text{текст}</code></p>
+</div>
+
+<!-- Слайд 25: Формула Бине -->
+<div class="slide">
+  <h2>🔹 Пример: формула Бине</h2>
+  <p>Числа Фибоначчи через замкнутую формулу:</p>
+  <pre><code>$$
+F_n = \frac{1}{\sqrt{5}} \left[ \left( \frac{1 + \sqrt{5}}{2} \right)^n - \left( \frac{1 - \sqrt{5}}{2} \right)^n \right]
+$$</code></pre>
+  <p style="margin-top:20px;">Здесь мы использовали:</p>
+  <ul>
+    <li>Дробь <code>\frac</code> и корень <code>\sqrt</code></li>
+    <li>Масштабируемые скобки <code>\left[ ... \right]</code> и <code>\left( ... \right)</code></li>
+    <li>Степень <code>^{n}</code></li>
+  </ul>
+</div>
+
+<!-- Слайд 26: Практическая работа -->
+<div class="slide">
+  <h2>📝 Практическая работа (12 мин)</h2>
+  <h3>«Математическое исследование в Markdown»</h3>
+  <div class="quote">
+    Вы — исследователь. Вам поручили изучить поведение математической функции. Проведите вычисления (можно с калькулятором) и оформите результаты в виде профессионального отчёта. <span class="highlight">Ни строчки кода</span> — только математика и безупречное оформление.
+  </div>
+  <h3>Требования к документу <code>research.md</code>:</h3>
+  <ol>
+    <li>Заголовок H1 и описание задачи</li>
+    <li>Математическая постановка — <span class="highlight">2 блочные + 1 инлайн</span> формула LaTeX</li>
+    <li>Таблица вычислений — <span class="highlight">минимум 5 строк</span></li>
+    <li>Пошаговое решение одного значения</li>
+    <li>Цитата (<code>&gt;</code>) — математический факт</li>
+    <li>Вывод</li>
+  </ol>
+</div>
+
+<!-- Слайд 27: Вариант А -->
+<div class="slide">
+  <h2><span class="option-letter">А</span>Числа Фибоначчи по формуле Бине</h2>
+  <p>Рекуррентное определение: $F_0 = 0, F_1 = 1, F_n = F_{n-1} + F_{n-2}$</p>
+  <p>Формула Бине:</p>
+  <pre><code>F_n = \frac{1}{\sqrt{5}} \left[ \left( \frac{1 + \sqrt{5}}{2} \right)^n - \left( \frac{1 - \sqrt{5}}{2} \right)^n \right]</code></pre>
+  <h3>Задание:</h3>
+  <ul>
+    <li>Вычислите $F_n$ для $n = 5, 10, 15, 20, 25$ (округляя до целого)</li>
+    <li>Таблица: <code>n | φⁿ | ψⁿ | Разность | Fₙ</code></li>
+    <li>Пошаговый расчёт для $n = 10$</li>
+    <li>Проверьте: $F_{10} = F_9 + F_8$</li>
+  </ul>
+  <p>💡 $\varphi = \frac{1+\sqrt{5}}{2} \approx 1.618$, $\psi = \frac{1-\sqrt{5}}{2} \approx -0.618$</p>
+</div>
+
+<!-- Слайд 28: Вариант Б -->
+<div class="slide">
+  <h2><span class="option-letter">Б</span>Квадратичная функция</h2>
+  <p>Исследуйте $f(x) = ax^2 + bx + c$ при $a=2, b=4, c=-6$.</p>
+  <h3>Задание:</h3>
+  <ul>
+    <li>Вычислите $f(x)$ при $x = -2, -1, 0, 1, 2$</li>
+    <li>Найдите вершину параболы: $x_v = -\frac{b}{2a}$, $y_v = f(x_v)$</li>
+    <li>Вычислите дискриминант: $D = b^2 - 4ac$</li>
+    <li>Оформите таблицу значений и пошаговый расчёт вершины</li>
+  </ul>
+  <h3>Формулы для оформления:</h3>
+  <pre><code>x_v = -\frac{b}{2a}, \quad y_v = c - \frac{b^2}{4a}
+
+D = b^2 - 4ac</code></pre>
+</div>
+
+<!-- Слайд 29: Вариант В -->
+<div class="slide">
+  <h2><span class="option-letter">В</span>Определители матриц</h2>
+  <p>Для матрицы 2×2:</p>
+  <pre><code>\det \begin{pmatrix} a &amp; b \\ c &amp; d \end{pmatrix} = ad - bc</code></pre>
+  <h3>Задание:</h3>
+  <ul>
+    <li>Вычислите определители пяти матриц 2×2, например:
+      <pre><code>A_1 = \begin{pmatrix} 3 &amp; 2 \\ 1 &amp; 4 \end{pmatrix}, \quad A_2 = \begin{pmatrix} 5 &amp; -1 \\ 2 &amp; 3 \end{pmatrix}, ...</code></pre>
+    </li>
+    <li>Вычислите определитель матрицы 3×3:
+      <pre><code>B = \begin{pmatrix} 1 &amp; 2 &amp; 3 \\ 0 &amp; 1 &amp; 4 \\ 5 &amp; 6 &amp; 0 \end{pmatrix}</code></pre>
+    </li>
+    <li>Оформите таблицу результатов</li>
+    <li>Покажите пошаговое разложение определителя 3×3</li>
+    <li>Найдите вырожденные матрицы (det = 0)</li>
+  </ul>
+</div>
+
+<!-- Слайд 30: Рефлексия -->
+<div class="slide">
+  <h2>💬 Рефлексия</h2>
+  <div class="quote">
+    Блиц: каждый за 30 секунд показывает свою таблицу и делает один вывод.
+  </div>
+  <h3>Вопросы для обсуждения:</h3>
+  <ul>
+    <li>Что оказалось сложнее всего: <span class="highlight">считать</span> или <span class="highlight">оформлять</span>?</li>
+    <li>Где вы будете использовать Markdown в школе?</li>
+    <li>Почему plain text — это сила?</li>
+  </ul>
+  <p style="margin-top:30px; font-size:1.2em;">💡 <em>Применение в учёбе:</em> оформление проектов по физике, математике, информатике; ведение конспектов; публикация решений на GitHub.</p>
+</div>
+
+<!-- Слайд 31: ДЗ -->
+<div class="slide">
+  <h2>🏠 Домашнее задание</h2>
+  <div class="three-col">
+    <div class="card">
+      <h3>🔹 Вариант А</h3>
+      <p><strong>Шпаргалка по теме</strong></p>
+      <p style="font-size:0.9em;">Создать <code>cheatsheet.md</code> по теме математики 9 класса.</p>
+      <p style="font-size:0.85em; color:#94a3b8; margin-top:10px;">Минимум: 4 формулы, 2 таблицы, списки.</p>
+    </div>
+    <div class="card">
+      <h3>🔸 Вариант Б</h3>
+      <p><strong>Олимпиадная задача</strong></p>
+      <p style="font-size:0.9em;">Оформить решение задачи из банка ОГЭ/олимпиад.</p>
+      <p style="font-size:0.85em; color:#94a3b8; margin-top:10px;">Дано, Найти, решение LaTeX, таблица проверки.</p>
+    </div>
+    <div class="card">
+      <h3>🔸 Вариант В</h3>
+      <p><strong>Техническая статья</strong></p>
+      <p style="font-size:0.9em;">Туториал: «Как я перестал бояться LaTeX».</p>
+      <p style="font-size:0.85em; color:#94a3b8; margin-top:10px;">1–2 стр., 5 типов формул, блок кода, цитата.</p>
+    </div>
+  </div>
+  <h3 style="margin-top:25px;">Критерии оценки (макс. 14 баллов):</h3>
+  <ul>
+    <li>Корректность Markdown — <span class="highlight">4</span></li>
+    <li>Красота формул LaTeX — <span class="highlight">4</span></li>
+    <li>Структура документа — <span class="highlight">3</span></li>
+    <li>Творческий подход — <span class="highlight">3</span></li>
+  </ul>
+</div>
+
+<!-- Слайд 32: Финал -->
+<div class="slide title-slide">
+  <h1>🎉 Спасибо за урок!</h1>
+  <p class="subtitle">Теперь вы умеете оформлять знания красиво.</p>
+  <p class="meta" style="margin-top:40px;">
+    📚 <span class="highlight">Markdown Guide:</span> markdownguide.org<br>
+    📚 <span class="highlight">CommonMark:</span> commonmark.org<br>
+    📚 <span class="highlight">StackEdit:</span> stackedit.io
+  </p>
+</div>
+
+<!-- Навигация -->
+<div class="counter"><span id="current">1</span> / <span id="total">32</span></div>
+<div class="nav">
+  <button onclick="prevSlide()">← Назад</button>
+  <button onclick="nextSlide()">Далее →</button>
+  <button onclick="toggleFullscreen()">⛶</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let currentSlide = 0;
+  document.getElementById('total').textContent = slides.length;
+  
+  function showSlide(n) {
+    slides[currentSlide].classList.remove('active');
+    currentSlide = (n + slides.length) % slides.length;
+    slides[currentSlide].classList.add('active');
+    document.getElementById('current').textContent = currentSlide + 1;
+  }
+  function nextSlide() { showSlide(currentSlide + 1); }
+  function prevSlide() { showSlide(currentSlide - 1); }
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  }
+  
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') nextSlide();
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') prevSlide();
+    else if (e.key === 'Home') showSlide(0);
+    else if (e.key === 'End') showSlide(slides.length - 1);
+    else if (e.key === 'f' || e.key === 'F') toggleFullscreen();
+  });
+</script>
+
+</body>
+</html>

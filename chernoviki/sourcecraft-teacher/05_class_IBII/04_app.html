@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ИИ: Тест Тьюринга и Обучение робота</title>
+<style>
+    :root {
+        --bg: #1a1a24;
+        --panel: #252535;
+        --accent: #4ea8de;
+        --success: #4caf50;
+        --error: #f44336;
+        --text: #f0f0f0;
+        --text-dim: #a0a0b0;
+    }
+    body {
+        margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif;
+        background: var(--bg); color: var(--text); height: 100vh;
+        display: flex; flex-direction: column; overflow: hidden;
+    }
+    header {
+        background: #111; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center;
+        border-bottom: 2px solid var(--accent);
+    }
+    header h1 { margin: 0; font-size: 24px; color: var(--accent); }
+    .tabs { display: flex; gap: 10px; }
+    .tab-btn {
+        padding: 10px 20px; background: var(--panel); border: none; color: var(--text-dim);
+        font-size: 18px; cursor: pointer; border-radius: 8px 8px 0 0; font-weight: bold;
+    }
+    .tab-btn.active { background: var(--accent); color: #000; }
+    main { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
+    .module { display: none; flex: 1; flex-direction: column; }
+    .module.active { display: flex; }
+    
+    /* Модуль 1: Судья */
+    .judge-prep, .judge-screen, .judge-reveal, .judge-final { display: none; flex-direction: column; gap: 15px; flex: 1; }
+    .active-mode { display: flex !important; }
+    .input-group { display: flex; flex-direction: column; gap: 5px; }
+    label { font-size: 18px; color: var(--text-dim); }
+    input[type="text"], textarea {
+        padding: 15px; font-size: 20px; background: #333; border: 2px solid #444;
+        color: var(--text); border-radius: 8px; width: 100%; box-sizing: border-box;
+    }
+    textarea { min-height: 80px; resize: vertical; }
+    .btn {
+        padding: 15px 30px; font-size: 22px; font-weight: bold; border: none;
+        border-radius: 8px; cursor: pointer; transition: 0.2s;
+    }
+    .btn-primary { background: var(--accent); color: #000; }
+    .btn-primary:hover { background: #6bc2f5; }
+    .btn-danger { background: var(--error); color: #fff; }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-secondary { background: #555; color: #fff; }
+    .btn-row { display: flex; gap: 15px; justify-content: center; margin-top: 10px; }
+    
+    .answers-display { display: flex; gap: 20px; flex: 1; }
+    .answer-box {
+        flex: 1; background: var(--panel); padding: 30px; border-radius: 12px;
+        display: flex; flex-direction: column; justify-content: center; align-items: center;
+        font-size: 32px; text-align: center; border: 4px solid transparent;
+    }
+    .answer-box.highlight { border-color: var(--accent); background: #2a3b4c; }
+    .answer-box h2 { margin: 0 0 20px 0; color: var(--accent); font-size: 48px; }
+    
+    .score-board { text-align: center; font-size: 28px; margin: 10px 0; }
+    .score-board span { color: var(--accent); font-weight: bold; }
+
+    /* Модуль 2: Робот */
+    .robot-demo, .robot-train, .robot-test, .robot-final { display: none; flex-direction: column; gap: 15px; flex: 1; }
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+    .card {
+        background: var(--panel); padding: 20px; border-radius: 12px; border: 3px solid #444;
+        display: flex; flex-direction: column; gap: 10px;
+    }
+    .card h3 { margin: 0; font-size: 20px; color: var(--accent); }
+    .card p { margin: 0; font-size: 18px; flex: 1; }
+    .card-actions { display: flex; gap: 10px; }
+    .card-btn { flex: 1; padding: 10px; font-size: 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;}
+    .card-btn.rel { background: var(--success); color: #fff; }
+    .card-btn.not-rel { background: var(--error); color: #fff; }
+    .card.labeled { border-color: var(--accent); }
+    .card.labeled.rel { border-color: var(--success); }
+    .card.labeled.not-rel { border-color: var(--error); }
+    
+    .rule-display {
+        background: #2a3b4c; padding: 20px; border-radius: 12px; text-align: center;
+        font-size: 28px; border: 2px solid var(--accent); margin: 10px 0;
+    }
+    .hint-box { background: #333; padding: 15px; border-radius: 8px; font-size: 18px; color: var(--text-dim); }
+    
+    .modal-overlay {
+        display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 100;
+    }
+    .modal-content { background: var(--panel); padding: 40px; border-radius: 16px; text-align: center; }
+    .modal-content h2 { font-size: 36px; margin-top: 0; }
+</style>
+</head>
+<body>
+
+<header>
+    <h1>ИИ: Урок 5 класс</h1>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('judge', this)">1. Терминал судьи</button>
+        <button class="tab-btn" onclick="switchTab('robot', this)">2. Обучи робота</button>
+    </div>
+</header>
+
+<main>
+    <!-- МОДУЛЬ 1: ТЕРМИНАЛ СУДЬИ -->
+    <div id="mod-judge" class="module active">
+        <div class="score-board">Раунд: <span id="round-counter">1</span> из <span id="total-rounds">5</span> | Ошибок судей: <span id="mistakes-counter">0</span></div>
+        
+        <!-- Режим подготовки -->
+        <div id="judge-prep" class="judge-prep active-mode">
+            <div class="input-group">
+                <label>Вопрос (для себя):</label>
+                <input type="text" id="inp-question" placeholder="Что ел на завтрак?">
+            </div>
+            <div class="input-group">
+                <label>Мой ответ (учитель):</label>
+                <textarea id="inp-teacher" placeholder="1-3 коротких предложения. Без эмодзи."></textarea>
+            </div>
+            <div class="input-group">
+                <label>Ответ ИИ:</label>
+                <textarea id="inp-ai" placeholder="Вставьте ответ из чата"></textarea>
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-secondary" onclick="combText()">Причесать текст</button>
+                <button class="btn btn-primary" onclick="shuffleAndShow()">Перемешать и Показать судьям</button>
+            </div>
+        </div>
+
+        <!-- Режим судейского экрана -->
+        <div id="judge-screen" class="judge-screen">
+            <div class="answers-display">
+                <div class="answer-box" id="box-a"><h2>A</h2><p id="text-a"></p></div>
+                <div class="answer-box" id="box-b"><h2>B</h2><p id="text-b"></p></div>
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-danger" onclick="vote('A')">Машина в A</button>
+                <button class="btn btn-success" onclick="vote('B')">Машина в B</button>
+            </div>
+        </div>
+
+        <!-- Режим раскрытия -->
+        <div id="judge-reveal" class="judge-reveal">
+            <div class="answers-display">
+                <div class="answer-box" id="rev-a"><h2>A</h2><p id="rev-text-a"></p></div>
+                <div class="answer-box" id="rev-b"><h2>B</h2><p id="rev-text-b"></p></div>
+            </div>
+            <div class="score-board" id="round-verdict"></div>
+            <div class="btn-row">
+                <button class="btn btn-primary" onclick="nextRound()">Следующий раунд</button>
+                <button class="btn btn-secondary" onclick="finishGame()">Завершить игру</button>
+            </div>
+        </div>
+
+        <!-- Финальный экран -->
+        <div id="judge-final" class="judge-final">
+            <h1 style="text-align: center; color: var(--accent);">ИТОГ ТЕСТА ТЬЮРИНГА</h1>
+            <div class="rule-display" id="final-verdict"></div>
+            <div style="text-align: center; font-size: 32px; color: var(--text-dim); margin: 20px 0;">
+                Прошёл тест — не значит понимает
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-primary" onclick="resetJudge()">Новая игра</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДУЛЬ 2: ОБУЧИ РОБОТА -->
+    <div id="mod-robot" class="module">
+        <div class="score-board">Этап: <span id="robot-stage">Демонстрация</span></div>
+
+        <!-- Демо и выбор признаков -->
+        <div id="robot-demo" class="robot-demo active-mode">
+            <div class="hint-box">
+                <b>Банк идей (внутренние свойства):</b> Лёгкий (до 2 кг), Есть молния, Широкие лямки, Водостойкий, Много карманов.
+                <br><b>Задание:</b> Введите вопрос для робота (например, "Весит меньше 2 кг?"). Приложение само определит свойство.
+            </div>
+            <div class="input-group">
+                <label>Ваш признак-вопрос:</label>
+                <input type="text" id="inp-feature" placeholder="Например: Есть молния?">
+            </div>
+            <button class="btn btn-primary" onclick="addFeature()">Добавить признак</button>
+            <div id="features-list" class="hint-box"></div>
+            
+            <div class="btn-row">
+                <button class="btn btn-secondary" onclick="startLabeling()">Перейти к разметке карточек</button>
+                <button class="btn btn-danger" onclick="resetRobot()">Сбросить</button>
+            </div>
+        </div>
+
+        <!-- Разметка -->
+        <div id="robot-train" class="robot-train">
+            <h2>Разметка обучающих карточек</h2>
+            <div id="train-cards" class="cards-grid"></div>
+            <div class="btn-row">
+                <button class="btn btn-success" onclick="trainModel()">Обучить робота!</button>
+            </div>
+        </div>
+
+        <!-- Тестирование -->
+        <div id="robot-test" class="robot-test">
+            <h2>Проверка на новых карточках</h2>
+            <div class="rule-display" id="test-rule"></div>
+            <div id="test-cards" class="cards-grid"></div>
+            <div class="btn-row">
+                <button class="btn btn-primary" onclick="showFinalRobot()">Выводы</button>
+            </div>
+        </div>
+
+        <!-- Финал -->
+        <div id="robot-final" class="robot-final">
+            <div class="rule-display" id="test-result" style="font-size: 32px; margin-bottom: 20px;"></div>
+            <div class="rule-display" style="font-size: 24px; line-height: 1.5;">
+                Признаки для робота придумали <b>ВЫ</b> — люди.<br>
+                Настоящая нейросеть придумывает признаки сама, поэтому ей и нужен миллион примеров.
+            </div>
+            <div class="hint-box" style="text-align: center; font-size: 20px;">
+                <b>Профессия:</b> Разметчик данных — реальная профессия: человек учит машину.
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Модальное окно подтверждения -->
+<div id="modal" class="modal-overlay">
+    <div class="modal-content">
+        <h2 id="modal-text">Точно раскрыть?</h2>
+        <div class="btn-row">
+            <button class="btn btn-primary" id="modal-confirm">Да</button>
+            <button class="btn btn-secondary" onclick="closeModal()">Отмена</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ==================== ОБЩИЕ ПЕРЕКЛЮЧАТЕЛИ ====================
+    function switchTab(tab, btn) {
+        document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('mod-' + tab).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    function showModal(text, callback) {
+        document.getElementById('modal-text').innerText = text;
+        document.getElementById('modal').style.display = 'flex';
+        document.getElementById('modal-confirm').onclick = () => { closeModal(); callback(); };
+    }
+    function closeModal() { document.getElementById('modal').style.display = 'none'; }
+
+    // ==================== МОДУЛЬ 1: ТЕРМИНАЛ СУДЬИ ====================
+    let judgeState = { round: 1, total: 5, mistakes: 0, aiIsA: false, playedRounds: 0 };
+
+    function combText() {
+        ['inp-teacher', 'inp-ai'].forEach(id => {
+            let el = document.getElementById(id);
+            el.value = el.value.replace(/[*_~`#>\-\[\]()]/g, '') // маркдаун
+                               .replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FAFF}\u{FE0F}\u{200D}]/gu, '') // эмодзи
+                               .replace(/\n+/g, ' ') // переносы
+                               .trim();
+        });
+    }
+
+    function shuffleAndShow() {
+        let t = document.getElementById('inp-teacher').value.trim();
+        let a = document.getElementById('inp-ai').value.trim();
+        if (!t || !a) { alert('Заполните оба ответа!'); return; }
+        
+        judgeState.aiIsA = Math.random() < 0.5;
+        let ansA = judgeState.aiIsA ? a : t;
+        let ansB = judgeState.aiIsA ? t : a;
+
+        document.getElementById('text-a').innerText = ansA;
+        document.getElementById('text-b').innerText = ansB;
+        
+        setJudgeMode('judge-screen');
+    }
+
+    function vote(choice) {
+        showModal('Точно такой вердикт? После подтверждения раунд будет раскрыт', () => {
+            let guessedRight = (choice === 'A' && judgeState.aiIsA) || (choice === 'B' && !judgeState.aiIsA);
+            if (!guessedRight) judgeState.mistakes++;
+            judgeState.playedRounds++;
+            
+            // Раскрытие
+            document.getElementById('rev-text-a').innerText = document.getElementById('text-a').innerText;
+            document.getElementById('rev-text-b').innerText = document.getElementById('text-b').innerText;
+            
+            document.getElementById('rev-a').classList.toggle('highlight', judgeState.aiIsA);
+            document.getElementById('rev-b').classList.toggle('highlight', !judgeState.aiIsA);
+
+            let verdictText = guessedRight ? 'Судьи угадали! Машина была в ' + (judgeState.aiIsA ? 'A' : 'B') : 'Судьи ошиблись! Машина была в ' + (judgeState.aiIsA ? 'A' : 'B');
+            document.getElementById('round-verdict').innerText = verdictText;
+            
+            updateScoreboard();
+            setJudgeMode('judge-reveal');
+        });
+    }
+
+    function nextRound() {
+        if (judgeState.round >= judgeState.total) {
+            finishGame();
+            return;
+        }
+        judgeState.round++;
+        updateScoreboard();
+        document.getElementById('inp-question').value = '';
+        document.getElementById('inp-teacher').value = '';
+        document.getElementById('inp-ai').value = '';
+        document.getElementById('rev-a').classList.remove('highlight');
+        document.getElementById('rev-b').classList.remove('highlight');
+        setJudgeMode('judge-prep');
+    }
+
+    function finishGame() {
+        let threshold = Math.floor(judgeState.playedRounds / 2);
+        let passed = judgeState.mistakes > threshold;
+        let text = `Судьи опознали машину в ${judgeState.playedRounds - judgeState.mistakes} из ${judgeState.playedRounds} раундов.<br>`;
+        text += `Ошибок судей: ${judgeState.mistakes}. Порог (больше половины): ${threshold + 1}.<br><br>`;
+        text += `<b style="color: ${passed ? 'var(--success)' : 'var(--error)'}; font-size: 36px;">ВЕРДИКТ: ${passed ? 'МАШИНА ПРОШЛА ТЕСТ' : 'МАШИНА НЕ ПРОШЛА ТЕСТ'}</b>`;
+        document.getElementById('final-verdict').innerHTML = text;
+        setJudgeMode('judge-final');
+    }
+
+    function resetJudge() {
+        judgeState = { round: 1, total: 5, mistakes: 0, aiIsA: false, playedRounds: 0 };
+        updateScoreboard();
+        document.getElementById('inp-question').value = '';
+        document.getElementById('inp-teacher').value = '';
+        document.getElementById('inp-ai').value = '';
+        setJudgeMode('judge-prep');
+    }
+
+    function updateScoreboard() {
+        document.getElementById('round-counter').innerText = judgeState.round;
+        document.getElementById('total-rounds').innerText = judgeState.total;
+        document.getElementById('mistakes-counter').innerText = judgeState.mistakes;
+    }
+
+    function setJudgeMode(mode) {
+        ['judge-prep', 'judge-screen', 'judge-reveal', 'judge-final'].forEach(m => {
+            document.getElementById(m).classList.remove('active-mode');
+        });
+        document.getElementById(mode).classList.add('active-mode');
+    }
+
+    // ==================== МОДУЛЬ 2: ОБУЧИ РОБОТА ====================
+    // Внутренние скрытые свойства (15 карточек: 10 обуч, 5 тест)
+    // Свойства: 0:Лёгкий, 1:Молния, 2:Лямки, 3:Водостойкий, 4:Карманы
+    const hiddenFeatures = [
+        [1,1,1,1,1], [1,1,0,0,0], [0,1,1,1,1], [1,0,1,1,1], [0,0,0,0,0],
+        [1,1,1,0,0], [0,1,0,1,0], [1,0,0,1,1], [1,0,1,0,1], [1,1,0,1,0],
+        [1,1,1,1,0], [0,1,1,0,1], [1,0,1,1,0], [1,1,0,0,1], [0,1,1,1,1]
+    ];
+    // Истинная метка "Надёжный" (используется только для тестовых карточек 10-14)
+    const groundTruth = [1,1,0,0,0, 1,0,0,0,1, 1,0,0,0,0];
+    
+    const cardTexts = [
+        "Городской рюкзак 1,2 кг: молния, широкие лямки, водостойкий, много карманов.",
+        "Маленький рюкзачок 1,5 кг: молния есть, лямки тонкие, не водостойкий, карманов мало.",
+        "Туристический рюкзак 4 кг: молния, широкие лямки, водостойкий, много карманов.",
+        "Лёгкий мешок-рюкзак 1 кг: без молнии, широкие лямки, водостойкий, много карманов.",
+        "Старый рюкзак 3 кг: без молнии, тонкие лямки, не водостойкий, карманов мало.",
+        "Школьный рюкзак 1,8 кг: молния, широкие лямки, не водостойкий, карманов мало.",
+        "Тяжёлый кофр 5 кг: молния есть, лямок нет, водостойкий, карманов мало.",
+        "Лёгкий рюкзак 1,5 кг: без молнии, тонкие лямки, водостойкий, много карманов.",
+        "Лёгкий тканевый мешок-рюкзак 0,9 кг: без молнии, широкие лямки, не водостойкий, есть большой карман.",
+        "Городской рюкзак 1,9 кг: молния, тонкие лямки, водостойкий, карманов мало.",
+        "Лёгкий походный рюкзак 1,2 кг: молния, широкие лямки, водостойкий, карманов мало.",
+        "Тяжёлый рюкзак 3,5 кг: молния, широкие лямки, не водостойкий, много карманов.",
+        "Лёгкий рюкзак 1,5 кг: без молнии — вместо неё липучка; широкие лямки, водостойкий, карманов мало.",
+        "Лёгкий рюкзак 1,8 кг: молния есть, но сломана и не застёгивается; тонкие лямки, не водостойкий, много карманов.",
+        "Туристический рюкзак 4 кг: молния, широкие лямки, водостойкий, много карманов."
+    ];
+
+    let robotState = {
+        selectedFeatures: [], // индексы 0-4
+        featureNames: [],
+        labels: new Array(10).fill(null), // метки для обуч. выборки
+        rule: null,
+        testRevealed: new Array(5).fill(false), // какие тестовые карточки раскрыты
+        testCorrect: 0
+    };
+
+    function addFeature() {
+        let name = document.getElementById('inp-feature').value.toLowerCase().trim();
+        if (!name) return;
+        
+        // Проверка на отрицательные признаки
+        if (/(без|не)\s+\S*(молни|водост|лямк|карман|лёгк|вес)/.test(name)) {
+            alert('Формулируй признак позитивно: "есть молния", а не "без молнии". Робот понимает только "да/нет"');
+            return;
+        }
+        
+        let idx = -1;
+        if (/лёгк|вес/.test(name)) idx = 0;
+        else if (/молни/.test(name)) idx = 1;
+        else if (/лямки|ремн/.test(name)) idx = 2;
+        else if (/водост|вод/.test(name)) idx = 3;
+        else if (/карман/.test(name)) idx = 4;
+
+        if (idx === -1) {
+            alert('Не понял признак. Используйте слова: лёгкий, молния, лямки, водостойкий, карман.');
+            return;
+        }
+        if (robotState.selectedFeatures.includes(idx)) {
+            alert('Этот признак уже добавлен!');
+            return;
+        }
+        if (robotState.selectedFeatures.length >= 3) {
+            alert('Максимум 3 признака. Удалите лишние или переходите к разметке.');
+            return;
+        }
+
+        robotState.selectedFeatures.push(idx);
+        robotState.featureNames.push(document.getElementById('inp-feature').value);
+        document.getElementById('inp-feature').value = '';
+        updateFeaturesList();
+    }
+
+    function updateFeaturesList() {
+        let html = '<b>Выбрано признаков:</b> ' + (robotState.featureNames.length > 0 ? robotState.featureNames.join(', ') : 'нет');
+        document.getElementById('features-list').innerHTML = html;
+    }
+
+    function startLabeling() {
+        if (robotState.selectedFeatures.length === 0) {
+            alert('Добавьте хотя бы один признак!');
+            return;
+        }
+        document.getElementById('robot-stage').innerText = 'Разметка данных';
+        renderTrainCards();
+        setRobotMode('robot-train');
+    }
+
+    function renderTrainCards() {
+        let container = document.getElementById('train-cards');
+        container.innerHTML = '';
+        for (let i = 0; i < 10; i++) {
+            let card = document.createElement('div');
+            card.className = 'card' + (robotState.labels[i] !== null ? ' labeled ' + (robotState.labels[i] ? 'rel' : 'not-rel') : '');
+            card.innerHTML = `
+                <h3>Карточка ${i + 1}</h3>
+                <p>${cardTexts[i]}</p>
+                <div class="card-actions">
+                    <button class="card-btn rel" onclick="setLabel(${i}, true)">Надёжный</button>
+                    <button class="card-btn not-rel" onclick="setLabel(${i}, false)">Не надёжный</button>
+                </div>
+            `;
+            container.appendChild(card);
+        }
+    }
+
+    function setLabel(idx, val) {
+        robotState.labels[idx] = val;
+        renderTrainCards();
+    }
+
+    function trainModel() {
+        if (robotState.labels.includes(null)) {
+            alert('Разметьте все 10 карточек!');
+            return;
+        }
+
+        // Ищем лучшее правило (1 признак или AND 2 признаков)
+        let bestRule = null;
+        let bestAcc = -1;
+
+        // Проверка 1 признака
+        for (let f of robotState.selectedFeatures) {
+            let acc = 0;
+            for (let i = 0; i < 10; i++) {
+                let pred = hiddenFeatures[i][f];
+                if (pred === (robotState.labels[i] ? 1 : 0)) acc++;
+            }
+            if (acc > bestAcc) { bestAcc = acc; bestRule = { type: 1, f1: f }; }
+        }
+
+        // Проверка AND 2 признаков
+        if (robotState.selectedFeatures.length >= 2) {
+            for (let i = 0; i < robotState.selectedFeatures.length; i++) {
+                for (let j = i + 1; j < robotState.selectedFeatures.length; j++) {
+                    let f1 = robotState.selectedFeatures[i];
+                    let f2 = robotState.selectedFeatures[j];
+                    let acc = 0;
+                    for (let k = 0; k < 10; k++) {
+                        let pred = hiddenFeatures[k][f1] & hiddenFeatures[k][f2];
+                        if (pred === (robotState.labels[k] ? 1 : 0)) acc++;
+                    }
+                    if (acc > bestAcc) { bestAcc = acc; bestRule = { type: 2, f1: f1, f2: f2 }; }
+                }
+            }
+        }
+
+        robotState.rule = bestRule;
+        robotState.rule.acc = bestAcc;
+
+        if (bestAcc < 8) { // Если угадал меньше 8 из 10
+            showModal('Данные шумные — модель запуталась. Придумайте ещё признак или проверьте разметку.', () => {
+                setRobotMode('robot-demo');
+            });
+            return;
+        }
+
+        // Показываем правило
+        let ruleText = 'РОБОТ РЕШИЛ: НАДЁЖНЫЙ = ';
+        if (bestRule.type === 1) {
+            ruleText += `[${robotState.featureNames[robotState.selectedFeatures.indexOf(bestRule.f1)]}]`;
+        } else {
+            let n1 = robotState.featureNames[robotState.selectedFeatures.indexOf(bestRule.f1)];
+            let n2 = robotState.featureNames[robotState.selectedFeatures.indexOf(bestRule.f2)];
+            ruleText += `[${n1}] И [${n2}]`;
+        }
+        ruleText += `<br>На обучающих карточках угадал ${bestAcc} из 10.`;
+        
+        document.getElementById('test-rule').innerHTML = ruleText;
+        document.getElementById('robot-stage').innerText = 'Тестирование';
+        
+        robotState.testRevealed = new Array(5).fill(false);
+        robotState.testCorrect = 0;
+        renderTestCards();
+        setRobotMode('robot-test');
+    }
+
+    function predict(cardIdx) {
+        let r = robotState.rule;
+        if (r.type === 1) return hiddenFeatures[cardIdx][r.f1];
+        return hiddenFeatures[cardIdx][r.f1] & hiddenFeatures[cardIdx][r.f2];
+    }
+
+    function renderTestCards() {
+        let container = document.getElementById('test-cards');
+        container.innerHTML = '';
+        for (let i = 0; i < 5; i++) {
+            let globalIdx = 10 + i;
+            let pred = predict(globalIdx);
+            let truth = groundTruth[globalIdx];
+            let isRevealed = robotState.testRevealed[i];
+            
+            let card = document.createElement('div');
+            card.className = 'card';
+            let statusText = '';
+            if (isRevealed) {
+                let isCorrect = (pred === truth);
+                statusText = `<br><b style="color: ${isCorrect ? 'var(--success)' : 'var(--error)'}">Робот: ${pred ? 'Надёжный' : 'Не надёжный'} | Факт: ${truth ? 'Надёжный' : 'Не надёжный'} | ${isCorrect ? 'УГАДАЛ' : 'ОШИБКА'}</b>`;
+            } else {
+                statusText = `<br><b style="color: var(--accent)">Робот думает: ${pred ? 'Надёжный' : 'Не надёжный'}</b><br><i>Как на самом деле?</i>`;
+            }
+            
+            card.innerHTML = `
+                <h3>Тест ${i + 1}</h3>
+                <p>${cardTexts[globalIdx]}</p>
+                <p>${statusText}</p>
+                ${!isRevealed ? `<button class="btn btn-primary" onclick="revealTest(${i})">Раскрыть факт</button>` : ''}
+            `;
+            container.appendChild(card);
+        }
+    }
+
+    function revealTest(i) {
+        if (robotState.testRevealed[i]) return; // уже раскрыта
+        
+        let globalIdx = 10 + i;
+        let pred = predict(globalIdx);
+        let truth = groundTruth[globalIdx];
+        let isCorrect = (pred === truth);
+        
+        if (isCorrect) robotState.testCorrect++;
+        
+        robotState.testRevealed[i] = true;
+        renderTestCards();
+    }
+
+    function showFinalRobot() {
+        document.getElementById('robot-stage').innerText = 'Выводы';
+        document.getElementById('test-result').innerHTML = `Робот угадал <b>${robotState.testCorrect}</b> из <b>5</b>`;
+        setRobotMode('robot-final');
+    }
+
+    function resetRobot() {
+        robotState = {
+            selectedFeatures: [],
+            featureNames: [],
+            labels: new Array(10).fill(null),
+            rule: null,
+            testRevealed: new Array(5).fill(false),
+            testCorrect: 0
+        };
+        document.getElementById('inp-feature').value = '';
+        updateFeaturesList();
+        document.getElementById('robot-stage').innerText = 'Демонстрация';
+        setRobotMode('robot-demo');
+    }
+
+    function setRobotMode(mode) {
+        ['robot-demo', 'robot-train', 'robot-test', 'robot-final'].forEach(m => {
+            document.getElementById(m).classList.remove('active-mode');
+        });
+        document.getElementById(mode).classList.add('active-mode');
+    }
+</script>
+</body>
+</html>

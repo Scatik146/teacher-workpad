@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Наклейка — горячие кнопки (4 на лист, альбомная)</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #eee;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ---------- Страница А4 альбомная: 2 × 2 наклейки ----------
+     Расчёт: 297 × 210 мм.
+     Поля страницы: 4 мм слева/справа/сверху/снизу → рабочая область 289 × 202 мм.
+     2 колонки: (289 - 3 gap) / 2 = 143 мм каждая.
+     2 ряда: (202 - 3 gap) / 2 = 99.5 → берём 98 мм с запасом.
+  */
+  .page {
+    width: 297mm;
+    min-height: 210mm;
+    padding: 4mm;
+    margin: 0 auto;
+    background: #fff;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 98mm 98mm;
+    gap: 3mm;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* ---------- Одна наклейка ---------- */
+  .sticker {
+    width: 100%;
+    height: 100%;
+    border: 1.5px dashed #888;
+    background: #fff;
+    padding: 3mm 4mm;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .sticker-title {
+    font-size: 13pt;
+    font-weight: 700;
+    text-align: center;
+    margin: 0 0 1.5mm 0;
+    color: #111;
+    letter-spacing: 0.4px;
+    flex-shrink: 0;
+  }
+
+  /* ---------- Блок внутри наклейки ---------- */
+  .group {
+    margin-bottom: 1.2mm;
+    flex-shrink: 0;
+  }
+  .group:last-child { margin-bottom: 0; }
+
+  .group-label {
+    font-size: 7.5pt;
+    font-weight: 700;
+    color: #444;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.7mm;
+    border-bottom: 0.5px dotted #bbb;
+    padding-bottom: 0.2mm;
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2mm 2mm;
+    margin-bottom: 0.8mm;
+    align-items: center;
+  }
+  .row:last-child { margin-bottom: 0; }
+
+  /* ---------- Плашка-клавиша ---------- */
+  .key {
+    display: inline-block;
+    background: #f4f4f4;
+    border: 1px solid #aaa;
+    border-bottom: 2px solid #777;
+    border-radius: 2px;
+    padding: 0.4mm 1.6mm;
+    font-family: "Consolas", "Segoe UI", monospace;
+    font-size: 9.5pt;
+    font-weight: 700;
+    color: #111;
+    white-space: nowrap;
+    line-height: 1.2;
+  }
+  .lbl {
+    font-size: 8.5pt;
+    color: #222;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .pair {
+    display: inline-flex;
+    align-items: center;
+    gap: 1mm;
+  }
+
+  /* ---------- Цвета групп ---------- */
+  .k-ctrl { background: #d6e6ff; border-color: #4a7bc8; border-bottom-color: #2d5aa0; color: #12305e; }
+  .k-win  { background: #d6f0d6; border-color: #4a9a4a; border-bottom-color: #2d6a2d; color: #15401a; }
+  .k-alt  { background: #ffe0c2; border-color: #d08040; border-bottom-color: #a05a20; color: #5a3010; }
+  .k-warn { background: #fff3b0; border-color: #c8a820; border-bottom-color: #8a7010; color: #5a4a00; }
+
+  .warn-block .row { justify-content: center; }
+  .warn-block .key { font-size: 10pt; padding: 0.5mm 2mm; }
+  .warn-block .lbl { font-size: 8.5pt; font-style: italic; }
+
+  /* ---------- Печать ---------- */
+  @page {
+    size: A4 landscape;
+    margin: 4mm;
+  }
+  @media print {
+    html, body {
+      background: #fff !important;
+      margin: 0;
+      padding: 0;
+    }
+    .page {
+      width: 100%;
+      min-height: 0;
+      height: 202mm;
+      padding: 0;
+      margin: 0;
+      grid-template-rows: 98mm 98mm;
+      gap: 3mm;
+      page-break-inside: avoid;
+      break-inside: avoid;
+      page-break-after: avoid;
+      break-after: avoid;
+    }
+    .sticker {
+      border: 1px dashed #999;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- 1 -->
+  <div class="sticker">
+    <div class="sticker-title">Горячие кнопки</div>
+    <div class="group">
+      <div class="group-label">Ctrl — текст и файлы</div>
+      <div class="row">
+        <span class="pair"><span class="key k-ctrl">Ctrl+C</span><span class="lbl">копировать</span></span>
+        <span class="pair"><span class="key k-ctrl">Ctrl+V</span><span class="lbl">вставить</span></span>
+        <span class="pair"><span class="key k-ctrl">Ctrl+X</span><span class="lbl">вырезать</span></span>
+      </div>
+      <div class="row">
+        <span class="pair"><span class="key k-ctrl">Ctrl+Z</span><span class="lbl">отменить</span></span>
+        <span class="pair"><span class="key k-ctrl">Ctrl+S</span><span class="lbl">сохранить</span></span>
+        <span class="pair"><span class="key k-ctrl">Ctrl+A</span><span class="lbl">выделить всё</span></span>
+      </div>
+    </div>
+    <div class="group warn-block">
+      <div class="group-label">Внимание!</div>
+      <div class="row">
+        <span class="pair"><span class="key k-warn">Ctrl+W</span><span class="lbl">закрыть вкладку</span></span>
+      </div>
+    </div>
+    <div class="group">
+      <div class="group-label">Win — окна и язык</div>
+      <div class="row">
+        <span class="pair"><span class="key k-win">Win+E</span><span class="lbl">Проводник</span></span>
+        <span class="pair"><span class="key k-win">Win+S + б</span><span class="lbl">найти программу</span></span>
+      </div>
+      <div class="row">
+        <span class="pair"><span class="key k-win">Win+Пробел</span><span class="lbl">язык</span></span>
+        <span class="pair"><span class="key k-win">Win+L</span><span class="lbl">заблокировать</span></span>
+      </div>
+    </div>
+    <div class="group">
+      <div class="group-label">Дополнительно</div>
+      <div class="row">
+        <span class="pair"><span class="key k-alt">Alt+P</span><span class="lbl">предпросмотр</span></span>
+        <span class="pair"><span class="key k-alt">Alt+Tab</span><span class="lbl">между окнами</span></span>
+        <span class="pair"><span class="key k-win">Win+D</span><span class="lbl">рабочий стол</span></span>
+      </div>
+      <div class="row">
+        <span class="pair"><span class="key k-alt">Fn+F2</span><span class="lbl">переименовать</span></span>
+        <span class="pair"><span class="key k-ctrl">Ctrl+Shift+N</span><span class="lbl">новая папка</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2 -->
+  <div class="sticker">
+    <div class="sticker-title">Горячие кнопки</div>
+    <div class="group">
+      <div class="group-label">Ctrl — текст и файлы</div>
+      <div class="row">
+        <span class="pair"><span class="key k-ctrl">Ctrl+C</span><span class="lbl">копировать</span></span>
+        <span class="pair"><span class="key k-ctrl">Ctrl+V</span><span class="lbl">вставить</span></span>
+        <span class="pair"><span class="key k-ctrl">Ctrl+X</span><span class="lbl">вырезать</span></span>
+      </div>
+      <div class="row">
+        <span class="pair"><span class="key k-ctrl">Ctrl+Z</span><span class="lbl">отменить</span></span>
+        <span class="pair"><span class="key k-ctrl">Ctrl+S</span><span class="lbl">сохранить</span></span>
+        <span class="pair"><span class="key k-ctrl">Ctrl+A</span><span class="lbl">выделить всё</span></span>
+      </div>
+    </div>
+    <div class="group warn-block">
+      <div class="group-label">Внимание!</div>
+      <div class="row">
+        <span class="pair"><span class="key k-warn">Ctrl+W</span><span class="lbl">закрыть вкладку</span></span>
+      </div>
+    </div>
+    <div class="group">
+      <div class="group-label">Win — окна и язык</div>
+      <div class="row">
+        <span class="pair"><span class="key k-win">Win+E</span><span class="lbl">Проводник</span></span>
+        <span class="pair"><span class="key k-win">Win+S + б</span><span class="lbl">найти программу</span></span>
+      </div>
+      <div class="row">
+        <span class="pair"><span class="key k-win">Win+Пробел</span><span class="lbl">язык</span></span>
+        <span class="pair"><span class="key k-win">Win+L</span><span class="lbl">заблокировать</span></span>
+      </div>
+    </div>
+    <div class="group">
+      <div class="group-label">Дополнительно</div>
+      <div class="row">
+        <span class="pair"><span class="key k-alt">Alt+P</span><span class="lbl">предпросмотр</span></span>
+        <span class="pair"><span class="key k-alt">Alt+Tab</span><span class="lbl">между окнами</span></span>
+        <span class="pair"><span class="key k-win">Win+D</span><span class="lbl">рабочий стол</span></span>
+      </div>
+      <div class="row">
+        <span class="pair"><span class="key k-alt">Fn+F2</span><span class="lbl">переименовать</span></span>
+        <span class="pair"><span class="key k-ctrl">Ctrl+Shift+N</span><span class="lbl">новая папка</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 -->
+  <div class="sticker">
+    <div class="sticker-title">Горячие кнопки</div>
+    <div class="group">
+      <div class="group-label">Ctrl — текст и файлы</div>
+      <div class="row">
+        <span class="pair"><span class="key k-ctrl">Ctrl+C</span><span class="lbl">копировать</span></span>
+        <span class="pair"><span class="key k-ctrl">Ctrl+V</span><span class="lbl">вставить</span></span>
+        <span class="pair"><span class="key k-ctrl">Ctrl+X</span><span class="lbl">вырезать</span></span>
+      </div>
+      <div class="row">
+        <span class="pair"><span class="key k-ctrl">Ctrl+Z</span><span class="lbl">отменить</span></span>
+        <span class="pair"><span class="key k-ctrl">Ctrl+S</span><span class="lbl">сохранить</span></span>
+        <span class="pair"><span class="key k-ctrl">Ctrl+A</span><span class="lbl">выделить всё</span></span>
+      </div>
+    </div>
+    <div class="group warn-block">
+      <div class="group-label">Внимание!</div>
+      <div class="row">
+        <span class="pair"><span class="key k-warn">Ctrl+W</span><span class="lbl">закрыть вкладку</span></span>
+      </div>
+    </div>
+    <div class="group">
+      <div class="group-label">Win — окна и язык</div>
+      <div class="row">
+        <span class="pair"><span class="key k-win">Win+E</span><span class="lbl">Проводник</span></span>
+        <span class="pair"><span class="key k-win">Win+S + б</span><span class="lbl">найти программу</span></span>
+      </div>
+      <div class="row">
+        <span class="pair"><span class="key k-win">Win+Пробел</span><span class="lbl">язык</span></span>
+        <span class="pair"><span class="key k-win">Win+L</span><span class="lbl">заблокировать</span></span>
+      </div>
+    </div>
+    <div class="group">
+      <div class="group-label">Дополнительно</div>
+      <div class="row">
+        <span class="pair"><span class="key k-alt">Alt+P</span><span class="lbl">предпросмотр</span></span>
+        <span class="pair"><span class="key k-alt">Alt+Tab</span><span class="lbl">между окнами</span></span>
+        <span class="pair"><span class="key k-win">Win+D</span><span class="lbl">рабочий стол</span></span>
+      </div>
+      <div class="row">
+        <span class="pair"><span class="key k-alt">Fn+F2</span><span class="lbl">переименовать</span></span>
+        <span class="pair"><span class="key k-ctrl">Ctrl+Shift+N</span><span class="lbl">новая папка</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 -->
+  <div class="sticker">
+    <div class="sticker-title">Горячие кнопки</div>
+    <div class="group">
+      <div class="group-label">Ctrl — текст и файлы</div>
+      <div class="row">
+        <span class="pair"><span class="key k-ctrl">Ctrl+C</span><span class="lbl">копировать</span></span>
+        <span class="pair"><span class="key k-ctrl">Ctrl+V</span><span class="lbl">вставить</span></span>
+        <span class="pair"><span class="key k-ctrl">Ctrl+X</span><span class="lbl">вырезать</span></span>
+      </div>
+      <div class="row">
+        <span class="pair"><span class="key k-ctrl">Ctrl+Z</span><span class="lbl">отменить</span></span>
+        <span class="pair"><span class="key k-ctrl">Ctrl+S</span><span class="lbl">сохранить</span></span>
+        <span class="pair"><span class="key k-ctrl">Ctrl+A</span><span class="lbl">выделить всё</span></span>
+      </div>
+    </div>
+    <div class="group warn-block">
+      <div class="group-label">Внимание!</div>
+      <div class="row">
+        <span class="pair"><span class="key k-warn">Ctrl+W</span><span class="lbl">закрыть вкладку</span></span>
+      </div>
+    </div>
+    <div class="group">
+      <div class="group-label">Win — окна и язык</div>
+      <div class="row">
+        <span class="pair"><span class="key k-win">Win+E</span><span class="lbl">Проводник</span></span>
+        <span class="pair"><span class="key k-win">Win+S + б</span><span class="lbl">найти программу</span></span>
+      </div>
+      <div class="row">
+        <span class="pair"><span class="key k-win">Win+Пробел</span><span class="lbl">язык</span></span>
+        <span class="pair"><span class="key k-win">Win+L</span><span class="lbl">заблокировать</span></span>
+      </div>
+    </div>
+    <div class="group">
+      <div class="group-label">Дополнительно</div>
+      <div class="row">
+        <span class="pair"><span class="key k-alt">Alt+P</span><span class="lbl">предпросмотр</span></span>
+        <span class="pair"><span class="key k-alt">Alt+Tab</span><span class="lbl">между окнами</span></span>
+        <span class="pair"><span class="key k-win">Win+D</span><span class="lbl">рабочий стол</span></span>
+      </div>
+      <div class="row">
+        <span class="pair"><span class="key k-alt">Fn+F2</span><span class="lbl">переименовать</span></span>
+        <span class="pair"><span class="key k-ctrl">Ctrl+Shift+N</span><span class="lbl">новая папка</span></span>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

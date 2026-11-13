@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Моя история в картинках</title>
+<!--
+  Приложение к уроку «Коллаж как цифровой продукт», 2 класс.
+  Работает офлайн, без интернета. Картинки берутся из папки img/ рядом с этим файлом.
+  Если какой-то картинки нет — в рамке появится цветная заглушка, приложение не ломается.
+
+  Стартовые истории (для учителя, детям не показывать):
+    kollazh-editor.html?start=1  — герой уже выбран, дальше по 2 варианта на шаге
+    kollazh-editor.html?start=2  — герой и цель уже выбраны, остаются шаги 3–4
+    kollazh-editor.html?start=3  — все шаги выбраны, остаются подписи, стиль, печать
+  Сами стартовые истории можно поменять в объекте PACKS ниже.
+
+  Проверить, все ли картинки на месте:
+    kollazh-editor.html?proverka
+  Картинки подхватываются в .jpg, .png, .jpeg, .webp (и с двойным расширением вроде «hero_cat.jpg.jpg»).
+
+  Начать заново на этом же компьютере: закрыть вкладку и открыть файл снова.
+-->
+<style>
+:root{
+  --bg:#FFF4E2; --bg2:#FFE7C2; --ink:#2B2140; --ink-soft:#5B5070;
+  --orange:#FF8A1F; --orange-dark:#E06A00; --glow:#FFB300;
+  --teal:#169E92; --teal-dark:#0E7C72; --berry:#E2457A; --sky:#4C8DF5;
+  --card:#FFFFFF; --line:#EBD9BC;
+  --radius:22px;
+  --font:"Segoe UI","Trebuchet MS","Verdana",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{
+  font-family:var(--font); color:var(--ink); background:var(--bg);
+  background-image:radial-gradient(circle at 12% 8%, #FFE2B0 0 160px, transparent 161px),
+                   radial-gradient(circle at 92% 95%, #FFD9C9 0 220px, transparent 221px);
+  font-size:22px; line-height:1.3; -webkit-font-smoothing:antialiased;
+}
+button{font-family:inherit;color:inherit;cursor:pointer}
+.app{max-width:1400px;margin:0 auto;padding:14px 22px 18px;min-height:100%;display:flex;flex-direction:column}
+
+/* ---------- верхняя полоса ---------- */
+.top{display:flex;align-items:center;gap:16px;min-height:72px}
+.top .spacer{flex:1}
+.stars{display:flex;gap:8px;align-items:center}
+.star{width:46px;height:46px;display:grid;place-items:center;font-size:40px;line-height:1;color:#E3D3B8;transition:transform .3s, color .3s}
+.star.on{color:var(--glow);text-shadow:0 2px 0 #C97F00;transform:scale(1.12)}
+.star.pop{animation:pop .6s ease}
+@keyframes pop{0%{transform:scale(.6)}60%{transform:scale(1.35)}100%{transform:scale(1.12)}}
+
+/* служебные кнопки */
+.btn{min-width:64px;min-height:64px;border:0;border-radius:18px;padding:10px 22px;font-size:22px;font-weight:700;
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;transition:transform .12s, box-shadow .12s, background .2s}
+.btn:active{transform:translateY(3px)}
+.btn .ic{font-size:28px;line-height:1}
+.btn-back{background:#fff;border:3px solid var(--line);color:var(--ink-soft)}
+.btn-redo{background:#fff;border:3px solid var(--berry);color:var(--berry)}
+.btn-next{background:var(--teal);color:#fff;box-shadow:0 5px 0 var(--teal-dark);font-size:26px;padding:12px 34px}
+.btn-next:active{box-shadow:0 2px 0 var(--teal-dark)}
+.btn-big{background:var(--orange);color:#fff;box-shadow:0 6px 0 var(--orange-dark);font-size:32px;padding:18px 54px;border-radius:26px}
+.btn-print{background:var(--orange);color:#fff;box-shadow:0 5px 0 var(--orange-dark)}
+.btn-what{background:#fff;border:3px solid var(--sky);color:var(--sky)}
+.btn[hidden]{display:none}
+
+/* ---------- лента кадров ---------- */
+.strip{display:flex;justify-content:center;align-items:center;gap:18px;padding:14px 0 8px}
+.mini{position:relative;width:150px;aspect-ratio:4/3;border-radius:14px;background:#fff;border:3px dashed #D9C3A0;
+  overflow:visible;transition:transform .35s ease, opacity .35s ease, border-color .3s}
+.mini .num{position:absolute;left:-10px;top:-12px;width:34px;height:34px;border-radius:50%;background:var(--ink);color:#fff;
+  font-size:18px;font-weight:800;display:grid;place-items:center;z-index:2}
+.mini .pic{border-radius:11px}
+.mini.filled{border-style:solid;border-color:#fff}
+.strip.has-active .mini{opacity:.4}
+.mini.active{opacity:1 !important;transform:scale(1.09);border:5px solid var(--glow);box-shadow:0 0 0 4px rgba(255,179,0,.25), 0 8px 18px rgba(224,106,0,.25)}
+.mini.active.pulse{animation:pulse 1.1s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 4px rgba(255,179,0,.25),0 8px 18px rgba(224,106,0,.25)}
+                 50%{box-shadow:0 0 0 14px rgba(255,179,0,.35),0 8px 18px rgba(224,106,0,.35)}}
+.arrow{font-size:30px;color:#D9B98A;font-weight:900}
+.mini .here{position:absolute;inset:0;display:grid;place-items:center;font-size:44px;color:var(--glow)}
+.toast{height:34px;text-align:center;font-weight:800;color:var(--teal-dark);font-size:22px;opacity:0;transition:opacity .3s}
+.toast.show{opacity:1}
+
+/* ---------- вопрос и карточки ---------- */
+.q{text-align:center;font-size:40px;font-weight:800;margin:4px 0 14px;letter-spacing:.2px}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;max-width:1240px;margin:0 auto;width:100%}
+.cards.two{grid-template-columns:repeat(2,minmax(0,360px));justify-content:center;gap:34px}
+.cards.three{grid-template-columns:repeat(3,minmax(0,330px));justify-content:center}
+.card{background:var(--card);border:4px solid transparent;border-radius:var(--radius);padding:10px 10px 0;text-align:center;
+  box-shadow:0 6px 0 var(--line), 0 10px 22px rgba(80,50,10,.08);transition:transform .15s, border-color .2s, opacity .3s;display:flex;flex-direction:column;min-height:64px}
+.card:hover{transform:translateY(-4px)}
+.card .pic{border-radius:14px}
+.card .lbl{font-size:23px;font-weight:700;padding:12px 6px 14px;flex:1;display:flex;align-items:center;justify-content:center;min-height:76px}
+.card.sel{border-color:var(--glow);transform:translateY(-4px);box-shadow:0 6px 0 #F0B44C, 0 0 0 6px rgba(255,179,0,.25)}
+.card.sel::after{content:"✔";position:absolute}
+.cards.has-sel .card:not(.sel){opacity:.55}
+.card{position:relative}
+.card.sel::after{right:-12px;top:-14px;width:44px;height:44px;border-radius:50%;background:var(--teal);color:#fff;
+  font-size:26px;display:grid;place-items:center;box-shadow:0 3px 0 var(--teal-dark)}
+
+/* картинка с заглушкой */
+.pic{position:relative;width:100%;aspect-ratio:4/3;overflow:hidden;background:#F3E6D2}
+.pic img{width:100%;height:100%;object-fit:cover;display:block}
+.pic.noimg::after{content:attr(data-emo);position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(34px,7vw,96px);
+  font-family:"Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif}
+.mini .pic.noimg::after{font-size:52px}
+.pic.c-hero{background:linear-gradient(160deg,#FFD7A8,#FFB27A)}
+.pic.c-goal{background:linear-gradient(160deg,#BFE3FF,#8CC4F2)}
+.pic.c-obstacle{background:linear-gradient(160deg,#D9D2F2,#A99CD9)}
+.pic.c-end{background:linear-gradient(160deg,#FFF0A6,#FFC94D)}
+.pic.c-pre{background:linear-gradient(160deg,#FFD6E4,#F7A6C1)}
+
+/* нижняя полоса */
+.bottom{display:flex;align-items:center;gap:16px;margin-top:auto;padding-top:16px}
+.hint{flex:1;text-align:center;color:var(--ink-soft);font-size:20px}
+.slot-l,.slot-r{min-width:220px;display:flex}
+.slot-r{justify-content:flex-end;gap:14px}
+
+/* ---------- стартовый экран ---------- */
+.hello{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;text-align:center}
+.hello h1{font-size:54px;margin:0;line-height:1.1}
+.hello p{font-size:28px;margin:0;color:var(--ink-soft)}
+.hello .strip{padding:20px 0}
+.hello .mini{width:170px}
+
+/* ---------- экран коллажа ---------- */
+.ctitle{text-align:center;font-size:38px;font-weight:800;margin:2px 0 10px}
+.collage{border-radius:28px;padding:26px 22px 22px;transition:background .3s}
+.collage .head{text-align:center;font-size:34px;font-weight:800;margin:0 0 18px}
+.row{display:flex;align-items:flex-start;justify-content:center;gap:10px}
+.frame{flex:1 1 0;max-width:290px;min-width:0;position:relative;cursor:pointer}
+.frame .pic{border-radius:0}
+.frame .box{transition:transform .2s}
+.frame:hover .box{transform:translateY(-3px)}
+.frame textarea{width:100%;margin-top:10px;font:inherit;font-size:19px;padding:8px 10px;border-radius:12px;border:3px solid var(--line);
+  background:#fff;color:var(--ink);text-align:center;min-height:64px;resize:none;overflow:hidden;line-height:1.25;display:block}
+.frame textarea:focus{outline:none;border-color:var(--glow)}
+.frame .fnum{position:absolute;left:-8px;top:-12px;z-index:2;width:38px;height:38px;border-radius:50%;background:var(--ink);color:#fff;font-weight:800;font-size:20px;display:grid;place-items:center}
+.row .arrow{align-self:center;margin-top:-60px}
+.pcap{display:none}
+.frame.add{display:flex;flex-direction:column;align-items:center;justify-content:center;max-width:170px;min-height:150px;
+  border:4px dashed #D9B98A;border-radius:20px;color:var(--ink-soft);font-weight:700;font-size:19px;text-align:center;padding:12px;background:rgba(255,255,255,.5);align-self:center;margin-top:-60px}
+.frame.add .plus{font-size:52px;line-height:1;color:var(--orange)}
+.frame.pre .fnum{background:var(--berry);font-size:15px;width:auto;padding:0 10px;border-radius:19px}
+
+/* стиль «Мультяшный» */
+.st-cartoon{background:#FFF9EC;box-shadow:inset 0 0 0 4px #FFE2A6}
+.st-cartoon .frame .box{border:7px solid var(--orange);border-radius:26px;overflow:hidden;background:#fff}
+.st-cartoon .frame:nth-of-type(4n+2) .box{border-color:var(--teal)}
+.st-cartoon .frame:nth-of-type(4n+3) .box{border-color:var(--berry)}
+.st-cartoon .frame:nth-of-type(4n) .box{border-color:var(--sky)}
+.st-cartoon .head{color:var(--orange-dark)}
+.st-cartoon .frame textarea{border-radius:18px;font-weight:600}
+/* стиль «Комикс» */
+.st-comic{background-color:#fff;background-image:radial-gradient(#E4E4E4 1.6px, transparent 1.7px);background-size:12px 12px;box-shadow:inset 0 0 0 5px #111}
+.st-comic .head{font-weight:900;text-transform:uppercase;letter-spacing:1px;color:#111}
+.st-comic .frame .box{border:5px solid #111;box-shadow:6px 6px 0 #111;background:#fff}
+.st-comic .frame textarea{border:4px solid #111;border-radius:0;font-weight:900;text-transform:uppercase;font-size:16px;color:#111}
+.st-comic .arrow{color:#111}
+/* стиль «Фотоальбом» */
+.st-photo{background:#EFE4D2}
+.st-photo .head{font-weight:600;color:#5A4632}
+.st-photo .frame .box{background:#fff;padding:12px 12px 14px;box-shadow:0 8px 16px rgba(60,40,20,.22)}
+.st-photo .frame:nth-of-type(odd) .box{transform:rotate(-2deg)}
+.st-photo .frame:nth-of-type(even) .box{transform:rotate(1.6deg)}
+.st-photo .frame textarea{border:0;border-bottom:3px solid #C9B496;border-radius:0;background:transparent;font-weight:400}
+.st-photo .arrow{color:#B59B78}
+
+.styles{display:flex;gap:12px;align-items:center}
+.styles .lab{font-size:20px;color:var(--ink-soft);font-weight:700}
+.chip{min-height:64px;min-width:64px;border-radius:16px;border:3px solid var(--line);background:#fff;font-size:20px;font-weight:700;padding:6px 16px;display:inline-flex;align-items:center;gap:8px}
+.chip .ic{font-size:26px}
+.chip.on{border-color:var(--glow);background:#FFF4D1;box-shadow:0 0 0 4px rgba(255,179,0,.25)}
+
+/* окно «Что я выбрал» */
+.veil{position:fixed;inset:0;background:rgba(43,33,64,.55);display:grid;place-items:center;z-index:50}
+.veil[hidden]{display:none}
+.sheet{background:#fff;border-radius:28px;padding:30px 34px;max-width:1100px;width:92%;text-align:center}
+.sheet h2{margin:0 0 6px;font-size:36px}
+.sheet p{margin:0 0 20px;color:var(--ink-soft)}
+.chain{display:flex;align-items:stretch;justify-content:center;gap:10px;flex-wrap:wrap}
+.link{flex:1 1 0;min-width:170px;max-width:230px;background:var(--bg);border-radius:18px;padding:10px;font-weight:700;font-size:20px}
+.link .pic{border-radius:12px;margin-bottom:8px}
+.link small{display:block;color:var(--ink-soft);font-weight:600;font-size:16px;margin-bottom:4px}
+
+@media (max-width:1100px){ .cards{grid-template-columns:repeat(2,minmax(0,1fr));max-width:760px} .q{font-size:34px} }
+@media (prefers-reduced-motion:reduce){ .mini.active.pulse{animation:none} *{transition:none !important} }
+
+/* ---------- печать ---------- */
+@media print{
+  @page{size:A4 landscape;margin:8mm}
+  body{background:#fff !important}
+  .noprint,.top,.bottom,.ctitle,.veil,.frame.add,.row .arrow,.frame textarea{display:none !important}
+  .app{padding:0;max-width:none}
+  .collage{-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:6mm 6mm 4mm;border-radius:0;break-inside:avoid}
+  .collage .head{font-size:22pt;margin:0 0 4mm}
+  .row{flex-wrap:wrap;gap:5mm 10mm}
+  .frame{flex:0 0 80mm;max-width:none}
+  .five .frame{flex:0 0 74mm}
+  .pcap{display:block;text-align:center;font-size:14pt;padding:2.5mm 1mm 0;min-height:9mm}
+  .st-comic .pcap{font-weight:900;text-transform:uppercase;font-size:12pt}
+  .st-cartoon .pcap{font-weight:600}
+  .frame:hover .box{transform:none}
+  .st-photo .frame:nth-of-type(odd) .box{transform:rotate(-1.5deg)}
+  .st-photo .frame:nth-of-type(even) .box{transform:rotate(1.2deg)}
+}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+
+<div class="veil" id="veil" hidden>
+  <div class="sheet">
+    <h2>Вот что ты выбрал</h2>
+    <p>Расскажи по шагам: кто герой → зачем пошёл → что помешало → чем всё закончилось</p>
+    <div class="chain" id="chain"></div>
+    <div style="margin-top:24px"><button class="btn btn-next" id="closeVeil"><span class="ic">👍</span>Понятно</button></div>
+  </div>
+</div>
+
+<script>
+/* ================== ДАННЫЕ ИСТОРИИ ================== */
+/* {X} в подписи заменяется на короткое имя героя. Подписи — в настоящем времени,
+   чтобы не путаться с «он/она пошёл/пошла». */
+const STEPS = [
+  { key:"hero", cat:"hero", q:"Кто твой герой?", word:"Герой", opts:[
+    {id:"robot", label:"Робот-исследователь", img:"hero_robot", emo:"🤖", name:"Робот", acc:"робота-исследователя",
+      cap:"Это робот-исследователь, он всё изучает"},
+    {id:"drone", label:"Дрон-помощник", img:"hero_drone", emo:"🚁", name:"Дрон", acc:"дрона-помощника",
+      cap:"Это дрон-помощник, он летает высоко"},
+    {id:"cat", label:"Кот-путешественник", img:"hero_cat", emo:"🐱", name:"Кот", acc:"кота-путешественника",
+      cap:"Это кот-путешественник, он любит дороги"},
+    {id:"owl", label:"Сова-хранительница", img:"hero_owl", emo:"🦉", name:"Сова", acc:"сову-хранительницу",
+      cap:"Это сова-хранительница старого леса"}
+  ]},
+  { key:"goal", cat:"goal", q:"Зачем герой отправился в путь?", word:"Зачем пошёл", opts:[
+    {id:"beacon", label:"Найти пропавший маячок", img:"goal_beacon", emo:"🚨", cap:"{X} идёт искать пропавший маячок"},
+    {id:"rescue", label:"Спасти друга из тумана", img:"goal_fog_rescue", emo:"🆘", cap:"{X} спешит спасти друга из тумана"},
+    {id:"letter", label:"Доставить важное письмо", img:"goal_letter", emo:"✉️", cap:"{X} несёт другу очень важное письмо"},
+    {id:"tree", label:"Узнать тайну старого дерева", img:"goal_tree_mystery", emo:"🌳", cap:"{X} хочет узнать тайну старого дерева"}
+  ]},
+  { key:"obstacle", cat:"obstacle", q:"Что помешало герою?", word:"Что помешало", opts:[
+    {id:"fog", label:"Туман закрыл дорогу", img:"obstacle_fog", emo:"🌫️", cap:"Но густой туман закрыл всю дорогу"},
+    {id:"door", label:"Дверь заперта, ключа нет", img:"obstacle_door", emo:"🔒", cap:"Но дверь заперта, а ключа нет"},
+    {id:"signal", label:"Сигнал пропал, связь не работает", img:"obstacle_signal", emo:"📵", cap:"Но сигнал пропал, связь не работает"},
+    {id:"rival", label:"Другой персонаж хочет забрать это первым", img:"obstacle_rival", emo:"🦊", cap:"Но кто-то другой хочет успеть первым"}
+  ]},
+  { key:"end", cat:"end", q:"Чем всё закончилось?", word:"Чем закончилось", opts:[
+    {id:"clue", label:"Использовали подсказку", img:"end_clue", emo:"🗺️", cap:"{X} находит подсказку — и всё получается"},
+    {id:"together", label:"Объединились с другим", img:"end_together", emo:"🤝", cap:"{X} и новый друг справляются вместе"},
+    {id:"inventive", label:"Придумали нестандартный способ", img:"end_inventive", emo:"💡", cap:"{X} придумывает необычный способ — получилось!"},
+    {id:"brave", label:"Сделали смелый шаг, хотя было боязно", img:"end_brave", emo:"⭐", cap:"{X} делает смелый шаг, хотя боязно"}
+  ]}
+];
+const PRE = { key:"pre", cat:"pre", q:"Что было ДО начала истории?", opts:[
+  {id:"wake", label:"Герой проснулся", img:"pre_wake", emo:"🌅", cap:"Утром {X} просыпается и потягивается"},
+  {id:"letter", label:"Герой нашёл письмо", img:"pre_letter", emo:"📬", cap:"{X} находит на пороге письмо"},
+  {id:"signal", label:"Герой услышал сигнал", img:"pre_signal", emo:"📡", cap:"{X} вдруг слышит странный сигнал"}
+]};
+
+/* ================== СТАРТОВЫЕ ИСТОРИИ ================== */
+const PACKS = {
+  "1": { pick:{hero:"cat"}, only:{goal:["letter","beacon"], obstacle:["fog","door"], end:["together","clue"]} },
+  "2": { pick:{hero:"robot", goal:"letter"} },
+  "3": { pick:{hero:"owl", goal:"tree", obstacle:"fog", end:"brave"} }
+};
+
+const STYLES = [
+  {id:"cartoon", label:"Мультяшный", ic:"🎈"},
+  {id:"comic", label:"Комикс", ic:"💥"},
+  {id:"photo", label:"Фотоальбом", ic:"📷"}
+];
+const HINT = "Ошибок здесь не бывает. Если хочешь — нажми «Переделать» и выбери заново.";
+
+/* ================== СОСТОЯНИЕ ================== */
+const KEY = "kollazh-state-v1";
+let S = load() || fresh();
+function fresh(){
+  const s = {screen:"hello", step:0, pick:{}, caps:{}, edited:{}, style:"cartoon", only:null, back:false};
+  const p = new URLSearchParams(location.search).get("start");
+  if (PACKS[p]) {
+    s.pick = Object.assign({}, PACKS[p].pick);
+    s.only = PACKS[p].only || null;
+    const firstEmpty = STEPS.findIndex(st => !s.pick[st.key]);
+    s.step = firstEmpty === -1 ? 3 : firstEmpty;
+    s.startAt = firstEmpty === -1 ? "collage" : "step";
+  }
+  return s;
+}
+function save(){ try{ sessionStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+function load(){ try{ return JSON.parse(sessionStorage.getItem(KEY)); }catch(e){ return null; } }
+
+const $ = (q, el=document) => el.querySelector(q);
+const app = $("#app");
+const opt = (stepKey, id) => {
+  const st = stepKey === "pre" ? PRE : STEPS.find(s => s.key === stepKey);
+  return st.opts.find(o => o.id === id);
+};
+const heroName = () => S.pick.hero ? opt("hero", S.pick.hero).name : "Герой";
+function capFor(key){
+  if (S.edited[key] && S.caps[key] != null) return S.caps[key];
+  const o = opt(key, S.pick[key]); return o ? o.cap.replace("{X}", heroName()) : "";
+}
+function pic(o, cat){
+  if (!o) return `<div class="pic c-${cat}"></div>`;
+  return `<div class="pic c-${cat}" data-emo="${o.emo}"><img src="${imgSrc(o.img)}" data-n="${o.img}" data-x="0" alt="${o.label}" onerror="nextExt(this)"></div>`;
+}
+/* Картинку ищем под разными расширениями: генераторы часто сохраняют .png/.webp,
+   а Windows прячет расширения, и получается «hero_cat.jpg.jpg». */
+const EXTS = [".jpg", ".png", ".jpeg", ".webp", ".jpg.jpg", ".png.png", ".jpeg.jpg", ".png.jpg", ".webp.jpg"];
+const FOUND = {};
+function imgSrc(n){ return "img/" + n + (FOUND[n] || EXTS[0]); }
+function nextExt(el){
+  const n = el.dataset.n, i = +el.dataset.x + 1;
+  if (FOUND[n] || i >= EXTS.length) { el.parentNode.classList.add("noimg"); el.remove(); return; }
+  el.dataset.x = i; el.src = "img/" + n + EXTS[i];
+  el.onload = () => { FOUND[n] = EXTS[i]; };
+}
+function stars(){
+  return `<div class="stars" aria-label="Пройдено шагов">${STEPS.map(st =>
+    `<span class="star ${S.pick[st.key] ? "on" : ""}" data-k="${st.key}">★</span>`).join("")}</div>`;
+}
+function strip(active, pulse){
+  return `<div class="strip ${active != null ? "has-active" : ""}">${STEPS.map((st,i) => {
+    const o = S.pick[st.key] ? opt(st.key, S.pick[st.key]) : null;
+    return (i ? `<span class="arrow">➜</span>` : "") +
+      `<div class="mini ${o ? "filled" : ""} ${i === active ? "active" + (pulse ? " pulse" : "") : ""}" data-i="${i}">
+        <span class="num">${i+1}</span>${o ? pic(o, st.cat) : (i === active ? `<span class="here">?</span>` : "")}</div>`;
+  }).join("")}</div>`;
+}
+
+/* ================== ЭКРАНЫ ================== */
+/* Проверка картинок для учителя: kollazh-editor.html?proverka */
+function checkScreen(){
+  const all = [];
+  STEPS.forEach(st => st.opts.forEach(o => all.push([o.img, o.label, st.cat, o.emo])));
+  PRE.opts.forEach(o => all.push([o.img, o.label, "pre", o.emo]));
+  [["title_cover","Для презентации"],["ai_bridge","Для презентации"],["show_stage","Для презентации"]].forEach(([n,l]) => all.push([n, l, "hero", "🖼️"]));
+  app.innerHTML = `<div class="q" style="margin-top:10px">Проверка картинок</div>
+    <p class="hint" id="sum" style="margin:0 0 18px">Проверяю…</p>
+    <div class="cards" style="grid-template-columns:repeat(auto-fill,minmax(230px,1fr))">${all.map(([n,l,c,e]) =>
+      `<div class="card" data-n="${n}" style="cursor:default"><div class="pic c-${c}" data-emo="${e}"></div>
+       <span class="lbl" style="flex-direction:column;font-size:17px;min-height:0"><b>${n}</b><span style="font-weight:400">${l}</span>
+       <span class="st" style="font-size:16px;margin-top:4px">…</span></span></div>`).join("")}</div>`;
+  let ok = 0, done = 0;
+  all.forEach(([n]) => {
+    const card = app.querySelector(`.card[data-n="${n}"]`), box = card.querySelector(".pic"), st = card.querySelector(".st");
+    let i = 0; const im = new Image();
+    im.onload = () => { FOUND[n] = EXTS[i]; ok++; box.appendChild(im);
+      st.innerHTML = EXTS[i] === ".jpg" ? `<span style="color:#0E7C72">✔ найдена</span>` : `<span style="color:#0E7C72">✔ найдена как ${n}${EXTS[i]}</span>`; fin(); };
+    im.onerror = () => { if (++i < EXTS.length) { im.src = "img/" + n + EXTS[i]; return; }
+      box.classList.add("noimg"); card.style.borderColor = "#E2457A";
+      st.innerHTML = `<span style="color:#E2457A">✘ не найдена: нужен файл img/${n}.jpg</span>`; fin(); };
+    im.src = "img/" + n + EXTS[0];
+  });
+  function fin(){ if (++done === all.length) $("#sum").innerHTML = ok === all.length
+    ? `<b style="color:#0E7C72">Все ${ok} картинок на месте.</b>`
+    : `<b style="color:#E2457A">Найдено ${ok} из ${all.length}.</b> Красные — положите в папку img с точно таким именем.`; }
+}
+
+function render(){
+  if (new URLSearchParams(location.search).has("proverka")) return checkScreen();
+  save();
+  if (S.screen === "hello") return hello();
+  if (S.screen === "step") return step();
+  if (S.screen === "pre") return preStep();
+  return collage();
+}
+
+function hello(){
+  app.innerHTML = `
+    <div class="hello">
+      <h1>Собери свою историю в картинках</h1>
+      <p>Четыре шага — и у тебя готова своя история</p>
+      ${strip(null)}
+      <button class="btn btn-big" id="go"><span class="ic">▶</span>Начать</button>
+    </div>`;
+  $("#go").onclick = () => {
+    if (S.startAt === "collage") { S.screen = "collage"; }
+    else { S.screen = "step"; }
+    delete S.startAt; render();
+  };
+}
+
+let pulseTimer = null;
+function step(){
+  const st = STEPS[S.step];
+  const chosen = S.pick[st.key];
+  const opts = (S.only && S.only[st.key]) ? st.opts.filter(o => S.only[st.key].includes(o.id)) : st.opts;
+  const last = S.step === 3;
+  const allDone = STEPS.every(s => S.pick[s.key]);
+  const nextLabel = (S.back && allDone) || last ? `<span class="ic">✔</span>Готово` : `Дальше<span class="ic">➜</span>`;
+  app.innerHTML = `
+    <div class="top">
+      <button class="btn btn-back" id="back" aria-label="Назад"><span class="ic">←</span>Назад</button>
+      <div class="spacer"></div>${stars()}
+    </div>
+    ${strip(S.step, !chosen)}
+    <div class="toast" id="toast">Картинка встала в рамку!</div>
+    <div class="q">${st.q}</div>
+    <div class="cards ${opts.length === 2 ? "two" : ""} ${chosen ? "has-sel" : ""}">
+      ${opts.map(o => `<button class="card ${o.id === chosen ? "sel" : ""}" data-id="${o.id}">
+        ${pic(o, st.cat)}<span class="lbl">${o.label}</span></button>`).join("")}
+    </div>
+    <div class="bottom">
+      <div class="slot-l"><button class="btn btn-redo" id="redo" ${chosen ? "" : "hidden"}><span class="ic">↺</span>Переделать</button></div>
+      <div class="hint">${HINT}</div>
+      <div class="slot-r"><button class="btn btn-next" id="next" ${chosen ? "" : "hidden"}>${nextLabel}</button></div>
+    </div>`;
+
+  app.querySelectorAll(".card").forEach(b => b.onclick = () => choose(st, b.dataset.id));
+  $("#redo").onclick = () => { delete S.pick[st.key]; delete S.edited[st.key]; render(); };
+  $("#back").onclick = () => {
+    if (S.back) { S.back = false; S.screen = "collage"; }
+    else if (S.step === 0) S.screen = "hello";
+    else S.step--;
+    render();
+  };
+  $("#next").onclick = () => {
+    if ((S.back && allDone) || last) { S.back = false; S.screen = "collage"; }
+    else S.step++;
+    render();
+  };
+}
+
+function choose(st, id){
+  const wasEmpty = !S.pick[st.key];
+  S.pick[st.key] = id;
+  delete S.edited[st.key];
+  if (st.key === "hero") { /* подписи без правок ребёнка обновятся сами */ }
+  render();
+  const m = app.querySelector(`.mini[data-i="${S.step}"]`);
+  // кадр «оживает»: пульсирует 2 секунды, потом остаются рамка и увеличение
+  if (m){ m.classList.add("pulse"); clearTimeout(pulseTimer); pulseTimer = setTimeout(() => m.classList.remove("pulse"), 2000); }
+  const t = $("#toast"); if (t){ t.classList.add("show"); setTimeout(() => t && t.classList.remove("show"), 2200); }
+  if (wasEmpty){ const s = app.querySelector(`.star[data-k="${st.key}"]`); if (s) s.classList.add("pop"); }
+}
+
+function preStep(){
+  const chosen = S.pick.pre;
+  app.innerHTML = `
+    <div class="top">
+      <button class="btn btn-back" id="back"><span class="ic">←</span>Назад</button>
+      <div class="spacer"></div>${stars()}
+    </div>
+    <div class="q" style="margin-top:30px">${PRE.q}</div>
+    <div class="cards three ${chosen ? "has-sel" : ""}">
+      ${PRE.opts.map(o => `<button class="card ${o.id === chosen ? "sel" : ""}" data-id="${o.id}">
+        ${pic(o, "pre")}<span class="lbl">${o.label}</span></button>`).join("")}
+    </div>
+    <div class="bottom">
+      <div class="slot-l"><button class="btn btn-redo" id="redo" ${chosen ? "" : "hidden"}><span class="ic">↺</span>Переделать</button></div>
+      <div class="hint">Этот кадр встанет самым первым — перед героем.</div>
+      <div class="slot-r"><button class="btn btn-next" id="next" ${chosen ? "" : "hidden"}><span class="ic">✔</span>Готово</button></div>
+    </div>`;
+  app.querySelectorAll(".card").forEach(b => b.onclick = () => { S.pick.pre = b.dataset.id; delete S.edited.pre; render(); });
+  $("#redo").onclick = () => { delete S.pick.pre; delete S.edited.pre; render(); };
+  $("#back").onclick = $("#next").onclick = () => { S.screen = "collage"; render(); };
+}
+
+function collage(){
+  const hero = S.pick.hero ? opt("hero", S.pick.hero) : null;
+  const frames = [];
+  if (S.pick.pre) frames.push({key:"pre", o:opt("pre", S.pick.pre), cat:"pre", n:"ДО"});
+  STEPS.forEach((st,i) => frames.push({key:st.key, o:opt(st.key, S.pick[st.key]), cat:st.cat, n:i+1, i}));
+  const addSlot = S.pick.pre ? "" : `<button class="frame add noprint" id="addPre"><span class="plus">＋</span>Кадр ДО начала</button><span class="arrow noprint">➜</span>`;
+  app.innerHTML = `
+    <div class="top">
+      <button class="btn btn-back" id="back"><span class="ic">←</span>Назад</button>
+      <div class="spacer"></div>${stars()}
+    </div>
+    <div class="ctitle">Твой коллаж</div>
+    <div class="collage st-${S.style} ${frames.length > 4 ? "five" : ""}" id="collage">
+      <div class="head">История про ${hero ? hero.acc : "героя"}</div>
+      <div class="row">
+        ${addSlot}
+        ${frames.map((f,j) => (j ? `<span class="arrow">➜</span>` : "") + `
+          <div class="frame ${f.key === "pre" ? "pre" : ""}" data-key="${f.key}" ${f.i != null ? `data-i="${f.i}"` : ""}>
+            <span class="fnum">${f.n}</span>
+            <div class="box" title="Нажми, чтобы выбрать заново">${pic(f.o, f.cat)}</div>
+            <textarea rows="2" maxlength="48" data-key="${f.key}" aria-label="Подпись к кадру">${capFor(f.key).replace(/</g,"&lt;")}</textarea>
+            <div class="pcap">${capFor(f.key).replace(/</g,"&lt;")}</div>
+          </div>`).join("")}
+      </div>
+    </div>
+    <div class="bottom">
+      <div class="styles">
+        <span class="lab">Стиль:</span>
+        ${STYLES.map(s => `<button class="chip ${s.id === S.style ? "on" : ""}" data-s="${s.id}"><span class="ic">${s.ic}</span>${s.label}</button>`).join("")}
+      </div>
+      <div class="spacer" style="flex:1"></div>
+      <button class="btn btn-what" id="what"><span class="ic">💬</span>Что я выбрал</button>
+      <button class="btn btn-print" id="print"><span class="ic">🖨️</span>Печать</button>
+    </div>`;
+
+  $("#back").onclick = () => { S.screen = "step"; S.step = 3; render(); };
+  app.querySelectorAll(".chip").forEach(c => c.onclick = () => { S.style = c.dataset.s; render(); });
+  app.querySelectorAll(".frame .box").forEach(b => b.onclick = () => {
+    const f = b.closest(".frame");
+    if (f.dataset.key === "pre") { S.screen = "pre"; }
+    else { S.screen = "step"; S.step = +f.dataset.i; S.back = true; }
+    render();
+  });
+  app.querySelectorAll(".frame textarea").forEach(inp => {
+    inp.onkeydown = e => { if (e.key === "Enter") e.preventDefault(); };
+    const grow = () => { inp.style.height = "auto"; inp.style.height = inp.scrollHeight + 6 + "px"; };
+    grow();
+    inp.oninput = () => { S.caps[inp.dataset.key] = inp.value; S.edited[inp.dataset.key] = true;
+      inp.nextElementSibling.textContent = inp.value; grow(); save(); };
+    inp.onclick = e => e.stopPropagation();
+  });
+  const add = $("#addPre"); if (add) add.onclick = () => { S.screen = "pre"; render(); };
+  $("#print").onclick = () => window.print();
+  $("#what").onclick = showChoices;
+}
+
+function showChoices(){
+  const list = (S.pick.pre ? [{st:PRE, w:"Что было до"}] : []).concat(STEPS.map(st => ({st, w:st.word})));
+  $("#chain").innerHTML = list.map(({st,w},i) => {
+    const o = opt(st.key, S.pick[st.key]);
+    return (i ? `<span class="arrow" style="align-self:center">➜</span>` : "") +
+      `<div class="link"><small>${w}</small>${pic(o, st.cat)}${o ? o.label : "—"}</div>`;
+  }).join("");
+  $("#veil").hidden = false;
+}
+$("#closeVeil").onclick = () => { $("#veil").hidden = true; };
+$("#veil").onclick = e => { if (e.target.id === "veil") $("#veil").hidden = true; };
+
+render();
+</script>
+</body>
+</html>

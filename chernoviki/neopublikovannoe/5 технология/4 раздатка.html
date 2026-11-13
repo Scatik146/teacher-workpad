@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Печатные материалы урока</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Times New Roman', Times, serif;
+  background: #f5f5f5;
+  color: #000000;
+  line-height: 1.5;
+}
+
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  padding: 15mm;
+  margin: 20px auto;
+  background: white;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  position: relative;
+}
+
+.page-title {
+  font-size: 18pt;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.section {
+  margin-bottom: 15px;
+}
+
+.section-title {
+  font-size: 14pt;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.checkbox-list {
+  margin-left: 10px;
+}
+
+.checkbox-item {
+  margin: 5px 0;
+  font-size: 12pt;
+}
+
+.decoration {
+  font-style: italic;
+  color: #666666;
+  font-size: 11pt;
+  margin: 10px 0;
+}
+
+.anchor-zone {
+  background: #f0f0f0;
+  padding: 10px;
+  margin: 8px 0;
+  border-left: 3px solid #333333;
+}
+
+.anchor-zone-title {
+  font-weight: bold;
+  font-size: 12pt;
+  margin-bottom: 3px;
+}
+
+.anchor-zone-desc {
+  font-size: 11pt;
+  color: #333333;
+}
+
+.optional-zones-title {
+  font-style: italic;
+  font-size: 12pt;
+  margin: 15px 0 8px 0;
+}
+
+.card {
+  border: 2px solid #000000;
+  padding: 20px;
+  margin: 40px auto;
+  max-width: 500px;
+}
+
+.card-title {
+  font-size: 16pt;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+}
+
+.card-subtitle {
+  font-size: 10pt;
+  font-style: italic;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.field {
+  margin: 10px 0;
+  font-size: 12pt;
+}
+
+.field-label {
+  font-weight: bold;
+  margin-bottom: 3px;
+}
+
+.field-line {
+  border-bottom: 1px solid #000000;
+  min-height: 20px;
+  margin-top: 3px;
+}
+
+.field-line-long {
+  border-bottom: 1px solid #000000;
+  min-height: 20px;
+  margin-top: 3px;
+  margin-bottom: 5px;
+}
+
+.example-box {
+  background: #f5f5f5;
+  border: 1px solid #cccccc;
+  padding: 10px;
+  margin-top: 15px;
+  font-size: 10pt;
+}
+
+.example-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.plashka-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 40px 0;
+}
+
+.plashka {
+  border: 2px solid #000000;
+  padding: 20px 40px;
+  font-size: 14pt;
+  font-weight: bold;
+  text-align: center;
+  width: 400px;
+}
+
+.nav-buttons {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #333;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  z-index: 1000;
+  font-size: 12px;
+}
+
+.nav-buttons button {
+  background: #555;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin: 2px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.nav-buttons button:hover {
+  background: #777;
+}
+
+@media print {
+  body {
+    background: white;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .page {
+    width: 100%;
+    min-height: auto;
+    padding: 1.5cm;
+    margin: 0;
+    box-shadow: none;
+    page-break-after: always;
+  }
+  
+  .page:last-child {
+    page-break-after: auto;
+  }
+  
+  .nav-buttons {
+    display: none;
+  }
+  
+  @page {
+    size: A4;
+    margin: 1.5cm;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="nav-buttons">
+  <div style="margin-bottom: 5px;">Навигация:</div>
+  <button onclick="scrollToPage(1)">Стр. 1</button>
+  <button onclick="scrollToPage(2)">Стр. 2</button>
+  <button onclick="scrollToPage(3)">Стр. 3</button>
+  <button onclick="scrollToPage(4)">Стр. 4</button>
+  <button onclick="scrollToPage(5)">Стр. 5</button>
+  <button onclick="scrollToPage(6)">Стр. 6</button>
+  <div style="margin-top: 10px; font-size: 11px;">Ctrl+P для печати</div>
+</div>
+
+<div class="page" id="page1">
+  <div class="page-title">СПРАВОЧНЫЙ ЛИСТ: ИСТОРИЯ</div>
+  
+  <div class="section">
+    <div class="section-title">Заголовки на выбор (выбрать 1):</div>
+    <div class="checkbox-list">
+      <div class="checkbox-item">☐ Лента времени</div>
+      <div class="checkbox-item">☐ Сквозь века</div>
+      <div class="checkbox-item">☐ Хронограф</div>
+    </div>
+  </div>
+  
+  <div class="section">
+    <div class="decoration">
+      Декор: горизонтальная лента времени как бордюр сверху,<br>
+      стилизованный свиток-плашка под заголовком,<br>
+      античная колонна или печать-сургуч по углам.
+    </div>
+  </div>
+  
+  <div class="section">
+    <div class="section-title">Якорные зоны:</div>
+    
+    <div class="anchor-zone">
+      <div class="anchor-zone-title">[ОБЯЗАТЕЛЬНО] Новости и объявления</div>
+      <div class="anchor-zone-desc">Объявления, новости, что происходит. Раз в неделю.</div>
+    </div>
+    
+    <div class="anchor-zone">
+      <div class="anchor-zone-title">[ОБЯЗАТЕЛЬНО] Контрольные и проверочные</div>
+      <div class="anchor-zone-desc">Даты контрольных, темы, что повторить. Перед работой.</div>
+    </div>
+    
+    <div class="anchor-zone">
+      <div class="anchor-zone-title">[ОБЯЗАТЕЛЬНО] Наши работы</div>
+      <div class="anchor-zone-desc">Проекты, доклады, рисунки учеников. Постоянно, ротация.</div>
+    </div>
+  </div>
+  
+  <div class="section">
+    <div class="optional-zones-title">Выберите 1–2:</div>
+    <div class="checkbox-list">
+      <div class="checkbox-item">☐ На этой неделе произошло — Исторические события текущей недели</div>
+      <div class="checkbox-item">☐ Новости олимпиад — ВсОШ, даты, результаты</div>
+      <div class="checkbox-item">☐ Исторический портрет — Краткая справка о персоне по теме</div>
+      <div class="checkbox-item">☐ Это интересно! — Неожиданные факты, мифы и заблуждения</div>
+      <div class="checkbox-item">☐ День в истории — Что произошло в этот день в разные эпохи</div>
+      <div class="checkbox-item">☐ Миф или правда? — Заблуждения с ответом</div>
+      <div class="checkbox-item">☐ Словарь эпохи — 3–5 терминов по теме с определениями</div>
+      <div class="checkbox-item">☐ Карта недели — Контурная карта с подсвеченным регионом</div>
+      <div class="checkbox-item">☐ Вопрос недели — Открытый вопрос, ответ — на следующей неделе</div>
+      <div class="checkbox-item">☐ Цитата — Афоризм без подписи — угадать, кто сказал</div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page2">
+  <div class="page-title">СПРАВОЧНЫЙ ЛИСТ: ТРУД (ТЕХНОЛОГИЯ)</div>
+  
+  <div class="section">
+    <div class="section-title">Заголовки на выбор (выбрать 1):</div>
+    <div class="checkbox-list">
+      <div class="checkbox-item">☐ Мастерская</div>
+      <div class="checkbox-item">☐ От идеи к изделию</div>
+      <div class="checkbox-item">☐ Делаем своими руками</div>
+    </div>
+  </div>
+  
+  <div class="section">
+    <div class="decoration">
+      Декор: шестерёнки по углам, силуэты инструментов<br>
+      (молоток, пила, кисть) как рамка, линейка-угольник как бордюр.
+    </div>
+  </div>
+  
+  <div class="section">
+    <div class="section-title">Якорные зоны:</div>
+    
+    <div class="anchor-zone">
+      <div class="anchor-zone-title">[ОБЯЗАТЕЛЬНО] Новости мастерской</div>
+      <div class="anchor-zone-desc">Объявления, планы, что делаем на следующем уроке. Раз в неделю.</div>
+    </div>
+    
+    <div class="anchor-zone">
+      <div class="anchor-zone-title">[ОБЯЗАТЕЛЬНО] Контрольные и проверочные</div>
+      <div class="anchor-zone-desc">Даты практических работ, критерии оценки. Перед работой.</div>
+    </div>
+    
+    <div class="anchor-zone">
+      <div class="anchor-zone-title">[ОБЯЗАТЕЛЬНО] Наши работы</div>
+      <div class="anchor-zone-desc">Фотографии изделий, эскизы, черновики. Постоянно, ротация.</div>
+    </div>
+  </div>
+  
+  <div class="section">
+    <div class="optional-zones-title">Выберите 1–2:</div>
+    <div class="checkbox-list">
+      <div class="checkbox-item">☐ Инструкции и ТБ — Правила ТБ, схемы, чертежи</div>
+      <div class="checkbox-item">☐ Идеи проектов — Эскизы, темы будущих проектов, реальные проблемы</div>
+      <div class="checkbox-item">☐ Инструменты и материалы — Справочник: что используем, для чего, как храним</div>
+      <div class="checkbox-item">☐ Ремонт своими руками — Карточки-инструкции: «Как починить карандаш»</div>
+      <div class="checkbox-item">☐ Профессия недели — Справка о профессии: столяр, сварщик, дизайнер</div>
+      <div class="checkbox-item">☐ Из чего это сделано — Схема-разборка изделия на компоненты</div>
+      <div class="checkbox-item">☐ Лайфхак мастерской — Неочевидный приём: «Клей наноси точечно»</div>
+      <div class="checkbox-item">☐ Что можно сделать из… — «Что сделать из коробки от обуви?» — 3–4 идеи</div>
+      <div class="checkbox-item">☐ Барахолка идей — Конверт для записок с идеями проектов</div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page3">
+  <div class="page-title">СПРАВОЧНЫЙ ЛИСТ: ИНФОРМАТИКА</div>
+  
+  <div class="section">
+    <div class="section-title">Заголовки на выбор (выбрать 1):</div>
+    <div class="checkbox-list">
+      <div class="checkbox-item">☐ Код и креатив</div>
+      <div class="checkbox-item">☐ ИнфоМир</div>
+      <div class="checkbox-item">☐ Цифровая мастерская</div>
+    </div>
+  </div>
+  
+  <div class="section">
+    <div class="decoration">
+      Декор: бордюр из бинарного кода (0101), пиксельные квадратики<br>
+      разного цвета, иконки устройств, QR-код как декоративный элемент.
+    </div>
+  </div>
+  
+  <div class="section">
+    <div class="section-title">Якорные зоны:</div>
+    
+    <div class="anchor-zone">
+      <div class="anchor-zone-title">[ОБЯЗАТЕЛЬНО] Новости и объявления</div>
+      <div class="anchor-zone-desc">Объявления, новости, что происходит. Раз в неделю.</div>
+    </div>
+    
+    <div class="anchor-zone">
+      <div class="anchor-zone-title">[ОБЯЗАТЕЛЬНО] Контрольные и проверочные</div>
+      <div class="anchor-zone-desc">Даты проверочных, темы, что повторить. Перед работой.</div>
+    </div>
+    
+    <div class="anchor-zone">
+      <div class="anchor-zone-title">[ОБЯЗАТЕЛЬНО] Наши программы</div>
+      <div class="anchor-zone-desc">Скриншоты работ, проекты, код учеников. Постоянно, ротация.</div>
+    </div>
+  </div>
+  
+  <div class="section">
+    <div class="optional-zones-title">Выберите 1–2:</div>
+    <div class="checkbox-list">
+      <div class="checkbox-item">☐ На этой неделе в IT — Новости технологий, события из мира IT</div>
+      <div class="checkbox-item">☐ Новости олимпиад — ВсОШ по информатике, сроки, тренировочные задачи</div>
+      <div class="checkbox-item">☐ Горячие клавиши — Подборка сочетаний клавиш по темам</div>
+      <div class="checkbox-item">☐ Это интересно! — Факты об ИИ, истории программ, задачи</div>
+      <div class="checkbox-item">☐ ИИ-практикум — Промпт недели: «Попроси Алису объяснить…»</div>
+      <div class="checkbox-item">☐ Профессия в IT — Программист, тестировщик, аналитик, DevOps</div>
+      <div class="checkbox-item">☐ Задача на подумать — Логическая задача, ответ — на следующей неделе</div>
+      <div class="checkbox-item">☐ Слово недели — Термин с определением: «Переменная — это коробка»</div>
+      <div class="checkbox-item">☐ Кто это? — Фото/силуэт фигуры IT — угадать по подсказкам</div>
+      <div class="checkbox-item">☐ QR-квест — QR-код на статью, видео или игру</div>
+      <div class="checkbox-item">☐ Баг или фича? — Описание ситуации — ошибка или так задумано?</div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page4">
+  <div class="card">
+    <div class="card-title">ЧЕК-ЛИСТ ПРИЁМКИ МОНТАЖА</div>
+    
+    <div class="field">
+      <div class="field-label">Группа: ___________________</div>
+    </div>
+    
+    <div class="field">
+      <div class="field-label">Доска: ___________________</div>
+    </div>
+    
+    <div style="margin: 20px 0;">
+      <div class="checkbox-item">☐ Заголовок читается с 3–5 метров</div>
+      <div class="checkbox-item">☐ Плашки зон выровнены по краю доски (сухая раскладка проверена)</div>
+      <div class="checkbox-item">☐ Состав зон точно соответствует выбранному в паспорте (п. 4)</div>
+      <div class="checkbox-item">☐ Результат соответствует эскизу (п. 5)</div>
+      <div class="checkbox-item">☐ Рабочее место убрано (обрезки, колпачки, кнопки на месте)</div>
+      <div class="checkbox-item">☐ Паспорт заполнен полностью (все 8 пунктов, без грязи)</div>
+    </div>
+    
+    <div style="margin-top: 25px;">
+      <div class="field">
+        <div class="field-label">Вердикт модератора:</div>
+        <div style="margin-left: 20px;">
+          ☐ Принят&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;☐ На доработку
+        </div>
+      </div>
+    </div>
+    
+    <div class="field" style="margin-top: 20px;">
+      <div class="field-label">Подпись: ___________________</div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page5">
+  <div class="card">
+    <div class="card-title">ПРОМПТ-КАРТОЧКА ПРОЕКТИРОВЩИКА</div>
+    <div class="card-subtitle">Заполни, чтобы сгенерировать уникальный декор через Алису.</div>
+    
+    <div class="field">
+      <div class="field-label">Предмет:</div>
+      <div class="field-line"></div>
+    </div>
+    
+    <div class="field">
+      <div class="field-label">Что нужно сгенерировать:</div>
+      <div class="field-line"></div>
+      <div style="font-size: 10pt; font-style: italic; margin-top: 3px;">(например: декоративная рамка, иконка для зоны, фоновый узор)</div>
+    </div>
+    
+    <div class="field">
+      <div class="field-label">Мой промпт для Алисы (текстом):</div>
+      <div class="field-line-long"></div>
+      <div class="field-line-long"></div>
+      <div class="field-line-long"></div>
+    </div>
+    
+    <div class="example-box">
+      <div class="example-title">Пример заполненной карточки:</div>
+      <div style="margin-top: 5px;">
+        <strong>Предмет:</strong> Информатика<br>
+        <strong>Что нужно:</strong> декоративная рамка для зоны «Горячие клавиши»<br>
+        <strong>Промпт:</strong> «Нарисуй минималистичную декоративную рамку в стиле пиксель-арт с изображением клавиатуры по углам, черно-белая графика, векторный стиль, белый фон».
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page6">
+  <div class="plashka-container">
+    <div class="plashka">РЕДАКТОР НЕДЕЛИ: ___________________</div>
+    <div class="plashka">РЕДАКТОР НЕДЕЛИ: ___________________</div>
+    <div class="plashka">РЕДАКТОР НЕДЕЛИ: ___________________</div>
+  </div>
+</div>
+
+<script>
+function scrollToPage(pageNum) {
+  const page = document.getElementById('page' + pageNum);
+  if (page) {
+    page.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+</script>
+
+</body>
+</html>

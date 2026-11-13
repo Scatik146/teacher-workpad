@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Форма В — Эталон самопроверки</title>
+<style>
+@page { size: A4 portrait; margin: 1.5cm; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Times New Roman', serif; font-size: 13px; line-height: 1.4; }
+h2 { text-align: center; margin-bottom: 20px; }
+table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 11px; }
+th, td { border: 1px solid black; padding: 8px; text-align: center; }
+th { background: #f0f0f0; font-weight: bold; }
+.matrix { display: inline-grid; grid-template-columns: repeat(3, 35px); gap: 3px; margin: 5px; vertical-align: middle; }
+.cell { width: 35px; height: 35px; border: 1px solid black; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; }
+.questions { border: 2px solid black; padding: 15px; margin-top: 20px; }
+.questions h3 { margin-bottom: 10px; }
+.questions ol { margin-left: 20px; }
+.questions li { margin-bottom: 8px; }
+@media print { body { font-size: 12px; } }
+</style>
+</head>
+<body>
+
+<h2>Эталон самопроверки</h2>
+<p style="text-align: center; font-style: italic; margin-bottom: 20px;">Выдаётся учителем ПОСЛЕ самостоятельного обучения</p>
+
+<table>
+  <tr>
+    <th>Шаг</th>
+    <th>Пример</th>
+    <th>Выход</th>
+    <th>Верно?</th>
+    <th>Действие</th>
+    <th>Веса (w1...w9)</th>
+    <th>Порог T</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>Начало</td>
+    <td>—</td>
+    <td>—</td>
+    <td>Инициализация</td>
+    <td>
+      <div class="matrix">
+        <div class="cell">0</div><div class="cell">0</div><div class="cell">0</div>
+        <div class="cell">0</div><div class="cell">0</div><div class="cell">0</div>
+        <div class="cell">0</div><div class="cell">0</div><div class="cell">0</div>
+      </div>
+    </td>
+    <td>5</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>C₁</td>
+    <td>0</td>
+    <td>Нет</td>
+    <td>Прибавить</td>
+    <td>
+      <div class="matrix">
+        <div class="cell">1</div><div class="cell">1</div><div class="cell">1</div>
+        <div class="cell">1</div><div class="cell">0</div><div class="cell">0</div>
+        <div class="cell">1</div><div class="cell">1</div><div class="cell">1</div>
+      </div>
+    </td>
+    <td>5</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>T</td>
+    <td>1</td>
+    <td>Нет</td>
+    <td>Вычесть</td>
+    <td>
+      <div class="matrix">
+        <div class="cell">1</div><div class="cell">0</div><div class="cell">1</div>
+        <div class="cell">1</div><div class="cell">-1</div><div class="cell">0</div>
+        <div class="cell">1</div><div class="cell">0</div><div class="cell">1</div>
+      </div>
+    </td>
+    <td>5</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>C₁</td>
+    <td>1</td>
+    <td>Да</td>
+    <td>—</td>
+    <td>
+      <div class="matrix">
+        <div class="cell">1</div><div class="cell">0</div><div class="cell">1</div>
+        <div class="cell">1</div><div class="cell">-1</div><div class="cell">0</div>
+        <div class="cell">1</div><div class="cell">0</div><div class="cell">1</div>
+      </div>
+    </td>
+    <td>5</td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td>T</td>
+    <td>0</td>
+    <td>Да</td>
+    <td>—</td>
+    <td>
+      <div class="matrix">
+        <div class="cell">1</div><div class="cell">0</div><div class="cell">1</div>
+        <div class="cell">1</div><div class="cell">-1</div><div class="cell">0</div>
+        <div class="cell">1</div><div class="cell">0</div><div class="cell">1</div>
+      </div>
+    </td>
+    <td>5</td>
+  </tr>
+  <tr>
+    <td>6</td>
+    <td>Проверка</td>
+    <td>—</td>
+    <td>Всё верно</td>
+    <td>Конец</td>
+    <td>
+      <div class="matrix">
+        <div class="cell">1</div><div class="cell">0</div><div class="cell">1</div>
+        <div class="cell">1</div><div class="cell">-1</div><div class="cell">0</div>
+        <div class="cell">1</div><div class="cell">0</div><div class="cell">1</div>
+      </div>
+    </td>
+    <td>5</td>
+  </tr>
+</table>
+
+<div class="questions">
+  <h3>Контрольные вопросы:</h3>
+  <ol>
+    <li>Что кодирует вес?</li>
+    <li>Зачем нужен порог?</li>
+    <li>Почему на шаге 2 нейрон ошибся, хотя ещё не учился?</li>
+  </ol>
+</div>
+
+</body>
+</html>

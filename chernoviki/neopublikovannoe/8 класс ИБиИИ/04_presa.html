@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ИИ в спорте — 8 класс</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Segoe UI', Arial, sans-serif; background:#0d1220; color:#eef2f8; overflow:hidden; }
+  .slide { display:none; position:absolute; inset:0; padding:6vh 7vw; flex-direction:column; justify-content:center; }
+  .slide.active { display:flex; }
+  .slide::before { content:""; position:absolute; inset:0; background:linear-gradient(135deg,#101a33 0%,#0d1220 60%,#12203c 100%); z-index:-1; }
+  .kicker { color:#4fb3ff; font-size:1.1vw; letter-spacing:.15em; text-transform:uppercase; margin-bottom:1.4vh; }
+  h1 { font-size:3.6vw; line-height:1.15; margin-bottom:2vh; }
+  h2 { font-size:2.6vw; margin-bottom:2.4vh; }
+  .accent { color:#ffcc4d; }
+  .numbers { font-size:2.2vw; font-weight:700; color:#ffcc4d; margin:1.5vh 0; }
+  ul { font-size:1.7vw; line-height:1.55; padding-left:1.4em; }
+  li { margin-bottom:1.2vh; }
+  .big { font-size:2vw; line-height:1.6; }
+  .stmt { font-size:1.6vw; background:rgba(255,255,255,.05); border-left:5px solid #4fb3ff; padding:1.4vh 1.6vw; margin:1.1vh 0; border-radius:0 10px 10px 0; }
+  .formula { font-size:1.7vw; background:rgba(79,179,255,.12); border:1px solid rgba(79,179,255,.4); padding:1.3vh 1.6vw; margin:1.1vh 0; border-radius:12px; }
+  .gap { color:#ffcc4d; font-weight:700; }
+  .source { font-size:1.05vw; color:#8fa3c0; font-style:italic; margin-top:2.2vh; }
+  .hint { font-size:1.15vw; color:#7d92b3; margin-top:2.4vh; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:2vw; align-items:start; }
+  .card { background:rgba(255,255,255,.05); border-radius:14px; padding:1.8vh 1.6vw; font-size:1.45vw; line-height:1.5; }
+  .card b { color:#4fb3ff; }
+  .lens { display:grid; grid-template-columns:repeat(4,1fr); gap:1.4vw; margin:2vh 0; }
+  .lens div { background:rgba(255,204,77,.1); border:2px solid #ffcc4d; border-radius:14px; padding:2vh 1vw; text-align:center; font-size:1.5vw; font-weight:600; }
+  .footer { position:absolute; bottom:2.4vh; left:7vw; font-size:1vw; color:#64789a; }
+  .pagenav { position:absolute; bottom:2.2vh; right:2.6vw; font-size:1.05vw; color:#64789a; }
+  .tag { display:inline-block; background:#1d4ed8; color:#fff; border-radius:999px; padding:.4vh 1vw; font-size:1.05vw; margin-right:.6vw; margin-bottom:.8vh; }
+  .timer { font-size:3.2vw; color:#4fb3ff; font-weight:700; }
+</style>
+</head>
+<body>
+
+<!-- Слайд 1 -->
+<section class="slide active">
+  <div class="kicker">Урок 2 модуля «Применение ИИ» · 8 класс</div>
+  <h1>Искусственный интеллект в профессиональном спорте <span class="accent">и</span> в занятиях спортом в повседневной жизни</h1>
+  <div class="big" style="margin-top:3vh">
+    Рамка урока: <span class="accent">Прогноз → Проверка → Возврат к прогнозу</span>
+  </div>
+  <div class="hint">Линза урока: «Что видит? Чем видит? Где ломается? Кому принадлежат данные?»</div>
+</section>
+
+<!-- Слайд 2 -->
+<section class="slide">
+  <div class="kicker">Этап 1 · Прогноз · 3 минуты</div>
+  <h2>Три спорных утверждения</h2>
+  <div class="stmt">1. Клуб, который тратит больше всех на ИИ-аналитику, будет стабильно обыгрывать остальных — победа стала задачей на вычисление.</div>
+  <div class="stmt">2. Электронный судья не ошибается, поэтому живых судей в спорте скоро не останется.</div>
+  <div class="stmt">3. Приложение с ИИ по видео с телефона разберёт мою технику не хуже живого тренера.</div>
+  <div class="hint">В тетрадь: цифра и знак — «+» согласен · «−» не согласен · «?» сомневаюсь. Пишем молча. Вернёмся к этим трём пунктам в конце урока.</div>
+</section>
+
+<!-- Слайд 3 -->
+<section class="slide">
+  <div class="kicker">Этап 2 · Линза, SAOT и профспорт · 9 минут</div>
+  <h2>Линза анализа любой ИИ-системы</h2>
+  <div class="lens">
+    <div>Что видит?</div>
+    <div>Чем видит?</div>
+    <div>Где ломается?</div>
+    <div>Кому принадлежат данные?</div>
+  </div>
+  <div class="numbers">500 Гц vs 100 кадров/с &nbsp;·&nbsp; 27–93% &nbsp;·&nbsp; ~900 тыс. &nbsp;·&nbsp; 34 точки &nbsp;·&nbsp; 10 см</div>
+  <div class="hint">Эти пять чисел — доказательства урока. Вернёмся к каждому.</div>
+</section>
+
+<!-- Слайд 4 -->
+<section class="slide">
+  <div class="kicker">Этап 2 · Техническая часть</div>
+  <h2>SAOT: машина считает — человек решает</h2>
+  <div class="grid2">
+    <div class="card"><b>Что видит:</b> 29 точек на теле каждого игрока, положение мяча.</div>
+    <div class="card"><b>Чем видит:</b> 12–16 камер — 50 кадров/с · чип в мяче — 500 Гц.</div>
+    <div class="card"><b>Кто решает:</b> линию строит система, решение подтверждает видеоарбитр.</div>
+    <div class="card"><b>Порог:</b> оповещение ассистента — 10 см; в миллиметровых случаях систему сознательно не применяют (~18% отменённых голов — в пользу атаки).</div>
+  </div>
+  <div class="big" style="margin-top:2vh">Расчёт: 500 ÷ 50 = <span class="accent">в 10 раз</span> чип чаще камеры. Даже Dragon (100 кадров/с) — в 5 раз реже чипа.</div>
+</section>
+
+<!-- Слайд 5 -->
+<section class="slide">
+  <div class="kicker">Этап 2 · Контраст подходов</div>
+  <h2>Оптика или чип? Доступ к данным</h2>
+  <ul>
+    <li><b>АПЛ, Dragon:</b> 28 айфонов на стадионе, 100 кадров/с, до 10 000 точек — без чипа, только оптика.</li>
+    <li><b>Ла Лига:</b> движение к автоматике с чипами в мяче.</li>
+    <li><b>Аватары ЧМ-2026:</b> сканирование 1248 игроков — только визуализация и доп. данные, не замена судей.</li>
+    <li><b>FIFA AI Pro:</b> ИИ-помощник штабам всех 48 сборных — доступ к данным уравнивается независимо от бюджета.</li>
+  </ul>
+  <div class="hint">Развилка на финал урока: доступ к данным «уравнивает или навязывает»?</div>
+</section>
+
+<!-- Слайд 6 -->
+<section class="slide">
+  <div class="kicker">Этап 3 · Jigsaw · 7 минут</div>
+  <h2>Где ломается ИИ в спорте?</h2>
+  <ul>
+    <li>Три группы (3 / 3 / 2). Роли: <b>спикер · таймкипер · скептик</b>.</li>
+    <li>Каждая группа читает свою карточку и письменно отвечает: <span class="accent">«Где ломается?»</span> — одна фраза.</li>
+    <li>Доклады: 45 секунд на группу. Устная дискуссия — запрещена.</li>
+    <li>Затем: «невидимый гол» 2020 — все 7 камер перекрыты → <span class="accent">окклюзия</span>.</li>
+    <li>ИИ не определяет намерение: преднамеренная игра рукой — зона человека.</li>
+  </ul>
+</section>
+
+<!-- Слайд 7 -->
+<section class="slide">
+  <div class="kicker">Этап 4 · Teachable Machine · 10 минут</div>
+  <h2>Проверяем на себе: проект «Позы»</h2>
+  <div class="grid2">
+    <div class="card"><b>3 класса:</b> «присед» · «руки вверх» · «фон» (обязателен). Метки латиницей: squat / hands_up / background.</div>
+    <div class="card"><b>Правила кадра:</b> в кадре один человек. Очередь по журналу: 8 человек × ~40 сек.</div>
+    <div class="card"><b>Лист наблюдателя:</b> две колонки — «распознал?» и «почему».</div>
+    <div class="card"><b>Главный тест:</b> спрячь половину тела за спинку стула → срыв распознавания. Это окклюзия на себе.</div>
+  </div>
+  <div class="hint">Вывод этапа: точность ИИ ограничена полнотой данных, а не алгоритмом. Teachable Machine — локально в браузере; фитнес-приложения — в облако.</div>
+</section>
+
+<!-- Слайд 8 -->
+<section class="slide">
+  <div class="kicker">Этап 5 · Мои данные в спорте · 5 минут</div>
+  <h2>Примиряем цифры</h2>
+  <div class="big">В 6 классе мы брали бытовую вилку: калории врут на <span class="accent">15–25%</span>.</div>
+  <div class="big" style="margin-top:1.5vh">Стэнфорд — лабораторная проверка: разброс <span class="accent">27–93%</span>. Устройства в основном занижают.</div>
+  <div class="hint">WHOOP 5.0 / AI Coach: разбор техники полезен, но данные уходят партнёру — компании OpenAI (разработчику GPT). Есть опция отключения. На доске: ПДн.</div>
+  <div class="source">Источник: Stanford Medicine, 2017</div>
+</section>
+
+<!-- Слайд 9 -->
+<section class="slide">
+  <div class="kicker">Этап 5 · Кейс утечки</div>
+  <h2>DDX: ~900 тысяч клиентов</h2>
+  <ul>
+    <li>Август 2026: утекли фото с турникетных камер (вход по распознаванию лица), история посещений, банковские карты.</li>
+    <li>Среди затронутых — известные спортсмены, включая хоккеиста.</li>
+    <li>Компания факт взлома официально не подтвердила — «по сообщениям СМИ».</li>
+    <li>Штрафы по 13.11 КоАП: утечка &gt;100 тыс. — 10–15 млн ₽ · биометрия — 15–20 млн ₽ · повторная — оборотные до 3% выручки и до 500 млн ₽.</li>
+    <li>Strava-2018 — одной строкой как исторический фон.</li>
+  </ul>
+  <div class="source">Источники: Фонтанка.ру, 13.08.2026; РБК, 2018 (Strava)</div>
+</section>
+
+<!-- Слайд 10 -->
+<section class="slide">
+  <div class="kicker">Этап 5 · Мини-квест по 152-ФЗ</div>
+  <h2>Четыре правовых якоря</h2>
+  <div class="card" style="margin-bottom:1.2vh">1. Биометрия и здоровье — <b>специальная категория ПДн</b>.</div>
+  <div class="card" style="margin-bottom:1.2vh">2. Ст. 16: запрет решений о человеке <b>исключительно</b> автоматизированной обработкой — последнее слово за человеком.</div>
+  <div class="card" style="margin-bottom:1.2vh">3. <b>Локализация</b> данных россиян в РФ.</div>
+  <div class="card">4. <b>Новые оборотные штрафы</b> за утечки.</div>
+  <div class="hint">Голосование жестом: кому принадлежат данные тела атлета? Чек-лист: кому? · зачем? · можно ли отключить?</div>
+</section>
+
+<!-- Слайд 11 -->
+<section class="slide">
+  <div class="kicker">Этап 6 · Возврат к прогнозам · 5 минут</div>
+  <h2>Итоговые формулы</h2>
+  <div class="formula">1. В профспорте ИИ — это <span class="gap">[инструмент сбора данных]</span>, а не замена тренера.</div>
+  <div class="formula">2. Автоматика не убирает ошибку — она её <span class="gap">[перемещает]</span>; человек в контуре — тоже точка отказа. Ст. 16 оставляет последнее слово человеку.</div>
+  <div class="formula">3. ИИ точен настолько, насколько <span class="gap">[полны данные]</span>; контекст он не видит.</div>
+  <div class="hint">Опрос по кругу: кто изменил мнение и почему? Возврат к «+ / − / ?» из начала урока.</div>
+</section>
+
+<!-- Слайд 12 -->
+<section class="slide">
+  <div class="kicker">Этап 6 · Exit-ticket · 90 секунд</div>
+  <h2>Перед выходом — одна фраза</h2>
+  <div class="stmt"><b>Обязательно:</b> Офсайд по кончику пятки — справедливость или формализм? Почему?</div>
+  <div class="stmt"><b>По желанию:</b> Какое из пяти чисел урока удивило и почему?</div>
+  <div class="timer">⏱ 90 секунд</div>
+  <div class="big" style="margin-top:2.5vh">Следующий урок: <span class="accent">ИИ и психология — кто читает ваши эмоции?</span></div>
+  <div class="hint">Домашнее задание — смотрите последние страницы тетради (записано со слайда).</div>
+</section>
+
+<div class="footer">ИИ и информационная безопасность · 8 класс · 40 минут</div>
+<div class="pagenav" id="pg">1 / 12</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];let i=0;
+  function show(n){slides[i].classList.remove('active');i=(n+slides.length)%slides.length;slides[i].classList.add('active');document.getElementById('pg').textContent=(i+1)+' / '+slides.length;}
+  document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown')show(i+1);if(e.key==='ArrowLeft'||e.key==='PageUp')show(i-1);});
+  document.addEventListener('click',e=>{if(!e.target.closest('a'))show(i+1);});
+</script>
+</body>
+</html>

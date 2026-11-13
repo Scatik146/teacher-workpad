@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Как компьютер работает с информацией</title>
+<style>
+/* Базовые стили, сброс */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body {
+    width: 100%; height: 100%;
+    background: #f4f7fb;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Контейнер слайдов */
+#stage {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+}
+.slide {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: none;
+    background: #f4f7fb;
+}
+.slide.active { display: block; }
+
+/* Заголовок слайда (вверху) */
+.slide-title {
+    position: absolute;
+    top: 40px; left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 72px;
+    font-weight: bold;
+    color: #2c5282;
+}
+.slide-subtitle {
+    position: absolute;
+    top: 140px; left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 42px;
+    color: #4a5568;
+}
+
+/* Панель навигации учителя (внизу справа) */
+#nav {
+    position: absolute;
+    bottom: 10px; right: 10px;
+    z-index: 1000;
+    background: rgba(255,255,255,0.9);
+    padding: 8px;
+    border-radius: 10px;
+    border: 2px solid #cbd5e0;
+}
+#nav button {
+    font-size: 22px;
+    padding: 8px 16px;
+    margin: 0 4px;
+    cursor: pointer;
+    border: 1px solid #a0aec0;
+    background: #edf2f7;
+    border-radius: 6px;
+}
+#nav button:hover { background: #e2e8f0; }
+#slideCounter {
+    font-size: 22px;
+    padding: 0 12px;
+    color: #2d3748;
+}
+
+/* Общие стили для интерактивных элементов (в нижней трети) */
+.item {
+    position: absolute;
+    width: 320px; height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 160px;
+    cursor: pointer;
+    border-radius: 30px;
+    background: #ffffff;
+    border: 4px solid #cbd5e0;
+    transition: background 0.2s;
+}
+.item:hover { background: #edf2f7; }
+.item.correct {
+    background: #c6f6d5;
+    border-color: #48bb78;
+}
+.item.fly-away {
+    animation: flyAway 0.8s forwards;
+}
+@keyframes flyAway {
+    0% { transform: translate(0,0) rotate(0); opacity: 1; }
+    100% { transform: translate(800px, -400px) rotate(720deg); opacity: 0; }
+}
+
+/* Позиции для 4 элементов в ряд (раунды 1, 4) */
+.pos-1 { left: 120px;  bottom: 120px; }
+.pos-2 { left: 500px;  bottom: 120px; }
+.pos-3 { left: 880px;  bottom: 120px; }
+.pos-4 { left: 1260px; bottom: 120px; }
+
+/* Позиции для 2 элементов (раунд 2) — альбом левее */
+.pos-a { left: 180px;  bottom: 120px; }
+.pos-b { left: 1200px; bottom: 120px; }
+
+/* Центральный объект (фото/клубок) */
+.center-obj {
+    position: absolute;
+    top: 300px;
+    left: 50%;
+    margin-left: -110px;
+    font-size: 220px;
+    transition: all 0.8s;
+}
+.center-obj.jump-a {
+    animation: jumpA 1s forwards;
+}
+.center-obj.jump-b {
+    animation: jumpB 1s forwards;
+}
+@keyframes jumpA {
+    0%   { top: 300px; left: 50%; margin-left: -110px; }
+    100% { top: 200px; left: 25%; margin-left: -110px; }
+}
+@keyframes jumpB {
+    0%   { top: 300px; left: 50%; margin-left: -110px; }
+    100% { top: 200px; left: 75%; margin-left: -110px; }
+}
+
+/* ===== Слайд 1 — приветствие ===== */
+#slide1 .big-cat {
+    position: absolute;
+    top: 8%;
+    left: 50%;
+    margin-left: -175px;
+    font-size: 350px;
+    animation: sway 2s ease-in-out infinite;
+}
+@keyframes sway {
+    0%, 100% { transform: rotate(-5deg); }
+    50%      { transform: rotate(5deg); }
+}
+#slide1 .hello-text {
+    position: absolute;
+    bottom: 100px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 72px;
+    color: #2c5282;
+    font-weight: bold;
+}
+
+/* ===== Слайд 6 — реклама ===== */
+#slide6 .banner {
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    margin-left: -500px;
+    width: 1000px;
+    height: 400px;
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    border: 8px solid #f59e0b;
+    border-radius: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 72px;
+    color: #7c2d12;
+    font-weight: bold;
+    text-align: center;
+    animation: bannerSway 1.5s ease-in-out infinite;
+    cursor: pointer;
+}
+@keyframes bannerSway {
+    0%, 100% { transform: rotate(-2deg); }
+    50%      { transform: rotate(2deg); }
+}
+/* Кнопки учителя для ветвления */
+.teacher-buttons {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    margin-left: -350px;
+    width: 700px;
+    text-align: center;
+}
+.teacher-buttons button {
+    font-size: 32px;
+    padding: 20px 40px;
+    margin: 0 15px;
+    border: 3px solid #4a5568;
+    border-radius: 15px;
+    background: #fff;
+    cursor: pointer;
+}
+.teacher-buttons button.left  { background: #fed7d7; }
+.teacher-buttons button.right { background: #c6f6d5; }
+
+/* ===== Слайд 7 — непонятный экран ===== */
+#slide7 {
+    background: #1a202c;
+    color: #fff;
+}
+.weird-symbols {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    font-size: 120px;
+    color: #a0aec0;
+    line-height: 1.2;
+    padding: 40px;
+    word-break: break-all;
+    pointer-events: none;
+}
+#slide7 .close-btn {
+    position: absolute;
+    bottom: 120px;
+    left: 50%;
+    margin-left: -150px;
+    width: 300px;
+    height: 300px;
+    background: #e53e3e;
+    color: #fff;
+    font-size: 180px;
+    border-radius: 50%;
+    border: 8px solid #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===== Слайды 10-11 — цветовые круги (сдвинуты левее) ===== */
+.color-circle {
+    position: absolute;
+    width: 340px;
+    height: 340px;
+    border-radius: 50%;
+    bottom: 120px;
+    cursor: pointer;
+    border: 8px solid #fff;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+.color-circle.yellow { background: #f6e05e; left: 120px; }
+.color-circle.green  { background: #48bb78; left: 560px; }
+.color-circle.blue   { background: #4299e1; left: 1000px; }
+.color-circle.pulse {
+    animation: pulse 1s ease-in-out infinite;
+}
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.1); }
+}
+
+/* ===== Слайд 12 — связка с ИИ ===== */
+#slide12 .devices {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    margin-left: -280px;
+    font-size: 250px;
+}
+#slide12 .devices span {
+    margin: 0 30px;
+}
+#slide12 .arrow {
+    position: absolute;
+    font-size: 100px;
+    color: #4a5568;
+    animation: arrowMove 2s ease-in-out infinite;
+}
+@keyframes arrowMove {
+    0%, 100% { opacity: 0.4; }
+    50%      { opacity: 1; }
+}
+#slide12 .arrow-1 { top: 25%; left: 30%; }
+#slide12 .arrow-2 { top: 25%; right: 30%; }
+#slide12 .arrow-3 { top: 55%; left: 30%; }
+#slide12 .arrow-4 { top: 55%; right: 30%; }
+#slide12 .question {
+    position: absolute;
+    bottom: 180px;
+    left: 50%;
+    margin-left: -100px;
+    font-size: 200px;
+}
+
+/* ===== Слайд 13 — рефлексия (сдвинуто левее) ===== */
+#slide13 .gesture {
+    position: absolute;
+    bottom: 160px;
+    font-size: 150px;
+    width: 260px;
+    text-align: center;
+}
+#slide13 .gesture-label {
+    position: absolute;
+    bottom: 60px;
+    font-size: 26px;
+    color: #2c5282;
+    width: 260px;
+    text-align: center;
+    font-weight: bold;
+}
+.g1 { left: 40px; }
+.g2 { left: 340px; }
+.g3 { left: 640px; }
+.g4 { left: 940px; }
+.g5 { left: 1240px; }
+
+/* Подсказка-сообщение (всплывает сверху при экстернализации) */
+#hint {
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    margin-left: -400px;
+    width: 800px;
+    background: #fff;
+    border: 4px solid #4a5568;
+    border-radius: 20px;
+    padding: 20px 40px;
+    font-size: 42px;
+    color: #2d3748;
+    z-index: 500;
+    display: none;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+#hint.show { display: block; animation: hintIn 0.3s; }
+@keyframes hintIn {
+    from { opacity: 0; margin-top: -30px; }
+    to   { opacity: 1; margin-top: 0; }
+}
+
+/* Заморозка интерактива */
+.frozen { pointer-events: none !important; opacity: 0.7; }
+</style>
+</head>
+<body>
+
+<div id="stage">
+
+<!-- Слайд 1: Приветствие -->
+<div class="slide active" id="slide1">
+    <div class="big-cat">🐱</div>
+    <div class="hello-text">Здравствуй, котёнок!</div>
+</div>
+
+<!-- Слайд 2: Раунд 1, команда А -->
+<div class="slide" id="slide2">
+    <div class="slide-title">Получать 👂</div>
+    <div class="slide-subtitle">Выбери помощников</div>
+    <div class="item pos-1" data-wrong="false" data-hint="Это вы сами, молодцы!">👁️</div>
+    <div class="item pos-2" data-wrong="false" data-hint="Это вы сами, молодцы!">👂</div>
+    <div class="item pos-3" data-wrong="true"  data-hint="Ой, это котёнок лапкой нажал!">🪨</div>
+    <div class="item pos-4" data-wrong="false" data-hint="Это вы сами, молодцы!">👃</div>
+</div>
+
+<!-- Слайд 3: Раунд 1, команда Б -->
+<div class="slide" id="slide3">
+    <div class="slide-title">Получать 👂</div>
+    <div class="slide-subtitle">Выбери помощников</div>
+    <div class="item pos-1" data-wrong="false" data-hint="Это вы сами, молодцы!">✋</div>
+    <div class="item pos-2" data-wrong="false" data-hint="Это вы сами, молодцы!">🦵</div>
+    <div class="item pos-3" data-wrong="true"  data-hint="Ой, это котёнок лапкой нажал!">🪑</div>
+    <div class="item pos-4" data-wrong="false" data-hint="Это вы сами, молодцы!">👄</div>
+</div>
+
+<!-- Слайд 4: Раунд 2, команда А — фото в альбом -->
+<div class="slide" id="slide4">
+    <div class="slide-title">Хранить 🤗</div>
+    <div class="slide-subtitle">Куда сохранить?</div>
+    <div class="center-obj" id="obj4">📷</div>
+    <div class="item pos-a" data-target="a" data-correct-r4="true"  data-hint="Это вы сами, молодцы!">📔</div>
+    <div class="item pos-b" data-target="b" data-correct-r4="false" data-hint="Ой, это котёнок лапкой нажал!">📦</div>
+</div>
+
+<!-- Слайд 5: Раунд 2, команда Б — клубок в коробку -->
+<div class="slide" id="slide5">
+    <div class="slide-title">Хранить 🤗</div>
+    <div class="slide-subtitle">Куда сохранить?</div>
+    <div class="center-obj" id="obj5">🧶</div>
+    <div class="item pos-a" data-target="a" data-correct-r5="false" data-hint="Ой, это котёнок лапкой нажал!">📔</div>
+    <div class="item pos-b" data-target="b" data-correct-r5="true"  data-hint="Это вы сами, молодцы!">📦</div>
+</div>
+
+<!-- Слайд 6: Раунд 3 — реклама -->
+<div class="slide" id="slide6">
+    <div class="slide-title">Сюрприз!</div>
+    <div class="banner frozen" id="banner">🎁 Нажми и получи приз! 🎁</div>
+    <div class="teacher-buttons" id="voteButtons">
+        <button class="left" onclick="chooseBranch('clicked')">👆 Нажали</button>
+        <button class="right" onclick="chooseBranch('closed')">✖ Закрыли</button>
+    </div>
+</div>
+
+<!-- Слайд 7: Непонятный экран -->
+<div class="slide" id="slide7">
+    <div class="weird-symbols" id="weirdSymbols"></div>
+    <div class="close-btn" onclick="fixScreen()">✖</div>
+</div>
+
+<!-- Слайд 8: Раунд 4, команда А -->
+<div class="slide" id="slide8">
+    <div class="slide-title">Передавать 🤲</div>
+    <div class="slide-subtitle">Выбери, кому расскажешь</div>
+    <div class="item pos-1" data-wrong="false" data-hint="Это вы сами, молодцы!">👩</div>
+    <div class="item pos-2" data-wrong="false" data-hint="Это вы сами, молодцы!">👦</div>
+    <div class="item pos-3" data-wrong="false" data-hint="Это вы сами, молодцы!">👵</div>
+    <div class="item pos-4" data-wrong="true"  data-hint="Ой, это котёнок лапкой нажал!">🧊</div>
+</div>
+
+<!-- Слайд 9: Раунд 4, команда Б -->
+<div class="slide" id="slide9">
+    <div class="slide-title">Передавать 🤲</div>
+    <div class="slide-subtitle">Выбери, кому расскажешь</div>
+    <div class="item pos-1" data-wrong="false" data-hint="Это вы сами, молодцы!">👩</div>
+    <div class="item pos-2" data-wrong="false" data-hint="Это вы сами, молодцы!">👦</div>
+    <div class="item pos-3" data-wrong="false" data-hint="Это вы сами, молодцы!">👵</div>
+    <div class="item pos-4" data-wrong="true"  data-hint="Ой, это котёнок лапкой нажал!">🩴</div>
+</div>
+
+<!-- Слайд 10: Раунд 5, команда А — цвет солнца (жёлтый) -->
+<div class="slide" id="slide10">
+    <div class="slide-title">Соображать 🤔</div>
+    <div class="slide-subtitle">Котёнок был цвета солнца!</div>
+    <div class="color-circle yellow" data-correct="true"  data-hint="Это вы сами, молодцы!"></div>
+    <div class="color-circle green"  data-correct="false" data-hint="Ой, это котёнок лапкой нажал!"></div>
+    <div class="color-circle blue"   data-correct="false" data-hint="Ой, это котёнок лапкой нажал!"></div>
+</div>
+
+<!-- Слайд 11: Раунд 5, команда Б — цвет травы (зелёный) -->
+<div class="slide" id="slide11">
+    <div class="slide-title">Соображать 🤔</div>
+    <div class="slide-subtitle">Бантик был цвета травы!</div>
+    <div class="color-circle yellow" data-correct="false" data-hint="Ой, это котёнок лапкой нажал!"></div>
+    <div class="color-circle green"  data-correct="true"  data-hint="Это вы сами, молодцы!"></div>
+    <div class="color-circle blue"   data-correct="false" data-hint="Ой, это котёнок лапкой нажал!"></div>
+</div>
+
+<!-- Слайд 12: Связка с ИИ -->
+<div class="slide" id="slide12">
+    <div class="slide-title">Компьютер тоже умеет!</div>
+    <div class="arrow arrow-1">→</div>
+    <div class="arrow arrow-2">←</div>
+    <div class="arrow arrow-3">→</div>
+    <div class="arrow arrow-4">←</div>
+    <div class="devices">
+        <span>📱</span>
+        <span>💻</span>
+    </div>
+    <div class="question">❓</div>
+</div>
+
+<!-- Слайд 13: Рефлексия -->
+<div class="slide" id="slide13">
+    <div class="slide-title">Вспомним движения!</div>
+    <div class="gesture g1">👂</div>
+    <div class="gesture-label g1">Получать</div>
+    <div class="gesture g2">🤗</div>
+    <div class="gesture-label g2">Хранить</div>
+    <div class="gesture g3">🤲</div>
+    <div class="gesture-label g3">Передавать</div>
+    <div class="gesture g4">🤔</div>
+    <div class="gesture-label g4">Соображать</div>
+    <div class="gesture g5">🙋</div>
+    <div class="gesture-label g5">Зовём взрослого!</div>
+</div>
+
+</div>
+
+<!-- Подсказка-сообщение -->
+<div id="hint"></div>
+
+<!-- Панель навигации учителя -->
+<div id="nav">
+    <button onclick="prevSlide()">◀</button>
+    <span id="slideCounter">1 / 13</span>
+    <button onclick="nextSlide()">▶</button>
+</div>
+
+<script>
+/* ============ ЗВУКИ через Web Audio API ============ */
+var audioCtx = null;
+function getAudio() {
+    if (!audioCtx) {
+        try {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        } catch(e) { audioCtx = null; }
+    }
+    return audioCtx;
+}
+
+/* «Дзынь» — короткий высокий тон */
+function playDing() {
+    var ctx = getAudio(); if (!ctx) return;
+    var osc = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = 1200;
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.4);
+}
+
+/* Весёлый звук — три восходящих тона */
+function playHappy() {
+    var ctx = getAudio(); if (!ctx) return;
+    var notes = [523, 659, 784];
+    for (var i = 0; i < notes.length; i++) {
+        (function(freq, delay) {
+            var osc = ctx.createOscillator();
+            var gain = ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.0001, ctx.currentTime + delay);
+            gain.gain.exponentialRampToValueAtTime(0.3, ctx.currentTime + delay + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.25);
+            osc.connect(gain); gain.connect(ctx.destination);
+            osc.start(ctx.currentTime + delay);
+            osc.stop(ctx.currentTime + delay + 0.25);
+        })(notes[i], i * 0.15);
+    }
+}
+
+/* Низкий гул — 2 секунды */
+var weirdOsc = null;
+function playWeird() {
+    var ctx = getAudio(); if (!ctx) return;
+    weirdOsc = ctx.createOscillator();
+    var gain = ctx.createGain();
+    weirdOsc.type = 'sawtooth';
+    weirdOsc.frequency.value = 80;
+    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+    weirdOsc.connect(gain); gain.connect(ctx.destination);
+    weirdOsc.start();
+    setTimeout(function() {
+        try { weirdOsc.stop(); } catch(e) {}
+        weirdOsc = null;
+    }, 2000);
+}
+function stopWeird() {
+    if (weirdOsc) {
+        try { weirdOsc.stop(); } catch(e) {}
+        weirdOsc = null;
+    }
+}
+
+/* ============ ПОДСКАЗКИ (экстернализация) ============ */
+var hintTimer = null;
+function showHint(text) {
+    var h = document.getElementById('hint');
+    h.textContent = text;
+    h.className = 'show';
+    clearTimeout(hintTimer);
+    hintTimer = setTimeout(function() {
+        h.className = '';
+    }, 2500);
+}
+
+/* ============ ПЕРЕКЛЮЧЕНИЕ СЛАЙДОВ ============ */
+var currentSlide = 1;
+var totalSlides = 13;
+
+function showSlide(n) {
+    if (n < 1 || n > totalSlides) return;
+    var slides = document.querySelectorAll('.slide');
+    for (var i = 0; i < slides.length; i++) {
+        slides[i].classList.remove('active');
+    }
+    document.getElementById('slide' + n).classList.add('active');
+    currentSlide = n;
+    document.getElementById('slideCounter').textContent = n + ' / ' + totalSlides;
+    onSlideEnter(n);
+}
+
+function nextSlide() { showSlide(currentSlide + 1); }
+function prevSlide() { showSlide(currentSlide - 1); }
+
+/* Стрелки клавиатуры для учителя */
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight') nextSlide();
+    else if (e.key === 'ArrowLeft') prevSlide();
+});
+
+/* ============ СБРОС СОСТОЯНИЙ ПРИ ВХОДЕ НА СЛАЙД ============ */
+function onSlideEnter(n) {
+    document.getElementById('hint').className = '';
+
+    /* Раунды 1 и 4 — сброс fly-away и correct */
+    if (n === 2 || n === 3 || n === 8 || n === 9) {
+        var items = document.querySelectorAll('#slide' + n + ' .item');
+        for (var i = 0; i < items.length; i++) {
+            items[i].classList.remove('fly-away', 'correct');
+            items[i].style.opacity = '1';
+            items[i].style.transform = '';
+        }
+    }
+    /* Раунд 2 — сброс прыжка */
+    if (n === 4 || n === 5) {
+        var obj = document.getElementById('obj' + n);
+        obj.classList.remove('jump-a', 'jump-b');
+        var items = document.querySelectorAll('#slide' + n + ' .item');
+        for (var i = 0; i < items.length; i++) {
+            items[i].classList.remove('correct');
+        }
+    }
+    /* Раунд 3 — заморозка баннера */
+    if (n === 6) {
+        document.getElementById('banner').classList.add('frozen');
+        document.getElementById('banner').style.opacity = '';
+        document.getElementById('voteButtons').style.display = 'block';
+    }
+    /* Непонятный экран */
+    if (n === 7) {
+        generateWeirdSymbols();
+        playWeird();
+    } else {
+        stopWeird();
+    }
+    /* Раунд 5 — сброс пульсации */
+    if (n === 10 || n === 11) {
+        var circles = document.querySelectorAll('#slide' + n + ' .color-circle');
+        for (var i = 0; i < circles.length; i++) {
+            circles[i].classList.remove('pulse', 'correct');
+        }
+    }
+}
+
+/* ============ ОБРАБОТЧИКИ КЛИКОВ ============ */
+
+/* Раунды 1 и 4: item с data-wrong */
+document.addEventListener('click', function(e) {
+    var target = e.target;
+
+    /* Элементы раундов 1 и 4 */
+    if (target.classList.contains('item') && target.hasAttribute('data-wrong')) {
+        var isWrong = target.getAttribute('data-wrong') === 'true';
+        var hint = target.getAttribute('data-hint');
+        showHint(hint);
+        if (isWrong) {
+            target.classList.add('fly-away');
+            playHappy();
+        } else {
+            target.classList.add('correct');
+        }
+        return;
+    }
+
+    /* Цветовые круги раунда 5 */
+    if (target.classList.contains('color-circle')) {
+        var isCorrect = target.getAttribute('data-correct') === 'true';
+        var hint = target.getAttribute('data-hint');
+        showHint(hint);
+        if (isCorrect) {
+            target.classList.add('pulse');
+            playHappy();
+        }
+        return;
+    }
+});
+
+/* Раунд 2: контейнеры (отдельные обработчики, чтобы не конфликтовать) */
+(function() {
+    var slides45 = [document.getElementById('slide4'), document.getElementById('slide5')];
+    for (var s = 0; s < slides45.length; s++) {
+        var items = slides45[s].querySelectorAll('.item');
+        for (var i = 0; i < items.length; i++) {
+            items[i].addEventListener('click', function(e) {
+                e.stopPropagation();
+                var slide = this.closest('.slide');
+                var n = parseInt(slide.id.replace('slide', ''));
+                var obj = document.getElementById('obj' + n);
+                var tgt = this.getAttribute('data-target');
+                var hint = this.getAttribute('data-hint');
+                showHint(hint);
+
+                /* Определяем правильность */
+                var isCorrect = false;
+                if (n === 4) isCorrect = (tgt === 'a'); /* альбом */
+                if (n === 5) isCorrect = (tgt === 'b'); /* коробка */
+
+                if (isCorrect) {
+                    if (tgt === 'a') obj.classList.add('jump-a');
+                    else obj.classList.add('jump-b');
+                    this.classList.add('correct');
+                    playHappy();
+                } else {
+                    /* Котёнок лапкой — предмет тоже прыгает, но без весёлого звука */
+                    if (tgt === 'a') obj.classList.add('jump-a');
+                    else obj.classList.add('jump-b');
+                }
+            });
+        }
+    }
+})();
+
+/* ============ РАУНД 3: голосование и ветки ============ */
+function chooseBranch(branch) {
+    var banner = document.getElementById('banner');
+    banner.classList.remove('frozen');
+    document.getElementById('voteButtons').style.display = 'none';
+
+    if (branch === 'clicked') {
+        playDing();
+        setTimeout(function() {
+            showSlide(7);
+        }, 800);
+    } else {
+        showHint('Ура! Вы закрыли — молодцы!');
+        playHappy();
+        banner.style.opacity = '0.3';
+    }
+}
+
+/* Генерация странных символов для слайда 7 */
+function generateWeirdSymbols() {
+    var symbols = '\u25B2\u25BC\u25C0\u25B6\u25C6\u25C7\u2605\u2606\u25CF\u25CB\u25A1\u25A0\u25B3\u25BD\u25E2\u25E3\u25E4\u25E5\u25D0\u25D1\u25D2\u25D3\u2630\u2631\u2632\u2633\u2634\u2635\u2636\u2637\u2660\u2663\u2665\u2666\u2669\u266A\u266B\u266C\u2300\u2301\u2302\u2303\u2304\u2305\u2306\u2307\u2308\u2309\u230A\u230B\u230C\u230D\u230E\u230F\u2310\u00AC\u2312\u2313\u2314\u2315\u2316\u2317\u2318\u2319\u231A\u231B';
+    var text = '';
+    for (var i = 0; i < 300; i++) {
+        text += symbols.charAt(Math.floor(Math.random() * symbols.length));
+        if (Math.random() < 0.05) text += ' ';
+    }
+    document.getElementById('weirdSymbols').textContent = text;
+}
+
+/* Кнопка «Крестик» на слайде 7 — чинит экран */
+function fixScreen() {
+    stopWeird();
+    playHappy();
+    showHint('Спасибо, взрослый починил!');
+    setTimeout(function() {
+        showSlide(8);
+    }, 1500);
+}
+
+/* ============ ИНИЦИАЛИЗАЦИЯ ============ */
+/* Активируем аудио при первом клике (политика браузеров) */
+document.body.addEventListener('click', function initAudio() {
+    getAudio();
+    document.body.removeEventListener('click', initAudio);
+}, { once: true });
+
+showSlide(1);
+</script>
+
+</body>
+</html>
