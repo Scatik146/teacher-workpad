@@ -42,18 +42,16 @@ description: "Дракон-схемы (DrakonWidget) в уроках teacher-wor
   { kommentarij:'…' } ] }
 ```
 - Силуэт: `{ nazvanie, vetki:[ {imya, shagi:[…]}, … ] }`.
-- Верхняя крышка ДЛЯ: `'Для каждого ученика в списке класса'`, `'for x in range(n)'`, `'i = 0; i < n; i++'`. Нижнюю программа пишет сама («Конец цикла k», без имени — «Конец цикла»); свой текст — `niz:'…'`. Старое `po` приклеивается к верхней крышке; сохранённые у учеников схемы со старой нижней крышкой читаются так же.
-- Переходы — последним шагом в ветке вопроса или варианта: `{vyhod:true}` — «выход из цикла» (break, линия в точку сразу после цикла), `{dalshe:true}` — «к следующему шагу» (continue), `{konec:true}` — «конец» (только в примитиве). return не вводим. Ветка с переходом в цикле ДЛЯ уходит вправо сама (иначе виджет падает); в циклах «пока» — как записана.
+- Верхняя крышка ДЛЯ: `'Для каждого ученика в списке класса'`, `'for x in range(n)'`, `'i = 0; i < n; i++'`. Нижнюю программа пишет сама («Конец цикла k», без имени — «Конец цикла»), в сборке тоже; свой текст — `niz:'…'`. Старое `po` приклеивается к верхней крышке; старые сохранённые схемы читаются.
+- Переходы — последним шагом в ветке вопроса или варианта: `{vyhod:true}` — «выход из цикла» (break, линия в точку сразу после цикла), `{dalshe:true}` — «к следующему шагу» (continue), `{konec:true}` — «конец» (только в примитиве). return не вводим (в Python оно значит другое). Ветка с переходом в ДЛЯ уходит вправо сама (иначе виджет падает); в циклах «пока» — как записана.
+
+## Псевдокод, маршруты, ИИ-формат, код
+- `lib/drakongen/drakongen.js` и `ai-ast.js` (Митькин, public domain) подключать до обёртки. `pokazat(el, shema, {knopki:true})` — кнопки «Псевдокод», «Маршруты», «Код» (`yazykKoda` — язык по умолчанию); `DrakonShema.psevdokod(shema,'ru')`, `marshruty(shema)`.
+- `pokazat` принимает ИИ-формат DrakonHub `{name, stages:[{name, steps:[{type:'action'|'question'|'select'|'loop'|'break'|'address'|'pause'|'insertion'|'process'|'simpleinput'|'simpleoutput'|'concurrent'|'controlperiod', …}]}]}` — его пишет нейросеть по промпту `drakon-graf/docs/komanda/drakonhub-prompt.md`.
+- `DrakonShema.kod(shema, 'python'|'kumir'|'c'|'1c')` → Promise `{kod, oshibki}`. Python и КуМир — свои генераторы в стиле ОГЭ (`нц пока условие`, `нц для i от 1 до n`, `кц при`); C и 1С — `lib/drakongen/drakontechgen.js`. Текст в блоках — на целевом языке. КуМир: имя `алг` чистится от цифр и служебных слов, `использовать Робот` — в начало, «к следующему шагу» → `далее` (только qumir.dev, обёртка предупреждает). Тест: `node tools/drakon-kod-test.mjs`.
+- КуМир проверять запуском на qumir.dev (`document.querySelector('.CodeMirror').CodeMirror.setValue(код)`, ввод — `#stdin`, «Запустить», вывод — `#stdout`). qumir.dev компилирует на сервере — только онлайн; в офлайн-версии кнопок qumir.dev нет.
 - Заготовка для сборки: пустой блок — `''` или `'…'`, помечать `/*заготовка*/`. Кнопка `cikl` вставляет только for; циклы «пока» давать готовыми в заготовке.
 - Тело цикла «пока» в ДРАКОНе всегда справа — по главной линии вниз не рисуется. Вложенные for — две крышки подряд: это правильно.
-
-## Псевдокод, маршруты, ИИ-формат
-- `lib/drakongen/drakongen.js` и `ai-ast.js` (Митькин, public domain) подключать до обёртки. `pokazat(el, shema, {knopki:true})` — кнопки «Псевдокод» и «Маршруты»; `DrakonShema.psevdokod(shema,'ru')`, `marshruty(shema)`.
-- `pokazat` принимает ИИ-формат DrakonHub `{name, stages:[{name, steps:[{type:'action'|'question'|'select'|'loop'|'break'|'address'|'pause'|'insertion'|'process'|'simpleinput'|'simpleoutput'|'concurrent'|'controlperiod', …}]}]}` — его пишет нейросеть по промпту `drakon-graf/docs/komanda/drakonhub-prompt.md`.
-
-- `DrakonShema.kod(shema, 'python'|'kumir'|'c'|'1c')` → Promise `{kod, oshibki}`, кнопка «Код». Python и КуМир — свои генераторы в стиле ОГЭ (`нц пока условие`, `нц для i от 1 до n`, `кц при`); C и 1С — `lib/drakongen/drakontechgen.js` Митькина. Текст в блоках — на целевом языке. КуМир: имя `алг` чистится от цифр и служебных слов (иначе КуМир не понимает), `использовать Робот` — в начало, `выход` = выход из цикла и «конец»; «к следующему шагу» → `далее` (есть в qumir.dev, нет в классическом КуМире — обёртка предупреждает). Тест: `node tools/drakon-kod-test.mjs`.
-
-- КуМир проверять запуском на qumir.dev (CodeMirror: `document.querySelector('.CodeMirror').CodeMirror.setValue(код)`, ввод — `#stdin`, кнопка «Запустить», вывод — `#stdout`). qumir.dev компилирует на сервере — только онлайн; в офлайн-версии редактора кнопок qumir.dev нет.
 
 ## Родной формат (если нужно руками)
 `items`: id → `{type, content, one, two, branchId, flag1}`. Первая `branch` (branchId 0, content '' для одной ветки), в конце `end`. `question`: `one` — вниз, `two` — вправо, `flag1:1` — вниз «Да». `select.one` → первый `case`, `case.two` → следующий. Силуэт: хвост ветки указывает на id следующей `branch`. for: `loopbegin` → тело → `loopend` (у обоих `content`; ранний выход — ветка `two` вопроса ведёт в блок после `loopend`, `flag1:0`). while/do-while: узел `arrow-loop`, к нему возвращается ветка `two` вопроса, `flag1:0`. Ввод/вывод — `simpleinput` / `simpleoutput`.
