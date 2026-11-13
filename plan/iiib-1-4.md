@@ -10,12 +10,12 @@
 | № | неделя | тема | тип | урок |
 |---|---|---|---|---|
 | | | **Цифровая среда** | | |
-| 1 | 1 | Мой друг — компьютер/планшет. Техника безопасности. | теория | ✏️ [iiib-01-moj-drug-kompyuter](../1-klass/iiib-01-moj-drug-kompyuter/) |
+| 1 | 1 | Мой друг — компьютер/планшет. Техника безопасности. | теория | — |
 | 2 | 2 | Информация, виды информации | теория | 📝 [iiib-02-informaciya](../1-klass/iiib-02-informaciya/) |
 | 3 | 3 | Что можно делать с информацией | теория | ✏️ [iiib-03-chto-delat-s-informaciej](../1-klass/iiib-03-chto-delat-s-informaciej/) |
 | 4 | 4 | Изображения в сети Интернет | теория | — |
 | | | **Цифровое творчество** | | |
-| 5 | 5 | Знакомство с компьютером | теория | — |
+| 5 | 5 | Знакомство с компьютером | теория | ✏️ [iiib-05-znakomstvo-s-kompyuterom](../1-klass/iiib-05-znakomstvo-s-kompyuterom/) |
 | 6 | 6 | Я автор: мои рисунки | практическая | 📝 [iiib-06-ya-avtor-moi-risunki](../1-klass/iiib-06-ya-avtor-moi-risunki/) |
 | 7 | 7 | Раскрась как хочешь | практическая | ✏️ [iiib-07-raskras-kak-hochesh](../1-klass/iiib-07-raskras-kak-hochesh/) |
 | 8 | 8 | Правило раскрашивания | практическая | ✏️ [vodoprovod](../1-klass/vodoprovod/) |
