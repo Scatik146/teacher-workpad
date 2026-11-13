@@ -1,0 +1,57 @@
+﻿КЛЮЧ К «СЕКРЕТНОМУ ТЕСТУ» — только для учителя
+
+test_01.jpg — Карандаш (обычный)
+   Правильный ответ: карандаш
+   Flowers (from Sketchbook); Thomas Moran
+   https://commons.wikimedia.org/wiki/File:Flowers_(from_Sketchbook)_MET_263530.jpg
+
+test_02.jpg — Акварель (обычная)
+   Правильный ответ: акварель
+   Sitka by Alexander Postels, watercolor; Alexander Philipov Postels
+   https://commons.wikimedia.org/wiki/File:Sitka_by_Alexander_Postels,_watercolor_.JPG
+
+test_03.jpg — Карандаш (обычный)
+   Правильный ответ: карандаш
+   A Youth (from Album); John Singer Sargent
+   https://commons.wikimedia.org/wiki/File:A_Youth_(from_Album)_MET_50.130.154ee.jpg
+
+test_04.jpg — Акварель (обычная)
+   Правильный ответ: акварель
+   The Library; Matilda Charlotte Paston-Bedingfeld
+   https://commons.wikimedia.org/wiki/File:Library_in_Oxburgh_Hall,_watercolour_by_Matilda_Bedingfeld_ca._1850.jpg
+
+test_05.jpg — ЛОВУШКА — монохромная размывка кистью
+   Правильный ответ: скорее акварель/кисть (а модель, скорее всего, скажет «карандаш»)
+   MZK Heiligenkreuz Grisaille-Fenster Albert Camesina 1838 Print 1858 Jahresband 3-343; Albert Camesina
+   https://commons.wikimedia.org/wiki/File:MZK_Heiligenkreuz_Grisaille-Fenster_Albert_Camesina_1838_Print_1858_Jahresband_3-343.jpg
+   Зачем: Работа кистью и водой, но почти без цвета. Если модель скажет «карандаш» — она снова смотрит на цвет.
+
+test_06.jpg — Карандаш (обычный)
+   Правильный ответ: карандаш
+   Landscape (from Sketchbook); Thomas Moran
+   https://commons.wikimedia.org/wiki/File:Landscape_(from_Sketchbook)_MET_263516.jpg
+
+test_07.jpg — ЛОВУШКА — монохромная размывка кистью
+   Правильный ответ: скорее акварель/кисть (а модель, скорее всего, скажет «карандаш»)
+   drawing; 
+   https://commons.wikimedia.org/wiki/File:Drawing_(BM_1952,0121.86).jpg
+   Зачем: Работа кистью и водой, но почти без цвета. Если модель скажет «карандаш» — она снова смотрит на цвет.
+
+test_08.jpg — ЛОВУШКА — цветные карандаши
+   Правильный ответ: карандаш (а модель, скорее всего, скажет «акварель»)
+   Sewing Bird; Charlotte Winter
+   https://commons.wikimedia.org/wiki/File:Charlotte_Winter,_Sewing_Bird,_c._1936,_NGA_25561.jpg
+   Зачем: Цветной рисунок, но сделан карандашами. Если модель скажет «акварель» — она различает цвет, а не технику.
+
+test_09.jpg — Акварель (обычная)
+   Правильный ответ: акварель
+   MET DP339982; 
+   https://commons.wikimedia.org/wiki/File:MET_DP339982.jpg
+
+test_10.jpg — ЛОВУШКА — цветные карандаши
+   Правильный ответ: карандаш (а модель, скорее всего, скажет «акварель»)
+   Silver Chocolate Pot; Fletcher Hanks
+   https://commons.wikimedia.org/wiki/File:Fletcher_Hanks,_Silver_Chocolate_Pot,_c._1936,_NGA_26622.jpg
+   Зачем: Цветной рисунок, но сделан карандашами. Если модель скажет «акварель» — она различает цвет, а не технику.
+
+Важно: ловушки — это прогноз, а не гарантия. Перед уроком обучите модель сами и проверьте, на каких test_ она ошибается.
