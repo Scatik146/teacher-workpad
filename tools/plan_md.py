@@ -196,6 +196,7 @@ for slug, title, src, note in COURSES:
     with open(os.path.join(OUT, slug + '.md'), 'w', encoding='utf-8') as f:
         f.write('\n'.join(lines).rstrip() + '\n')
     index.append(f'| {title} | [{slug}.md]({slug}.md) | {lines[3].replace("Уроков: ", "").rstrip(".")} |')
+index.append('| Решение практических задач, 10 класс (план по факту уроков, ведётся вручную) | [rpz-10.md](rpz-10.md) | 7 (предварительно) |')
 index += ['', FLAG_NOTE, '',
           'Неделя посчитана по числу часов в году (34 ч — 1 урок в неделю, 68 ч — 2, 136 ч — 4); '
           'для курсов на 17 ч неделя не указана — расписание (раз в две недели или полугодие) задаёт учитель.',
