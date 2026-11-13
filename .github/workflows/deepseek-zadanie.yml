@@ -31,6 +31,7 @@ jobs:
           {
             echo; echo "## Проверки"; echo '```'
             node tools/drakon-kod-test.mjs 2>&1 || echo "ПРОВЕРКА НЕ ПРОШЛА"
+            if [ -f tools/drakon-zapis-test.mjs ]; then node tools/drakon-zapis-test.mjs 2>&1 || echo "ПРОВЕРКА ЗАПИСИ НЕ ПРОШЛА"; fi
             echo '```'
           } >> deepseek-otchet.md
       - name: Pull Request
