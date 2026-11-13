@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Технологии вокруг нас — 5 класс</title>
+<style>
+  @font-face{font-family:"PT Serif";src:url("../../lib/drakon-graf/fonts/PT_Serif-Web-Regular.ttf") format("truetype");font-weight:400}
+  @font-face{font-family:"PT Serif";src:url("../../lib/drakon-graf/fonts/PT_Serif-Web-Bold.ttf") format("truetype");font-weight:700 900}
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'PT Serif', 'Segoe UI', Arial, sans-serif;
+    background: #1a1a2e;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    user-select: none;
+  }
+
+  .slide {
+    display: none;
+    width: 100vw;
+    height: 100vh;
+    padding: 40px 60px;
+    position: relative;
+    overflow: hidden;
+    animation: fadeIn 0.5s ease;
+  }
+  .slide.active { display: flex; flex-direction: column; justify-content: center; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== SLIDE 0: TITLE ===== */
+  .slide-0 {
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    align-items: center;
+    text-align: center;
+    color: #fff;
+  }
+  .slide-0 h1 {
+    font-size: 3.2em;
+    font-weight: 900;
+    background: linear-gradient(90deg, #f7971e, #ffd200);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 10px;
+  }
+  .slide-0 .subtitle {
+    font-size: 1.5em;
+    color: #b8b8d0;
+    margin-bottom: 30px;
+  }
+  .slide-0 .badge {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 30px;
+    padding: 10px 30px;
+    font-size: 1.1em;
+    color: #ffd200;
+  }
+  .slide-0 .gear {
+    font-size: 5em;
+    margin-bottom: 20px;
+    animation: spin 8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ===== SLIDE 1: TWO WORLDS ===== */
+  .slide-1 {
+    background: linear-gradient(135deg, #11998e, #38ef7d);
+    color: #fff;
+  }
+  .slide-1 h2 { font-size: 2.4em; text-align: center; margin-bottom: 30px; text-shadow: 2px 2px 8px rgba(0,0,0,0.3); }
+  .two-worlds {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    flex: 1;
+    align-items: stretch;
+  }
+  .world-card {
+    flex: 1;
+    max-width: 420px;
+    border-radius: 24px;
+    padding: 30px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  }
+  .world-card.nature { background: rgba(255,255,255,0.25); backdrop-filter: blur(10px); }
+  .world-card.tech { background: rgba(0,0,0,0.25); backdrop-filter: blur(10px); }
+  .world-card .icon { font-size: 4em; margin-bottom: 15px; }
+  .world-card h3 { font-size: 1.6em; margin-bottom: 10px; }
+  .world-card p { font-size: 1.1em; opacity: 0.9; }
+
+  /* ===== SLIDE 1b: ROBOT TASK ===== */
+  .slide-1b {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    align-items: center;
+    text-align: center;
+  }
+  .slide-1b h2 { font-size: 2.2em; margin-bottom: 20px; }
+  .robot-box {
+    background: rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 30px 40px;
+    max-width: 700px;
+    font-size: 1.3em;
+    line-height: 1.8;
+    border: 2px dashed rgba(255,255,255,0.4);
+  }
+  .robot-box .robot-emoji { font-size: 3em; }
+  .robot-box .instruction {
+    background: rgba(0,0,0,0.3);
+    border-radius: 12px;
+    padding: 15px 20px;
+    margin-top: 15px;
+    font-family: monospace;
+    font-size: 0.95em;
+    color: #ffd200;
+  }
+  .task-timer {
+    margin-top: 20px;
+    font-size: 1.5em;
+    color: #ffd200;
+    font-weight: 700;
+  }
+
+  /* ===== SLIDE 2: ETYMOLOGY ===== */
+  .slide-2 {
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    color: #fff;
+    align-items: center;
+    text-align: center;
+  }
+  .slide-2 h2 { font-size: 2.4em; margin-bottom: 30px; }
+  .etymology {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+  }
+  .etym-card {
+    background: rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 25px 35px;
+    min-width: 220px;
+    backdrop-filter: blur(10px);
+  }
+  .etym-card .greek { font-size: 2.5em; font-weight: 900; }
+  .etym-card .trans { font-size: 1.1em; opacity: 0.8; margin: 5px 0; }
+  .etym-card .meaning { font-size: 1.3em; font-weight: 700; color: #ffd200; }
+  .etym-result {
+    background: rgba(0,0,0,0.25);
+    border-radius: 16px;
+    padding: 20px 40px;
+    font-size: 1.4em;
+    max-width: 700px;
+  }
+  .etym-result strong { color: #ffd200; }
+  .etym-note {
+    margin-top: 15px;
+    font-size: 1em;
+    opacity: 0.7;
+  }
+
+  /* ===== SLIDE 3: INPUT-PROCESS-OUTPUT ===== */
+  .slide-3 {
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #fff;
+    align-items: center;
+    text-align: center;
+  }
+  .slide-3 h2 { font-size: 2.4em; margin-bottom: 30px; }
+  .flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 25px;
+  }
+  .flow-box {
+    border-radius: 20px;
+    padding: 25px 30px;
+    min-width: 200px;
+    text-align: center;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  }
+  .flow-box.input { background: linear-gradient(135deg, #11998e, #38ef7d); }
+  .flow-box.process { background: linear-gradient(135deg, #f7971e, #ffd200); color: #333; }
+  .flow-box.output { background: linear-gradient(135deg, #ee0979, #ff6a00); }
+  .flow-box h3 { font-size: 1.5em; margin-bottom: 8px; }
+  .flow-box p { font-size: 1em; opacity: 0.9; }
+  .flow-arrow { font-size: 2.5em; color: #ffd200; }
+  .flow-icons {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    font-size: 1.2em;
+    opacity: 0.7;
+  }
+  .flow-icons span { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+  .flow-icons .fi { font-size: 2em; }
+
+  /* ===== SLIDE 4: LABOR COMPONENTS ===== */
+  .slide-4 {
+    background: linear-gradient(135deg, #2193b0, #6dd5ed);
+    color: #fff;
+  }
+  .slide-4 h2 { font-size: 2.2em; text-align: center; margin-bottom: 25px; }
+  .labor-table {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+  }
+  .labor-table th {
+    background: rgba(0,0,0,0.3);
+    padding: 15px 20px;
+    font-size: 1.2em;
+    border-radius: 12px;
+  }
+  .labor-table td {
+    background: rgba(255,255,255,0.2);
+    padding: 15px 20px;
+    font-size: 1.1em;
+    text-align: center;
+    backdrop-filter: blur(5px);
+  }
+  .labor-table tr td:first-child { border-radius: 12px 0 0 12px; font-weight: 700; }
+  .labor-table tr td:last-child { border-radius: 0 12px 12px 0; }
+  .labor-table .q { color: #ffd200; font-weight: 700; }
+
+  /* ===== SLIDE 5: TEA EXAMPLE ===== */
+  .slide-5 {
+    background: linear-gradient(135deg, #3a1c71, #d76d77, #ffaf7b);
+    color: #fff;
+  }
+  .slide-5 h2 { font-size: 2em; text-align: center; margin-bottom: 20px; }
+  .tea-scheme {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .tea-row {
+    display: flex;
+    align-items: stretch;
+    gap: 15px;
+  }
+  .tea-label {
+    min-width: 130px;
+    border-radius: 14px;
+    padding: 12px 15px;
+    font-weight: 700;
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .tea-label.in { background: #38ef7d; color: #1a1a2e; }
+  .tea-label.pr { background: #ffd200; color: #1a1a2e; }
+  .tea-label.out { background: #ff6a00; }
+  .tea-label.tools { background: #667eea; }
+  .tea-content {
+    flex: 1;
+    background: rgba(255,255,255,0.15);
+    border-radius: 14px;
+    padding: 12px 20px;
+    font-size: 1.05em;
+    line-height: 1.6;
+    backdrop-filter: blur(5px);
+  }
+
+  /* ===== SLIDE 6: SELF-CHECK ===== */
+  .slide-6 {
+    background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+    color: #fff;
+    align-items: center;
+    text-align: center;
+  }
+  .slide-6 h2 { font-size: 2.2em; margin-bottom: 25px; }
+  .check-cards {
+    display: flex;
+    gap: 25px;
+    justify-content: center;
+    flex-wrap: wrap;
+    max-width: 900px;
+  }
+  .check-card {
+    background: rgba(255,255,255,0.15);
+    border-radius: 18px;
+    padding: 25px;
+    min-width: 280px;
+    max-width: 400px;
+    text-align: left;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255,255,255,0.2);
+  }
+  .check-card h3 { color: #ffd200; margin-bottom: 12px; font-size: 1.2em; }
+  .check-card p { font-size: 1.05em; line-height: 1.7; }
+  .check-card .answer {
+    margin-top: 12px;
+    background: rgba(56, 239, 125, 0.3);
+    border-radius: 10px;
+    padding: 10px 15px;
+    font-weight: 700;
+    color: #38ef7d;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .check-card .answer.hidden { color: transparent; background: rgba(255,255,255,0.1); }
+  .check-card .answer.hidden:hover { background: rgba(255,255,255,0.2); }
+  .check-hint {
+    margin-top: 20px;
+    font-size: 1em;
+    opacity: 0.7;
+  }
+  .grade-info {
+    margin-top: 20px;
+    font-size: 1.2em;
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+  }
+  .grade-info span { background: rgba(0,0,0,0.3); padding: 8px 18px; border-radius: 10px; }
+
+  /* ===== SLIDE 7: REFLECTION ===== */
+  .slide-7 {
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    color: #fff;
+    align-items: center;
+    text-align: center;
+  }
+  .slide-7 h2 { font-size: 2.4em; margin-bottom: 25px; }
+  .reflection-phrases {
+    max-width: 700px;
+    text-align: left;
+    font-size: 1.25em;
+    line-height: 2.2;
+  }
+  .reflection-phrases span {
+    background: rgba(255,255,255,0.1);
+    padding: 4px 14px;
+    border-radius: 8px;
+    border-left: 4px solid #ffd200;
+    display: inline-block;
+    margin: 4px 0;
+  }
+  .smiles {
+    margin-top: 25px;
+    font-size: 3em;
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+  }
+  .smiles span {
+    cursor: pointer;
+    transition: transform 0.2s;
+    filter: grayscale(0.5);
+  }
+  .smiles span:hover { transform: scale(1.3); filter: grayscale(0); }
+
+  /* ===== SLIDE 8: HOMEWORK ===== */
+  .slide-8 {
+    background: linear-gradient(135deg, #141e30, #243b55);
+    color: #fff;
+    align-items: center;
+    text-align: center;
+  }
+  .slide-8 h2 { font-size: 2.4em; margin-bottom: 30px; color: #ffd200; }
+  .hw-cards {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    flex-wrap: wrap;
+    max-width: 850px;
+  }
+  .hw-card {
+    background: rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 30px;
+    min-width: 300px;
+    max-width: 380px;
+    text-align: left;
+    border: 2px solid rgba(255,255,255,0.15);
+  }
+  .hw-card h3 { font-size: 1.3em; margin-bottom: 12px; }
+  .hw-card.base h3 { color: #38ef7d; }
+  .hw-card.creative h3 { color: #f7971e; }
+  .hw-card p { font-size: 1.1em; line-height: 1.7; opacity: 0.9; }
+  .hw-card .hw-icon { font-size: 2.5em; margin-bottom: 10px; }
+
+  /* ===== NAV ===== */
+  .nav {
+    position: fixed;
+    bottom: 20px;
+    right: 30px;
+    display: flex;
+    gap: 10px;
+    z-index: 100;
+  }
+  .nav button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.4);
+    background: rgba(0,0,0,0.4);
+    color: #fff;
+    font-size: 1.4em;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    transition: all 0.2s;
+  }
+  .nav button:hover { background: rgba(255,255,255,0.2); }
+
+  .slide-counter {
+    position: fixed;
+    bottom: 25px;
+    left: 30px;
+    color: rgba(255,255,255,0.5);
+    font-size: 1em;
+    z-index: 100;
+  }
+
+  .motto {
+    position: fixed;
+    top: 15px;
+    right: 20px;
+    color: rgba(255,255,255,0.3);
+    font-size: 0.85em;
+    font-style: italic;
+    z-index: 100;
+    max-width: 350px;
+    text-align: right;
+  }
+</style>
+</head>
+<body>
+
+<div class="motto">«Мало знать, надо и применять.<br>Мало хотеть, надо и делать.»</div>
+
+<!-- ===== SLIDE 0: TITLE ===== -->
+<div class="slide slide-0 active" data-slide="0">
+  <div class="gear">⚙️</div>
+  <h1>Технологии вокруг нас</h1>
+  <div class="subtitle">Технологический процесс</div>
+  <div class="badge">5 класс · Урок открытия нового знания</div>
+</div>
+
+<!-- ===== SLIDE 1: TWO WORLDS ===== -->
+<div class="slide slide-1" data-slide="1">
+  <h2>🌍 На какие две части можно разделить весь мир?</h2>
+  <div class="two-worlds">
+    <div class="world-card nature">
+      <div class="icon">🌲🏔️🦊</div>
+      <h3>Природный мир</h3>
+      <p>Леса, реки, горы, животные — всё, что создано природой без участия человека</p>
+    </div>
+    <div class="world-card tech">
+      <div class="icon">🏙️📱🚀</div>
+      <h3>Техносфера</h3>
+      <p>Города, гаджеты, транспорт, одежда — всё, что создано человеком для удовлетворения потребностей</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 1b: ROBOT TASK ===== -->
+<div class="slide slide-1b" data-slide="2">
+  <h2>🤖 Пробное задание: помоги роботу!</h2>
+  <div class="robot-box">
+    <div class="robot-emoji">👾</div>
+    <p>Робот-инопланетянин никогда не видел чай.<br>Ему нужно его приготовить!</p>
+    <div class="instruction">
+      «Возьми чайник, положи чай, налей воду, включи.»
+    </div>
+    <p style="margin-top:15px;">⚠️ Доработайте инструкцию в парах за <strong>1 минуту</strong>,<br>чтобы робот всё сделал правильно!</p>
+  </div>
+  <div class="task-timer">⏱️ 1:00</div>
+</div>
+
+<!-- ===== SLIDE 2: ETYMOLOGY ===== -->
+<div class="slide slide-2" data-slide="3">
+  <h2>🔍 Что значит слово «ТЕХНОЛОГИЯ»?</h2>
+  <div class="etymology">
+    <div class="etym-card">
+      <div class="greek">τέχνη</div>
+      <div class="trans">(техно)</div>
+      <div class="meaning">Искусство, мастерство, умение</div>
+    </div>
+    <div class="etym-card">
+      <div class="greek">λόγος</div>
+      <div class="trans">(логос)</div>
+      <div class="meaning">Слово, учение, наука</div>
+    </div>
+  </div>
+  <div class="etym-result">
+    <strong>Технология</strong> — наука о мастерстве и способах переработки сырья в продукцию
+  </div>
+  <div class="etym-note">📜 Термин ввёл Иоганн Бекман в 1772 году</div>
+</div>
+
+<!-- ===== SLIDE 3: INPUT-PROCESS-OUTPUT ===== -->
+<div class="slide slide-3" data-slide="4">
+  <h2>🔄 Структура любого технологического процесса</h2>
+  <div class="flow">
+    <div class="flow-box input">
+      <h3>📥 ВХОД</h3>
+      <p>Сырьё, материалы,<br>энергия, информация</p>
+    </div>
+    <div class="flow-arrow">➡️</div>
+    <div class="flow-box process">
+      <h3>⚙️ ПРОЦЕСС</h3>
+      <p>Целенаправленные<br>действия и операции</p>
+    </div>
+    <div class="flow-arrow">➡️</div>
+    <div class="flow-box output">
+      <h3>📤 ВЫХОД</h3>
+      <p>Готовый продукт<br>+ отходы</p>
+    </div>
+  </div>
+  <div class="flow-icons">
+    <span><span class="fi">🪵</span>Сырьё</span>
+    <span><span class="fi">🔧</span>Инструменты</span>
+    <span><span class="fi">🪑</span>Изделие</span>
+  </div>
+</div>
+
+<!-- ===== SLIDE 4: LABOR COMPONENTS ===== -->
+<div class="slide slide-4" data-slide="5">
+  <h2>🛠️ Компоненты труда человека</h2>
+  <table class="labor-table">
+    <tr>
+      <th>Компонент</th>
+      <th>Вопрос</th>
+      <th>🍳 Кулинария</th>
+      <th>🪵 Столярное дело</th>
+      <th>🧵 Шитьё</th>
+    </tr>
+    <tr>
+      <td>Предмет труда</td>
+      <td class="q">НА ЧТО?</td>
+      <td>Яйца, мука</td>
+      <td>Доска, брусок</td>
+      <td>Ткань, нитки</td>
+    </tr>
+    <tr>
+      <td>Средства труда</td>
+      <td class="q">ЧЕМ?</td>
+      <td>Сковорода, нож</td>
+      <td>Пила, рубанок</td>
+      <td>Игла, ножницы</td>
+    </tr>
+    <tr>
+      <td>Продукт труда</td>
+      <td class="q">РЕЗУЛЬТАТ</td>
+      <td>Яичница 🍳</td>
+      <td>Табуретка 🪑</td>
+      <td>Фартук 👗</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ===== SLIDE 5: TEA EXAMPLE ===== -->
+<div class="slide slide-5" data-slide="6">
+  <h2>☕ Технология «Приготовление чая» — по эталону</h2>
+  <div class="tea-scheme">
+    <div class="tea-row">
+      <div class="tea-label in">📥 ВХОД</div>
+      <div class="tea-content">Вода (материал) · Электричество (энергия) · Чайный пакетик (материал) · Рецепт (информация)</div>
+    </div>
+    <div class="tea-row">
+      <div class="tea-label tools">🔧 СРЕДСТВА</div>
+      <div class="tea-content">Электрический чайник · Кружка · Ложка</div>
+    </div>
+    <div class="tea-row">
+      <div class="tea-label pr">⚙️ ПРОЦЕСС</div>
+      <div class="tea-content">
+        1. Налить воду в чайник → 2. Включить чайник → 3. Дождаться кипения →<br>
+        4. Положить пакетик в кружку → 5. Залить кипятком → 6. Подождать 3 мин
+      </div>
+    </div>
+    <div class="tea-row">
+      <div class="tea-label out">📤 ВЫХОД</div>
+      <div class="tea-content">✅ Готовый чай (продукт) &nbsp;|&nbsp; 🗑️ Использованный пакетик (отход)</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SLIDE 6: SELF-CHECK ===== -->
+<div class="slide slide-6" data-slide="7">
+  <h2>✅ Самостоятельная работа — проверь себя!</h2>
+  <div class="check-cards">
+    <div class="check-card">
+      <h3>Задание 1. Соедини:</h3>
+      <p>
+        Предмет труда → ?<br>
+        Средство труда → ?<br>
+        Продукт труда → ?<br><br>
+        <em>Варианты: Ножовка · Полка · Деревянная доска</em>
+      </p>
+      <div class="answer hidden" onclick="this.classList.remove('hidden')">
+        👁️ Показать ответ: Доска → Предмет · Ножовка → Средство · Полка → Продукт
+      </div>
+    </div>
+    <div class="check-card">
+      <h3>Задание 2. Тест:</h3>
+      <p>
+        В схеме «Приготовление яичницы» словом <strong>«Вход»</strong> обозначены:<br><br>
+        а) сковорода<br>
+        б) яйца и масло<br>
+        в) готовая яичница
+      </p>
+      <div class="answer hidden" onclick="this.classList.remove('hidden')">
+        👁️ Показать ответ: б) яйца и масло
+      </div>
+    </div>
+  </div>
+  <div class="check-hint">Нажмите на «Показать ответ», чтобы проверить себя</div>
+  <div class="grade-info">
+    <span>✅ «+» — всё верно</span>
+    <span>🤔 «?» — одна ошибка</span>
+    <span>🆘 «−» — нужна помощь</span>
+  </div>
+</div>
+
+<!-- ===== SLIDE 7: REFLECTION ===== -->
+<div class="slide slide-7" data-slide="8">
+  <h2>💭 Рефлексия</h2>
+  <div class="reflection-phrases">
+    <span>Сегодня я понял, что технология — это...</span><br>
+    <span>Мне было трудно...</span><br>
+    <span>Теперь я могу составить технологическую карту для...</span><br>
+    <span>Моё настроение на уроке можно сравнить с...</span>
+  </div>
+  <div class="smiles">
+    <span title="Шестерёнка — я работал как механизм!">⚙️</span>
+    <span title="Лампочка — у меня зажглась идея!">💡</span>
+    <span title="Ракета — я взлетел!">🚀</span>
+  </div>
+</div>
+
+<!-- ===== SLIDE 8: HOMEWORK ===== -->
+<div class="slide slide-8" data-slide="9">
+  <h2>📚 Домашнее задание</h2>
+  <div class="hw-cards">
+    <div class="hw-card base">
+      <div class="hw-icon">🥪</div>
+      <h3>Базовый уровень</h3>
+      <p>Составьте технологическую карту (схему) приготовления вашего любимого бутерброда.<br><br>
+      Укажите: <strong>предмет труда</strong>, <strong>средства труда</strong> и <strong>этапы процесса</strong> по схеме «Вход → Процесс → Выход».</p>
+    </div>
+    <div class="hw-card creative">
+      <div class="hw-icon">🔭</div>
+      <h3>Творческий уровень</h3>
+      <p>Найдите дома <strong>3 объекта техносферы</strong> и определите, какие потребности человека они удовлетворяют.<br><br>
+      Запишите в тетрадь в виде таблицы.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== NAVIGATION ===== -->
+<div class="nav">
+  <button onclick="changeSlide(-1)">◀</button>
+  <button onclick="changeSlide(1)">▶</button>
+</div>
+<div class="slide-counter" id="counter">1 / 10</div>
+
+<script>
+  let current = 0;
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+
+  function showSlide(n) {
+    slides.forEach(s => s.classList.remove('active'));
+    current = (n + total) % total;
+    slides[current].classList.add('active');
+    document.getElementById('counter').textContent = (current + 1) + ' / ' + total;
+  }
+
+  function changeSlide(dir) { showSlide(current + dir); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') changeSlide(1);
+    if (e.key === 'ArrowLeft') changeSlide(-1);
+  });
+
+  // Клик по левой/правой половине экрана
+  document.addEventListener('click', e => {
+    if (e.target.closest('.nav') || e.target.closest('.answer') || e.target.closest('.smiles')) return;
+    if (e.clientX > window.innerWidth / 2) changeSlide(1);
+    else changeSlide(-1);
+  });
+</script>
+
+</body>
+</html

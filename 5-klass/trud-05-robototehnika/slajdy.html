@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кибернетика и робототехника</title>
+<style>
+:root{--blue:#2563eb;--dark:#1e293b;--light:#f8fafc;--gray:#64748b;--green:#16a34a;--yellow:#eab308}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;background:var(--dark);color:var(--dark);overflow:hidden}
+.slide{display:none;min-height:100vh;padding:40px 60px 80px;background:var(--light);position:relative}
+.slide.active{display:flex;flex-direction:column;justify-content:center}
+h1{font-size:2.4rem;color:var(--blue);margin-bottom:20px;text-align:center}
+h2{font-size:1.8rem;color:var(--blue);margin-bottom:16px;border-bottom:3px solid var(--blue);padding-bottom:8px}
+h3{font-size:1.3rem;color:#334155;margin:16px 0 8px}
+p{font-size:1.15rem;line-height:1.6;margin-bottom:10px}
+ul{list-style:none;padding-left:0}
+li{font-size:1.05rem;margin:6px 0;padding-left:24px;position:relative}
+li::before{content:'\25B8';color:var(--blue);position:absolute;left:0}
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:0.95rem}
+th,td{border:1px solid #cbd5e1;padding:8px 12px;text-align:left}
+th{background:var(--blue);color:#fff}
+tr:nth-child(even){background:#f1f5f9}
+.img-block{text-align:center;margin:16px 0}
+.img-block img{max-width:100%;max-height:45vh;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15)}
+.img-block .caption{font-size:0.85rem;color:var(--gray);margin-top:6px;font-style:italic}
+.img-pair{display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
+.img-pair>div{text-align:center;flex:1;min-width:200px;max-width:350px}
+.img-pair img{max-width:100%;max-height:35vh;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15)}
+.timeline{position:fixed;bottom:50px;left:0;right:0;height:6px;background:#e2e8f0;display:flex;align-items:center;padding:0 60px;z-index:10}
+.timeline-bar{height:6px;background:var(--blue);border-radius:3px;transition:width 0.3s}
+.nav{position:fixed;bottom:15px;left:0;right:0;display:flex;justify-content:center;gap:12px;z-index:20}
+.nav button{background:var(--blue);color:#fff;border:none;padding:10px 24px;border-radius:6px;cursor:pointer;font-size:1rem}
+.nav button:hover{background:#1d4ed8}
+.nav .counter{color:var(--gray);font-size:1rem;display:flex;align-items:center;padding:0 12px}
+.flag{font-size:1.2rem}
+.act-title{font-size:1.6rem;color:var(--blue);text-align:center;margin-bottom:20px;padding:10px;background:#dbeafe;border-radius:8px}
+.event{margin:10px 0;padding:10px 14px;border-left:4px solid var(--blue);background:#f1f5f9;border-radius:0 6px 6px 0}
+.event .year{font-weight:bold;color:var(--blue);font-size:1.1rem}
+.event .our{color:var(--green);font-weight:bold}
+.cycle-box{display:flex;justify-content:center;align-items:center;gap:20px;margin:20px 0;flex-wrap:wrap}
+.cycle-step{background:var(--blue);color:#fff;padding:15px 25px;border-radius:8px;text-align:center;min-width:140px}
+.cycle-step .big{font-size:1.3rem;font-weight:bold}
+.cycle-step .small{font-size:0.85rem;margin-top:4px}
+.cycle-arrow{font-size:1.5rem;color:var(--blue)}
+.example-box{background:#fef3c7;border:1px solid var(--yellow);border-radius:8px;padding:15px;margin:15px 0}
+.reflection-box{background:#dbeafe;border-radius:8px;padding:20px;margin:15px 0}
+.reflection-box p{font-size:1.2rem;margin:8px 0;color:var(--blue)}
+.dz-box{background:#dcfce7;border:2px solid var(--green);border-radius:8px;padding:20px;margin:15px 0}
+.synk{background:#f5f3ff;border-radius:8px;padding:15px;margin:15px 0;text-align:center}
+.synk p{font-size:1.1rem;margin:4px 0;color:#6b21a8}
+.note{font-size:0.8rem;color:var(--gray);font-style:italic}
+</style>
+</head>
+<body>
+
+<div class="slide active">
+<h1>Кибернетика и робототехника:<br>от идеи до современных роботов</h1>
+<p style="text-align:center;font-size:1.2rem;color:var(--gray)">Предмет: Труд (технология), 5 класс</p>
+<div class="img-block">
+<img src="foto/01-honda-asimo.jpg" onerror="this.onerror=null;this.src='https://commons.wikimedia.org/wiki/Special:FilePath/HONDA_ASIMO.jpg'" alt="Honda ASIMO">
+<div class="caption">Honda ASIMO</div>
+</div>
+</div>
+
+<div class="slide">
+<h1>Что мы сегодня узнаем?</h1>
+<p style="font-size:1.2rem;text-align:center;margin-bottom:20px">Тема: Кибернетика и робототехника</p>
+<h3>К концу урока вы будете знать:</h3>
+<ul>
+<li>Что такое кибернетика, робот и робототехника</li>
+<li>Из чего состоит робот</li>
+<li>Какие бывают роботы (4 линии классификации)</li>
+<li>Где применяются роботы</li>
+</ul>
+<div class="img-block">
+<img src="foto/02-yandex-delivery-robot.jpg" onerror="this.onerror=null;this.src='https://commons.wikimedia.org/wiki/Special:FilePath/Yandex_delivery_robot.jpg'" alt="Ровер Яндекса" style="max-height:35vh">
+<div class="caption">Ровер Яндекса</div>
+</div>
+</div>
+
+<div class="slide">
+<h2>Кибернетика</h2>
+<p><strong>Кибернетика</strong> — наука об управлении и связи в машинах, живых организмах и обществе.</p>
+<p>Норберт Винер, 1948 год — книга «Кибернетика».</p>
+<div class="img-pair">
+<div><img src="foto/03-norbert-wiener.jpg" onerror="this.onerror=null;this.src='https://commons.wikimedia.org/wiki/Special:FilePath/Norbert%20wiener.jpg'" alt="Винер"><div class="caption">Норберт Винер (1894-1964)</div></div>
+<div><img src="foto/04-glushkov.jpg" onerror="this.onerror=null;this.src='https://commons.wikimedia.org/wiki/Special:FilePath/%D0%92%D1%96%D0%BA%D1%82%D0%BE%D1%80_%D0%9C%D0%B8%D1%85%D0%B0%D0%B9%D0%BB%D0%BE%D0%B2%D0%B8%D1%87_%D0%93%D0%BB%D1%83%D1%88%D0%BA%D0%BE%D0%B2.jpg'" alt="Глушков"><div class="caption">Виктор Глушков (1923-1982)</div></div>
+</div>
+</div>
+
+<div class="slide">
+<h2>Робот и Робототехника</h2>
+<p><strong>Робот</strong> — автоматическое устройство, которое воспринимает среду, принимает решения и выполняет задачи без человека.</p>
+<p><strong>Робототехника</strong> — наука о создании и применении роботов.</p>
+<p style="background:#dbeafe;padding:10px;border-radius:6px"><strong>Цикл:</strong> SENSE &rarr; COMPUTE &rarr; ACT</p>
+<div class="img-pair">
+<div><img src="foto/05-karel-capek.jpg" onerror="this.onerror=null;this.src='https://commons.wikimedia.org/wiki/Special:FilePath/Karel_capek.jpg'" alt="Чапек"><div class="caption">Карел Чапек (1890-1938)<br>1920 — слово «робот»</div></div>
+<div><img src="foto/06-isaac-asimov01.jpg" onerror="this.onerror=null;this.src='https://commons.wikimedia.org/wiki/Special:FilePath/Isaac.Asimov01.jpg'" alt="Азимов"><div class="caption">Айзек Азимов (1920-1992)<br>1942 — Три закона</div></div>
+</div>
+</div>
+
+<div class="slide">
+<div class="act-title">Акт 1. Сначала — слово (1920-1961)</div>
+<div class="event"><span class="year">1920</span> — Чапек, слово «робот»</div>
+<div class="event"><span class="year">1936</span> &#127479;&#127482; — Мацкевич (16 лет!), робот В2М &#11088;</div>
+<div class="event"><span class="year">1937</span> — В2М на выставке в Париже</div>
+<div class="event"><span class="year">1942</span> — Азимов, Три закона</div>
+<div class="event"><span class="year">1948</span> — Винер «Кибернетика», Уолтер «черепахи»</div>
+<div class="event"><span class="year">1961</span> — Unimate на заводе GM</div>
+<div class="img-pair" style="margin-top:12px">
+<div><img src="foto/07-unimate-puma-200-robot-arm-6202074596.jpg" onerror="this.onerror=null;this.src='https://commons.wikimedia.org/wiki/Special:FilePath/UNIMATE_PUMA_200_Robot_Arm_(6202074596).jpg'" alt="Unimate" style="max-height:25vh"><div class="caption">Unimate PUMA 200</div></div>
+<div><img src="foto/08-cybernetic-tortoise-by-william-grey-walt.jpg" onerror="this.onerror=null;this.src='https://commons.wikimedia.org/wiki/Special:FilePath/Cybernetic_Tortoise_by_William_Grey_Walter_c_1950_(Ank_Kumar).jpg'" alt="Черепаха" style="max-height:25vh"><div class="caption">Робот-«черепаха» Уолтера</div></div>
+</div>
+</div>
+
+<div class="slide">
+<div class="act-title">Акт 2. Роботы — туда, где людям нельзя (1962-1986)</div>
+<div class="event"><span class="year">1962</span> &#127479;&#127482; — РЭКС, робот-экскурсовод</div>
+<div class="event"><span class="year">1966</span> &#127479;&#127482; — «Нептун» Василенко, приз — мотоцикл</div>
+<div class="event"><span class="year">1970</span> &#127479;&#127482; — Луноход-1, первый планетоход &#11088;</div>
+<div class="event"><span class="year">1973</span> — Wabot-1, первый гуманоид</div>
+<div class="event"><span class="year">1986</span> &#127479;&#127482; — СТР-1 в Чернобыле &#11088;</div>
+<div class="img-pair" style="margin-top:12px">
+<div><img src="foto/09-lunohod-1.jpg" onerror="this.onerror=null;this.src='https://commons.wikimedia.org/wiki/Special:FilePath/%D0%9B%D1%83%D0%BD%D0%BE%D1%85%D0%BE%D0%B4-1.jpg'" alt="Луноход" style="max-height:25vh"><div class="caption">Луноход-1 (1970)</div></div>
+<div><img src="foto/10-robots-used-during-the-chernobyl-cleanup.jpg" onerror="this.onerror=null;this.src='https://commons.wikimedia.org/wiki/Special:FilePath/Robots_used_during_the_Chernobyl_cleanup_(11384369646).jpg'" alt="Чернобыль" style="max-height:25vh"><div class="caption">Роботы в Чернобыле</div></div>
+</div>
+</div>
+
+<div class="slide">
+<div class="act-title">Акт 3. Роботы выходят на улицы (2000-2026)</div>
+<div class="event"><span class="year">2000</span> — Honda ASIMO</div>
+<div class="event"><span class="year">2016-2018</span> &#127479;&#127482; — Яндекс: беспилотные, такси в Иннополисе</div>
+<div class="event"><span class="year">2019</span> &#127479;&#127482; — Ровер из фанеры! &#11088;</div>
+<div class="event"><span class="year">2026</span> &#127479;&#127482; — 5000 роверов <span class="note">(по данным компании)</span></div>
+<div class="event"><span class="year">Авг 2026</span> — WRC: робот-конь Qiji X1 <span class="note">(по данным выставки)</span></div>
+<div class="event"><span class="year">Сен 2026</span> — Toyota 400к роботов; IFR ~90к гуманоидов <span class="note">(прогноз)</span></div>
+<div class="img-pair" style="margin-top:12px">
+<div><img src="foto/01-honda-asimo.jpg" onerror="this.onerror=null;this.src='https://commons.wikimedia.org/wiki/Special:FilePath/HONDA_ASIMO.jpg'" alt="ASIMO" style="max-height:25vh"><div class="caption">Honda ASIMO</div></div>
+<div><img src="foto/02-yandex-delivery-robot.jpg" onerror="this.onerror=null;this.src='https://commons.wikimedia.org/wiki/Special:FilePath/Yandex_delivery_robot.jpg'" alt="Ровер" style="max-height:25vh"><div class="caption">Ровер Яндекса</div></div>
+</div>
+</div>
+
+<div class="slide">
+<h2>Из чего состоит робот?</h2>
+<table>
+<tr><th>Человек</th><th>Робот</th><th>Функция</th></tr>
+<tr><td>Мозг</td><td>Контроллер</td><td>Решения, управление</td></tr>
+<tr><td>Органы чувств</td><td>Датчики</td><td>Восприятие среды</td></tr>
+<tr><td>Нервная система</td><td>Провода, шины</td><td>Передача сигналов</td></tr>
+<tr><td>Мышцы</td><td>Приводы, моторы</td><td>Движение</td></tr>
+<tr><td>Руки, ноги</td><td>Манипуляторы, колеса</td><td>Действия</td></tr>
+<tr><td>Скелет</td><td>Корпус, шасси</td><td>Опора, защита</td></tr>
+<tr><td>Сердце</td><td>Батарея</td><td>Энергия</td></tr>
+<tr><td>Голос</td><td>Динамик, экран</td><td>Обратная связь</td></tr>
+</table>
+<p style="text-align:center;font-style:italic;color:var(--blue)">Робот — система, похожая на живой организм!</p>
+</div>
+
+<div class="slide">
+<h2>Цикл работы робота</h2>
+<div class="cycle-box">
+<div class="cycle-step"><div class="big">SENSE</div><div class="small">ощущать</div></div>
+<div class="cycle-arrow">&rarr;</div>
+<div class="cycle-step"><div class="big">COMPUTE</div><div class="small">вычислять</div></div>
+<div class="cycle-arrow">&rarr;</div>
+<div class="cycle-step"><div class="big">ACT</div><div class="small">действовать</div></div>
+</div>
+<div class="example-box">
+<h4>Пример: робот-пылесос</h4>
+<ul>
+<li><strong>SENSE</strong> — видит стену датчиком</li>
+<li><strong>COMPUTE</strong> — решает повернуть</li>
+<li><strong>ACT</strong> — моторы крутят колеса</li>
+</ul>
+</div>
+<div class="img-block">
+<img src="foto/11-robot-vacuum-cleaner.jpg" onerror="this.onerror=null;this.src='https://commons.wikimedia.org/wiki/Special:FilePath/Robot_vacuum_cleaner.jpg'" alt="Пылесос" style="max-height:25vh">
+<div class="caption">Робот-пылесос</div>
+</div>
+</div>
+
+<div class="slide">
+<h2>Классификация роботов</h2>
+<h3>1. По назначению</h3>
+<table>
+<tr><th>Группа</th><th>Примеры</th></tr>
+<tr><td>Промышленные</td><td>Unimate, FANUC</td></tr>
+<tr><td>Бытовые</td><td>Робот-пылесос</td></tr>
+<tr><td>Медицинские</td><td>Da Vinci</td></tr>
+<tr><td>Военные</td><td>СТР-1, сапер</td></tr>
+<tr><td>Исследовательские</td><td>Луноход-1</td></tr>
+<tr><td>Транспортные</td><td>Ровер, такси</td></tr>
+</table>
+<h3>2. По конструкции</h3>
+<p>Манипуляторы (закреплены) | Мобильные (перемещаются)</p>
+<h3>3. По управлению</h3>
+<p>Автономные | Полуавтономные | Управляемые</p>
+<h3>4. По внешнему виду</h3>
+<p>Гуманоид | Зооморфный | Манипулятор | Платформа</p>
+<div class="img-block" style="margin-top:8px">
+<img src="foto/12-spot-by-boston-dynamics.jpg" onerror="this.onerror=null;this.src='https://commons.wikimedia.org/wiki/Special:FilePath/Spot_by_Boston_Dynamics.jpg'" alt="Spot" style="max-height:25vh">
+<div class="caption">Boston Dynamics Spot — зооморфный робот</div>
+</div>
+</div>
+
+<div class="slide">
+<h2>Где работают роботы?</h2>
+<div class="img-block">
+<img src="foto/13-fanuc-6-axis-welding-robots.jpg" onerror="this.onerror=null;this.src='https://commons.wikimedia.org/wiki/Special:FilePath/FANUC_6-axis_welding_robots.jpg'" alt="FANUC" style="max-height:28vh">
+<div class="caption">Промышленность — роботы FANUC</div>
+</div>
+<div class="img-pair">
+<div><img src="foto/14-new-da-vinci-xi.jpg" onerror="this.onerror=null;this.src='https://commons.wikimedia.org/wiki/Special:FilePath/New_Da_Vinci_Xi.jpg'" alt="Da Vinci" style="max-height:25vh"><div class="caption">Медицина — Da Vinci</div></div>
+<div><img src="foto/02-yandex-delivery-robot.jpg" onerror="this.onerror=null;this.src='https://commons.wikimedia.org/wiki/Special:FilePath/Yandex_delivery_robot.jpg'" alt="Ровер" style="max-height:25vh"><div class="caption">Транспорт — ровер</div></div>
+</div>
+<p style="margin-top:12px"><strong>Космос:</strong> Луноход-1, Фёдор на МКС. <strong>Безопасность:</strong> СТР-1, сапёры</p>
+</div>
+
+<div class="slide">
+<h2>Рефлексия</h2>
+<div class="reflection-box">
+<p>&laquo;Сегодня я узнал...&raquo;</p>
+<p>&laquo;Меня удивило...&raquo;</p>
+<p>&laquo;Я хочу собрать робота, который...&raquo;</p>
+</div>
+<div class="synk">
+<h3>Синквейн</h3>
+<p>1. Робот</p><p>2. Умный, точный</p><p>3. Чувствует, решает, действует</p>
+<p>4. Машина, которая помогает людям</p><p>5. Будущее</p>
+</div>
+</div>
+
+<div class="slide">
+<h2>Домашнее задание</h2>
+<div class="dz-box">
+<h3 style="margin-top:0">Нарисуйте робота для дома или школы</h3>
+<ul>
+<li>Название робота</li>
+<li>К какой группе относится (классификация)</li>
+<li>3 компонента из таблицы</li>
+<li>Цикл: SENSE &rarr; COMPUTE &rarr; ACT</li>
+</ul>
+</div>
+</div>
+
+<div class="slide">
+<h1>Спасибо за работу!</h1>
+<p style="text-align:center;font-size:1.3rem;color:var(--blue)">Робототехника — это будущее!</p>
+<p style="text-align:center;margin-top:16px">Следующий урок: как роботы «чувствуют» — датчики.</p>
+<div class="img-block">
+<img src="foto/01-honda-asimo.jpg" onerror="this.onerror=null;this.src='https://commons.wikimedia.org/wiki/Special:FilePath/HONDA_ASIMO.jpg'" alt="ASIMO" style="max-height:35vh">
+</div>
+<p style="text-align:center;font-size:0.9rem;color:var(--gray);margin-top:16px">IFR: 7000 гуманоидов (2025) &rarr; ~90 000 (2026). Эра началась.</p>
+</div>
+
+<div class="timeline"><div class="timeline-bar" id="timelineBar" style="width:7%"></div></div>
+<div class="nav">
+<button onclick="prev()">&larr; Назад</button>
+<span class="counter"><span id="current">1</span> / <span id="total">14</span></span>
+<button onclick="next()">Вперёд &rarr;</button>
+</div>
+
+<script>
+let current=0;
+const slides=document.querySelectorAll('.slide');
+const total=slides.length;
+document.getElementById('total').textContent=total;
+function show(n){
+slides.forEach(s=>s.classList.remove('active'));
+slides[n].classList.add('active');
+document.getElementById('current').textContent=n+1;
+document.getElementById('timelineBar').style.width=((n+1)/total*100)+'%';
+}
+function next(){if(current<total-1){current++;show(current)}}
+function prev(){if(current>0){current--;show(current)}}
+document.addEventListener('keydown',e=>{
+if(e.key==='ArrowRight'||e.key===' ')next();
+if(e.key==='ArrowLeft')prev();
+});
+</script>
+</body>
+</html>
