@@ -1,1 +1,0 @@
-<img src="img-doc/media/image1.png" style="width:10.8937in;height:6.07874in" /><img src="img-doc/media/image2.png" style="width:10.99213in;height:6.12992in" /><img src="img-doc/media/image3.png" style="width:10.99213in;height:6.12992in" /><img src="img-doc/media/image4.png" style="width:10.99213in;height:6.12992in" />

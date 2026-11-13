@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Карточки «Сортировка устройств» — 3 класс</title>
+<style>
+:root{--ink:#1d2126;--ink2:#5b5346;--line:#d9cfb9;--paper:#f6f1e6;--accent:#f2a93b}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 "Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+.bar{position:sticky;top:0;z-index:5;display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 16px;background:#1f2329;color:#eef1f4;border-bottom:3px solid var(--accent)}
+.bar a,.bar button{font:inherit;font-size:14px;color:#eef1f4;background:#272c33;border:1px solid #3a414a;border-radius:18px;padding:5px 12px;text-decoration:none;cursor:pointer}
+.bar button{background:var(--accent);color:#2a1d05;border-color:var(--accent);font-weight:700}
+.bar .t{flex:1;min-width:0;color:#a9b2bc;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.doc{max-width:860px;margin:20px auto 48px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:28px 34px}
+h1{font-size:28px;line-height:1.25;margin:0 0 12px}
+h2{font-size:21px;margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--line)}
+h3{font-size:17px;margin:20px 0 8px}
+p{margin:8px 0}
+table{border-collapse:collapse;width:100%;margin:10px 0;font-size:14.5px}
+th,td{border:1px solid #cfc5ae;padding:6px 8px;vertical-align:top;text-align:left}
+th{background:#f3ecdd}
+td:empty::after{content:"\00a0"}
+blockquote{margin:10px 0;padding:8px 14px;border-left:4px solid var(--accent);background:#fbf6ea}
+pre{white-space:pre-wrap;background:#f3ecdd;border-radius:8px;padding:10px 12px;font-size:14.5px}
+code{font-family:Consolas,"Courier New",monospace}
+ul,ol{padding-left:24px}
+li[data-checked]{list-style:none;margin-left:-20px}
+hr{border:0;border-top:1px dashed #b9a77f;margin:18px 0}
+a{color:#1f5fa8}
+@media (max-width:600px){.doc{padding:18px 16px;margin:10px 8px}table{font-size:13px}}
+@media print{
+  html,body{background:#fff}
+  .bar{display:none}
+  .doc{border:0;border-radius:0;margin:0;padding:0;max-width:none}
+  h2{break-after:avoid}
+  tr,blockquote,pre{break-inside:avoid}
+  a{color:inherit;text-decoration:none}
+  @page{size:A4;margin:14mm 14mm 16mm}
+}
+.list{margin:0 0 18px}
+.list img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:8px}
+.list p{font-size:14px;color:var(--ink2);margin:4px 0 0}
+@media print{
+  .doc>h1,.doc>.note{display:none}
+  .list{break-after:page;margin:0}
+  .list:last-child{break-after:auto}
+  .list img{border:0;border-radius:0;max-height:180mm;object-fit:contain}
+  .list p{display:none}
+  @page{size:A4 landscape;margin:10mm}
+}
+</style>
+</head>
+<body>
+<div class="bar"><a href="../../dlya-uchitelya.html">← Для учителя</a><span class="t">Карточки «Сортировка устройств» — 3 класс</span><button type="button" onclick="window.print()">Печать</button></div>
+<main class="doc">
+<h1>Карточки «Сортировка устройств»</h1>
+<p class="note">Урок про цифровые и умные устройства, 3 класс. Четыре листа по четыре карточки, печать — альбомная, лист на страницу; резать по пунктиру. Дети сортируют карточки по группам (например: мобильные и стационарные; что умеет устройство).</p>
+<section class="list"><img src="img/kartochki-1.png" alt="Смартфон, ноутбук, планшет, компьютер"><p>Лист 1: смартфон, ноутбук, планшет, компьютер.</p></section>
+<section class="list"><img src="img/kartochki-2.png" alt="Монитор, клавиатура, мышь, веб-камера"><p>Лист 2: монитор, клавиатура, мышь, веб-камера.</p></section>
+<section class="list"><img src="img/kartochki-3.png" alt="Роутер, принтер, сканер, игровая приставка"><p>Лист 3: роутер, принтер, сканер, игровая приставка с джойстиком.</p></section>
+<section class="list"><img src="img/kartochki-4.png" alt="Смарт-часы, фитнес-браслет, умная колонка, электронная книга"><p>Лист 4: смарт-часы, фитнес-браслет, умная колонка, электронная книга.</p></section>
+</main>
+</body>
+</html>
