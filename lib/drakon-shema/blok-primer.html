@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Блок «дракон»: проверка глазами</title>
+<style>
+body { font: 16px/1.4 "Segoe UI", Arial, sans-serif; margin: 20px; background: #fffdf7; color: #1d2126; }
+h1 { font-size: 20px; }
+h2 { font-size: 17px; margin-top: 22px; }
+.drakon-blok, .primer { border: 1px solid #d9cfb9; border-radius: 8px; margin: 10px 0; padding: 8px; background: #fff; }
+.drakon-podskazka { color: #a33; white-space: pre-wrap; margin-bottom: 6px; }
+.primer pre { margin: 0; }
+</style>
+</head>
+<body>
+<h1>Блок «дракон»: проверка глазами</h1>
+
+<h2>1. Верный блок («Чай») — должна быть схема</h2>
+<pre><code class="language-дракон">название: Чай
+вскипятить воду
+вопрос: Есть сахар?
+  да: положить сахар
+  нет: без сахара</code></pre>
+
+<h2>2. Ошибка сдвига — подсказка</h2>
+<pre><code class="language-дракон">шаг
+  подробность</code></pre>
+
+<h2>3. Пустой блок — подсказка</h2>
+<pre><code class="language-drakon"></code></pre>
+
+<h2>4. Заготовка с «…» — подсказка</h2>
+<pre><code class="language-дракон">…</code></pre>
+
+<h2>5. Сборка без ключа — подсказка</h2>
+<div id="sborka-bez-klyucha" class="primer"></div>
+
+<h2>6. Сборка с ключом — схема</h2>
+<div id="sborka-s-klyuchom" class="primer"></div>
+
+<script src="../../lib/drakonwidget/drakonwidget.js"></script>
+<script src="../../lib/drakon-shema/drakon-shema.js"></script>
+<script src="../../lib/drakon-shema/zapis.js"></script>
+<script src="../../lib/drakon-shema/blok.js"></script>
+<script>
+  DrakonBlok.run();
+  DrakonBlok.sborka(document.getElementById('sborka-bez-klyucha'),
+    'название: Проба\nвскипятить воду\n…', {});
+  DrakonBlok.sborka(document.getElementById('sborka-s-klyuchom'),
+    'название: Проба\nвскипятить воду\n…', { klyuch: 'blok-primer-1' });
+</script>
+</body>
+</html>

@@ -20,5 +20,12 @@ jobs:
           for f in $(grep -rl --include=*.html --include=*.js -e '/\*схема\*/' -e '/\*заготовка\*/' . | grep -v '^./lib/drakonwidget'); do
             node tools/drakon-shema.mjs --scan "$f" || exit 1
           done
+      - name: Блоки ```дракон в Markdown (кроме описания записи — там примеры будущих версий)
+        run: |
+          for f in $(grep -rlE --include=*.md '^\s*(```|~~~)\s*(дракон|drakon)' . | grep -v '^./docs/komanda/drakon-zapis.md$'); do
+            node tools/drakon-shema.mjs --scan "$f" || exit 1
+          done
+      - name: Разборщик текстовой записи и блок «дракон»
+        run: node tools/drakon-zapis-test.mjs
       - name: Синтаксис скриптов обёрток
-        run: node --check lib/drakon-shema/drakon-shema.js && node --check lib/drakongen/ai-ast.js
+        run: node --check lib/drakon-shema/drakon-shema.js && node --check lib/drakon-shema/zapis.js && node --check lib/drakon-shema/blok.js && node --check lib/drakongen/ai-ast.js
