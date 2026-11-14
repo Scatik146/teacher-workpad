@@ -1,0 +1,27 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><title>Проба: меню экранов</title>
+<style>body{font:16px/1.4 "Segoe UI",Arial,sans-serif;margin:30px;color:#1d2738}.ekran{display:none}.ekran.on{display:block}button{font:inherit;padding:6px 12px}</style></head><body>
+<h1>Проба меню экранов</h1>
+<p>Нажмите <b>Ctrl+Alt+M</b> (или 3 быстрых клика в правый верхний угол).</p>
+<div id="e-start" class="ekran"><h2>Заставка</h2><button id="novaya">Новая смена / начать заново</button></div>
+<div id="e-imya" class="ekran"><h2>Как тебя зовут?</h2><input id="imya"> <button onclick="S.imya=imya.value;sohr();pokaz('vybor')">Дальше</button></div>
+<div id="e-vybor" class="ekran"><h2>Выбери ответ</h2><button onclick="S.vybor='А';sohr();pokaz('itog')">А</button> <button onclick="S.vybor='Б';sohr();pokaz('itog')">Б</button></div>
+<div id="e-itog" class="ekran"><h2>Итог</h2><p id="itog"></p></div>
+<script src="menu-ekranov.js"></script>
+<script>
+const KEY='proba-menu-ekranov';
+let S={ekran:'start'};
+try{S=JSON.parse(localStorage.getItem(KEY))||S;}catch(e){}
+function sohr(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function pokaz(id){S.ekran=id;sohr();document.querySelectorAll('.ekran').forEach(d=>d.classList.toggle('on',d.id==='e-'+id));
+  if(id==='itog')document.getElementById('itog').textContent=(S.imya||'?')+' выбрал(а) '+(S.vybor||'?');}
+document.getElementById('novaya').onclick=()=>{S={ekran:'imya'};sohr();pokaz('imya');};
+MenuEkranov.podklyuchit({
+  ekrany:[{id:'start',nazvanie:'Заставка'},{id:'imya',nazvanie:'Имя'},{id:'vybor',nazvanie:'Выбор'},{id:'itog',nazvanie:'Итог'}],
+  perejti:pokaz,
+  tekushchij:()=>S.ekran,
+  gotov:id=>id==='imya'?!!S.imya:id==='vybor'?!!S.vybor:id==='start',
+  zapolnit:{imya:()=>{S.imya='Ученик';},vybor:()=>{S.vybor='А';}},
+  sluzhebnoe:[{nazvanie:'Печать',dejstvie:()=>print()},{nazvanie:'Сбросить',dejstvie:()=>{S={ekran:'start'};sohr();pokaz('start');}}]
+});
+pokaz(S.ekran);
+</script></body></html>

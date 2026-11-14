@@ -7,17 +7,17 @@
 - Подключение из урока — `@font-face` с относительным путём: `url("../../lib/fonts/<имя>/<файл>")`.
 - Шрифты ДРАКОН-ГРАФ (PT Serif, PT Mono) лежат отдельно в `lib/drakon-graf/fonts/` — их не трогать и сюда не копировать.
 
-## Ждут файлов
+## Что лежит
 
-Шрифты урока `2-klass/ya-avtor/` (лицензия SIL Open Font License 1.1, Google Fonts). Скачать с fonts.google.com («Download family») и положить:
+Источник — репозиторий google/fonts (`ofl/<имя>/`), 14.11.2026. Все с кириллицей, лицензия SIL Open Font License 1.1.
 
-| папка | файлы | лицензия |
-|---|---|---|
-| `pangolin/` | `Pangolin-Regular.ttf` | `OFL.txt` из архива |
-| `nunito/` | `Nunito-VariableFont_wght.ttf` (вес 600–900) | `OFL.txt` из архива |
-| `caveat/` | `Caveat-VariableFont_wght.ttf` (вес 600–700) | `OFL.txt` из архива |
+| папка | файл | веса | где используется |
+|---|---|---|---|
+| `pangolin/` | `Pangolin-Regular.ttf` | 400 | `2-klass/ya-avtor/` |
+| `nunito/` | `Nunito-VariableFont_wght.ttf` | 200–1000 (переменный) | `2-klass/ya-avtor/` |
+| `caveat/` | `Caveat-VariableFont_wght.ttf` | 400–700 (переменный) | `2-klass/ya-avtor/` |
 
-Пока файлов нет, урок показывает запасные шрифты (Comic Sans MS / системный). Когда файлы лягут — вставить в `<style>` урока:
+Подключение (так сделано в «Я автор»):
 
 ```css
 @font-face{font-family:"Pangolin";src:url("../../lib/fonts/pangolin/Pangolin-Regular.ttf");font-display:swap}
@@ -25,4 +25,4 @@
 @font-face{font-family:"Caveat";src:url("../../lib/fonts/caveat/Caveat-VariableFont_wght.ttf");font-weight:400 700;font-display:swap}
 ```
 
-и убрать комментарий о шрифтах в начале `2-klass/ya-avtor/index.html`.
+Урок, скопированный в сетевую папку отдельно, должен лежать вместе с `lib/` (как и для ДРАКОН-ГРАФ).
