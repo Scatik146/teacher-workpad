@@ -21,6 +21,7 @@ description: "Публикация уроков, приложений и мат�
 - Материалы учителя — HTML в папке урока в стиле `*/kanva.html` (.pptx/.docx переводить в HTML; Claude Docs у учителя не открывается).
 - Варианты ответов перемешивать (верный не всегда первый); в парах — роли «за пультом / штурман».
 - Конспекты и схемы — навыки `graficheskij-konspekt` и `drakon-shema`.
+- Код приложений — «по-фортовски» (`docs/komanda/KOD-PO-FORTOVSKI.md`): маленькие слова с комментарием «слово: что делает», слои снизу вверх, данные отдельно; в конце работы — «пополнение словаря».
 
 ## Каталог и списки
 - Урок — объект в `LESSONS` в `lessons.js` (`where:[{s:'iiib'|'inf'|'mat'|'trud', g:класс}]`, title, topic, about, format, path, teacher:[{label, href, kind:'slides'|'print'|'guide'|'tool'}]; `ready:false` — скрыт) и строка в таблице `README.md`.

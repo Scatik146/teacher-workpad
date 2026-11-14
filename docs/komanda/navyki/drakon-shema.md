@@ -13,6 +13,9 @@ description: "Дракон-схемы (DrakonWidget) в уроках teacher-wor
 - `lib/drakon-shema/index.html` — проба; `tools/drakon-shema.mjs` — проверка.
 - Шрифты и вид как у ДРАКОН-ГРАФ (PT Serif / PT Mono из `lib/drakon-graf/fonts`, обводка `#993300`, жёлтое `#FFFF99` — заголовок, конец, ветки, комментарии, текст по центру). Папка `lib/drakon-graf` должна быть рядом.
 
+## Код
+Код вокруг схем (обёртка, генераторы кода, приложение урока) — «по-фортовски»: `teacher-workpad/docs/komanda/KOD-PO-FORTOVSKI.md`. Каждое слово кода — будущая дракон-схема: один вход, один выход, простые развилки и циклы. В конце — «пополнение словаря».
+
 ## Встроить
 ```html
 <script src="../../lib/drakonwidget/drakonwidget.js"></script>
