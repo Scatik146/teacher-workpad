@@ -53,6 +53,6 @@
 
 | Что | Где | Сайт |
 | --- | --- | --- |
-| Графические конспекты ДРАКОН-ГРАФ 0.9.1 — подключаются к любому уроку | `lib/drakon-graf/`, проверка — `tools/konspekt.mjs` | ✅ (проба: `lib/drakon-graf/index.html`) |
+| Графические конспекты ДРАКОН-ГРАФ 0.9.2 — подключаются к любому уроку | `lib/drakon-graf/`, проверка — `tools/konspekt.mjs` | ✅ (проба: `lib/drakon-graf/index.html`) |
 | Разборщик текстовой записи дракон-схем (блок `дракон` → короткий формат), 13.11 | `lib/drakon-shema/zapis.js`, проверка — `tools/drakon-zapis-test.mjs` | ✅ |
 | Дракон-схемы на DrakonWidget 1.5.7 (Степан Митькин, Unlicense): просмотр, силуэт, сборка ученика с сохранением; ввод и вывод; циклы for (канон: всё в верхней крышке, «Конец цикла k» — само), while, do-while; «выход из цикла», «к следующему шагу», «конец»; псевдокод и маршруты (drakongen Митькина), ИИ-формат DrakonHub, код по схеме: Python, КуМир (ОГЭ), C, 1С |  `lib/drakonwidget/`, `lib/drakon-shema/`, `lib/drakongen/`, проверка — `tools/drakon-shema.mjs` | ✅ (проба: `lib/drakon-shema/index.html`) |

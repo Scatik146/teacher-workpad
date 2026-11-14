@@ -50,4 +50,4 @@ node tools/konspekt.mjs --scan 5-klass/урок/index.html
 
 ## Обновить библиотеку
 
-В репозитории drakon-graf: `npm run bundle` → скопировать `dist/drakon-graf.min.js` и `dist/drakon-graf.mjs` сюда. Текущая версия: **0.9.1** (сборка 11.11.2026).
+В репозитории drakon-graf: `npm run bundle` → скопировать `dist/drakon-graf.min.js` и `dist/drakon-graf.mjs` сюда. Текущая версия: **0.9.2** (сборка 14.11.2026: формулы в пометках читаемы, рамки по формуле — задание 008).
