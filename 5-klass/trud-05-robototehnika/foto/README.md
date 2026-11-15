@@ -8,7 +8,7 @@
 | `01-honda-asimo.jpg` | Gnsin | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File:HONDA_ASIMO.jpg |
 | `02-yandex-delivery-robot.jpg` | Shvicha | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:Yandex_delivery_robot.jpg |
 | `03-norbert-wiener.jpg` | Konrad Jacobs | CC BY-SA 2.0 de | https://commons.wikimedia.org/wiki/File:Norbert_wiener.jpg |
-| `04-glushkov.jpg` | althistory.fandom.com (автор по данным Commons; уточнить) | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:%D0%92%D1%96%D0%BA%D1%82%D0%BE%D1%80_%D0%9C%D0%B8%D1%85%D0%B0%D0%B9%D0%BB%D0%BE%D0%B2%D0%B8%D1%87_%D0%93%D0%BB%D1%83%D1%88%D0%BA%D0%BE%D0%B2.jpg |
+| `04-glushkov.jpg` | автор по данным Commons: althistory.fandom.com (лицензия подтверждена 15.11.2026) | CC BY-SA 4.0 | https://commons.wikimedia.org/wiki/File:%D0%92%D1%96%D0%BA%D1%82%D0%BE%D1%80_%D0%9C%D0%B8%D1%85%D0%B0%D0%B9%D0%BB%D0%BE%D0%B2%D0%B8%D1%87_%D0%93%D0%BB%D1%83%D1%88%D0%BA%D0%BE%D0%B2.jpg |
 | `05-karel-capek.jpg` | автор неизвестен | общественное достояние | https://commons.wikimedia.org/wiki/File:Karel_capek.jpg |
 | `06-isaac-asimov01.jpg` | Phillip Leonian, New York World-Telegram & Sun | общественное достояние | https://commons.wikimedia.org/wiki/File:Isaac.Asimov01.jpg |
 | `07-unimate-puma-200-robot-arm-6202074596.jpg` | Razor Robotics (Flickr) | CC BY 2.0 | https://commons.wikimedia.org/wiki/File:UNIMATE_PUMA_200_Robot_Arm_(6202074596).jpg |
