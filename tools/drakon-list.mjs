@@ -6,6 +6,7 @@
 //                                                      (python, kumir, c, 1c)
 //   node tools/drakon-list.mjs лист.md --kod python -o программа.py
 //   node tools/drakon-list.mjs лист.md --strogo             замечания (нет блока, нет теста) считать ошибками
+//   node tools/drakon-list.mjs лист.md --strogo --kod python -o программа.py   и ошибки перевода в код — тоже ошибки
 //
 // Правило: docs/komanda/KOD-PO-GRAFOVSKI.md, п. 4. Образец: docs/komanda/primery/drakon-list-evklid.md.
 // Код выхода 1, если в блоке есть ошибка или подсказка «важно».
@@ -110,28 +111,31 @@ function napechatatItogi(itogi, schet, strogo) {
   return plokho + (strogo ? zam.length : 0);
 }
 
-// кодЛиста: программа по всем блокам «дракон» листа, по порядку
+// кодЛиста: программа по всем блокам «дракон» листа, по порядку, и число ошибок перевода
 async function kodLista(itogi, yazyk) {
   const chasti = [];
+  let oshibok = 0;
   for (const b of itogi.filter(x => x.vid === 'дракон' && !x.oshibki.length)) {
     const k = await DS.kod(b.shema, yazyk);
-    k.oshibki.forEach(o => console.error(`   код «${b.imya}»: ${o}`));
+    k.oshibki.forEach(o => console.log(`   ошибка кода «${b.imya}» (${yazyk}): ${o}`));
+    oshibok += k.oshibki.length;
     chasti.push(k.kod);
   }
-  return chasti.join('\n');
+  return { kod: chasti.join('\n'), oshibok };
 }
 
-// выдатьКод: напечатать код или записать его в файл
+// выдатьКод: напечатать код или записать его в файл; возвращает число ошибок перевода
 async function vydatKod(itogi, yazyk, fajl) {
-  const kod = await kodLista(itogi, yazyk);
+  const { kod, oshibok } = await kodLista(itogi, yazyk);
   if (fajl) { writeFileSync(fajl, kod); console.log(`код (${yazyk}): ${fajl}`); }
   else console.log(`--- код (${yazyk}) ---\n${kod}`);
+  return oshibok;
 }
 
 // справка: шапка этого файла
 function spravka() {
   const stroki = readFileSync(new URL(import.meta.url), 'utf8').split(/\r?\n/);
-  console.log(stroki.slice(1, 11).join('\n'));
+  console.log(stroki.slice(1, 12).join('\n'));
 }
 
 // проверитьЛист: верхнее слово — прочитать, проверить, при просьбе выдать код
@@ -139,9 +143,11 @@ async function proveritList(a) {
   const znach = k => (a.indexOf(k) >= 0 ? a[a.indexOf(k) + 1] : undefined);
   const tekst = readFileSync(a[0], 'utf8');
   const itogi = bloki(tekst).map(proveritBlok);
-  const plokho = napechatatItogi(itogi, testy(tekst), a.includes('--strogo'));
-  if (znach('--kod')) await vydatKod(itogi, znach('--kod'), znach('-o'));
-  return plokho ? 1 : 0;
+  const strogo = a.includes('--strogo');
+  const plokho = napechatatItogi(itogi, testy(tekst), strogo);
+  const oshibkiKoda = znach('--kod') ? await vydatKod(itogi, znach('--kod'), znach('-o')) : 0;
+  const vsego = plokho + (strogo ? oshibkiKoda : 0);
+  return vsego ? 1 : 0;
 }
 
 const a = process.argv.slice(2);
