@@ -22,11 +22,16 @@ function nevernye(slova) {
   return plohie;
 }
 
+// данныеЕсть: GRAFIK — массив или объект; вид данных задание не задаёт (учитель, 15.11)
+function dannyeEst(grafik) {
+  return grafik !== null && typeof grafik === 'object';
+}
+
 // проверить: код выхода 0, если все ответы верны
 function proverit(papka) {
   const slova = zagruzit(papka);
   let kod = 1;
-  if (slova && typeof slova.dezhurnyj === 'function' && Array.isArray(slova.GRAFIK)) {
+  if (slova && typeof slova.dezhurnyj === 'function' && dannyeEst(slova.GRAFIK)) {
     const plohie = nevernye(slova);
     plohie.forEach(s => console.log(s));
     console.log('dezhurnyj: верно ' + (PROVERKI.length - plohie.length) + ' из ' + PROVERKI.length);
