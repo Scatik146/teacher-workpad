@@ -66,7 +66,7 @@ description: Три стиля кода команды учителя для л�
 
 - ДРАКОН-лист: `node tools/drakon-list.mjs лист.md` — все блоки без ошибок; `--kod python` (также `kumir`, `c`, `1c`) печатает код по блокам `дракон`.
 - Тест: запусти код на строках `пример:` и `контрпример:` — пример получается, контрпример нет.
-- Prolog: стенд drakon-graf `site/experiments/prolog/` (кнопки стенда: «Совпало 20 из 20», «Порождение → разбор: 21 из 21», «Ошибки вложенности совпали», «Знания»: пример ✓, контрпример ✓; без рук — `python3 tools/prolog-stend.py`); Forth: `node site/experiments/forth/run-node.cjs` (20 из 20).
+- Prolog: стенд drakon-graf `site/experiments/prolog/` (кнопки стенда: «Совпало 20 из 20», «Порождение → разбор: 21 из 21», «Ошибки вложенности совпали», «Знания»: пример ✓, контрпример ✓; без рук — `python3 tools/prolog-stend.py`); свой `.pl` без рук — `python3 tools/prolog-zapusk.py программа.pl --zapros "запрос"` (swipl-wasm в Chrome без окна; нужны google-chrome и Python playwright; `--json` — для скриптов; `zacikleno` — запрос не кончился за 5 млн шагов); Forth: `node site/experiments/forth/run-node.cjs` (20 из 20).
 
 ## Чего пока нет (не обещать)
 
