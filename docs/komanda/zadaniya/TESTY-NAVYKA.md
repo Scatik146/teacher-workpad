@@ -53,7 +53,7 @@ python tools\test_koda.py ..\teacher-workpad\docs\komanda\zadaniya\009-blok1-vyb
    python tools\test_koda.py ..\teacher-workpad\docs\komanda\zadaniya\<задание>.md --model deepseek
    ```
    Скрипт сам делает до двух кругов, в конце задаёт ручные проверки (строки «руками:» задания). Итог — `ii-komanda\testy\<задание>\<модель>\itog.md`.
-2. **GLM** — вручную: в чат GLM вставить целиком `teacher-workpad\docs\komanda\TRI-STILYA-ODNIM-TEKSTOM.md`, затем текст задания. Ответ сохранить файлом и прогнать теми же проверками:
+2. **GLM** — через комнату (решение учителя 15.11, журнал drakon-graf README § 4): тема `ii-komanda/komnata/ГГГГ-ММ-ДД-test-<задание>-glm.md` со ссылками на навык и задание (образец — `komnata/2026-11-15-test-009-glm.md`), GLM получает короткий промпт со ссылкой на тему. Ответ сохранить файлом и прогнать теми же проверками:
    ```
    python tools\test_koda.py ..\teacher-workpad\docs\komanda\zadaniya\<задание>.md --model glm --podstavit ответ-glm.md
    ```
