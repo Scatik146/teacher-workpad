@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 
 /* Данные. Ключ: номер пункта задания → стиль. */
-const KLYUCH = { 1: 'fort', 2: 'prolog', 3: 'graf', 4: 'prolog', 5: 'prolog', 6: 'fort', 7: 'fort', 8: 'fort', 9: 'graf', 10: 'fort' };
+const KLYUCH = { 1: 'fort', 2: 'prolog', 3: 'graf', 4: 'prolog', 5: 'prolog', 6: 'fort', 7: 'fort', 8: 'fort', 9: 'graf', 10: 'fort', 11: 'prolog', 12: 'prolog' };
 const STILI = ['fort', 'prolog', 'graf'];
 
 // прочитать: выбор модели из файла или null, если файл не читается
