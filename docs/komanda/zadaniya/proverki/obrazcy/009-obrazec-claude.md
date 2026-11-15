@@ -15,7 +15,7 @@ const GRAFIK = [
   { kto: 'Вера', den: 'среда' },
 ];
 
-// дежурный: имя того, кто дежурит в этот день, или пустая строка
+// dezhurnyj: имя того, кто дежурит в этот день, или пустая строка
 function dezhurnyj(den, grafik) {
   let imya = '';
   for (const zapis of grafik) {

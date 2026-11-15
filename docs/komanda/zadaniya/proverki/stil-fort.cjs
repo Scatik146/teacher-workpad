@@ -1,6 +1,6 @@
 // Проверка стиля «по-фортовски» для JS и Python: слова маленькие, над каждым строка «слово: что делает».
 //   node stil-fort.cjs <файл.js|файл.py>     печатает замечания; код выхода 1, если они есть
-// Правила (KOD-PO-FORTOVSKI.md): слово до 15 строк, вложенность не глубже 2, один выход (return),
+// Правила (KOD-PO-FORTOVSKI.md): слово до 15 строк, вложенность не глубже 2, ровно один return (последней строкой),
 // над словом строка «имя: что делает». JS: слова — `function имя(` в начале строки; Python — `def имя(`.
 const fs = require('fs');
 
@@ -18,14 +18,21 @@ function ochistitJs(tekst) {
     .replace(/'(?:\\.|[^'\\\n])*'|"(?:\\.|[^"\\\n])*"|`[^`]*`/g, pusto);
 }
 
+// glubinaPosle: глубина скобок после строки s; otkryto — встречалась ли «{»
+function glubinaPosle(s, sostoyanie) {
+  for (const z of s) { if (z === '{') { sostoyanie.glubina++; sostoyanie.otkryto = true; } if (z === '}') sostoyanie.glubina--; }
+  return sostoyanie;
+}
+
 // konecJs: номер строки, где закрывается слово, начатое в строке nachalo; -1, если не закрыто
 function konecJs(stroki, nachalo) {
-  let glubina = 0, otkryto = false;
-  for (let i = nachalo; i < stroki.length; i++) {
-    for (const s of stroki[i]) { if (s === '{') { glubina++; otkryto = true; } if (s === '}') glubina--; }
-    if (otkryto && glubina === 0) return i;
+  const sostoyanie = { glubina: 0, otkryto: false };
+  let konec = -1;
+  for (let i = nachalo; i < stroki.length && konec < 0; i++) {
+    glubinaPosle(stroki[i], sostoyanie);
+    if (sostoyanie.otkryto && sostoyanie.glubina === 0) konec = i;
   }
-  return -1;
+  return konec;
 }
 
 // vlozhenieJs: наибольшая вложенность блоков внутри слова JS (тело слова — 0)
@@ -80,16 +87,14 @@ function vlozhenieP(stroki, nachalo, konec) {
 function slovaPy(tekst) {
   const stroki = tekst.split('\n'), slova = [];
   stroki.forEach((s, i) => {
-    const m = /^def\s+(\w+)\s*\(/.exec(s);
-    if (!m) return;
-    const konec = konecPy(stroki, i);
-    slova.push({ imya: m[1], nachalo: i, konec, vlozhenie: vlozhenieP(stroki, i, konec),
+    const m = /^def\s+(\w+)\s*\(/.exec(s), konec = m ? konecPy(stroki, i) : -1;
+    if (m) slova.push({ imya: m[1], nachalo: i, konec, vlozhenie: vlozhenieP(stroki, i, konec),
       vyhody: (stroki.slice(i, konec + 1).join('\n').match(/\breturn\b/g) || []).length });
   });
   return slova;
 }
 
-// stroka_slova: строка «имя: что делает» над словом (знак комментария зависит от языка)
+// strokaSlova: строка «имя: что делает» над словом (знак комментария зависит от языка)
 function strokaSlova(stroki, slovo, znak) {
   let i = slovo.nachalo - 1;
   while (i >= 0 && !stroki[i].trim()) i--;
