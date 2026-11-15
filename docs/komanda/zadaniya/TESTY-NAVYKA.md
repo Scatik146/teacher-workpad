@@ -47,6 +47,8 @@ python tools\test_koda.py ..\teacher-workpad\docs\komanda\zadaniya\009-blok1-vyb
 
 ## Как пройти одно задание
 
+**Одной командой (с 15.11, 23:55):** из папки `ii-komanda` — `tools\test-zapusk.bat <задание> <модель>`, например `tools\test-zapusk.bat 011 alisa`; для GLM — сначала сохранить ответ в `ii-komanda\otvet-glm.md`. Файл сам обновляет оба репозитория, запускает проверку и отправляет итог (описание — ii-komanda `tools/README.md`). Ниже — то же по шагам.
+
 1. **Алиса и DeepSeek** (ключ Яндекса, из папки `ii-komanda`):
    ```
    python tools\test_koda.py ..\teacher-workpad\docs\komanda\zadaniya\<задание>.md --model alisa
