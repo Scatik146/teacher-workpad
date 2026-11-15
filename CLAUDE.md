@@ -9,7 +9,7 @@
 ## Код
 
 - Весь новый и изменяемый код (JS, Python и другие языки, кроме Prolog) — «по-фортовски»: `docs/komanda/KOD-PO-FORTOVSKI.md`. В конце работы — «пополнение словаря».
-- Prolog — «по-графовски»: `docs/komanda/KOD-PO-GRAFOVSKI.md` (каждое отношение — в ДРАКОН-ГРАФ).
+- Prolog — «по-прологовски» (как описать): `docs/komanda/KOD-PO-PROLOGOVSKI.md`, и «по-графовски» (как нарисовать: каждое отношение — в ДРАКОН-ГРАФ): `docs/komanda/KOD-PO-GRAFOVSKI.md`. HTML и CSS — раздел в `KOD-PO-PROLOGOVSKI.md`.
 
 ## Приложения уроков
 
