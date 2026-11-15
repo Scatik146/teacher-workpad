@@ -5,6 +5,7 @@
 //   node tools/drakon-list.mjs лист.md --kod python    и напечатать код по блокам «дракон»
 //                                                      (python, kumir, c, 1c)
 //   node tools/drakon-list.mjs лист.md --kod python -o программа.py
+//   node tools/drakon-list.mjs лист.md --strogo             замечания (нет блока, нет теста) считать ошибками
 //
 // Правило: docs/komanda/KOD-PO-GRAFOVSKI.md, п. 4. Образец: docs/komanda/primery/drakon-list-evklid.md.
 // Код выхода 1, если в блоке есть ошибка или подсказка «важно».
@@ -95,8 +96,8 @@ function zamechaniya(itogi, schet) {
   return spisok;
 }
 
-// напечататьИтоги: отчёт по листу, возвращает число ошибок
-function napechatatItogi(itogi, schet) {
+// напечататьИтоги: отчёт по листу, возвращает число ошибок (strogo — замечания тоже ошибки)
+function napechatatItogi(itogi, schet, strogo) {
   let plokho = 0;
   itogi.forEach((b, i) => {
     console.log(`— #${i + 1} ${b.vid} «${b.imya}» (строка ${b.stroka})${b.oshibki.length ? '' : ' · ошибок нет'}`);
@@ -104,8 +105,9 @@ function napechatatItogi(itogi, schet) {
     plokho += b.oshibki.length;
   });
   console.log(`— тест: «пример:» — ${schet['пример']}, «контрпример:» — ${schet['контрпример']}`);
-  zamechaniya(itogi, schet).forEach(z => console.log('   замечание: ' + z));
-  return plokho;
+  const zam = zamechaniya(itogi, schet);
+  zam.forEach(z => console.log('   замечание: ' + z));
+  return plokho + (strogo ? zam.length : 0);
 }
 
 // кодЛиста: программа по всем блокам «дракон» листа, по порядку
@@ -129,7 +131,7 @@ async function vydatKod(itogi, yazyk, fajl) {
 // справка: шапка этого файла
 function spravka() {
   const stroki = readFileSync(new URL(import.meta.url), 'utf8').split(/\r?\n/);
-  console.log(stroki.slice(1, 10).join('\n'));
+  console.log(stroki.slice(1, 11).join('\n'));
 }
 
 // проверитьЛист: верхнее слово — прочитать, проверить, при просьбе выдать код
@@ -137,7 +139,7 @@ async function proveritList(a) {
   const znach = k => (a.indexOf(k) >= 0 ? a[a.indexOf(k) + 1] : undefined);
   const tekst = readFileSync(a[0], 'utf8');
   const itogi = bloki(tekst).map(proveritBlok);
-  const plokho = napechatatItogi(itogi, testy(tekst));
+  const plokho = napechatatItogi(itogi, testy(tekst), a.includes('--strogo'));
   if (znach('--kod')) await vydatKod(itogi, znach('--kod'), znach('-o'));
   return plokho ? 1 : 0;
 }
