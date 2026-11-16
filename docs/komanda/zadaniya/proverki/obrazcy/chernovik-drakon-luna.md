@@ -1,20 +1,5 @@
-```дракон
-название: Проверка номера пропуска
-ввод: n
-summa = 0
-пока: n > 0
-  summa = summa + n % 10
-  n = n // 10
-  d = n % 10 * 2
-  вопрос: d > 9
-    да:
-      d = d - 9
-    нет:
-  summa = summa + d
-  n = n // 10
-вопрос: summa % 10 == 0
-  да:
-    вывод: "верный"
-  нет:
-    вывод: "неверный"
-```
+# Переехало
+
+→ [ii-komanda/komanda/zadaniya/proverki/obrazcy/chernovik-drakon-luna.md](https://github.com/Scatik146/ii-komanda/blob/main/komanda/zadaniya/proverki/obrazcy/chernovik-drakon-luna.md)
+
+Старое место оставлено до брифинга после миграции (окно отката).

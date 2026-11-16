@@ -22,7 +22,7 @@ jobs:
           done
       - name: Блоки ```дракон в Markdown (кроме описания записи — там примеры будущих версий)
         run: |
-          for f in $(grep -rlE --include=*.md '^\s*(```|~~~)\s*(дракон|drakon)' . | grep -v '^./docs/komanda/drakon-zapis.md$'); do
+          for f in $(grep -rlE --include=*.md '^\s*(```|~~~)\s*(дракон|drakon)' . | grep -v '^./lib/drakon-shema/drakon-zapis.md$'); do
             node tools/drakon-shema.mjs --scan "$f" || exit 1
           done
       - name: Разборщик текстовой записи и блок «дракон»

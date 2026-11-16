@@ -4,13 +4,13 @@
 
 ## Команда ИИ
 
-- Вход для помощников (Qwen, GLM, DeepSeek, Алиса и др.) — `docs/komanda/README.md`; копии навыков Claude — `docs/komanda/navyki/`. Если меняются правила или навык — обновить и копию.
+- Вход для помощников (Qwen, GLM, DeepSeek, Алиса и др.) — `ii-komanda/komanda/VHOD-UROKI.md`; копии навыков Claude — `ii-komanda/rezerv/navyki/`. Если меняются правила или навык — обновить и копию.
 
 ## Код
 
-- Весь новый и изменяемый код (JS, Python и другие языки, кроме Prolog) — «по-фортовски»: `docs/komanda/KOD-PO-FORTOVSKI.md`. В конце работы — «пополнение словаря».
-- Prolog — «по-прологовски» (как описать): `docs/komanda/KOD-PO-PROLOGOVSKI.md`, и «по-графовски» (как нарисовать: каждое отношение — в ДРАКОН-ГРАФ): `docs/komanda/KOD-PO-GRAFOVSKI.md`. HTML и CSS — раздел в `KOD-PO-PROLOGOVSKI.md`.
-- К коду сдаётся ДРАКОН-лист — Markdown с блоками ```` ```дракон ```` и ```` ```конспект ```` и тестом (`KOD-PO-GRAFOVSKI.md`, п. 4; образец — `docs/komanda/primery/drakon-list-evklid.md`); проверка: `node tools/drakon-list.mjs лист.md` (`--kod python` — код по блокам «дракон»). Всё вместе — навык `docs/komanda/navyki/tri-stilya-koda.md`.
+- Весь новый и изменяемый код (JS, Python и другие языки, кроме Prolog) — «по-фортовски»: `ii-komanda/pravila/KOD-PO-FORTOVSKI.md`. В конце работы — «пополнение словаря».
+- Prolog — «по-прологовски» (как описать): `ii-komanda/pravila/KOD-PO-PROLOGOVSKI.md`, и «по-графовски» (как нарисовать: каждое отношение — в ДРАКОН-ГРАФ): `ii-komanda/pravila/KOD-PO-GRAFOVSKI.md`. HTML и CSS — раздел в `KOD-PO-PROLOGOVSKI.md`.
+- К коду сдаётся ДРАКОН-лист — Markdown с блоками ```` ```дракон ```` и ```` ```конспект ```` и тестом (`KOD-PO-GRAFOVSKI.md`, п. 4; образец — `ii-komanda/pravila/primery/drakon-list-evklid.md`); проверка: `node tools/drakon-list.mjs лист.md` (`--kod python` — код по блокам «дракон»). Всё вместе — навык `ii-komanda/rezerv/navyki/tri-stilya-koda/SKILL.md`.
 
 ## Приложения уроков
 

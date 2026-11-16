@@ -467,8 +467,8 @@ test('--scan .md с двумя блоками — номера строк фай
   eq(r.status, 1);
   if (!/строка 10/.test(r.stdout)) throw new Error('нет «строка 10»: ' + r.stdout);
 });
-test('--scan docs/komanda/drakon-zapis.md — 3 блока, у #1 без ошибок, у #2 строка 63', () => {
-  const r = runTool(['--scan', join(ROOT, 'docs/komanda/drakon-zapis.md')]);
+test('--scan lib/drakon-shema/drakon-zapis.md — 3 блока, у #1 без ошибок, у #2 строка 63', () => {
+  const r = runTool(['--scan', join(ROOT, 'lib/drakon-shema/drakon-zapis.md')]);
   eq(r.status, 1);
   if (!/#1 «Сумма цифр»/.test(r.stdout)) throw new Error('нет #1: ' + r.stdout);
   if (!/строка 63: лишний сдвиг/.test(r.stdout)) throw new Error('нет строки 63: ' + r.stdout);

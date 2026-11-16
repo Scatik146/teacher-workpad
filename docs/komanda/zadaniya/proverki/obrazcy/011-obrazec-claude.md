@@ -1,33 +1,5 @@
-Модель: Claude (Марьям).
+# Переехало
 
-parol-list.md
-````markdown
-# ДРАКОН-лист: есть ли цифра в пароле
+→ [ii-komanda/komanda/zadaniya/proverki/obrazcy/011-obrazec-claude.md](https://github.com/Scatik146/ii-komanda/blob/main/komanda/zadaniya/proverki/obrazcy/011-obrazec-claude.md)
 
-```дракон
-название: Есть ли цифра в пароле
-ввод: parol = input()
-est = False
-для: for s in parol
-  вопрос: s.isdigit()
-    да:
-      est = True
-    нет:
-      # дальше
-вывод: est
-```
-
-```конспект
-тема: Надёжный пароль
-Надёжный пароль -> всё сразу:
-  - хотя бы одна цифра
-  - хотя бы одна заглавная буква
-  - хотя бы один спецсимвол
-```
-
-## Тест
-- пример: ввод kot2025 → вывод True
-- контрпример: ввод kotik → вывод True
-````
-
-Пополнение словаря: новых слов нет (est, parol, s — переменные).
+Старое место оставлено до брифинга после миграции (окно отката).

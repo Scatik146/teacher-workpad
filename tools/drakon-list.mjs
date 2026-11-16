@@ -8,7 +8,7 @@
 //   node tools/drakon-list.mjs лист.md --strogo             замечания (нет блока, нет теста) считать ошибками
 //   node tools/drakon-list.mjs лист.md --strogo --kod python -o программа.py   и ошибки перевода в код — тоже ошибки
 //
-// Правило: docs/komanda/KOD-PO-GRAFOVSKI.md, п. 4. Образец: docs/komanda/primery/drakon-list-evklid.md.
+// Правило: ii-komanda pravila/KOD-PO-GRAFOVSKI.md, п. 4. Образец: ii-komanda pravila/primery/drakon-list-evklid.md.
 // Код выхода 1, если в блоке есть ошибка или подсказка «важно».
 import { readFileSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
