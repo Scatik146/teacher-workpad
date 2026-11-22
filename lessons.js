@@ -156,6 +156,15 @@ const LESSONS = [
     path: '9-klass/gran-pri/',
     teacher: [{label:'Досье пилота', href:'dosye-pilota.html', kind:'print'}, {label:'Инвентарь гонки', href:'inventar.html', kind:'guide'}]
   },
+  {
+    where:[{s:'iiib', g:9}],
+    title: 'Починим помощника',
+    topic: 'Распознавание и синтез речи',
+    about: 'Голосовой помощник сломался: пары ведут его фразы по станциям конвейера распознавания, ищут, где началась ошибка, и учат помощника говорить с паузами и вопросом.',
+    format: 'в парах, наушники на пару · 40 минут',
+    path: '9-klass/iiib-10-rech/',
+    teacher: [{label:'Слайды', href:'slajdy.html', kind:'slides'}, {label:'ДРАКОН-лист А4', href:'drakon-list.html', kind:'print'}, {label:'Шпаргалка и конспект', href:'shpargalka.html', kind:'guide'}, {label:'Техкарта', href:'tehkarta.html', kind:'guide'}]
+  },
 
   /* --- Информатика и математика --- */
   {
