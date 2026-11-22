@@ -56,6 +56,8 @@ input, textarea { font: inherit; }
 
 .nadpis { display: flex; justify-content: center; gap: 14px; padding: 14px; font-size: var(--znak-razmer); background: var(--panel2); border-radius: var(--radius); }
 .nadpis .znak { display: flex; flex-direction: column; align-items: center; min-width: 70px; }
+.nadpis .znak.probel { min-width: 24px; }
+.nadpis { flex-wrap: wrap; }
 .nadpis .znak small { font: 22px var(--shrift); color: var(--podskazka); min-height: 28px; }
 .pismo-finikija { font-family: var(--finikija); }
 .pismo-anbur { font-family: var(--anbur); }

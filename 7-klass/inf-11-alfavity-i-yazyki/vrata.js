@@ -10,7 +10,7 @@ var KLASSY_KLYUCHA = { 'бронзовый': 'bronzovyj', 'серебряный'
 var EKRANY = [
   { id: 'start', nazvanie: 'Заставка' },
   { id: 'vrata1', nazvanie: 'Врата 1 — Финикия' },
-  { id: 'vrata2', nazvanie: 'Врата 2 — Пермь' },
+  { id: 'vrata2', nazvanie: 'Врата 2 — глаголица и анбур' },
   { id: 'vrata3', nazvanie: 'Врата 3 — Данные или информация?' }
 ];
 var S = zagruzit();
@@ -153,7 +153,9 @@ function zadanieNabor(klyuch, z, posle) {
   var stroka = sozdat('div', 'stroka-vvoda');
   stroka.append(pole, knopka('knopka', 'Проверить', function () { proveritNabor(klyuch, z, pole, otklik, blok, posle); }));
   pole.addEventListener('keydown', function (e) { if (e.key === 'Enter') { proveritNabor(klyuch, z, pole, otklik, blok, posle); } });
-  blok.append(sozdat('p', '', z.vopros), stroka, knopkaPodskazki(klyuch, z.podskazki, otklik), otklik);
+  blok.append(sozdat('p', '', z.vopros));
+  if (z.nadpis) { blok.append(znakiNadpisi(z.nadpis, resheno(klyuch))); }
+  blok.append(stroka, knopkaPodskazki(klyuch, z.podskazki, otklik), otklik);
   if (resheno(klyuch)) { pole.value = S.otvety[klyuch]; prinyat(blok, otklik, 'Верно: ' + z.otvet); }
   return blok;
 }
@@ -165,8 +167,16 @@ function proveritNabor(klyuch, z, pole, otklik, blok, posle) {
     prinyat(blok, otklik, 'Верно: ' + z.otvet);
     posle();
   } else {
-    pokazatOtklik(otklik, 'neverno', 'Пока не то. Сверься с таблицей ещё раз.');
+    var o = otklikNevernogo(z, pole.value);
+    pokazatOtklik(otklik, o.ottenok, o.tekst);
   }
+}
+
+// otklikNevernogo: ответ цифрами вместо слова — «верно по смыслу», иначе — «пока не то»
+function otklikNevernogo(z, vvod) {
+  var o = { ottenok: 'neverno', tekst: 'Пока не то. Сверься с таблицей ещё раз.' };
+  if (z.cifry && normalizovat(vvod) === z.cifry) { o = { ottenok: 'podskazka', tekst: TEKST.CIFRY_OTKLIK }; }
+  return o;
 }
 
 // prinyat: отметить блок решённым
@@ -233,22 +243,45 @@ function znakiNadpisi(nadpis, prochitano) {
   var blok = sozdat('div', 'nadpis ' + alfavit.klass);
   var bukvy = nadpis.slovo.split('');
   if (nadpis.alfavit === 'finikija') { bukvy = bukvy.slice().reverse(); }
-  bukvy.forEach(function (b) {
-    var z = sozdat('span', 'znak', alfavit.znaki[b]);
-    z.append(sozdat('small', '', prochitano || b === nadpis.opora ? b.toUpperCase() : ''));
-    blok.append(z);
-  });
+  bukvy.forEach(function (b) { blok.append(znakNadpisi(alfavit, b, prochitano || b === nadpis.opora)); });
   return blok;
+}
+
+// znakNadpisi: древний знак и под ним русская буква (если открыта); пробел — промежуток
+function znakNadpisi(alfavit, b, otkryt) {
+  var z = sozdat('span', b === ' ' ? 'znak probel' : 'znak', alfavit.znaki[b] || ' ');
+  z.append(sozdat('small', '', otkryt && b !== ' ' ? b.toUpperCase() : ''));
+  return z;
+}
+
+// dobavitEsliEst: букву в список, если у неё есть знак в алфавите
+function dobavitEsliEst(bukvy, a, b) {
+  if (a.znaki[b]) { bukvy.push(b); }
+}
+
+// bukvyTablicy: финикийское — по своим именам; остальные — весь русский алфавит, где есть знак
+function bukvyTablicy(idAlfavita) {
+  var a = TEKST.ALFAVITY[idAlfavita];
+  var bukvy = [];
+  if (idAlfavita === 'finikija') { bukvy = Object.keys(a.imena); }
+  if (idAlfavita !== 'finikija') { 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя'.split('').forEach(function (b) { dobavitEsliEst(bukvy, a, b); }); }
+  return bukvy;
+}
+
+// podpisBukvy: «имя — Б», если имя известно, иначе просто буква
+function podpisBukvy(a, b) {
+  var t = b.toUpperCase();
+  if (a.imena[b]) { t = a.imena[b] + ' — ' + t; }
+  return t;
 }
 
 // tablicaAlfavita: знак, имя и русская буква; опорная буква подсвечена
 function tablicaAlfavita(idAlfavita, opora) {
   var a = TEKST.ALFAVITY[idAlfavita];
   var tablica = sozdat('div', 'tablica');
-  Object.keys(a.imena).forEach(function (b) {
+  bukvyTablicy(idAlfavita).forEach(function (b) {
     var kletka = sozdat('div', b === opora ? 'opora' : '');
-    var znak = sozdat('b', a.klass, a.znaki[b]);
-    kletka.append(znak, document.createTextNode(a.imena[b] + ' — ' + b.toUpperCase()));
+    kletka.append(sozdat('b', a.klass, a.znaki[b]), document.createTextNode(podpisBukvy(a, b)));
     tablica.append(kletka);
   });
   return tablica;
@@ -264,12 +297,19 @@ function postroitVrata(v, indeks) {
   var klyuchi = klyuchiVrat(v);
   var bloki = blokiVrat(v, indeks, klyuchi);
   ekran.textContent = '';
-  levo.append(rasskazVrat(v), znakiNadpisi(v.nadpis, resheno(klyuchi[0])));
+  levo.append(rasskazVrat(v));
   bloki.forEach(function (b) { levo.append(b); });
   levo.append(knopkaDalshe(v, indeks, klyuchi));
-  pravo.append(panelTablicy(v.nadpis));
+  pravo.append(panelTablicy(aktivnayaNadpis(v, klyuchi)));
   ekran.append(levo, pravo);
   cepochka(bloki, klyuchi, function () { vydatKlyuch(v.klyuch, v.zvanie); });
+}
+
+// aktivnayaNadpis: надпись последнего открытого задания с надписью — к ней и таблица
+function aktivnayaNadpis(v, klyuchi) {
+  var nadpis = null;
+  v.zadaniya.forEach(function (z, i) { if (z.nadpis && (i === 0 || resheno(klyuchi[i - 1]))) { nadpis = z.nadpis; } });
+  return nadpis;
 }
 
 // panelTablicy: таблица алфавита надписи с заголовком
@@ -337,7 +377,7 @@ function kartochka(k, posle) {
 function perevesti(slovo, idAlfavita) {
   var znaki = TEKST.ALFAVITY[idAlfavita].znaki;
   var t = '';
-  slovo.split('').forEach(function (b) { t = t + znaki[b]; });
+  slovo.split('').forEach(function (b) { t = t + (znaki[b] || b); });
   return t;
 }
 
