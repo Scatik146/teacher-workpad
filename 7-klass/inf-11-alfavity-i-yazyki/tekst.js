@@ -172,6 +172,7 @@ TEKST.MOST = {
   otklik: 'Запомни свой ответ. На следующем уроке проверим: можно ли записать любое слово двумя знаками.'
 };
 
+TEKST.SAJT_DRAKON_GRAF = 'https://scatik146.github.io/drakon-graf/';
 TEKST.GENERATOR = 'https://scatik146.github.io/drakon-graf/generator/';
 
 /* Конспекты ДРАКОН-ГРАФ для листа 2 (проверены tools/konspekt.mjs 23.11.2026: подсказок нет). */
