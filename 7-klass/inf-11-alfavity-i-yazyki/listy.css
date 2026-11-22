@@ -1,0 +1,45 @@
+/* Печатные листы урока: A4 книжная, чёрно-белая печать. Цвета и размеры — переменными. */
+@font-face { font-family: "Noto Sans Old Permic"; src: url("../../lib/fonts/noto-sans-old-permic/NotoSansOldPermic-Regular.ttf"); }
+@font-face { font-family: "Noto Sans Glagolitic"; src: url("../../lib/fonts/noto-sans-glagolitic/NotoSansGlagolitic-Regular.ttf"); }
+@font-face { font-family: "Noto Sans Phoenician"; src: url("../../lib/fonts/noto-sans-phoenician/NotoSansPhoenician-Regular.ttf"); }
+@font-face { font-family: "PT Serif"; src: url("../../lib/drakon-graf/fonts/PT_Serif-Web-Regular.ttf"); }
+@font-face { font-family: "PT Serif"; src: url("../../lib/drakon-graf/fonts/PT_Serif-Web-Bold.ttf"); font-weight: bold; }
+@font-face { font-family: "PT Mono"; src: url("../../lib/drakon-graf/fonts/PTM55FT.ttf"); }
+
+:root {
+  --bumaga: #ffffff; --chernila: #111111; --seryj: #666666; --liniya: #999999; --fon-yachejki: #f2f2f2; --panel: #e8eef6;
+  --shrift: "PT Serif", Georgia, serif; --mono: "PT Mono", monospace; --razmer: 11pt; --melko: 9pt; --znak: 16pt;
+  --anbur: "Noto Sans Old Permic", serif; --glagolica: "Noto Sans Glagolitic", serif; --finikija: "Noto Sans Phoenician", serif;
+}
+@page { size: A4 portrait; margin: 12mm; }
+* { box-sizing: border-box; }
+body { margin: 0; font: var(--razmer)/1.35 var(--shrift); color: var(--chernila); background: var(--panel); }
+.panel-upr { display: flex; gap: 16px; align-items: center; padding: 8px 16px; font-family: Arial, sans-serif; }
+.list { width: 210mm; min-height: 297mm; margin: 0 auto 10mm; padding: 12mm; background: var(--bumaga); }
+h1 { font-size: 16pt; margin: 0 0 4mm; }
+h2 { font-size: 12.5pt; margin: 4mm 0 2mm; }
+p, li { margin: 0 0 1.5mm; }
+table { width: 100%; border-collapse: collapse; margin-bottom: 3mm; }
+th, td { border: 1px solid var(--liniya); padding: 1.2mm 2mm; vertical-align: top; text-align: left; }
+th { background: var(--fon-yachejki); }
+.melko { font-size: var(--melko); color: var(--seryj); }
+.alfavit { display: grid; grid-template-columns: repeat(11, minmax(0, 1fr)); border-top: 1px solid var(--liniya); border-left: 1px solid var(--liniya); margin-bottom: 3mm; }
+.alfavit div { border-right: 1px solid var(--liniya); border-bottom: 1px solid var(--liniya); text-align: center; font-size: var(--melko); padding: 0.6mm 0; }
+.alfavit b { display: block; font-size: var(--znak); font-weight: normal; line-height: 1.25; }
+.alfavit .glasnaya b { text-decoration: underline; }
+.pismo-finikija { font-family: var(--finikija); }
+.pismo-anbur { font-family: var(--anbur); }
+.pismo-glagolica { font-family: var(--glagolica); }
+.shifr { font-size: 20pt; letter-spacing: 2mm; }
+.liniya-otveta { border-bottom: 1px solid var(--chernila); height: 8mm; margin-bottom: 2mm; }
+.konspekt { border: 1px solid var(--liniya); padding: 2mm; margin-bottom: 2mm; text-align: center; }
+.konspekt svg { max-width: 100%; height: auto; }
+pre.generator { font: 9.5pt/1.3 var(--mono); background: var(--fon-yachejki); border: 1px dashed var(--liniya); padding: 2mm 3mm; margin: 0 0 4mm; white-space: pre-wrap; }
+.razryv { break-before: page; }
+.citata { font-style: italic; border-left: 3px solid var(--chernila); padding-left: 3mm; }
+@media print {
+  body { background: var(--bumaga); }
+  .panel-upr { display: none; }
+  .list { margin: 0; padding: 0; width: auto; min-height: 0; }
+}
+[data-konspekty] section { break-inside: avoid; }

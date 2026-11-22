@@ -1,0 +1,26 @@
+/* Слайды на доску: крупно, по центру. Цвета — переменные из vrata.css. */
+:root { --slajd-zagolovok: 56px; --slajd-tekst: 32px; --slajd-znak: 72px; }
+body { overflow: hidden; }
+.slajd { height: calc(100% - 60px); display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 22px; padding: 30px 60px; text-align: center; }
+.slajd h1 { font-size: var(--slajd-zagolovok); margin: 0; color: var(--akcent); }
+.slajd p { font-size: var(--slajd-tekst); margin: 0; }
+.slajd .tusk { color: var(--tekst-tusk); }
+.slajd .ryad-znakov { font-size: var(--slajd-znak); letter-spacing: 12px; line-height: 1.2; max-width: 1200px; }
+.slajd .ryad-znakov.melko { font-size: 48px; }
+.slajd .glasnaya { color: var(--akcent2); }
+.slajd .citata { font-style: italic; max-width: 1100px; border-left: 6px solid var(--podskazka); padding-left: 20px; text-align: left; }
+.slajd .risunok { background: var(--list); border-radius: var(--radius); padding: 14px; }
+.derevo { display: flex; flex-direction: column; gap: 14px; font-size: 20px; width: min(1200px, 94vw); }
+.derevo .uroven { display: flex; justify-content: center; gap: 18px; }
+.derevo .uroven div { flex: 0 1 340px; background: var(--panel); border: 2px solid var(--liniya); border-radius: var(--radius); padding: 8px 12px; }
+.derevo b { display: block; color: var(--akcent); }
+.derevo .uroven .otdelno { border-style: dashed; border-color: var(--akcent2); }
+.nizhnyaya-panel { height: 60px; display: flex; justify-content: center; align-items: center; gap: 20px; color: var(--tekst-tusk); }
+.nizhnyaya-panel button { background: transparent; border: 1px solid var(--liniya); min-width: 80px; }
+.vid-titul h1 { font-size: 80px; }
+.slajd .risunok svg { width: min(1000px, 80vw); height: auto; }
+.derevo .uroven + .uroven::before { content: none; }
+.vid-derevo { gap: 12px; }
+.vid-derevo h1 { font-size: 40px; }
+.vid-derevo p { font-size: 26px; }
+.derevo { font-size: 18px; }
