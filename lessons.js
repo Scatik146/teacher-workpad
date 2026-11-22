@@ -50,6 +50,22 @@ const LESSONS = [
     teacher: [{label:'Канва урока', href:'kanva.html', kind:'guide'}]
   },
   {
+    where:[{s:'iiib', g:2}],
+    title: 'Система острова',
+    topic: 'Как создать текстовый документ?',
+    about: 'Друга держит страж острова. Дети расшифровывают его послание анбуром или глаголицей, создают документ в редакторе, набирают ответ древним шрифтом и финикийскими буквами уговаривают стража отпустить друга.',
+    format: 'каждому свой компьютер · 40 минут',
+    path: '2-klass/iiib-11-sozdat-tekstovyj-dokument/',
+    teacher: [
+      {label:'Приложение учителя (доска)', href:'uchitel.html', kind:'tool'},
+      {label:'Канва урока', href:'kanva.html', kind:'guide'},
+      {label:'Шпаргалка учителя', href:'shpargalka.html', kind:'guide'},
+      {label:'Техкарта', href:'tehkarta.html', kind:'guide'},
+      {label:'Раздаточный лист (2 варианта)', href:'razdatka.html', kind:'print'},
+      {label:'ДРАКОН-лист в тетрадь', href:'vkleyka.html', kind:'print'}
+    ]
+  },
+  {
     ready:false, where:[{s:'iiib', g:2}],
     title: 'Моя история в картинках',
     topic: 'Коллаж как цифровой продукт',
