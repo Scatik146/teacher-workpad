@@ -144,6 +144,8 @@ main { max-width: 1100px; margin: 0 auto; padding: 18px; }
 .knopki-vybora { display: flex; gap: 12px; flex-wrap: wrap; margin: 14px 0; }
 .knopki-vybora button { background: #fff8ec; border: 3px solid var(--akcent); border-radius: 14px; padding: 12px 20px; font-weight: 800; }
 .otkrytaya { color: var(--akcent); font-weight: 800; }
+.obrazec-otveta { font-size: 28px; }
+.bukva.uletela { opacity: .3; }
 .polet { display: flex; gap: 10px; min-height: 50px; font-size: 40px; }
 .letyashchaya { animation: uletaet 1.2s ease-in forwards; }
 @keyframes uletaet { to { transform: translate(60vw, -120px) scale(.4); opacity: 0; } }

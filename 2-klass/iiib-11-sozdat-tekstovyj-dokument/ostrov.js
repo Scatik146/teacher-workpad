@@ -15,7 +15,7 @@
 var KLYUCH = 'iiib-11-ostrov-v1';
 var EKRANY = ['stol', 'rasshifrovka', 'pauza', 'redaktor', 'kvest', 'final'];
 var NAZVANIYA = ['Рабочий стол', 'Расшифровка', 'Микропауза', 'Редактор', 'Квест', 'Финал'];
-var PAUZA_SEKUND = 90;
+var PAUZA_SEKUND = 30;
 var S = novoeSostoyanie();
 var POLE = null;
 var POKOLENIE = 0;
@@ -200,7 +200,8 @@ function narisovatBukvu(pole, b) {
   if (pole.drevnee && b !== ' ') {
     setTimeout(function () {
       bukva.textContent = znak(pole.alf, b);
-      bukva.className = 'bukva drevnyaya ' + TEKST.ALFAVITY[pole.alf].klass;
+      bukva.classList.remove('russkaya');
+      bukva.classList.add('drevnyaya', TEKST.ALFAVITY[pole.alf].klass);
     }, 380);
   }
   return bukva;
@@ -569,7 +570,7 @@ function nachatPoslanieKvesta() {
 function uletet(pole, bukva) {
   var kopiya = sozdat('span', 'letyashchaya ' + TEKST.ALFAVITY[pole.alf].klass, znak(pole.alf, pole.nabrano.slice(-1)));
   el('polet').append(kopiya);
-  bukva.style.visibility = 'hidden';
+  bukva.classList.add('uletela');
 }
 
 // tochka2: точка 2 — как передать ответ
@@ -585,11 +586,24 @@ function nachatOtvet() {
   el('polet').replaceChildren();
   klaviatura('klav-kvesta', drugoj());
   POLE = novoePole(TEKST.KVEST.otvet, drugoj(), 'pole-otveta', {
-    posle: poBukve ? uletet : null,
+    posle: bukvaOtveta,
     gotovo: otvetNabran
   });
+  obrazecOtveta(POLE);
   pokazat('k-otpravit-otvet', false);
   skazat(poBukve ? TEKST.GOVORUN.poBukve : TEKST.GOVORUN.srazu);
+}
+
+// obrazecOtveta: образец ответа — слово «ЛЕТИМ», набранное зелёным
+function obrazecOtveta(pole) {
+  var sdelano = sozdat('span', 'sdelano', pole.nabrano);
+  el('obrazec-otveta').replaceChildren(document.createTextNode('Набери: '), sdelano, document.createTextNode(pole.cel.slice(pole.nabrano.length)));
+}
+
+// bukvaOtveta: буква ответа — образец растёт, при «по одной букве» знак улетает
+function bukvaOtveta(pole, bukva) {
+  obrazecOtveta(pole);
+  if (S.t2 === 'b') { uletet(pole, bukva); }
 }
 
 // otvetNabran: ответ набран — по букве сразу в финал, целиком — ждём кнопку
