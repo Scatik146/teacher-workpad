@@ -9,7 +9,8 @@
        podpis        — подпись в форме и в тексте шапки
        vid           — 'vybor' (список), 'shkala' (2–5), 'tekst', 'dlinnyj' (несколько строк),
                        'chislo', 'data', 'vremya', 'spisok' (нумерованный список строк),
-                       'galochki' (галочки; у варианта chislo — поле числа рядом)
+                       'galochki' (галочки; у варианта chislo — поле числа рядом),
+                       'resursy' (галочки «наших ресурсов»; в шапку — только отмеченные, с адресом gde)
        poUmolchaniyu — значение по умолчанию из промта ('' — не задано, Алиса спросит)
        primer        — пример для меню Ctrl+Alt+M («заполнить пропущенное»)
        varianty      — для 'vybor', 'shkala', 'galochki'
@@ -24,7 +25,7 @@ const SHAPKA_DANNYE = {
   pusto: 'не заполнено',
   zagolovok: '=== ШАПКА УРОКА (форма «Шапка урока», по [3] промта v7.4) ===',
   konec: '=== КОНЕЦ ШАПКИ ===',
-  pravilo: 'Алиса, это готовая шапка шага 1. Спроси только поля с пометкой «не заполнено», по одному; остальное не переспрашивай.',
+  pravilo: 'Алиса, это готовая шапка шага 1. Спроси только поля с пометкой «не заполнено», по одному; остальное не переспрашивай. Раздел 9 — не для тебя: файлы читает Claude на экспертизе и сборке; не спрашивай о нём и сохрани его в шапке как есть.',
   razdely: [
     { nomer: 1, nazvanie: 'Класс и работа', polya: [
       { id: 'predmet', podpis: 'Предмет', vid: 'vybor', poUmolchaniyu: '', primer: 'ИНФ-7-9Б',
@@ -92,6 +93,25 @@ const SHAPKA_DANNYE = {
           drakonList: false, razdatki: false, tehkarta: false },
         primer: { prilozhenie: true, prilozhenieChislo: '5', slajdy: true, konspekt: true,
           drakonList: true, razdatki: true, tehkarta: false } }
+    ] },
+    { nomer: 9, nazvanie: 'Наши ресурсы (читает Claude на экспертизе и сборке)', polya: [
+      { id: 'resursy', podpis: 'Ресурсы', vid: 'resursy', shirokoe: true,
+        varianty: [
+          { id: 'drakonGraf', podpis: 'конспект ДРАКОН-ГРАФ',
+            gde: 'teacher-workpad lib/drakon-graf/; язык — drakon-graf docs/graf/шпаргалка_ученика.md; навык graficheskij-konspekt' },
+          { id: 'drakonShema', podpis: 'дракон-схемы',
+            gde: 'teacher-workpad lib/drakon-shema/ (DrakonWidget, drakongen); навык drakon-shema' },
+          { id: 'dvoichnaya', podpis: 'двоичная логика (бит)',
+            gde: 'ii-komanda logika/dvoichnaya.md, logika/kniga/chast-1-bit/' },
+          { id: 'troichnaya', podpis: 'троичная логика (трит)',
+            gde: 'ii-komanda logika/svod.md, logika/kniga/chast-2-trit/' },
+          { id: 'slovar', podpis: 'словарь проверенных фактов',
+            gde: 'ii-komanda slovar/ (README)' },
+          { id: 'pismennosti', podpis: 'древние письменности (анбур, глаголица, финикийское)',
+            gde: 'teacher-workpad lib/fonts/ (README); анбур — komi-perm-game-calendar' }
+        ],
+        poUmolchaniyu: {}, primer: { drakonGraf: true } },
+      { id: 'escheResursy', podpis: 'Ещё ресурсы (что и где лежит)', vid: 'dlinnyj', poUmolchaniyu: 'нет', primer: 'нет', shirokoe: true }
     ] }
   ]
 };

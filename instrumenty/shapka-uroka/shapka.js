@@ -177,7 +177,8 @@ const VIDY = {
   vremya: (p, v) => stroka(p, v, 'time'),
   dlinnyj: (p, v) => abzac(p, v),
   spisok: (p, v) => nomerSpisok(p, v),
-  galochki: (p, v) => galochki(p, v)
+  galochki: (p, v) => galochki(p, v),
+  resursy: (p, v) => galochki(p, v)
 };
 
 // kartochkaPolya: подпись и поле ввода
@@ -228,7 +229,7 @@ function znachenieIz(p) {
   const el = document.querySelector('[data-pole="' + p.id + '"]');
   let v = el.value;
   if (p.vid === 'spisok') v = znachenieSpiska(el);
-  if (p.vid === 'galochki') v = znachenieGalochek(el);
+  if (p.vid === 'galochki' || p.vid === 'resursy') v = znachenieGalochek(el);
   return v;
 }
 
@@ -262,6 +263,13 @@ function tekstArtefakta(variant, v) {
   return t;
 }
 
+// tekstResursov: отмеченные ресурсы с адресами, каждый с новой строки
+function tekstResursov(p, v) {
+  const otmecheny = p.varianty.filter(x => v[x.id]);
+  const tekst = otmecheny.map(x => '   - ' + x.podpis + ' — ' + x.gde).join('\n');
+  return otmecheny.length ? '\n' + tekst : ' нет';
+}
+
 // tekstPolya: значение поля для шапки
 function tekstPolya(p, v) {
   let t = pustoe(v) ? D.pusto : String(v).trim().replace(/\s*\n\s*/g, ' / ');
@@ -276,7 +284,15 @@ function strokaRazdela(r) {
   let t = r.nomer + ') ' + r.nazvanie + '. ' + r.polya.map(pp => tekstPolya(pp, S.znacheniya[pp.id])).join('; ') + '.';
   if (p.vid === 'spisok') t = r.nomer + ') ' + r.nazvanie + ' (нумерованный список):' + tekstSpiska(v);
   if (p.vid === 'galochki') t = r.nomer + ') ' + r.nazvanie + ': ' + p.varianty.map(x => tekstArtefakta(x, v)).join('; ') + '.';
+  if (p.vid === 'resursy') t = strokaResursov(r);
   return t;
+}
+
+// strokaResursov: раздел «Наши ресурсы» — отмеченные и «ещё»
+function strokaResursov(r) {
+  const [p, esche] = r.polya;
+  const dop = tekstPolya(esche, S.znacheniya[esche.id]).replace(D.pusto, 'нет');
+  return r.nomer + ') ' + r.nazvanie + ':' + tekstResursov(p, S.znacheniya[p.id]) + '\n   ' + dop + '.';
 }
 
 // tekstShapki: вся шапка одним блоком
