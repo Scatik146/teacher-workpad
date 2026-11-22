@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Шапка урока</title>
+<link rel="stylesheet" href="stil.css">
+</head>
+<body>
+<header>
+  <h1>Шапка урока</h1>
+  <p>Заполните один раз — и вставьте Алисе (промт v7.4) или Claude одним сообщением. Ответы запоминаются в этом браузере.</p>
+</header>
+<main>
+  <form id="forma" class="forma" autocomplete="off"></form>
+  <aside class="itog">
+    <div class="knopki">
+      <button type="button" id="kopirovat" class="glavnaya">Скопировать шапку</button>
+      <button type="button" id="ochistit">Очистить</button>
+    </div>
+    <p id="soobshchenie" class="soobshchenie" aria-live="polite"></p>
+    <p id="schetchik" class="schetchik"></p>
+    <label class="podpis" for="gotovo">Готовая шапка</label>
+    <textarea id="gotovo" readonly spellcheck="false"></textarea>
+  </aside>
+</main>
+<script src="../../lib/menu-ekranov/menu-ekranov.js"></script>
+<script src="dannye.js"></script>
+<script src="shapka.js"></script>
+</body>
+</html>

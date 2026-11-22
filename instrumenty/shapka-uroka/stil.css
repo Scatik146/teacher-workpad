@@ -1,0 +1,63 @@
+/* Шапка урока — оформление. Цвета и размеры — переменными. */
+@font-face{font-family:"Nunito";src:url("../../lib/fonts/nunito/Nunito-VariableFont_wght.ttf");font-weight:200 1000;font-display:swap}
+
+:root{
+  --fon:#f6f1e6; --fon2:#ece4d2; --tyomnyj:#1f2329; --chernila:#1d2126; --seryj:#5b5346; --seryj2:#a9b2bc;
+  --yantar:#f2a93b; --yantar2:#ffcf7a; --rama:#d9cfb9; --belyj:#fff; --zelenyj:#2e7d55; --krasnyj:#a8461e;
+  --shrift:"Nunito","Segoe UI",Arial,sans-serif; --mono:Consolas,"Courier New",monospace;
+  --radius:10px; --shirina-itoga:440px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--fon);color:var(--chernila);font:15px/1.4 var(--shrift)}
+header{background:var(--tyomnyj);color:var(--belyj);padding:12px 24px;border-bottom:4px solid var(--yantar)}
+header h1{margin:0;font-size:22px}
+header p{margin:2px 0 0;color:var(--seryj2);font-size:14px}
+
+main{display:grid;grid-template-columns:1fr var(--shirina-itoga);gap:18px;padding:14px 24px;align-items:start}
+
+.razdel{background:var(--belyj);border:1px solid var(--rama);border-radius:var(--radius);padding:10px 14px 12px;margin-bottom:10px;scroll-margin-top:10px}
+.razdel h2{margin:0 0 8px;font-size:16px}
+.setka{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px 12px}
+.pole{display:flex;flex-direction:column;gap:2px}
+.pole.shirokoe{grid-column:1 / -1}
+.podpis{font-size:13px;color:var(--seryj);font-weight:600}
+
+input,select,textarea,button{font:inherit}
+input[type=text],input[type=number],input[type=date],input[type=time],select,textarea{border:1px solid var(--rama);border-radius:6px;padding:5px 8px;background:var(--belyj);color:var(--chernila);width:100%}
+textarea{resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--yantar);border-color:var(--yantar)}
+
+.spisok ol{margin:0;padding-left:26px;display:flex;flex-direction:column;gap:4px}
+.spisok li{display:flex;gap:6px;align-items:center}
+.spisok li::marker{color:var(--seryj);font-weight:700}
+button{cursor:pointer;border:1px solid var(--rama);background:var(--fon2);color:var(--chernila);border-radius:6px;padding:5px 12px}
+button:hover{border-color:var(--yantar)}
+.ubrat{padding:2px 10px;font-size:16px;line-height:1}
+.dobavit{margin-top:6px;align-self:flex-start}
+
+.galochki{display:flex;flex-wrap:wrap;gap:6px 18px}
+.galochka{display:flex;align-items:center;gap:4px;cursor:pointer}
+.galochka input[type=checkbox]{width:18px;height:18px}
+.galochka .chislo{display:inline-flex;align-items:center;gap:4px;color:var(--seryj)}
+.galochka .chislo input{width:70px}
+
+.itog{position:sticky;top:10px;display:flex;flex-direction:column;gap:6px;height:calc(100vh - 110px);min-height:420px}
+.knopki{display:flex;gap:8px}
+.glavnaya{flex:1;background:var(--yantar);border-color:var(--yantar);font-weight:700;padding:9px 12px;font-size:16px}
+.glavnaya:hover{background:var(--yantar2)}
+.soobshchenie{margin:0;min-height:20px;font-weight:700;color:var(--zelenyj)}
+.schetchik{margin:0;font-size:14px}
+.schetchik.est{color:var(--krasnyj)}
+.schetchik.net{color:var(--zelenyj)}
+#gotovo{flex:1;font:13px/1.4 var(--mono);background:var(--fon2);white-space:pre-wrap}
+
+@media (max-width:900px){
+  main{grid-template-columns:1fr}
+  .itog{position:static;height:auto}
+  #gotovo{min-height:320px}
+}
+@media print{
+  header,.knopki,.forma,.soobshchenie,.schetchik{display:none}
+  main{display:block;padding:0}
+  #gotovo{border:none;background:none;height:auto}
+}
