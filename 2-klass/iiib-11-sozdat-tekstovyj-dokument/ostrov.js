@@ -642,7 +642,7 @@ function obrazecFinikija(pole) {
   el('obrazec-finikija').replaceChildren(document.createTextNode('Набери: '), sdelano, document.createTextNode(pole.cel.slice(pole.nabrano.length)));
 }
 
-// nachatDrug: начать «ДРУГ» — друг просит написать механизму финикийскими буквами
+// nachatDrug: начать «Я ДРУГ» — друг просит написать механизму финикийскими буквами
 function nachatDrug() {
   shagKvesta('fin-drug');
   el('finikija-drug').textContent = TEKST.FINIKIJA.drug;
@@ -650,7 +650,7 @@ function nachatDrug() {
   skazat(TEKST.GOVORUN.finDrug);
 }
 
-// drugNabran: «ДРУГ» набран — механизм узнаёт язык создателя и просит главное слово
+// drugNabran: «Я ДРУГ» набрано — механизм узнаёт язык создателя и просит главное слово
 function drugNabran() {
   POLE = null;
   shagKvesta('vopros');
@@ -757,7 +757,7 @@ function finalShlm() {
 
 // finalOtpuskayu: финал, «ОТПУСКАЮ» — механизм отпускает друга
 function finalOtpuskayu() {
-  pechatatStroki(el('tekst-finala-2'), [TEKST.FINAL.yazyk, TEKST.FINAL.perevod, TEKST.FINAL.otpuskayu], drugUletaet);
+  pechatatStroki(el('tekst-finala-2'), [TEKST.FINAL.perevod, TEKST.FINAL.otvet, TEKST.FINAL.otpuskayu], drugUletaet);
 }
 
 /* ---------- верхний слой: переходы и запуск ---------- */
