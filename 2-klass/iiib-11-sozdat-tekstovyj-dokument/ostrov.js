@@ -144,15 +144,13 @@ function pechatatSnomera(uzel, stroki, i, gotovo) {
   else if (gotovo) { gotovo(); }
 }
 
-// strazh: страж — его реплика строкой над клавиатурой, чтобы ребёнок её видел
+// strazh: страж — сразу дописывает реплику в терминал квеста
 function strazh(tekst) {
-  el('strazh').textContent = 'СТРАЖ: ' + tekst;
-  pokazat('strazh', true);
+  el('tekst-kvesta').textContent += tekst;
 }
 
-// strazhGovorit: страж говорит — строки в терминал и последняя над клавиатурой
+// strazhGovorit: страж говорит — строки печатаются в терминале квеста
 function strazhGovorit(stroki, gotovo) {
-  strazh(stroki[stroki.length - 1]);
   pechatatStroki(el('tekst-kvesta'), stroki, gotovo);
 }
 
@@ -634,8 +632,15 @@ function obrazecOtveta(pole) {
 // bukvaOtveta: буква ответа — образец растёт, при «по одной букве» знак улетает
 function bukvaOtveta(pole, bukva) {
   obrazecOtveta(pole);
-  if (S.t2 === 'b') { uletet(pole, bukva); strazh(TEKST.KVEST.lovlyu + pole.nabrano.split('').join('… ') + '…'); }
-  else if (pole.nabrano.length === 1) { strazh(TEKST.KVEST.pechataete); }
+  if (S.t2 === 'b') { uletet(pole, bukva); lovitBukvu(pole); }
+  else if (pole.nabrano.length === 1) { strazh(TEKST.KVEST.pechataete + '\n'); }
+}
+
+// lovitBukvu: страж ловит букву — дописывает её в строку «ЛОВЛЮ БУКВЫ: …»
+function lovitBukvu(pole) {
+  if (pole.nabrano.length === 1) { strazh(TEKST.KVEST.lovlyu); }
+  strazh(pole.nabrano.slice(-1) + '… ');
+  if (pole.nabrano === pole.cel) { strazh('\n'); }
 }
 
 // otvetNabran: ответ набран — по букве сразу в финал, целиком — ждём кнопку
@@ -676,7 +681,7 @@ function finNabor(slovo, zametil, gotovo) {
 // bukvaFinikija: финикийская буква — образец растёт, на первую букву страж настораживается
 function bukvaFinikija(pole) {
   obrazecFinikija(pole);
-  if (pole.nabrano.length === 1) { strazh(pole.zametil); }
+  if (pole.nabrano.length === 1) { strazh(pole.zametil + '\n'); }
 }
 
 // obrazecFinikija: образец финикийского слова — набранное зелёным
@@ -715,7 +720,6 @@ function vojtiKvest() {
   POLE = null;
   schet('');
   tekst.textContent = '';
-  pokazat('strazh', false);
   knopkiVybora('tochka1', TEKST.TOCHKA1, tochka1);
   knopkiVybora('tochka2', TEKST.TOCHKA2, tochka2);
   obnovitKvest();
