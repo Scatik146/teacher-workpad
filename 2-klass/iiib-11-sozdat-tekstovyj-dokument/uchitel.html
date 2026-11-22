@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Система острова — приложение учителя</title>
+<link rel="stylesheet" href="uchitel.css?v=2026-11-22-1">
+</head>
+<body>
+
+<!-- Сцена 1. Титул -->
+<section class="scena titul" id="s-titul">
+  <h1 id="tema"></h1>
+  <p class="kurs" id="kurs"></p>
+  <p class="data" id="data"></p>
+  <button type="button" class="nachat" id="k-nachat"></button>
+</section>
+
+<!-- Сцена 2. Сбой -->
+<section class="scena sboj" id="s-sboj" hidden>
+  <span class="polosa"></span><span class="polosa p2"></span><span class="polosa p3"></span>
+  <h2 id="sboj-tekst"></h2>
+</section>
+
+<!-- Сцена 3. Терминал -->
+<section class="scena terminal" id="s-terminal" hidden>
+  <div class="vyvod" id="vyvod"><span class="kursor" id="kursor"></span></div>
+  <nav class="pult">
+    <button type="button" id="k-pechat">ПЕЧАТЬ</button>
+    <button type="button" class="zvuk" id="k-zvuk" aria-pressed="true">ЗВУК: ВКЛ</button>
+    <button type="button" id="k-sbros">СБРОС</button>
+  </nav>
+</section>
+
+<script src="../../lib/menu-ekranov/menu-ekranov.js"></script>
+<script src="tekst.js?v=2026-11-22-7"></script>
+<script src="uchitel.js?v=2026-11-22-1"></script>
+</body>
+</html>

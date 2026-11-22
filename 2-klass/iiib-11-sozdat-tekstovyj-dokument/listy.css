@@ -1,0 +1,117 @@
+/* Печатные листы урока (A4 книжная): канва, шпаргалка, техкарта, раздатка, вклейка. */
+@font-face { font-family: "Noto Sans Old Permic"; src: url("../../lib/fonts/noto-sans-old-permic/NotoSansOldPermic-Regular.ttf"); font-display: block; }
+@font-face { font-family: "Noto Sans Glagolitic"; src: url("../../lib/fonts/noto-sans-glagolitic/NotoSansGlagolitic-Regular.ttf"); font-display: block; }
+@font-face { font-family: "Noto Sans Phoenician"; src: url("../../lib/fonts/noto-sans-phoenician/NotoSansPhoenician-Regular.ttf"); font-display: block; }
+@font-face { font-family: "Nunito"; src: url("../../lib/fonts/nunito/Nunito-VariableFont_wght.ttf"); font-weight: 200 1000; font-display: block; }
+
+:root {
+  --chernila: #1d2738;
+  --tihij: #5b6678;
+  --liniya: #b9c3cf;
+  --fon-yachejki: #f3f6f9;
+  --akcent: #f2a541;
+  --more: #1f6f8b;
+  --latinica: #c0392b;
+  --shrift: "Nunito", "Segoe UI", Arial, sans-serif;
+  --anbur: "Noto Sans Old Permic", "Segoe UI Historic", "Segoe UI Symbol", sans-serif;
+  --glagolica: "Noto Sans Glagolitic", "Segoe UI Historic", "Segoe UI Symbol", sans-serif;
+  --finikija: "Noto Sans Phoenician", "Segoe UI Historic", "Segoe UI Symbol", sans-serif;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: #e6e9ee; color: var(--chernila); font: 11pt/1.35 var(--shrift); }
+button { font: inherit; cursor: pointer; }
+[hidden] { display: none !important; }
+
+.panel { position: sticky; top: 0; z-index: 5; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; padding: 8px 16px; background: #1f2329; color: #eef1f4; }
+.panel a { color: #eef1f4; }
+.panel button { background: var(--akcent); color: #2a1d05; border: 0; border-radius: 16px; padding: 5px 14px; font-weight: 700; }
+.panel .vybor { background: #3a414a; color: #eef1f4; }
+.panel .vybor[aria-pressed="true"] { background: #eef1f4; color: #1f2329; }
+
+.list { width: 210mm; min-height: 297mm; margin: 12px auto; background: #fff; padding: 12mm 14mm; position: relative; }
+.list h1 { font-size: 18pt; margin: 0 0 2mm; color: var(--more); line-height: 1.15; }
+.list h2 { font-size: 13pt; margin: 4mm 0 2mm; color: var(--more); }
+.shapka { color: var(--tihij); font-size: 10pt; margin: 0 0 3mm; }
+.list p { margin: 1.5mm 0; }
+
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid var(--liniya); padding: 1.6mm 2mm; vertical-align: top; text-align: left; }
+th { background: var(--fon-yachejki); font-size: 10pt; }
+.min { white-space: nowrap; font-weight: 800; text-align: center; }
+.replika { font-family: "Courier New", monospace; font-size: 10.5pt; }
+.ramka { border: 1.5px solid var(--akcent); border-radius: 3mm; padding: 2mm 3mm; margin: 2mm 0; }
+
+/* Раздатка: сетки алфавитов */
+.alfavit { display: grid; gap: 1.2mm; margin-bottom: 2mm; }
+.alfavit.glavnyj { grid-template-columns: repeat(11, 1fr); }
+.alfavit.vtoroj { grid-template-columns: repeat(11, 1fr); }
+.alfavit.finikija { grid-template-columns: repeat(11, 1fr); }
+.bukva { border: 1px solid var(--liniya); border-radius: 1.5mm; text-align: center; padding: .8mm .3mm; line-height: 1.1; break-inside: avoid; }
+.bukva .znak { display: block; }
+.glavnyj .znak { font-size: 30pt; height: 17mm; line-height: 17mm; }
+.vtoroj .znak { font-size: 19pt; height: 11mm; line-height: 11mm; }
+.finikija .znak { font-size: 24pt; height: 13mm; line-height: 13mm; font-family: var(--finikija); }
+.bukva .ru { display: block; font-weight: 800; font-size: 14pt; }
+.vtoroj .ru { font-size: 9.5pt; }
+.bukva .imya { display: block; font-size: 7.5pt; color: var(--tihij); min-height: 1.1em; }
+.bukva .predmet { display: block; font-size: 7.5pt; }
+.bukva.net-klavishi { background: var(--fon-yachejki); color: var(--tihij); }
+.zagolovok-varianta { font-size: 26pt; font-weight: 900; letter-spacing: .08em; text-align: center; border: 3px solid var(--chernila); border-radius: 4mm; padding: 1mm 0; margin: 0 0 3mm; }
+.anbur .znak { font-family: var(--anbur); }
+.glagolica .znak { font-family: var(--glagolica); }
+
+/* Раздатка: оборот — клавиатура */
+.klaviatura { margin: 4mm 0; }
+.ryad { display: flex; gap: 1.5mm; margin-bottom: 1.5mm; }
+.ryad.r2 { padding-left: 6mm; }
+.ryad.r3 { padding-left: 12mm; }
+.klavisha { width: 13.5mm; height: 20mm; border: 1.5px solid var(--chernila); border-radius: 2mm; position: relative; }
+.klavisha .lat { position: absolute; left: 1.2mm; top: .6mm; font-size: 11pt; color: var(--latinica); font-weight: 700; }
+.klavisha .kir { position: absolute; right: 1.6mm; bottom: .6mm; font-size: 22pt; font-weight: 800; }
+.klavisha .nomer { position: absolute; right: 1mm; top: .4mm; font-size: 8pt; border-radius: 50%; width: 4mm; height: 4mm; line-height: 4mm; text-align: center; background: var(--chernila); color: #fff; }
+.klavisha.shirokaya { width: 80mm; text-align: center; padding-top: 6mm; font-weight: 800; }
+.klavisha.sluzhebnaya { width: 24mm; text-align: center; padding-top: 6mm; font-weight: 800; font-size: 13pt; }
+.pravila { font-size: 14pt; margin-top: 5mm; padding-left: 10mm; }
+.pravila li { margin-bottom: 2mm; }
+.memo1 { background: #ffe8cc; } .memo2 { background: #ffd6d6; } .memo3 { background: #d9f2d9; } .memo4 { background: #d6e8ff; }
+.memo5 { background: #eedcff; } .memo6 { background: #fff6b3; } .memo7 { background: #d4f4f4; }
+.memoslova { display: grid; grid-template-columns: 1fr; gap: 2.5mm; margin-top: 6mm; }
+.memoslovo { display: flex; gap: 5mm; align-items: center; font-size: 15pt; }
+.memoslovo b { font-size: 22pt; letter-spacing: .1em; border-radius: 2mm; padding: 0 3mm; min-width: 62mm; }
+
+/* Вклейка в тетрадь */
+.razrez { border-top: 1.5px dashed #888; margin: 5mm 0 3mm; position: relative; }
+.razrez span { position: absolute; top: -9px; left: 0; background: #fff; padding-right: 6px; font-size: 12px; color: #666; }
+.vkleyka { padding: 0 8mm; }
+.vkleyka .kon { max-width: 160mm; margin: 0 auto; }
+.kon svg { width: 100%; height: auto; display: block; }
+.put { display: flex; gap: 5mm; flex-wrap: wrap; font-size: 13pt; margin: 2mm 0; }
+.put .kvadrat { display: inline-block; width: 5mm; height: 5mm; border: 1.5px solid var(--chernila); vertical-align: -1mm; margin-right: 1.5mm; }
+
+/* Техкарта: схема этапов */
+.etapy { display: grid; grid-template-columns: 22mm 1fr 1fr; gap: 0 3mm; align-items: stretch; }
+.etap-min { font-weight: 900; font-size: 14pt; text-align: center; padding-top: 2mm; }
+.etap { border: 2px solid var(--more); border-radius: 3mm; padding: 2mm 3mm; }
+.etap b { color: var(--more); }
+.ekran-etapa { border: 1.5px dashed var(--tihij); border-radius: 3mm; padding: 2mm 3mm; font-size: 10pt; }
+.strelka { grid-column: 1 / -1; text-align: center; font-size: 14pt; line-height: 1; color: var(--more); margin: .6mm 0; }
+.doska { border-color: var(--akcent); }
+
+@media print {
+  body { background: #fff; }
+  .panel { display: none; }
+  .list { margin: 0; width: auto; min-height: auto; padding: 0; break-after: page; }
+  .list:last-child { break-after: auto; }
+  @page { size: A4 portrait; margin: 12mm 13mm; }
+  .memo1, .memo2, .memo3, .memo4, .memo5, .memo6, .memo7, .bukva.net-klavishi, th { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+/* Канва и техкарта — на одной странице */
+[data-list="kanva"] td, [data-list="tehkarta"] td { font-size: 10pt; padding: 1.2mm 1.8mm; }
+[data-list="kanva"] .list p, [data-list="tehkarta"] .list p { font-size: 10pt; }
+[data-list="tehkarta"] .etap, [data-list="tehkarta"] .ekran-etapa { font-size: 10pt; padding: 1.4mm 2.5mm; }
+[data-list="tehkarta"] .strelka { font-size: 11pt; margin: 0; }
+[data-list="kanva"] .list h1 { font-size: 15pt; }
+[data-list="kanva"] .ramka { padding: 1.2mm 2.5mm; margin: 1.5mm 0 0; }
+[data-list="kanva"] td { font-size: 9.5pt; line-height: 1.3; }
