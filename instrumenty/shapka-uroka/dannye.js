@@ -87,14 +87,15 @@ const SHAPKA_DANNYE = {
           { id: 'konspekt', podpis: 'конспект учителя' },
           { id: 'drakonList', podpis: 'ДРАКОН-лист' },
           { id: 'razdatki', podpis: 'раздатки' },
+          { id: 'domashnee', podpis: 'домашнее задание' },
           { id: 'tehkarta', podpis: 'техкарта' }
         ],
         poUmolchaniyu: { prilozhenie: false, prilozhenieChislo: '', slajdy: false, konspekt: false,
-          drakonList: false, razdatki: false, tehkarta: false },
+          drakonList: false, razdatki: false, domashnee: false, tehkarta: false },
         primer: { prilozhenie: true, prilozhenieChislo: '5', slajdy: true, konspekt: true,
-          drakonList: true, razdatki: true, tehkarta: false } }
+          drakonList: true, razdatki: true, domashnee: true, tehkarta: false } }
     ] },
-    { nomer: 9, nazvanie: 'Наши ресурсы (читает Claude на экспертизе и сборке)', polya: [
+    { nomer: 9, nazvanie: 'Наши ресурсы (читает Claude на экспертизе и сборке; полный список — ii-komanda komanda/RESURSY.md)', polya: [
       { id: 'resursy', podpis: 'Ресурсы', vid: 'resursy', shirokoe: true,
         varianty: [
           { id: 'drakonGraf', podpis: 'конспект ДРАКОН-ГРАФ',
@@ -102,13 +103,25 @@ const SHAPKA_DANNYE = {
           { id: 'drakonShema', podpis: 'дракон-схемы',
             gde: 'teacher-workpad lib/drakon-shema/ (DrakonWidget, drakongen); навык drakon-shema' },
           { id: 'dvoichnaya', podpis: 'двоичная логика (бит)',
-            gde: 'ii-komanda logika/dvoichnaya.md, logika/kniga/chast-1-bit/' },
+            gde: 'ii-komanda logika/kniga/chast-1-bit/, logika/dvoichnaya.md' },
           { id: 'troichnaya', podpis: 'троичная логика (трит)',
-            gde: 'ii-komanda logika/svod.md, logika/kniga/chast-2-trit/' },
+            gde: 'ii-komanda logika/kniga/chast-2-trit/, logika/svod.md; Брусенцов — forto-prolog/brusentsov.md' },
           { id: 'slovar', podpis: 'словарь проверенных фактов',
             gde: 'ii-komanda slovar/ (README)' },
-          { id: 'pismennosti', podpis: 'древние письменности (анбур, глаголица, финикийское)',
-            gde: 'teacher-workpad lib/fonts/ (README); анбур — komi-perm-game-calendar' }
+          { id: 'fortProlog', podpis: 'Форт и Пролог в браузере',
+            gde: 'drakon-graf site/experiments/forth/, site/experiments/prolog/' },
+          { id: 'python', podpis: 'Python в браузере (Skulpt)',
+            gde: 'Scatik146/skulpt, ветка zhivoj-konspekt' },
+          { id: 'kumir', podpis: 'КуМир и исполнители',
+            gde: 'qumir.dev; Scatik146/qumir; drakon-graf docs/research/10_КуМир_Qumir.md; Чертёжник на Python — Scatik146/drawman' },
+          { id: 'pismennosti', podpis: 'древние письменности (финикийское, анбур, глаголица)',
+            gde: 'teacher-workpad lib/fonts/ (README)' },
+          { id: 'komi', podpis: 'коми-пермяцкий календарь (анбур, слова, сутки)',
+            gde: 'komi-perm-game-calendar docs/, data/; слова — только проверенные по словарям' },
+          { id: 'uroki', podpis: 'готовые уроки и механики сайта',
+            gde: 'teacher-workpad RAZRABOTANO.md, lessons.js, plan/' },
+          { id: 'info10', podpis: 'курс информатики 10 кл.',
+            gde: 'Scatik146/info10-class (закрытый)' }
         ],
         poUmolchaniyu: {}, primer: { drakonGraf: true } },
       { id: 'escheResursy', podpis: 'Ещё ресурсы (что и где лежит)', vid: 'dlinnyj', poUmolchaniyu: 'нет', primer: 'нет', shirokoe: true }
