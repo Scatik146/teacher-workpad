@@ -50,11 +50,16 @@
       Набрать слово, нажать «Отправить»
     вариант: б) По одной букве
       Каждая буква улетает сразу
+  вывод: ЛЕТИМ? ХА! И это читаю!
+  ввод: Ребёнок набирает «Я ДРУГ» финикийскими буквами
+  вывод: Это язык моего создателя! Напиши самое главное слово
+  вывод: Говорун: попробуй ШЛМ — «мир», «привет»
+  ввод: Ребёнок набирает ШЛМ
 ветка: Финал
   вывод: Реплика своего пути из PATHS
   Терминал: зелёный → янтарный, 2 секунды
   вывод: ШЛМ справа налево
-  вывод: ЯЗЫК… СОЗДАТЕЛЯ… ОТПУСКАЮ.
+  вывод: ШЛМ — МИР. И ТЕБЕ МИР, ДРУГ МОЕГО СОЗДАТЕЛЯ. ОТПУСКАЮ.
   вывод: Самолёт улетает
 ```
 
@@ -115,6 +120,7 @@
 - `vojtiRasshifrovku`, `narisovatPoslanie`, `kartochkaSlova`, `nachatSlovo`, `slovoGotovo`, `polochka`, `obrazecShrifta`;
 - `vojtiPauzu`, `tikPauzy`;
 - `vojtiRedaktor`, `obnovitRedaktor`, `shagRedaktora`, `vybratShrift`, `spisokShriftov`, `knopkiFraz`, `nachatNabor`, `obrazecFrazy`, `frazaUchenika`, `otpravit`;
+- `posleOtveta`, `nachatDrug`, `drugNabran`, `nachatShlm`, `finNabor`, `obrazecFinikija`, `obrazecOtveta`, `bukvaOtveta` — конец квеста: финикийский шифр;
 - `vojtiKvest`, `obnovitKvest`, `shagKvesta`, `strokiHahaha`, `strokaNazlo`, `knopkiVybora`, `tochka1`, `nachatPoslanieKvesta`, `gotovoePoslanieKvesta`, `prodolzhitKvest`, `tochka2`, `nachatOtvet`, `otvetNabran`, `uletet`, `otpravitOtvet`;
 - `vojtiFinal`, `finalYantar`, `finalShlm`, `finalOtpuskayu`, `pechatatFinikijskoe`, `drugUletaet`, `klyuchPuti`.
 Верхний слой: `perejti`, `menyuEkranov` (из `spisokEkranov`, `tekushchijEkran`, `ekranProjden`), `knopki`, `zapusk`.
