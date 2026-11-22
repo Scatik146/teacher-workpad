@@ -66,6 +66,31 @@
   нет:
 ```
 
+## Действия: шаблоны
+
+```дракон
+название: Шаблон
+выбор: что нажали
+  вариант: Сохранить как шаблон
+    обновить шапку
+    ввод: имя шаблона
+    вопрос: имя пустое?
+      да:
+      нет:
+        шаблон = значения полей без своих полей урока
+        записать шаблон в localStorage под этим именем
+        вывод: «Шаблон сохранён»
+  вариант: выбрали шаблон в списке
+    значения = значения + шаблон
+    нарисовать разделы 1–8
+    вывод: «Шаблон подставлен — допишите урок»
+  вариант: Удалить
+    вопрос: учитель подтвердил?
+      да:
+        стереть шаблон из localStorage
+      нет:
+```
+
 ## Данные
 
 ```конспект
@@ -85,6 +110,8 @@
 
 - пример: выбрать предмет ИНФ-7-9Б и нажать «Скопировать шапку» → в буфере строка «1) Класс и работа. Предмет: ИНФ-7-9Б; …», пустые поля помечены «не заполнено»
 - пример: перезагрузить страницу → предмет и класс остались
+- пример: сохранить шаблон с предметом ИИИБ-1-4, очистить, вписать тему «Новая тема», выбрать шаблон → предмет ИИИБ-1-4, тема «Новая тема»
+- контрпример: выбрать шаблон → тема заменилась темой из шаблона
 - контрпример: после «Очистить» и перезагрузки → предмет ИНФ-7-9Б остался
 
 ## Пополнение словаря
@@ -112,4 +139,7 @@
 | ochistit, sbrosit | верхний | сброс к умолчаниям | steretHranilishche, nachalnye, narisovatFormu |
 | dobavitStroku, ubratStroku, nazhatie | верхний | кнопки списка механик | prochitatFormu, perestroit |
 | pustoeZnachenie, zapolnitRazdel, razdelGotov, nastrojkiMenu, podklyuchitMenu | верхний | меню Ctrl+Alt+M: разделы и «заполнить пустое примером» | MenuEkranov, kopiya, perestroit |
+| prochitatShablony / zapisatShablony | нижний | шаблоны в localStorage, в try/catch | — |
+| polyaShablona, snimokShablona, narisovatShablony | средний | что входит в шаблон, список шаблонов | vsePolya, kopiya, prochitatShablony |
+| vybratShablon, sohranitShablon, zapisatShablon, udalitShablon, podklyuchitShablony | верхний | выбрать, сохранить, удалить шаблон | snimokShablona, perestroit, narisovatShablony |
 | zapusk | верхний | загрузить, нарисовать, повесить кнопки | zagruzit, narisovatFormu, pokazatShapku, podklyuchitMenu |

@@ -15,10 +15,12 @@
        varianty      — для 'vybor', 'shkala', 'galochki'
        podskazka     — серый текст в пустом поле
        shirokoe      — поле во всю ширину раздела
+       svoyo         — поле своё у каждого урока: в шаблон не сохраняется и при выборе шаблона не меняется
 */
 const SHAPKA_DANNYE = {
   versiya: 'форма 1.0, по [3] промта v7.4',
   klyuch: 'twp-shapka-uroka',
+  klyuchShablonov: 'twp-shapka-uroka-shablony',
   pusto: 'не заполнено',
   zagolovok: '=== ШАПКА УРОКА (форма «Шапка урока», по [3] промта v7.4) ===',
   konec: '=== КОНЕЦ ШАПКИ ===',
@@ -42,15 +44,15 @@ const SHAPKA_DANNYE = {
         podskazka: 'кто быстрее, кому нужна поддержка; «нет» — если нечего сказать' }
     ] },
     { nomer: 3, nazvanie: 'Урок', polya: [
-      { id: 'data', podpis: 'Дата', vid: 'data', poUmolchaniyu: '', primer: '2026-11-23' },
-      { id: 'vremya', podpis: 'Время', vid: 'vremya', poUmolchaniyu: '', primer: '10:50' },
+      { id: 'data', svoyo: true, podpis: 'Дата', vid: 'data', poUmolchaniyu: '', primer: '2026-11-23' },
+      { id: 'vremya', svoyo: true, podpis: 'Время', vid: 'vremya', poUmolchaniyu: '', primer: '10:50' },
       { id: 'minut', podpis: 'Минут', vid: 'chislo', poUmolchaniyu: '40', primer: '40' },
-      { id: 'tema', podpis: 'Тема', vid: 'tekst', poUmolchaniyu: '', primer: 'Информация и данные', shirokoe: true },
+      { id: 'tema', svoyo: true, podpis: 'Тема', vid: 'tekst', poUmolchaniyu: '', primer: 'Информация и данные', shirokoe: true },
       { id: 'tip', podpis: 'Тип', vid: 'vybor', poUmolchaniyu: 'открытие нового знания', primer: 'открытие нового знания',
         varianty: ['открытие нового знания', 'рефлексия (закрепление)', 'общеметодологической направленности', 'развивающего контроля'] },
-      { id: 'mesto', podpis: 'Место в блоке', vid: 'tekst', poUmolchaniyu: '', primer: 'первый урок блока', shirokoe: true },
-      { id: 'do', podpis: 'Что было до', vid: 'tekst', poUmolchaniyu: '', primer: 'нет', shirokoe: true },
-      { id: 'posle', podpis: 'Что после', vid: 'tekst', poUmolchaniyu: '', primer: 'нет', shirokoe: true }
+      { id: 'mesto', svoyo: true, podpis: 'Место в блоке', vid: 'tekst', poUmolchaniyu: '', primer: 'первый урок блока', shirokoe: true },
+      { id: 'do', svoyo: true, podpis: 'Что было до', vid: 'tekst', poUmolchaniyu: '', primer: 'нет', shirokoe: true },
+      { id: 'posle', svoyo: true, podpis: 'Что после', vid: 'tekst', poUmolchaniyu: '', primer: 'нет', shirokoe: true }
     ] },
     { nomer: 4, nazvanie: 'Кабинет', polya: [
       { id: 'tehnikaUchenikov', podpis: 'Техника учеников', vid: 'tekst', poUmolchaniyu: '', primer: 'ноутбук у каждого',

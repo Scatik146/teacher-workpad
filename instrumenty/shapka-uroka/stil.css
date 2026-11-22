@@ -45,6 +45,9 @@ button:hover{border-color:var(--yantar)}
 .knopki{display:flex;gap:8px}
 .glavnaya{flex:1;background:var(--yantar);border-color:var(--yantar);font-weight:700;padding:9px 12px;font-size:16px}
 .glavnaya:hover{background:var(--yantar2)}
+.shablony{display:grid;grid-template-columns:auto 1fr auto;gap:6px;align-items:center}
+#shablon{grid-column:2 / -1}
+#sohranitShablon{grid-column:1 / 3}
 .soobshchenie{margin:0;min-height:20px;font-weight:700;color:var(--zelenyj)}
 .schetchik{margin:0;font-size:14px}
 .schetchik.est{color:var(--krasnyj)}

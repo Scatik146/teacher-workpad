@@ -51,6 +51,18 @@ function pustoe(s) {
   return String(s === undefined || s === null ? '' : s).trim() === '';
 }
 
+// prochitatShablony: сохранённые шаблоны {имя: значения}
+function prochitatShablony() {
+  let shablony = {};
+  try { shablony = JSON.parse(localStorage.getItem(D.klyuchShablonov)) || {}; } catch (e) { shablony = {}; }
+  return shablony;
+}
+
+// zapisatShablony: сохранить все шаблоны
+function zapisatShablony(shablony) {
+  try { localStorage.setItem(D.klyuchShablonov, JSON.stringify(shablony)); } catch (e) { /* хранилище закрыто */ }
+}
+
 /* ---------- средний слой: значения ---------- */
 
 // nachalnye: значения по умолчанию для всех полей
@@ -279,6 +291,28 @@ function skolkoPustyh() {
   return tekst.split(D.pusto).length - 1;
 }
 
+/* ---------- средний слой: шаблоны ---------- */
+
+// polyaShablona: поля, которые входят в шаблон (не свои у урока)
+function polyaShablona() {
+  return vsePolya().filter(p => !p.svoyo);
+}
+
+// snimokShablona: значения полей шаблона из состояния
+function snimokShablona() {
+  const z = {};
+  polyaShablona().forEach(p => { z[p.id] = kopiya(S.znacheniya[p.id]); });
+  return z;
+}
+
+// narisovatShablony: список шаблонов в выпадающем меню
+function narisovatShablony(vybran) {
+  const el = document.getElementById('shablon');
+  el.replaceChildren(new Option('— шаблон не выбран —', ''));
+  Object.keys(prochitatShablony()).sort().forEach(imya => el.append(new Option(imya, imya)));
+  el.value = vybran || '';
+}
+
 /* ---------- верхний слой ---------- */
 
 // pokazatShapku: текст шапки и счётчик пустых полей справа
@@ -343,6 +377,42 @@ function sbrosit() {
   soobshchit('Форма очищена');
 }
 
+// vybratShablon: подставить выбранный шаблон, свои поля урока не трогать
+function vybratShablon() {
+  const imya = document.getElementById('shablon').value;
+  const shablon = prochitatShablony()[imya];
+  if (shablon) Object.assign(S.znacheniya, kopiya(shablon));
+  if (shablon) perestroit();
+  if (shablon) soobshchit('Шаблон «' + imya + '» подставлен — допишите урок');
+}
+
+// sohranitShablon: сохранить текущие ответы как шаблон под именем
+function sohranitShablon() {
+  obnovit();
+  const vybran = document.getElementById('shablon').value;
+  const imya = (prompt('Имя шаблона (например: ИНФ 7 кл, кабинет 12):', vybran) || '').trim();
+  if (imya) zapisatShablon(imya);
+}
+
+// zapisatShablon: добавить или заменить шаблон и показать его в списке
+function zapisatShablon(imya) {
+  const shablony = prochitatShablony();
+  shablony[imya] = snimokShablona();
+  zapisatShablony(shablony);
+  narisovatShablony(imya);
+  soobshchit('Шаблон «' + imya + '» сохранён');
+}
+
+// udalitShablon: удалить выбранный шаблон после подтверждения
+function udalitShablon() {
+  const imya = document.getElementById('shablon').value;
+  const da = imya && confirm('Удалить шаблон «' + imya + '»?');
+  const shablony = prochitatShablony();
+  if (da) delete shablony[imya];
+  if (da) zapisatShablony(shablony);
+  if (da) narisovatShablony('');
+}
+
 // dobavitStroku: новая пустая строка в нумерованном списке
 function dobavitStroku(id) {
   prochitatFormu();
@@ -402,6 +472,14 @@ function podklyuchitMenu() {
   if (window.MenuEkranov) MenuEkranov.podklyuchit(nastrojkiMenu());
 }
 
+// podklyuchitShablony: список шаблонов и его кнопки
+function podklyuchitShablony() {
+  narisovatShablony('');
+  document.getElementById('shablon').addEventListener('change', vybratShablon);
+  document.getElementById('sohranitShablon').addEventListener('click', sohranitShablon);
+  document.getElementById('udalitShablon').addEventListener('click', udalitShablon);
+}
+
 // zapusk: загрузить ответы, нарисовать форму, повесить кнопки
 function zapusk() {
   zagruzit();
@@ -413,6 +491,7 @@ function zapusk() {
   forma.addEventListener('click', nazhatie);
   document.getElementById('kopirovat').addEventListener('click', skopirovat);
   document.getElementById('ochistit').addEventListener('click', ochistit);
+  podklyuchitShablony();
   podklyuchitMenu();
 }
 
