@@ -1,10 +1,11 @@
 /* Шапка урока — оформление. Цвета и размеры — переменными. */
 @font-face{font-family:"Nunito";src:url("../../lib/fonts/nunito/Nunito-VariableFont_wght.ttf");font-weight:200 1000;font-display:swap}
+@font-face{font-family:"PT Mono";src:url("../../lib/drakon-graf/fonts/PTM55FT.ttf");font-display:swap}
 
 :root{
   --fon:#f6f1e6; --fon2:#ece4d2; --tyomnyj:#1f2329; --chernila:#1d2126; --seryj:#5b5346; --seryj2:#a9b2bc;
   --yantar:#f2a93b; --yantar2:#ffcf7a; --rama:#d9cfb9; --belyj:#fff; --zelenyj:#2e7d55; --krasnyj:#a8461e;
-  --shrift:"Nunito","Segoe UI",Arial,sans-serif; --mono:Consolas,"Courier New",monospace;
+  --shrift:"Nunito",sans-serif; --mono:"PT Mono",monospace;
   --radius:10px; --shirina-itoga:440px;
 }
 *{box-sizing:border-box}
