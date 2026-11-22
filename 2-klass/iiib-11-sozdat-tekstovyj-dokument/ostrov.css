@@ -104,6 +104,7 @@ main { max-width: 1100px; margin: 0 auto; padding: 18px; }
 .ekran-terminala { position: relative; height: 220px; background: var(--terminal); border-radius: var(--radius); overflow: hidden; }
 .kursor-plyvet { position: absolute; width: 26px; height: 26px; background: var(--terminal-zelenyj); animation: plyvet 30s linear infinite; }
 @keyframes plyvet { 0% { left: 5%; top: 20%; } 25% { left: 85%; top: 30%; } 50% { left: 60%; top: 75%; } 75% { left: 15%; top: 60%; } 100% { left: 5%; top: 20%; } }
+.ekran-terminala .tekst-pauzy { display: block; text-align: left; padding: 18px 22px; color: var(--terminal-zelenyj); font: 22px/1.5 "Courier New", monospace; }
 .pauza-nadpis { font-size: 30px; font-weight: 800; color: var(--more); }
 .pauza-dela { font-size: 22px; }
 .pauza-vremya { color: var(--tihij); }

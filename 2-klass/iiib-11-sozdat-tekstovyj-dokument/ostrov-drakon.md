@@ -27,6 +27,7 @@
 ветка: Микропауза
   вывод: Механизм думает — не подглядывайте
   Глаза отдыхают 30 секунд
+  вывод: Вход в систему, как по SSH: START PTICA-GOVORUN
 ветка: Редактор
   ввод: Открыть редактор
   ввод: Файл → Создать
@@ -118,7 +119,7 @@
 Экраны (верхний слой каждого экрана):
 - `vojtiStol`, `vybratAlfavit`, `novayaSmena`;
 - `vojtiRasshifrovku`, `narisovatPoslanie`, `kartochkaSlova`, `nachatSlovo`, `slovoGotovo`, `polochka`, `obrazecShrifta`;
-- `vojtiPauzu`, `tikPauzy`;
+- `vojtiPauzu`, `tikPauzy`, `vhodVSistemu`;
 - `vojtiRedaktor`, `obnovitRedaktor`, `shagRedaktora`, `vybratShrift`, `spisokShriftov`, `knopkiFraz`, `nachatNabor`, `obrazecFrazy`, `frazaUchenika`, `otpravit`;
 - `posleOtveta`, `nachatDrug`, `drugNabran`, `nachatShlm`, `finNabor`, `obrazecFinikija`, `obrazecOtveta`, `bukvaOtveta` — конец квеста: финикийский шифр;
 - `vojtiKvest`, `obnovitKvest`, `shagKvesta`, `strokiHahaha`, `strokaNazlo`, `knopkiVybora`, `tochka1`, `nachatPoslanieKvesta`, `gotovoePoslanieKvesta`, `prodolzhitKvest`, `tochka2`, `nachatOtvet`, `otvetNabran`, `uletet`, `otpravitOtvet`;

@@ -390,8 +390,15 @@ function polochka() {
 // tikPauzy: тик паузы — оставшееся время и кнопка в конце
 function tikPauzy(ostalos) {
   el('pauza-vremya').textContent = ostalos > 0 ? 'Осталось ' + ostalos + ' с' : '';
-  pokazat('k-k-redaktoru', ostalos <= 0);
   if (ostalos > 0) { zhdat(1000, function () { tikPauzy(ostalos - 1); }); }
+  else { vhodVSistemu(); }
+}
+
+// vhodVSistemu: вход в систему — терминал печатает подключение, как по SSH, потом кнопка
+function vhodVSistemu() {
+  pokazat('kursor-plyvet', false);
+  skazat(TEKST.GOVORUN.vhod);
+  pechatatStroki(el('tekst-pauzy'), TEKST.VHOD, function () { pokazat('k-k-redaktoru', true); vzmah(); });
 }
 
 // vojtiPauzu: войти в паузу — механизм думает, глаза отдыхают
@@ -399,6 +406,9 @@ function vojtiPauzu() {
   POLE = null;
   schet('');
   skazat(TEKST.GOVORUN.pauzaDela);
+  el('tekst-pauzy').textContent = '';
+  pokazat('kursor-plyvet', true);
+  pokazat('k-k-redaktoru', false);
   tikPauzy(PAUZA_SEKUND);
 }
 
