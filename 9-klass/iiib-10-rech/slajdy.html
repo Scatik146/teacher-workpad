@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Распознавание и синтез речи — слайды, 9 класс</title>
+<style>
+:root {
+  --bumaga: #f6f1e6; --list: #ffffff; --chernila: #1d2126; --chernila2: #5b5346; --liniya: #d9cfb9;
+  --akcent: #f2a93b; --akcent-fon: #fbf1dc; --sinij: #1f5fa8; --verno: #1e7a4a; --verno-fon: #e3f3e9;
+  --neverno-fon: #f8e6dd; --zheltoe: #ffff99; --drakon: #993300; --temnyj: #1f2329;
+  --shrift: "Segoe UI", Roboto, Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bumaga); color: var(--chernila); font: 28px/1.35 var(--shrift); }
+h1, h2, p { margin: 0; }
+.slajd { display: none; position: absolute; inset: 0 0 54px 0; padding: 36px 64px; flex-direction: column; gap: 22px; }
+.slajd.seychas { display: flex; }
+.slajd h2 { font-size: 44px; border-bottom: 4px solid var(--akcent); padding-bottom: 8px; }
+.titul { justify-content: center; align-items: flex-start; background: var(--temnyj); color: #eef1f4; }
+.titul h1 { font-size: 64px; }
+.titul .pod { font-size: 34px; color: var(--akcent); }
+.titul .tusk { color: #a9b2bc; }
+.tusk { color: var(--chernila2); }
+.shchelchok { visibility: hidden; }
+.shchelchok.vidno { visibility: visible; }
+.kartochka { background: var(--list); border: 1px solid var(--liniya); border-radius: 14px; padding: 16px 22px; }
+.replika { background: var(--akcent-fon); border: 3px solid var(--akcent); border-radius: 16px; padding: 14px 20px; font-size: 32px; }
+.dva { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+.strelka { font-size: 40px; font-weight: 700; color: var(--sinij); }
+.konveyer { display: grid; grid-template-columns: repeat(5, 1fr); gap: 28px; }
+.stanciya { position: relative; background: var(--list); border: 3px solid var(--liniya); border-radius: 14px; padding: 14px; min-height: 150px; }
+.stanciya:not(:last-child)::after { content: "→"; position: absolute; right: -27px; top: 30%; color: var(--akcent); font-size: 34px; font-weight: 700; }
+.stanciya b { color: var(--sinij); display: block; }
+.stanciya span { font-size: 22px; color: var(--chernila2); }
+.otvet { background: var(--verno-fon); border-left: 8px solid var(--verno); border-radius: 10px; padding: 12px 18px; }
+.pravilo { font-size: 54px; font-weight: 800; color: var(--verno); }
+.legenda { display: flex; gap: 16px; flex-wrap: wrap; font-size: 24px; }
+.legenda span { border: 2px solid var(--drakon); border-radius: 8px; padding: 4px 12px; font-family: Georgia, serif; }
+.legenda .zh { background: var(--zheltoe); }
+.risunok { flex: 1; min-height: 0; overflow: hidden; display: flex; justify-content: center; }
+.risunok > div { width: 100%; }
+.graf { height: 100%; display: flex; justify-content: center; }
+.graf svg { height: 100%; width: auto; max-width: 100%; }
+.formula { font-size: 34px; font-weight: 700; }
+ul { margin: 0; padding-left: 34px; }
+li { margin: 6px 0; }
+.niz { position: fixed; left: 0; right: 0; bottom: 0; height: 54px; display: flex; align-items: center; gap: 14px; padding: 0 20px; background: var(--temnyj); color: #a9b2bc; font-size: 18px; }
+.niz button { font: inherit; background: #272c33; color: #eef1f4; border: 1px solid #3a414a; border-radius: 16px; padding: 4px 14px; cursor: pointer; }
+.niz .etap { flex: 1; }
+</style>
+</head>
+<body>
+
+<section class="slajd titul" data-etap="">
+  <h1>Распознавание и синтез речи</h1>
+  <p class="pod">Починим голосового помощника</p>
+  <p class="tusk">ИИ и информационная безопасность · 9 класс</p>
+</section>
+
+<section class="slajd" data-etap="1. Мотивация">
+  <h2>Сбой</h2>
+  <p>Помощнику сказали: <b>«Запусти код»</b></p>
+  <p class="replika">Ищу видео про котов…</p>
+  <p class="shchelchok">Почему так вышло? Ваши версии.</p>
+</section>
+
+<section class="slajd" data-etap="2. Актуализация">
+  <h2>Два направления</h2>
+  <div class="dva">
+    <div class="kartochka"><b>Распознавание речи</b><p class="strelka">звук → текст</p><p class="tusk">голосовой ввод, Алиса слушает</p></div>
+    <div class="kartochka shchelchok"><b>Синтез речи</b><p class="strelka">текст → звук</p><p class="tusk">навигатор, Алиса отвечает</p></div>
+  </div>
+  <p class="shchelchok">Помощник делает и то и другое. Но где-то внутри он ошибся.</p>
+  <p class="shchelchok"><b>Цель урока:</b> найти, где ломается распознавание, и научить помощника говорить правильно.</p>
+</section>
+
+<section class="slajd" data-etap="3–4. Затруднение и проект">
+  <h2>Конвейер распознавания</h2>
+  <p>Звук проходит пять станций. На каждой — своё решение.</p>
+  <div class="konveyer" id="konveyer"></div>
+  <p class="shchelchok">На станции 3 модель не знает ответа точно — она строит <b>гипотезы</b> с <b>вероятностями</b>.</p>
+</section>
+
+<section class="slajd" data-etap="3–4. ДРАКОН-ГРАФ">
+  <h2>Что такое граф</h2>
+  <p><b>Граф</b> — рисунок из блоков и стрелок: блок — понятие, стрелка — связь, подпись — какая связь. <span class="tusk">ДРАКОН-ГРАФ — граф для конспекта.</span></p>
+  <div class="legenda"><span class="zh">жёлтое — запомни</span><span>белое — разберись</span></div>
+  <div class="dva risunok"><div id="graf1" class="graf"></div><div id="graf2" class="graf"></div></div>
+</section>
+
+<section class="slajd" data-etap="3–4. ДРАКОН-схема">
+  <h2>ДРАКОН-схема: слова</h2>
+  <ul>
+    <li><b>Икона</b> — блок схемы: заголовок, действие, вопрос, вывод, конец.</li>
+    <li class="shchelchok"><b>Примитив</b> — схема одной линией сверху вниз.</li>
+    <li class="shchelchok"><b>Силуэт</b> — схема из нескольких веток.</li>
+    <li class="shchelchok"><b>Ветка</b> — часть силуэта со своим именем; ветки читаем слева направо.</li>
+  </ul>
+  <p class="formula shchelchok">Чем ниже — тем позже. Чем правее — тем хуже.</p>
+</section>
+
+<section class="slajd" data-etap="3–4. ДРАКОН-схема">
+  <h2>Как работает помощник: силуэт из трёх веток</h2>
+  <div class="risunok"><div id="drakon"></div></div>
+</section>
+
+<section class="slajd" data-etap="5. Практикум: распознавание">
+  <h2>Работа в парах: ремонт</h2>
+  <ul>
+    <li>Откройте приложение «Починим помощника», экран 1.</li>
+    <li><b>Водитель</b> выбирает ответ, <b>контролёр</b> смотрит на конвейер и нажимает «Сверено». Роли меняются на каждом вопросе.</li>
+    <li>Для каждой фразы: где началась ошибка? куда пошёл помощник — вниз или вправо?</li>
+  </ul>
+  <p class="kartochka">10 минут · 6 примеров · говорим вполголоса</p>
+</section>
+
+<section class="slajd" data-etap="6. Закрепление">
+  <h2>Проверка этапа: ремонт</h2>
+  <p>Сказали <b>«Открой код»</b>. Гипотезы: код 49 %, кот 47 %, ход 4 %.</p>
+  <p class="replika">Вы сказали «код» или «кот»?</p>
+  <p>Где началась ошибка? Куда пошёл помощник? Он не знает слова?</p>
+  <p class="otvet shchelchok">Станция 3, «Буквы и подслова»: варианты почти равны. Помощник знает оба слова, но не может выбрать — ушёл <b>вправо</b> и переспросил.</p>
+  <p class="shchelchok"><b>Впишите в ДРАКОН-лист</b> станции 2–4 и свой пример сбоя.</p>
+</section>
+
+<section class="slajd" data-etap="7. Практикум: синтез">
+  <h2>Работа в парах: голос</h2>
+  <ul>
+    <li>Экран 2: <b>сначала прогноз</b>, потом «Слушать».</li>
+    <li>4 заготовки + своя фраза: где запятая или знак меняют смысл.</li>
+    <li>Запишите вывод своими словами.</li>
+    <li class="tusk">Нет звука — Яндекс Переводчик, кнопка озвучки. Наушники: один динамик — одному, другой — другому.</li>
+  </ul>
+  <p class="kartochka">9 минут</p>
+</section>
+
+<section class="slajd" data-etap="7. Проверка">
+  <h2>Проверка этапа: голос</h2>
+  <div class="dva">
+    <p class="kartochka">Казнить, нельзя помиловать</p>
+    <p class="kartochka">Казнить нельзя, помиловать</p>
+  </div>
+  <p>Слова одни и те же. Что изменилось?</p>
+  <p class="otvet shchelchok">Знак препинания задаёт <b>паузу и интонацию</b> — и от них меняется смысл. Синтезатор читает знаки, а не смысл.</p>
+</section>
+
+<section class="slajd" data-etap="8. Система знаний">
+  <h2>Помощник целиком</h2>
+  <p class="strelka">звук → распознавание → текст → <span class="shchelchok">языковая модель</span> → текст → синтез → звук</p>
+  <p class="shchelchok">Посередине — языковая модель: она придумывает ответ. На следующем уроке соберём своего бота.</p>
+  <p class="shchelchok tusk">Модель выбирает вариант по вероятности, а не понимает смысл. Поэтому — проверяй.</p>
+</section>
+
+<section class="slajd" data-etap="8. Безопасность">
+  <h2>Голос — тоже данные</h2>
+  <p>Звонок. Голос мамы: «Срочно переведи деньги!»</p>
+  <p class="pravilo shchelchok">Перезвони сам.</p>
+  <ul class="shchelchok">
+    <li>Голос можно подделать синтезом — вы сегодня слышали, как он звучит.</li>
+    <li>Звук с микрофона уходит на сервер. Не сохраняем записи и историю запросов.</li>
+  </ul>
+</section>
+
+<section class="slajd" data-etap="9. Рефлексия">
+  <h2>Итог</h2>
+  <ul>
+    <li>Назовите пять станций по порядку.</li>
+    <li>Почему помощник иногда переспрашивает?</li>
+    <li>Что делает запятая в синтезе?</li>
+  </ul>
+  <p class="shchelchok">Экран 3: самооценка → отметка. ДРАКОН-лист — в тетрадь, жёлтое — запомнить.</p>
+</section>
+
+<footer class="niz">
+  <button type="button" id="nazad">←</button>
+  <span id="nomer"></span>
+  <span id="etap" class="etap"></span>
+  <button type="button" id="vpered">→</button>
+</footer>
+
+<script src="tekst.js"></script>
+<script src="../../lib/drakon-graf/drakon-graf.min.js"></script>
+<script src="../../lib/drakon-graf/konspekt.js"></script>
+<script src="../../lib/drakonwidget/drakonwidget.js"></script>
+<script src="../../lib/drakon-shema/drakon-shema.js"></script>
+<script>
+"use strict";
+/* N — номер слайда; SLAJDY — все слайды по порядку */
+var SLAJDY = document.querySelectorAll(".slajd");
+var N = 0;
+
+// skrytye: ещё не показанные по щелчку элементы слайда
+function skrytye(s) {
+  var spisok = s.querySelectorAll(".shchelchok:not(.vidno)");
+  return spisok;
+}
+
+// pokazat: показывает слайд n
+function pokazat(n) {
+  N = Math.max(0, Math.min(SLAJDY.length - 1, n));
+  for (var i = 0; i < SLAJDY.length; i++) { SLAJDY[i].classList.toggle("seychas", i === N); }
+  document.getElementById("nomer").textContent = (N + 1) + " / " + SLAJDY.length;
+  document.getElementById("etap").textContent = SLAJDY[N].dataset.etap;
+  return N;
+}
+
+// vpered: следующий щелчок слайда или следующий слайд
+function vpered() {
+  var s = skrytye(SLAJDY[N]);
+  if (s.length > 0) { s[0].classList.add("vidno"); }
+  if (s.length === 0) { pokazat(N + 1); }
+  return N;
+}
+
+// nazad: предыдущий слайд
+function nazad() {
+  var n = pokazat(N - 1);
+  return n;
+}
+
+// klavisha: стрелки, пробел, PageUp/PageDown
+function klavisha(e) {
+  if (["ArrowRight", "Space", "PageDown"].indexOf(e.code) >= 0) { e.preventDefault(); vpered(); }
+  if (["ArrowLeft", "PageUp"].indexOf(e.code) >= 0) { e.preventDefault(); nazad(); }
+  return e;
+}
+
+// risovatKonveyer: пять станций; каждая — по щелчку
+function risovatKonveyer() {
+  var k = document.getElementById("konveyer");
+  for (var i = 0; i < TEKST.stancii.length; i++) {
+    var d = document.createElement("div");
+    d.className = "stanciya shchelchok";
+    d.innerHTML = "<b></b><span></span>";
+    d.firstChild.textContent = TEKST.stancii[i].nomer + ". " + TEKST.stancii[i].imya;
+    d.lastChild.textContent = TEKST.stancii[i].chto;
+    k.appendChild(d);
+  }
+  return k;
+}
+
+// risovatSkhemy: ДРАКОН-ГРАФ и ДРАКОН-схема из общих текстов урока
+function risovatSkhemy() {
+  var chasti = TEKST.grafKonveyer.split("\n---\n");
+  if (window.Konspekt) { Konspekt.draw(document.getElementById("graf1"), chasti.slice(0, 2).join("\n---\n"), { class: 9 }); }
+  if (window.Konspekt) { Konspekt.draw(document.getElementById("graf2"), chasti.slice(2).join("\n---\n"), { class: 9 }); }
+  if (window.DrakonShema) { DrakonShema.pokazat(document.getElementById("drakon"), TEKST.drakonPomoshnik); }
+  return true;
+}
+
+// nachat: подготовить слайды и кнопки
+function nachat() {
+  risovatKonveyer();
+  risovatSkhemy();
+  document.addEventListener("keydown", klavisha);
+  document.getElementById("vpered").addEventListener("click", vpered);
+  document.getElementById("nazad").addEventListener("click", nazad);
+  pokazat(0);
+  return N;
+}
+
+nachat();
+</script>
+</body>
+</html>

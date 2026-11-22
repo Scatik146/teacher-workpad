@@ -1,0 +1,46 @@
+/* 9073 — печать техкарты: лист 9076, шрифт 9075. Цвета и размеры — переменными. */
+@font-face { font-family: "PT Serif"; src: url("../../lib/drakon-graf/fonts/PT_Serif-Web-Regular.ttf"); font-weight: 400; }
+@font-face { font-family: "PT Serif"; src: url("../../lib/drakon-graf/fonts/PT_Serif-Web-Bold.ttf"); font-weight: 700; }
+@font-face { font-family: "PT Serif"; src: url("../../lib/drakon-graf/fonts/PT_Serif-Web-Italic.ttf"); font-style: italic; }
+@font-face { font-family: "PT Mono"; src: url("../../lib/drakon-graf/fonts/PTM55FT.ttf"); }
+
+:root {
+  --shrift: "PT Serif", "Times New Roman", serif;
+  --shrift-mono: "PT Mono", "Courier New", monospace;
+  --razmer: 10.5pt;
+  --razmer-zagolovka: 13pt;
+  --razmer-melkij: 8.5pt;
+  --cvet-teksta: #000;
+  --cvet-fona-shapki: #e8e8e8;
+  --liniya: 0.6pt solid #000;
+  --otstup: 3pt 4pt;
+  --vysota-stroki: 16mm;
+}
+
+@page { size: A4 landscape; margin: 12mm 12mm 14mm 12mm; }
+
+body { font-family: var(--shrift); font-size: var(--razmer); color: var(--cvet-teksta); margin: 0; line-height: 1.25; }
+
+h1 { font-size: var(--razmer-zagolovka); text-align: center; margin: 0 0 6pt; }
+h2 { font-size: var(--razmer); margin: 8pt 0 4pt; }
+
+table { width: 100%; border-collapse: collapse; }
+th, td { border: var(--liniya); padding: var(--otstup); vertical-align: top; text-align: left; }
+th { background: var(--cvet-fona-shapki); font-weight: 700; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+
+.shapka th { width: 24%; }
+.hod thead { display: table-header-group; }
+.hod tr { break-inside: avoid; }
+.hod .nomer { width: 3%; text-align: center; }
+.hod .vremya { width: 5%; text-align: center; }
+.hod tbody td { height: var(--vysota-stroki); }
+.hod th[data-grafa="этап"] { width: 15%; }
+.hod th[data-grafa="цель_этапа"] { width: 12%; }
+.hod th[data-grafa="деятельность_учителя"] { width: 17%; }
+.hod th[data-grafa="деятельность_учеников"] { width: 17%; }
+.hod th[data-grafa="форма_работы"] { width: 9%; }
+.hod th[data-grafa="ууд"] { width: 9%; }
+.hod th[data-grafa="контроль"] { width: 13%; }
+
+.primechanie { font-size: var(--razmer-melkij); margin-top: 6pt; }
+code { font-family: var(--shrift-mono); }

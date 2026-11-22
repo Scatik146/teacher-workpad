@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>ДРАКОН-лист «Распознавание и синтез речи» — 9 класс, А4</title>
+<style>
+:root { --chernila: #1d2126; --chernila2: #5b5346; --liniya: #d9cfb9; --akcent: #f2a93b; --zheltoe: #ffff99; --drakon: #993300; --shrift: "Segoe UI", Roboto, Arial, sans-serif; }
+@page { size: A4 portrait; margin: 10mm; }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: #e9e4d8; color: var(--chernila); font: 11pt/1.3 var(--shrift); }
+.bar { position: sticky; top: 0; z-index: 5; display: flex; gap: 10px; align-items: center; padding: 8px 16px; background: #1f2329; color: #eef1f4; border-bottom: 3px solid var(--akcent); }
+.bar button { font: inherit; background: var(--akcent); border: 0; border-radius: 16px; padding: 5px 14px; font-weight: 700; cursor: pointer; }
+.list { width: 190mm; min-height: 277mm; margin: 12px auto; background: #fff; padding: 6mm; display: flex; flex-direction: column; gap: 3mm; }
+h1 { font-size: 15pt; margin: 0; }
+.shapka { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid var(--akcent); padding-bottom: 2mm; }
+.fio { color: var(--chernila2); }
+h2 { font-size: 11.5pt; margin: 0; }
+.legenda { display: flex; gap: 3mm; flex-wrap: wrap; font-size: 9.5pt; }
+.legenda span { border: 1.5px solid var(--drakon); border-radius: 4px; padding: 0.5mm 2mm; font-family: Georgia, serif; }
+.legenda .zh { background: var(--zheltoe); }
+.formuly { font-weight: 700; }
+#skhema { max-width: 100%; max-height: 98mm; display: block; margin: 0 auto; }
+p { margin: 0; }
+.niz { display: grid; grid-template-columns: 1fr 98mm; gap: 5mm; align-items: start; }
+.niz > div { display: flex; flex-direction: column; gap: 3mm; }
+#graf svg { width: 100%; height: auto; max-height: 115mm; }
+.zapis { display: grid; grid-template-columns: auto 1fr; gap: 2.5mm 3mm; align-items: end; }
+.zapis span:nth-child(even) { border-bottom: 1px solid #777; min-height: 6mm; }
+.tusk { color: var(--chernila2); font-size: 9.5pt; }
+@media print {
+  html, body { background: #fff; }
+  .bar { display: none; }
+  .list { margin: 0; width: auto; min-height: 0; padding: 0; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+</style>
+</head>
+<body>
+<div class="bar"><button type="button" id="pechat">Печать (А4, книжная, цвет)</button><span>ДРАКОН-лист в тетрадь</span></div>
+
+<article class="list">
+  <div class="shapka">
+    <h1>Распознавание и синтез речи · ДРАКОН-лист</h1>
+    <span class="fio">Имя ________________ Дата 23.11</span>
+  </div>
+
+  <h2>1. ДРАКОН-схема «Голосовой помощник» (силуэт из трёх веток)</h2>
+  <p class="formuly">Чем ниже — тем позже. Чем правее — тем хуже. Впишите станции 2–4 конвейера.</p>
+  <img id="skhema" src="skhema-pomoshnik-list.png" alt="ДРАКОН-схема «Голосовой помощник»: ветки Услышать, Решить, Ответить; станции 2–4 пустые">
+  <div class="niz">
+    <div>
+      <div class="legenda">
+        <span class="zh">Ветка — часть силуэта</span>
+        <span>Икона — блок схемы</span>
+        <span>Примитив — схема одной линией</span>
+        <span>Силуэт — схема из веток</span>
+      </div>
+      <h2>2. Мой пример сбоя (с экрана 1)</h2>
+      <div class="zapis">
+        <span>Сказали:</span><span></span>
+        <span>Распознала модель:</span><span></span>
+        <span>Станция ошибки:</span><span></span>
+        <span>Ветка помощника:</span><span></span>
+        <span>Почему:</span><span></span>
+      </div>
+      <h2>3. Знаки в синтезе (с экрана 2)</h2>
+      <div class="zapis">
+        <span>Моя фраза:</span><span></span>
+        <span>Вывод:</span><span></span>
+      </div>
+    </div>
+    <div>
+      <h2>4. ДРАКОН-ГРАФ <span class="tusk">(жёлтое — запомни)</span></h2>
+      <div id="graf"></div>
+    </div>
+  </div>
+  <p class="tusk">ДРАКОН и ДРАКОН-ГРАФ — авторская методика и инструментарий Веснина С. Н.</p>
+</article>
+
+<script src="tekst.js"></script>
+<script src="../../lib/drakon-graf/drakon-graf.min.js"></script>
+<script src="../../lib/drakon-graf/konspekt.js"></script>
+<script>
+"use strict";
+/* Схема на листе — картинка skhema-pomoshnik-list.png, снятая с виджета по TEKST.drakonPomoshnikList
+   (виджет не уменьшается мельче 75 % и при печати не влезает в А4). Поменяли схему — переснять картинку. */
+// risovatList: ДРАКОН-ГРАФ из общих текстов урока и кнопка печати
+function risovatList() {
+  if (window.Konspekt) { Konspekt.draw(document.getElementById("graf"), TEKST.grafKonveyer, { class: 9 }); }
+  document.getElementById("pechat").addEventListener("click", function () { window.print(); });
+  return true;
+}
+risovatList();
+</script>
+</body>
+</html>

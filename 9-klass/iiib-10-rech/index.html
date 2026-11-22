@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Починим помощника — распознавание и синтез речи, 9 класс</title>
+<style>
+:root {
+  --bumaga: #f6f1e6; --list: #ffffff; --chernila: #1d2126; --chernila2: #5b5346;
+  --liniya: #d9cfb9; --akcent: #f2a93b; --akcent-fon: #fbf1dc; --sinij: #1f5fa8; --sinij-fon: #e6eef8;
+  --verno: #1e7a4a; --verno-fon: #e3f3e9; --neverno: #a3471f; --neverno-fon: #f8e6dd;
+  --zheltoe: #ffff99; --drakon: #993300;
+  --shrift: "Segoe UI", Roboto, Arial, sans-serif;
+  --r: 12px; --otstup: 14px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bumaga); color: var(--chernila); font: 18px/1.4 var(--shrift); }
+h1, h2, h3, p { margin: 0; }
+h1 { font-size: 26px; } h2 { font-size: 21px; } h3 { font-size: 17px; }
+button { font: inherit; cursor: pointer; border: 2px solid var(--liniya); background: var(--list); color: var(--chernila); border-radius: 10px; padding: 8px 14px; min-height: 44px; }
+button:hover:not(:disabled) { border-color: var(--akcent); }
+button:disabled { cursor: default; opacity: .9; }
+button.glavnaya { background: var(--akcent); border-color: var(--akcent); font-weight: 700; }
+button.verno { background: var(--verno-fon); border-color: var(--verno); }
+button.neverno { background: var(--neverno-fon); border-color: var(--neverno); }
+textarea, input[type=text] { font: inherit; width: 100%; border: 2px solid var(--liniya); border-radius: 10px; padding: 8px 10px; }
+.skryt { display: none; }
+.tusk { color: var(--chernila2); }
+
+.shapka { position: sticky; top: 0; z-index: 3; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; padding: 8px 16px; background: #1f2329; color: #eef1f4; border-bottom: 3px solid var(--akcent); }
+.shapka h1 { font-size: 20px; }
+.shapka .gde { flex: 1; color: #a9b2bc; font-size: 15px; }
+.shapka .rol { background: #272c33; border: 1px solid #3a414a; border-radius: 16px; padding: 3px 10px; font-size: 15px; }
+.shapka .ochki { color: var(--akcent); font-weight: 700; }
+
+main { max-width: 1320px; margin: 0 auto; padding: var(--otstup); display: flex; flex-direction: column; gap: var(--otstup); }
+.kartochka { background: var(--list); border: 1px solid var(--liniya); border-radius: var(--r); padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; }
+.dve { display: grid; grid-template-columns: 1fr 1.25fr; gap: var(--otstup); align-items: start; }
+.ryad { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+.konveyer { display: grid; grid-template-columns: repeat(5, 1fr); gap: 22px; }
+.stanciya { position: relative; background: var(--list); border: 2px solid var(--liniya); border-radius: var(--r); padding: 8px 10px; min-height: 108px; }
+.stanciya:not(:last-child)::after { content: "→"; position: absolute; right: -20px; top: 34%; color: var(--akcent); font-size: 22px; font-weight: 700; }
+.stanciya h3 { color: var(--sinij); }
+.stanciya .chto { font-size: 13px; color: var(--chernila2); }
+.stanciya .vyhod { font-weight: 600; margin-top: 4px; }
+.stanciya.oshibka { border-color: var(--neverno); background: var(--neverno-fon); }
+.stanciya.vse-verno { border-color: var(--verno); }
+.gipoteza { display: flex; justify-content: space-between; gap: 6px; font-size: 16px; }
+.gipoteza:first-of-type { font-weight: 700; }
+
+.pomoshnik { display: flex; gap: 12px; align-items: center; }
+.avatar { width: 56px; height: 56px; flex: none; color: var(--neverno); }
+.avatar.ok { color: var(--verno); }
+.replika { background: var(--akcent-fon); border: 2px solid var(--akcent); border-radius: var(--r); padding: 8px 12px; }
+
+.shkala-vetok { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.kolonka { display: flex; flex-direction: column; gap: var(--otstup); }
+.vetka { white-space: pre-line; border: 2px solid var(--drakon); border-radius: 8px; padding: 6px 10px; text-align: center; font-family: Georgia, serif; }
+.vetka.vniz { background: var(--zheltoe); }
+.schet { font-weight: 700; }
+
+.vopros { font-size: 20px; font-weight: 600; }
+.varianty { display: grid; gap: 8px; }
+.varianty.stancii { grid-template-columns: repeat(3, 1fr); }
+.varianty button { text-align: left; }
+.soobshenie { border-radius: 10px; padding: 8px 12px; background: var(--sinij-fon); }
+.soobshenie.verno { background: var(--verno-fon); }
+.soobshenie.neverno { background: var(--neverno-fon); }
+.termin { border-left: 4px solid var(--akcent); padding-left: 10px; }
+
+.fraza { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; }
+.fraza .tekst { font-size: 22px; font-family: Georgia, serif; }
+.tochki { display: flex; gap: 6px; }
+.tochka { width: 14px; height: 14px; border-radius: 50%; background: var(--liniya); }
+.tochka.proydena { background: var(--verno); }
+.tochka.seychas { background: var(--akcent); }
+.zastavka { max-width: 820px; margin: 30px auto; }
+.otmetka { font-size: 40px; font-weight: 800; color: var(--verno); }
+@media (max-width: 900px) { .dve { grid-template-columns: 1fr; } .konveyer { grid-template-columns: 1fr 1fr; } .varianty.stancii { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+
+<svg class="skryt" aria-hidden="true">
+  <symbol id="avatar" viewBox="0 0 64 64">
+    <rect x="10" y="14" width="44" height="38" rx="12" fill="none" stroke="currentColor" stroke-width="4"/>
+    <line x1="32" y1="4" x2="32" y2="14" stroke="currentColor" stroke-width="4"/>
+    <circle cx="32" cy="4" r="3" fill="currentColor"/>
+    <circle cx="24" cy="30" r="4" fill="currentColor"/>
+    <circle cx="40" cy="30" r="4" fill="currentColor"/>
+    <path d="M22 42 Q32 48 42 42" fill="none" stroke="currentColor" stroke-width="4"/>
+  </symbol>
+</svg>
+
+<header class="shapka">
+  <h1>Починим помощника</h1>
+  <span id="gde" class="gde"></span>
+  <span id="tochki" class="tochki"></span>
+  <span id="rol" class="rol"></span>
+  <span id="ochki" class="ochki"></span>
+</header>
+<main id="ekran"></main>
+
+<script src="tekst.js"></script>
+<script src="../../lib/menu-ekranov/menu-ekranov.js"></script>
+<script>
+"use strict";
+
+/* ===================== ДАННЫЕ СОСТОЯНИЯ ===================== */
+/* S: ekran — 'start' | 'remont' | 'sintez' | 'itog';
+   primer — номер примера на экране ремонта; shag — 0 станция, 1 ветка, 2 ловушка, 3 итог примера;
+   oshibki — неверные варианты текущего вопроса; reshen — вопрос решён;
+   vopros — сколько вопросов пройдено (для очереди ролей); ochki — битрейты (просто очки);
+   vpravo / vniz — счёт веток помощника; najdeno — сколько станций найдено с первой попытки;
+   prognozy — {id: номер выбранного}; zapyataya — выбранный вариант «Казнить…»;
+   svoya — своя фраза пары; vyvod — вывод своими словами; sobrano — порядок частей помощника;
+   pravilo — выбранный вариант; ocenka — баллы по критериям */
+var KLYUCH = "teacher-workpad-" + TEKST.urok;
+var NACHALO = { ekran: "start", primer: 0, shag: 0, oshibki: [], reshen: false, vopros: 0, ochki: 0,
+  vpravo: 0, vniz: 0, najdeno: 0, prognozy: {}, zapyataya: -1, svoya: "", vyvod: "", sobrano: [],
+  pravilo: -1, ocenka: [-1, -1, -1] };
+var EKRANY = [
+  { id: "start", nazvanie: "Заставка" },
+  { id: "remont", nazvanie: "1. Ремонт: распознавание" },
+  { id: "sintez", nazvanie: "2. Голос: синтез" },
+  { id: "itog", nazvanie: "3. Итог" }
+];
+var S = null;
+var GOLOS = null;
+
+/* ===================== НИЖНИЙ СЛОЙ ===================== */
+
+// kopiya: глубокая копия данных
+function kopiya(o) {
+  var k = JSON.parse(JSON.stringify(o));
+  return k;
+}
+
+// sohranit: пишет состояние в localStorage
+function sohranit() {
+  var ok = true;
+  try { localStorage.setItem(KLYUCH, JSON.stringify(S)); } catch (e) { ok = false; }
+  return ok;
+}
+
+// zagruzit: читает состояние или берёт начальное
+function zagruzit() {
+  var s = kopiya(NACHALO);
+  try {
+    var t = localStorage.getItem(KLYUCH);
+    if (t) { s = Object.assign(kopiya(NACHALO), JSON.parse(t)); }
+  } catch (e) { s = kopiya(NACHALO); }
+  return s;
+}
+
+// el: новый элемент с классом и текстом
+function el(teg, klass, tekst) {
+  var e = document.createElement(teg);
+  if (klass) { e.className = klass; }
+  if (tekst !== undefined && tekst !== null) { e.textContent = tekst; }
+  return e;
+}
+
+// knopka: кнопка с действием
+function knopka(tekst, klass, dejstvie) {
+  var k = el("button", klass, tekst);
+  k.type = "button";
+  k.addEventListener("click", dejstvie);
+  return k;
+}
+
+// avatar: иконка помощника; ok — починен ли
+function avatar(ok) {
+  var ns = "http://www.w3.org/2000/svg";
+  var svg = document.createElementNS(ns, "svg");
+  var use = document.createElementNS(ns, "use");
+  use.setAttribute("href", "#avatar");
+  svg.setAttribute("class", ok ? "avatar ok" : "avatar");
+  svg.appendChild(use);
+  return svg;
+}
+
+// svyazat: действие с заранее заданными аргументами (для кнопок)
+function svyazat(fn, a, b) {
+  var f = function () { fn(a, b); };
+  return f;
+}
+
+// estV: есть ли значение в списке
+function estV(spisok, z) {
+  var est = spisok.indexOf(z) >= 0;
+  return est;
+}
+
+// peremeshat: варианты в устойчиво перемешанном порядке (по ключу), верный не всегда первый
+function peremeshat(n, klyuch) {
+  var por = [];
+  var i;
+  for (i = 0; i < n; i++) { por.push(i); }
+  var sdvig = 0;
+  for (i = 0; i < klyuch.length; i++) { sdvig = sdvig + klyuch.charCodeAt(i); }
+  sdvig = sdvig % n;
+  var itog = por.slice(sdvig).concat(por.slice(0, sdvig));
+  return itog;
+}
+
+/* ===================== ГОЛОС (синтез в браузере) ===================== */
+
+// najtiGolos: русский голос браузера или null
+function najtiGolos() {
+  var g = null;
+  var vse = ("speechSynthesis" in window) ? speechSynthesis.getVoices() : [];
+  for (var i = 0; i < vse.length; i++) { if (g === null && /^ru/i.test(vse[i].lang)) { g = vse[i]; } }
+  return g;
+}
+
+// skazat: озвучивает текст; выход — удалось ли начать
+function skazat(tekst) {
+  var ok = false;
+  if ("speechSynthesis" in window) {
+    try { govorit(tekst); ok = true; } catch (e) { ok = false; }
+  }
+  return ok;
+}
+
+// govorit: отдаёт фразу синтезатору браузера
+function govorit(tekst) {
+  speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(tekst);
+  u.lang = "ru-RU";
+  if (GOLOS) { u.voice = GOLOS; }
+  u.rate = 0.9;
+  speechSynthesis.speak(u);
+  return u;
+}
+
+/* ===================== СРЕДНИЙ СЛОЙ: ход урока ===================== */
+
+// ochered: кто водитель на текущем вопросе
+function ochered() {
+  var o = { voditel: "А", kontroler: "Б" };
+  if (S.vopros % 2 === 1) { o = { voditel: "Б", kontroler: "А" }; }
+  return o;
+}
+
+// novyjVopros: сбрасывает попытки и передаёт руль
+function novyjVopros() {
+  S.oshibki = [];
+  S.reshen = false;
+  S.vopros = S.vopros + 1;
+  return S;
+}
+
+// primer: текущий пример ремонта
+function primer() {
+  var p = TEKST.primery[Math.min(S.primer, TEKST.primery.length - 1)];
+  return p;
+}
+
+// prinyatOtvet: засчитывает выбор водителя
+function prinyatOtvet(verno, id) {
+  if (verno && S.oshibki.length === 0) { S.ochki = S.ochki + 2; }
+  if (verno && S.oshibki.length > 0) { S.ochki = S.ochki + 1; }
+  if (!verno) { S.oshibki.push(id); }
+  if (verno || S.oshibki.length >= 2) { S.reshen = true; }
+  return S.reshen;
+}
+
+// otvetStanciya: ответ «где началась ошибка»
+function otvetStanciya(nomer) {
+  var verno = nomer === primer().stanciyaOshibki;
+  if (verno && S.oshibki.length === 0) { S.najdeno = S.najdeno + 1; }
+  prinyatOtvet(verno, nomer);
+  obnovit();
+  return verno;
+}
+
+// otvetVetka: ответ «куда ушёл помощник»
+function otvetVetka(vetka) {
+  var verno = vetka === primer().vetka;
+  var bylReshen = S.reshen;
+  prinyatOtvet(verno, vetka);
+  if (S.reshen && !bylReshen && primer().vetka === "вправо") { S.vpravo = S.vpravo + 1; }
+  if (S.reshen && !bylReshen && primer().vetka === "вниз") { S.vniz = S.vniz + 1; }
+  obnovit();
+  return verno;
+}
+
+// otvetLovushka: ответ «верно ли правило»
+function otvetLovushka(da) {
+  var verno = da === primer().lovushka.verno;
+  prinyatOtvet(verno, da ? "da" : "net");
+  obnovit();
+  return verno;
+}
+
+// dalshe: контролёр сверил — следующий шаг примера или следующий пример
+function dalshe() {
+  var p = primer();
+  S.shag = S.shag + 1;
+  if (S.shag === 2 && !p.lovushka) { S.shag = 3; }
+  if (S.shag > 3) { S.shag = 0; S.primer = S.primer + 1; }
+  novyjVopros();
+  obnovit();
+  return S.shag;
+}
+
+// perejti: на экран по id
+function perejti(id) {
+  S.ekran = id;
+  window.scrollTo(0, 0);
+  obnovit();
+  return id;
+}
+
+// summa: сумма выставленных баллов (−1 считается как 0)
+function summa() {
+  var s = 0;
+  for (var i = 0; i < S.ocenka.length; i++) { s = s + Math.max(0, S.ocenka[i]); }
+  return s;
+}
+
+// otmetka: перевод суммы в отметку по шкале урока
+function otmetka(sum) {
+  var o = "2";
+  var shk = TEKST.shkala.otmetka;
+  for (var i = shk.length - 1; i >= 0; i--) { if (sum >= shk[i][0]) { o = shk[i][1]; } }
+  return o;
+}
+
+// novayaSmena: всё с начала для следующей пары
+function novayaSmena() {
+  S = kopiya(NACHALO);
+  obnovit();
+  return S;
+}
+
+/* ===================== РИСОВАНИЕ: общие куски ===================== */
+
+// nazvanieEkrana: подпись в шапке — экран и номер примера
+function nazvanieEkrana() {
+  var nazv = "";
+  for (var i = 0; i < EKRANY.length; i++) { if (EKRANY[i].id === S.ekran) { nazv = EKRANY[i].nazvanie; } }
+  if (S.ekran === "remont") { nazv = nazv + " · пример " + Math.min(S.primer + 1, TEKST.primery.length) + " из " + TEKST.primery.length; }
+  return nazv;
+}
+
+// risovatTochki: точки примеров на экране ремонта
+function risovatTochki() {
+  var tochki = document.getElementById("tochki");
+  tochki.textContent = "";
+  var n = S.ekran === "remont" ? TEKST.primery.length : 0;
+  for (var i = 0; i < n; i++) {
+    var t = el("span", "tochka");
+    if (i < S.primer) { t.className = "tochka proydena"; }
+    if (i === S.primer) { t.className = "tochka seychas"; }
+    tochki.appendChild(t);
+  }
+  return tochki;
+}
+
+// risovatShapku: где мы, точки примеров, чья очередь, очки
+function risovatShapku() {
+  var nazv = nazvanieEkrana();
+  risovatTochki();
+  document.getElementById("gde").textContent = nazv;
+  document.getElementById("rol").textContent = "Водитель: " + ochered().voditel + " · Контролёр: " + ochered().kontroler;
+  document.getElementById("ochki").textContent = "Битрейты: " + S.ochki;
+  return nazv;
+}
+
+// skazalPomoshnik: реплика помощника с иконкой
+function skazalPomoshnik(tekst, ok) {
+  var k = el("div", "pomoshnik");
+  k.appendChild(avatar(ok));
+  k.appendChild(el("p", "replika", tekst));
+  return k;
+}
+
+// knopkaVarianta: вариант ответа с подсветкой после выбора
+function knopkaVarianta(tekst, id, verno, dejstvie) {
+  var b = knopka(tekst, "", function () { dejstvie(id); });
+  if (estV(S.oshibki, id)) { b.className = "neverno"; b.disabled = true; }
+  if (S.reshen && verno) { b.className = "verno"; }
+  if (S.reshen) { b.disabled = true; }
+  return b;
+}
+
+// soobshenie: строка под вопросом — чья очередь, «не так» или пояснение
+function soobshenie(poyasnenie) {
+  var s = el("p", "soobshenie", "Водитель " + ochered().voditel + " выбирает. Контролёр " + ochered().kontroler + " смотрит на конвейер.");
+  if (S.oshibki.length > 0 && !S.reshen) { s = el("p", "soobshenie neverno", "Пока не так. Посмотрите на конвейер ещё раз."); }
+  if (S.reshen && S.oshibki.length === 0) { s = el("p", "soobshenie verno", "Верно! " + poyasnenie); }
+  if (S.reshen && S.oshibki.length > 0) { s = el("p", "soobshenie", "Разберём: " + poyasnenie); }
+  return s;
+}
+
+// knopkaSvereno: контролёр подтверждает и передаёт руль
+function knopkaSvereno() {
+  var b = knopka("Контролёр " + ochered().kontroler + ": сверено →", "glavnaya", dalshe);
+  return b;
+}
+
+/* ===================== ЭКРАН: заставка ===================== */
+
+// risovatStart: сюжет, задача пары, роли
+function risovatStart(m) {
+  var k = el("div", "kartochka zastavka");
+  k.appendChild(el("h2", "", "Сбой!"));
+  k.appendChild(skazalPomoshnik(TEKST.syuzhet.sboj, false));
+  k.appendChild(el("p", "", TEKST.syuzhet.zadacha));
+  k.appendChild(el("p", "tusk", TEKST.syuzhet.protokol));
+  k.appendChild(el("p", "tusk", "Договоритесь, кто из вас А, а кто Б. Первым водит А."));
+  var r = el("div", "ryad");
+  r.appendChild(knopka("Начать ремонт", "glavnaya", function () { perejti("remont"); }));
+  r.appendChild(knopka("Новая смена / начать заново", "", novayaSmena));
+  k.appendChild(r);
+  m.appendChild(k);
+  return m;
+}
+
+/* ===================== ЭКРАН 1: ремонт ===================== */
+
+// klassStancii: подсветка станции после ответа
+function klassStancii(nomer, p) {
+  var klass = "stanciya";
+  var pokazat = S.shag > 0 || S.reshen;
+  if (pokazat && nomer === p.stanciyaOshibki) { klass = "stanciya oshibka"; }
+  if (pokazat && p.stanciyaOshibki === 0) { klass = "stanciya vse-verno"; }
+  return klass;
+}
+
+// vyhodStancii: что выдала станция — текст или проценты гипотез
+function vyhodStancii(st, p) {
+  var k = el("div", "");
+  if (st.nomer === p.gipotezyNa) {
+    for (var i = 0; i < p.gipotezy.length; i++) {
+      var g = el("div", "gipoteza");
+      g.appendChild(el("span", "", p.gipotezy[i][0]));
+      g.appendChild(el("span", "", p.gipotezy[i][1] + " %"));
+      k.appendChild(g);
+    }
+  }
+  if (st.nomer !== p.gipotezyNa) { k.appendChild(el("div", "vyhod", p.vyhody[st.nomer - 1] || "—")); }
+  return k;
+}
+
+// risovatKonveyer: пять станций с выходами текущего примера
+function risovatKonveyer(p) {
+  var k = el("section", "konveyer");
+  for (var i = 0; i < TEKST.stancii.length; i++) {
+    var st = TEKST.stancii[i];
+    var d = el("div", klassStancii(st.nomer, p));
+    d.appendChild(el("h3", "", st.nomer + ". " + st.imya));
+    d.appendChild(el("div", "chto", st.chto));
+    d.appendChild(vyhodStancii(st, p));
+    k.appendChild(d);
+  }
+  return k;
+}
+
+// risovatVetki: силуэт выбора помощника и счёт веток
+function risovatVetki() {
+  var k = el("div", "kartochka");
+  k.appendChild(el("h3", "", "Как помощник выбирает (ДРАКОН: правее — хуже)"));
+  var v = el("div", "shkala-vetok");
+  v.appendChild(el("div", "vetka vniz", "Один вариант намного вероятнее?\nДа ↓ выполняю"));
+  v.appendChild(el("div", "vetka", "Нет → переспрашиваю"));
+  k.appendChild(v);
+  k.appendChild(el("p", "schet", "Счёт пары: выполнил ↓ " + S.vniz + " · переспросил → " + S.vpravo));
+  return k;
+}
+
+// risovatTerminy: модель и вероятность (после первого примера)
+function risovatTerminy() {
+  var k = el("div", "kartochka");
+  k.appendChild(el("h3", "", "Новые слова"));
+  for (var i = 0; i < TEKST.terminy.length; i++) {
+    var t = el("p", "termin");
+    t.appendChild(el("b", "", TEKST.terminy[i].slovo + " — "));
+    t.appendChild(document.createTextNode(TEKST.terminy[i].opr));
+    k.appendChild(t);
+  }
+  return k;
+}
+
+// voprosStanciya: «где началась ошибка?»
+function voprosStanciya(p) {
+  var k = el("div", "kartochka");
+  k.appendChild(el("p", "vopros", "На какой станции началась ошибка?"));
+  var v = el("div", "varianty stancii");
+  for (var i = 0; i < TEKST.stancii.length; i++) {
+    var st = TEKST.stancii[i];
+    v.appendChild(knopkaVarianta(st.nomer + ". " + st.imya, st.nomer, st.nomer === p.stanciyaOshibki, otvetStanciya));
+  }
+  v.appendChild(knopkaVarianta("Сбоя нет", 0, p.stanciyaOshibki === 0, otvetStanciya));
+  k.appendChild(v);
+  k.appendChild(soobshenie(p.poyasnenie));
+  if (S.reshen) { k.appendChild(knopkaSvereno()); }
+  return k;
+}
+
+// voprosVetka: «куда ушёл помощник?»
+function voprosVetka(p) {
+  var k = el("div", "kartochka");
+  k.appendChild(el("p", "vopros", "Помощник ответил: «" + p.otvet + "». По какой ветке он пошёл?"));
+  var v = el("div", "varianty");
+  v.appendChild(knopkaVarianta("↓ Вниз: выбрал вариант и выполнил", "вниз", p.vetka === "вниз", otvetVetka));
+  v.appendChild(knopkaVarianta("→ Вправо: не смог выбрать и переспросил", "вправо", p.vetka === "вправо", otvetVetka));
+  k.appendChild(v);
+  var poyasn = p.vetka === "вправо" ? "Варианты почти равны — помощник ушёл вправо и переспросил." : "Помощник выбрал самый вероятный вариант и пошёл вниз — выполнил, даже если неправильно.";
+  k.appendChild(soobshenie(poyasn));
+  if (S.reshen) { k.appendChild(knopkaSvereno()); }
+  return k;
+}
+
+// voprosLovushka: «верно ли правило?»
+function voprosLovushka(p) {
+  var k = el("div", "kartochka");
+  k.appendChild(el("p", "vopros", "Ловушка! Правило: «" + p.lovushka.tekst + "» Это верно?"));
+  var v = el("div", "varianty");
+  v.appendChild(knopkaVarianta("Верно", "da", p.lovushka.verno === true, function () { otvetLovushka(true); }));
+  v.appendChild(knopkaVarianta("Неверно — пример это опровергает", "net", p.lovushka.verno === false, function () { otvetLovushka(false); }));
+  k.appendChild(v);
+  k.appendChild(soobshenie(p.lovushka.poyasnenie));
+  if (S.reshen) { k.appendChild(knopkaSvereno()); }
+  return k;
+}
+
+// itogPrimera: короткий итог и переход к следующему примеру
+function itogPrimera(p) {
+  var k = el("div", "kartochka");
+  var posl = S.primer >= TEKST.primery.length - 1;
+  k.appendChild(el("p", "vopros", posl ? "Все примеры разобраны!" : "Пример " + (S.primer + 1) + " починен."));
+  if (posl) { k.appendChild(skazalPomoshnik(TEKST.syuzhet.finish1, true)); }
+  if (posl) { k.appendChild(knopka("Дальше: научим помощника говорить →", "glavnaya", function () { perejti("sintez"); })); }
+  if (!posl) { k.appendChild(knopka("Следующий пример →", "glavnaya", dalshe)); }
+  return k;
+}
+
+// pravayaKolonka: вопрос текущего шага
+function pravayaKolonka(p) {
+  var k = voprosStanciya(p);
+  if (S.shag === 1) { k = voprosVetka(p); }
+  if (S.shag === 2) { k = voprosLovushka(p); }
+  if (S.shag === 3) { k = itogPrimera(p); }
+  return k;
+}
+
+// levayaKolonka: ветки помощника и новые слова
+function levayaKolonka() {
+  var levo = el("div", "kolonka");
+  levo.appendChild(risovatVetki());
+  if (S.primer > 0 || S.shag > 0) { levo.appendChild(risovatTerminy()); }
+  return levo;
+}
+
+// risovatRemont: экран 1 целиком
+function risovatRemont(m) {
+  if (S.primer >= TEKST.primery.length) { S.primer = TEKST.primery.length - 1; S.shag = 3; }
+  var p = primer();
+  var kartaPrimera = el("div", "kartochka");
+  kartaPrimera.appendChild(el("h2", "", "Сказали: «" + p.skazali + "»"));
+  kartaPrimera.appendChild(skazalPomoshnik(p.otvet, p.stanciyaOshibki === 0));
+  m.appendChild(kartaPrimera);
+  m.appendChild(risovatKonveyer(p));
+  var dve = el("div", "dve");
+  dve.appendChild(levayaKolonka());
+  dve.appendChild(pravayaKolonka(p));
+  m.appendChild(dve);
+  return m;
+}
+
+/* ===================== ЭКРАН 2: синтез ===================== */
+
+// knopkaSlushat: ▶ озвучить фразу
+function knopkaSlushat(tekst) {
+  var b = knopka("▶ Слушать", "", function () {
+    if (!skazat(tekst)) { alert("Голоса в браузере нет. Откройте Яндекс Переводчик и нажмите там кнопку озвучки."); }
+  });
+  return b;
+}
+
+// vybratPrognoz: запоминает прогноз пары
+function vybratPrognoz(id, nomer) {
+  if (S.prognozy[id] === undefined) {
+    S.prognozy[id] = nomer;
+    S.ochki = S.ochki + (nomer === najtiSintez(id).prognoz.verno ? 2 : 1);
+    S.vopros = S.vopros + 1;
+  }
+  obnovit();
+  return nomer;
+}
+
+// najtiSintez: заготовка синтеза по id
+function najtiSintez(id) {
+  var z = null;
+  for (var i = 0; i < TEKST.sintez.length; i++) { if (TEKST.sintez[i].id === id) { z = TEKST.sintez[i]; } }
+  return z;
+}
+
+// otkryto: можно ли уже слушать фразу (прогноз сделан или он не нужен)
+function otkryto(z) {
+  var ok = !z.prognoz || S.prognozy[z.id] !== undefined;
+  return ok;
+}
+
+// knopkaPrognoza: вариант прогноза с подсветкой после выбора
+function knopkaPrognoza(z, n, vybor) {
+  var b = knopka(z.prognoz.varianty[n], "", svyazat(vybratPrognoz, z.id, n));
+  if (vybor !== undefined) { b.disabled = true; }
+  if (vybor !== undefined && n === z.prognoz.verno) { b.className = "verno"; }
+  if (vybor === n && n !== z.prognoz.verno) { b.className = "neverno"; }
+  return b;
+}
+
+// blokPrognoza: вопрос «что изменится?» до прослушивания
+function blokPrognoza(z) {
+  var k = el("div", "");
+  k.appendChild(el("p", "", "Прогноз до прослушивания: " + z.prognoz.vopros));
+  var v = el("div", "varianty");
+  var por = peremeshat(z.prognoz.varianty.length, z.id);
+  var vybor = S.prognozy[z.id];
+  for (var i = 0; i < por.length; i++) { v.appendChild(knopkaPrognoza(z, por[i], vybor)); }
+  k.appendChild(v);
+  return k;
+}
+
+// blokZapyatoj: «Казнить нельзя помиловать» — два места запятой
+function blokZapyatoj(z) {
+  var k = el("div", "ryad");
+  for (var i = 0; i < z.varianty.length; i++) {
+    var f = el("div", "fraza kartochka");
+    f.appendChild(el("span", "tekst", z.varianty[i]));
+    f.appendChild(knopkaSlushat(z.varianty[i]));
+    k.appendChild(f);
+  }
+  return k;
+}
+
+// kartaSinteza: одна заготовка: прогноз → слушать → вывод
+function kartaSinteza(z) {
+  var k = el("div", "kartochka");
+  if (z.prognoz) { k.appendChild(blokPrognoza(z)); }
+  if (!z.prognoz) { k.appendChild(el("p", "tusk", z.zachem)); }
+  if (otkryto(z) && !z.zapyataya) {
+    var f = el("div", "fraza");
+    f.appendChild(el("span", "tekst", z.tekst));
+    f.appendChild(knopkaSlushat(z.tekst));
+    k.appendChild(f);
+  }
+  if (otkryto(z) && z.zapyataya) { k.appendChild(blokZapyatoj(z)); }
+  if (otkryto(z) && z.vyvod) { k.appendChild(el("p", "soobshenie verno", z.vyvod)); }
+  return k;
+}
+
+// kartaSvoej: своя фраза пары — со знаками и без
+function kartaSvoej() {
+  var k = el("div", "kartochka");
+  k.appendChild(el("h3", "", "Своя фраза пары"));
+  k.appendChild(el("p", "tusk", "Придумайте фразу, где одна запятая или знак в конце меняют смысл. Послушайте её со знаками и без."));
+  var vvod = el("input", "");
+  vvod.type = "text"; vvod.value = S.svoya; vvod.placeholder = "Например: Пойдём есть, дети";
+  vvod.addEventListener("input", function () { S.svoya = vvod.value; sohranit(); });
+  k.appendChild(vvod);
+  var r = el("div", "ryad");
+  r.appendChild(knopka("▶ Со знаками", "", function () { skazat(S.svoya); }));
+  r.appendChild(knopka("▶ Без знаков", "", function () { skazat(S.svoya.replace(/[.,!?;:—-]/g, " ")); }));
+  k.appendChild(r);
+  return k;
+}
+
+// kartaVyvoda: вывод своими словами и образец после записи
+function kartaVyvoda() {
+  var k = el("div", "kartochka");
+  k.appendChild(el("h3", "", "Вывод пары своими словами"));
+  var t = el("textarea", "");
+  t.rows = 2; t.value = S.vyvod; t.placeholder = "Знаки препинания…";
+  t.addEventListener("input", function () { S.vyvod = t.value; sohranit(); });
+  k.appendChild(t);
+  var r = el("div", "ryad");
+  r.appendChild(knopka("Сверить с образцом", "", function () { S.pokazObrazec = true; obnovit(); }));
+  k.appendChild(r);
+  if (S.pokazObrazec && S.vyvod.trim().length > 0) { k.appendChild(el("p", "soobshenie verno", "Образец: " + TEKST.sintezObrazec)); }
+  if (S.pokazObrazec && S.vyvod.trim().length === 0) { k.appendChild(el("p", "soobshenie neverno", "Сначала напишите свой вывод.")); }
+  return k;
+}
+
+// risovatSintez: экран 2 целиком
+function risovatSintez(m) {
+  var vvod = el("div", "kartochka");
+  vvod.appendChild(el("h2", "", "Научим помощника говорить: перепиши пунктуацию — измени голос"));
+  vvod.appendChild(el("p", "", "Синтез речи — обратный конвейер: текст → звук. Сначала прогноз, потом слушаем."));
+  var zapas = el("p", "tusk", "Нет звука? Откройте Яндекс Переводчик (" + TEKST.perevodchik + "), вставьте фразу и нажмите кнопку озвучки. Наушники: один динамик — одному, другой — другому.");
+  vvod.appendChild(zapas);
+  m.appendChild(vvod);
+  for (var i = 0; i < TEKST.sintez.length; i++) { m.appendChild(kartaSinteza(TEKST.sintez[i])); }
+  m.appendChild(kartaSvoej());
+  m.appendChild(kartaVyvoda());
+  m.appendChild(knopka("Дальше: соберём помощника целиком →", "glavnaya", function () { perejti("itog"); }));
+  return m;
+}
+
+/* ===================== ЭКРАН 3: итог ===================== */
+
+// dobavitChast: пара ставит следующую часть помощника
+function dobavitChast(n) {
+  if (!estV(S.sobrano, n)) { S.sobrano.push(n); }
+  obnovit();
+  return S.sobrano.length;
+}
+
+// sobranoVerno: части стоят по порядку 0, 1, 2
+function sobranoVerno() {
+  var ok = S.sobrano.length === 3 && S.sobrano[0] === 0 && S.sobrano[1] === 1 && S.sobrano[2] === 2;
+  return ok;
+}
+
+// kartaPomoshnika: собрать помощника из трёх частей
+function kartaPomoshnika() {
+  var k = el("div", "kartochka");
+  k.appendChild(el("h3", "", "Соберите помощника по порядку: что сначала, что потом?"));
+  k.appendChild(knopkiChastej());
+  k.appendChild(el("p", "", "Звук → " + (cepochka() || "…")));
+  if (S.sobrano.length === 3) { itogSborki(k); }
+  return k;
+}
+
+// knopkiChastej: три части помощника вперемешку
+function knopkiChastej() {
+  var v = el("div", "ryad");
+  var por = peremeshat(3, "pomoshnik9");
+  for (var i = 0; i < por.length; i++) {
+    var b = knopka(TEKST.pomoshnik[por[i]], "", svyazat(dobavitChast, por[i]));
+    if (estV(S.sobrano, por[i])) { b.disabled = true; }
+    v.appendChild(b);
+  }
+  return v;
+}
+
+// cepochka: собранные части через стрелки
+function cepochka() {
+  var chasti = [];
+  for (var i = 0; i < S.sobrano.length; i++) { chasti.push(TEKST.pomoshnik[S.sobrano[i]]); }
+  var c = chasti.join("  →  ");
+  return c;
+}
+
+// razobrat: начать сборку помощника заново
+function razobrat() {
+  S.sobrano = [];
+  obnovit();
+  return S.sobrano;
+}
+
+// itogSborki: верно или «собрать заново»
+function itogSborki(k) {
+  if (sobranoVerno()) { k.appendChild(el("p", "soobshenie verno", "Верно! Посередине — языковая модель: она придумывает ответ. О ней и о ботах — на следующем уроке.")); }
+  if (!sobranoVerno()) { k.appendChild(el("p", "soobshenie neverno", "Не тот порядок. Помощник сначала слышит, потом думает, потом говорит.")); }
+  if (!sobranoVerno()) { k.appendChild(knopka("Собрать заново", "", razobrat)); }
+  return k;
+}
+
+// vybratPravilo: запоминает первый выбор пары
+function vybratPravilo(n) {
+  if (S.pravilo < 0) { S.pravilo = n; }
+  obnovit();
+  return S.pravilo;
+}
+
+// knopkaPravila: вариант ответа про звонок
+function knopkaPravila(n) {
+  var pr = TEKST.pravilo;
+  var b = knopka(pr.varianty[n], "", svyazat(vybratPravilo, n));
+  if (S.pravilo >= 0) { b.disabled = true; }
+  if (S.pravilo >= 0 && n === pr.verno) { b.className = "verno"; }
+  if (S.pravilo === n && n !== pr.verno) { b.className = "neverno"; }
+  return b;
+}
+
+// kartaPravila: «перезвони сам»
+function kartaPravila() {
+  var pr = TEKST.pravilo;
+  var k = el("div", "kartochka");
+  k.appendChild(el("p", "vopros", pr.vopros));
+  var v = el("div", "varianty");
+  var por = peremeshat(pr.varianty.length, "pravilo");
+  for (var i = 0; i < por.length; i++) { v.appendChild(knopkaPravila(por[i])); }
+  k.appendChild(v);
+  if (S.pravilo >= 0) { k.appendChild(el("p", "soobshenie verno", pr.poyasnenie)); }
+  return k;
+}
+
+// postavitBall: пара оценивает себя по критерию
+function postavitBall(i, b) {
+  S.ocenka[i] = b;
+  obnovit();
+  return b;
+}
+
+// kartaOcenki: самооценка 3 × 0–2 и отметка
+function kartaOcenki() {
+  var k = el("div", "kartochka");
+  k.appendChild(el("h3", "", "Оцените себя честно: 0 — нет, 1 — частично, 2 — да"));
+  for (var i = 0; i < TEKST.shkala.kriterii.length; i++) { k.appendChild(ryadOcenki(i)); }
+  if (S.ocenka.indexOf(-1) < 0) { itogOcenki(k); }
+  return k;
+}
+
+// ryadOcenki: критерий и кнопки 0, 1, 2
+function ryadOcenki(i) {
+  var r = el("div", "ryad");
+  r.appendChild(el("span", "", TEKST.shkala.kriterii[i]));
+  for (var b = 0; b <= 2; b++) { r.appendChild(knopka(String(b), S.ocenka[i] === b ? "verno" : "", svyazat(postavitBall, i, b))); }
+  return r;
+}
+
+// itogOcenki: сумма, отметка и что показать учителю
+function itogOcenki(k) {
+  var o = el("div", "ryad");
+  o.appendChild(el("span", "", "Сумма " + summa() + " из 6 → отметка"));
+  o.appendChild(el("span", "otmetka", otmetka(summa())));
+  k.appendChild(o);
+  k.appendChild(el("p", "tusk", "Покажите экран учителю. Найдено станций с первой попытки: " + S.najdeno + " из " + TEKST.primery.length + "; битрейты: " + S.ochki + "."));
+  return k;
+}
+
+// risovatItog: экран 3 целиком
+function risovatItog(m) {
+  var k = el("div", "kartochka");
+  k.appendChild(el("h2", "", "Итог: помощник целиком"));
+  k.appendChild(skazalPomoshnik(TEKST.syuzhet.finish2, true));
+  m.appendChild(k);
+  m.appendChild(kartaPomoshnika());
+  m.appendChild(kartaPravila());
+  m.appendChild(kartaOcenki());
+  m.appendChild(knopka("Новая смена / начать заново", "", novayaSmena));
+  return m;
+}
+
+/* ===================== ВЕРХНИЙ СЛОЙ ===================== */
+
+// obnovit: сохранить и перерисовать текущий экран
+function obnovit() {
+  sohranit();
+  risovatShapku();
+  var m = document.getElementById("ekran");
+  m.textContent = "";
+  if (S.ekran === "start") { risovatStart(m); }
+  if (S.ekran === "remont") { risovatRemont(m); }
+  if (S.ekran === "sintez") { risovatSintez(m); }
+  if (S.ekran === "itog") { risovatItog(m); }
+  return S.ekran;
+}
+
+// podklyuchitMenyu: скрытое меню учителя Ctrl+Alt+M
+function podklyuchitMenyu() {
+  var ok = !!window.MenuEkranov;
+  if (ok) { MenuEkranov.podklyuchit(nastrojkiMenyu()); }
+  return ok;
+}
+
+// tekushchijEkran: id текущего экрана (для меню)
+function tekushchijEkran() {
+  var id = S.ekran;
+  return id;
+}
+
+// zapolnitRemont: данные по умолчанию — ремонт пройден
+function zapolnitRemont() {
+  S.primer = TEKST.primery.length - 1;
+  S.shag = 3;
+  return S;
+}
+
+// zapolnitSintez: данные по умолчанию — прогнозы и вывод
+function zapolnitSintez() {
+  S.prognozy = { s2: 0, s3: 0, s4: 0 };
+  S.vyvod = TEKST.sintezObrazec;
+  return S;
+}
+
+// nastrojkiMenyu: экраны, переход и заполнение для общего модуля меню
+function nastrojkiMenyu() {
+  var n = { ekrany: EKRANY, perejti: perejti, tekushchij: tekushchijEkran,
+    zapolnit: { remont: zapolnitRemont, sintez: zapolnitSintez },
+    sluzhebnoe: [{ nazvanie: "Новая смена", dejstvie: novayaSmena }] };
+  return n;
+}
+
+// urokNachat: загрузить состояние, голос, меню и нарисовать
+function urokNachat() {
+  S = zagruzit();
+  GOLOS = najtiGolos();
+  if ("speechSynthesis" in window) { speechSynthesis.onvoiceschanged = function () { GOLOS = najtiGolos(); }; }
+  podklyuchitMenyu();
+  obnovit();
+  return S.ekran;
+}
+
+urokNachat();
+</script>
+</body>
+</html>
