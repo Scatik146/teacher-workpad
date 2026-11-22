@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Слайды на доску — урок «Цвет»</title>
+<link rel="stylesheet" href="govorun.css">
+<link rel="stylesheet" href="slajdy.css">
+</head>
+<body>
+
+<section id="slajd-1" class="slajd">
+  <h1 class="imya" id="imya" aria-label="Имя учителя"></h1>
+  <button class="knopka knopka--bolshaya" id="knopka-zakrasit" type="button"><span class="vedro" aria-hidden="true"></span>Закрасить</button>
+  <p class="uchitelyu" id="uchitelyu-1"></p>
+</section>
+
+<section id="slajd-2" class="slajd" hidden>
+  <h2 class="imya imya--malo imya--cvet" id="imya-2"></h2>
+  <p class="uchitelyu" id="uchitelyu-2"></p>
+</section>
+
+<section id="slajd-3" class="slajd slajd--noch" hidden>
+  <div class="lupa" id="lupa" hidden><div class="pikseli" id="pikseli"></div></div>
+  <button class="knopka knopka--bolshaya" id="knopka-prismotretsya" type="button">Присмотреться</button>
+  <a class="knopka knopka--dalshe" id="knopka-laboratoriya" href="index.html" hidden>В Лабораторию!</a>
+  <p class="uchitelyu" id="uchitelyu-3"></p>
+</section>
+
+<section id="slajd-4" class="slajd slajd--bumaga" hidden>
+  <div class="konspekt" id="konspekt"></div>
+  <p class="uchitelyu" id="uchitelyu-4"></p>
+</section>
+
+<section id="slajd-5" class="slajd" hidden>
+  <div class="dva-kruga" aria-hidden="true"><span class="krug krug--svet"></span><span class="krug krug--kraska"></span></div>
+  <p class="uchitelyu" id="uchitelyu-5"></p>
+</section>
+
+<nav class="listat" aria-label="Слайды">
+  <button class="listat-knopka" id="nazad" type="button" title="Назад">◀</button>
+  <span class="listat-nomer" id="nomer"></span>
+  <button class="listat-knopka" id="vpered" type="button" title="Вперёд">▶</button>
+</nav>
+
+<footer class="govorun">
+  <svg class="govorun-ptica" viewBox="0 0 100 100" aria-hidden="true">
+    <circle class="ptica-krug" cx="50" cy="50" r="47"/>
+    <ellipse class="ptica-telo" cx="46" cy="62" rx="22" ry="24"/>
+    <circle class="ptica-telo" cx="52" cy="34" r="17"/>
+    <ellipse class="ptica-krylo" cx="38" cy="64" rx="11" ry="16"/>
+    <path class="ptica-klyuv" d="M66 30 L82 37 L66 44 Z"/>
+    <circle class="ptica-glaz" cx="57" cy="30" r="6"/><circle class="ptica-zrachok" cx="59" cy="30" r="3"/>
+    <g class="govorun-lupa"><line class="lupa-ruchka" x1="74" y1="80" x2="88" y2="94"/><circle class="lupa-steklo" cx="70" cy="74" r="11"/></g>
+  </svg>
+  <p class="govorun-tekst" id="govorun-tekst"></p>
+  <button class="govorun-povtor" id="govorun-povtor" type="button" title="Повторить">🔊</button>
+</footer>
+
+<script src="tekst.js"></script>
+<script src="govorun.js"></script>
+<script src="../../lib/drakon-graf/drakon-graf.min.js"></script>
+<script src="../../lib/drakon-graf/konspekt.js"></script>
+<script src="../../lib/menu-ekranov/menu-ekranov.js"></script>
+<script src="slajdy.js"></script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Лаборатория света — урок «Цвет»</title>
+<link rel="stylesheet" href="govorun.css">
+<link rel="stylesheet" href="trenazher.css">
+</head>
+<body>
+
+<main id="ekran-privet" class="ekran ekran--privet">
+  <h1>Лаборатория света</h1>
+  <div class="privet-lampy" aria-hidden="true"><span class="lampa-znak lampa-znak--r"></span><span class="lampa-znak lampa-znak--g"></span><span class="lampa-znak lampa-znak--b"></span></div>
+  <button class="knopka knopka--bolshaya" id="knopka-nachat" type="button">Поехали!</button>
+  <button class="knopka knopka--tihaya" id="knopka-zanovo" type="button">Начать заново</button>
+</main>
+
+<main id="ekran-laboratoriya" class="ekran ekran--noch" hidden>
+  <h2>Лаборатория света</h2>
+  <section class="stol">
+    <div class="lampy" id="lampy-laboratoriya"></div>
+    <div class="ekran-krug" id="krug-laboratoriya" aria-label="Цвет на экране"></div>
+  </section>
+  <button class="knopka knopka--dalshe" id="dalshe-laboratoriya" type="button" hidden>Дальше</button>
+</main>
+
+<main id="ekran-perevodchik" class="ekran ekran--noch" hidden>
+  <h2>Переводчик цвета: <span id="imya-cveta"></span></h2>
+  <section class="stol">
+    <div class="lampy" id="lampy-perevodchik"></div>
+    <div class="krug-para">
+      <div class="kaplya-obrazec" id="obrazec" aria-label="Какой цвет нужен"></div>
+      <div class="ekran-krug" id="krug-perevodchik" aria-label="Цвет на экране"></div>
+    </div>
+  </section>
+  <div class="ryad-knopok">
+    <button class="knopka knopka--tihaya" id="knopka-bonus" type="button" hidden>Трудный цвет!</button>
+    <button class="knopka knopka--dalshe" id="dalshe-perevodchik" type="button" hidden>Дальше</button>
+  </div>
+</main>
+
+<main id="ekran-fizpauza" class="ekran ekran--privet" hidden>
+  <h2>Зарядка для ламп</h2>
+  <div class="privet-lampy privet-lampy--tanec" aria-hidden="true"><span class="lampa-znak lampa-znak--r"></span><span class="lampa-znak lampa-znak--g"></span><span class="lampa-znak lampa-znak--b"></span></div>
+  <button class="knopka knopka--bolshaya" id="dalshe-fizpauza" type="button">Сели!</button>
+</main>
+
+<main id="ekran-ceh" class="ekran ekran--bumaga" hidden>
+  <h2>Печатный цех</h2>
+  <section class="stol">
+    <div class="banki" id="banki"></div>
+    <div class="bumaga-krug" id="krug-ceh" aria-label="Цвет на бумаге"><span class="kaplya" id="kaplya"></span></div>
+  </section>
+  <div class="ryad-knopok">
+    <button class="knopka knopka--tihaya" id="knopka-smyt" type="button">Смыть</button>
+    <button class="knopka knopka--dalshe" id="knopka-printer" type="button" hidden>К краскам принтера</button>
+    <button class="knopka knopka--dalshe" id="dalshe-ceh" type="button" hidden>Дальше</button>
+  </div>
+</main>
+
+<main id="ekran-final" class="ekran ekran--noch" hidden>
+  <h2>Секрет разгадан!</h2>
+  <div class="itog">
+    <div class="itog-stolb"><span class="ekran-krug ekran-krug--belyj"></span><b>Экран светит</b><span>вместе — светлее</span></div>
+    <div class="itog-stolb itog-stolb--bumaga"><span class="bumaga-krug bumaga-krug--temnyj"></span><b>Бумага красится</b><span>вместе — темнее</span></div>
+  </div>
+  <button class="knopka knopka--bolshaya" id="knopka-ura" type="button">Ура!</button>
+  <div class="salyut" id="salyut" aria-hidden="true"></div>
+</main>
+
+<footer class="govorun">
+  <svg class="govorun-ptica" viewBox="0 0 100 100" aria-hidden="true">
+    <circle class="ptica-krug" cx="50" cy="50" r="47"/>
+    <ellipse class="ptica-telo" cx="46" cy="62" rx="22" ry="24"/>
+    <circle class="ptica-telo" cx="52" cy="34" r="17"/>
+    <ellipse class="ptica-krylo" cx="38" cy="64" rx="11" ry="16"/>
+    <path class="ptica-klyuv" d="M66 30 L82 37 L66 44 Z"/>
+    <circle class="ptica-glaz" cx="57" cy="30" r="6"/><circle class="ptica-zrachok" cx="59" cy="30" r="3"/>
+    <g class="govorun-lupa"><line class="lupa-ruchka" x1="74" y1="80" x2="88" y2="94"/><circle class="lupa-steklo" cx="70" cy="74" r="11"/></g>
+  </svg>
+  <p class="govorun-tekst" id="govorun-tekst"></p>
+  <button class="govorun-povtor" id="govorun-povtor" type="button" title="Повторить">🔊</button>
+</footer>
+
+<script src="tekst.js"></script>
+<script src="govorun.js"></script>
+<script src="../../lib/menu-ekranov/menu-ekranov.js"></script>
+<script src="trenazher.js"></script>
+</body>
+</html>

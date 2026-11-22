@@ -1,0 +1,75 @@
+/* ===== Общий вид урока «Цвет»: шрифт, палитра, строка Говоруна ===== */
+@font-face { font-family: 'Nunito'; src: url('../../lib/fonts/nunito/Nunito-VariableFont_wght.ttf') format('truetype'); font-weight: 200 1000; }
+
+:root {
+  --shrift: 'Nunito', 'Segoe UI', Arial, sans-serif;
+  --tekst: 26px;
+  --tekst-krupno: 40px;
+  --tekst-melko: 20px;
+  --chernila: #1f2433;
+  --nebo: #fff6e0;
+  --solnce: #ffb52e;
+  --solnce-temno: #e08a00;
+  --noch: #141826;
+  --noch-2: #232a40;
+  --bumaga: #fffdf7;
+  --linia: #e6dcc4;
+  --ok: #2e9a6b;
+  --krasnyj: #ff2d2d;
+  --zelenyj: #22d14b;
+  --sinij: #2f6bff;
+  --govorun-fon: #ffffff;
+  --govorun-ramka: #ffb52e;
+  --pero: #2fb3a0;
+  --pero-2: #ff7a45;
+  --klyuv: #ffcc33;
+  --radius: 22px;
+  --vysota-govoruna: 112px;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { font-family: var(--shrift); font-size: var(--tekst); color: var(--chernila); background: var(--nebo); overflow: hidden; }
+button { font-family: var(--shrift); cursor: pointer; }
+
+/* --- строка Говоруна --- */
+.govorun {
+  position: fixed; left: 16px; right: 16px; bottom: 14px; min-height: var(--vysota-govoruna);
+  display: flex; align-items: center; gap: 18px; padding: 10px 18px;
+  background: var(--govorun-fon); border: 4px solid var(--govorun-ramka); border-radius: var(--radius);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .18); z-index: 20;
+}
+.govorun-ptica { width: 88px; height: 88px; flex: none; }
+.govorun-tekst { flex: 1; margin: 0; font-size: var(--tekst); font-weight: 700; line-height: 1.3; }
+.govorun-povtor {
+  flex: none; width: 76px; height: 76px; border-radius: 50%; border: 3px solid var(--govorun-ramka);
+  background: var(--nebo); font-size: 36px;
+}
+.govorun-povtor:hover { background: var(--solnce); }
+.govorun--novoe .govorun-tekst { animation: poyavlenie .45s ease-out; }
+.govorun--radost .govorun-ptica { animation: prygat .7s ease-out 2; }
+.govorun-lupa { display: none; }
+.govorun--lupa .govorun-lupa { display: inline; animation: kachat 1.6s ease-in-out infinite; transform-origin: 66px 70px; }
+
+.ptica-telo { fill: var(--pero); }
+.ptica-krylo { fill: var(--pero-2); }
+.ptica-klyuv { fill: var(--klyuv); }
+.ptica-glaz { fill: #ffffff; }
+.ptica-zrachok { fill: var(--chernila); }
+.ptica-krug { fill: var(--nebo); stroke: var(--govorun-ramka); stroke-width: 3; }
+.lupa-ruchka { stroke: #6b4a2b; stroke-width: 6; stroke-linecap: round; }
+.lupa-steklo { fill: rgba(190, 230, 255, .55); stroke: #6b4a2b; stroke-width: 4; }
+
+/* --- кнопки --- */
+.knopka {
+  font-size: var(--tekst); font-weight: 800; padding: 16px 34px; min-height: 72px;
+  border: none; border-radius: 40px; background: var(--solnce); color: var(--chernila);
+  box-shadow: 0 6px 0 var(--solnce-temno);
+}
+.knopka:hover { filter: brightness(1.06); }
+.knopka:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--solnce-temno); }
+.knopka[hidden] { display: none; }
+
+@keyframes poyavlenie { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes prygat { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-18px); } }
+@keyframes kachat { 0%, 100% { transform: rotate(-10deg); } 50% { transform: rotate(12deg); } }
