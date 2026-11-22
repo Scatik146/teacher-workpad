@@ -186,7 +186,7 @@ function zazhech(k) {
 
 // novoePole: новое поле — поле, куда ученик набирает слово или фразу
 function novoePole(cel, alf, vyvodId, nastrojki) {
-  var pole = { cel: cel, nabrano: '', alf: alf, vyvod: el(vyvodId), drevnee: true, posle: null, gotovo: null };
+  var pole = { cel: cel, nabrano: '', alf: alf, vyvod: el(vyvodId), drevnee: true, promahi: 0, posle: null, gotovo: null };
   pole.vyvod.replaceChildren();
   Object.assign(pole, nastrojki || {});
   return pole;
@@ -211,7 +211,33 @@ function uvernulsya(pole, b) {
   var bukva = sozdat('span', 'bukva uvernulas ' + TEKST.ALFAVITY[pole.alf].klass, znak(pole.alf, b));
   pole.vyvod.append(bukva);
   setTimeout(function () { bukva.remove(); }, 520);
-  skazat(TEKST.GOVORUN.uvernulsya);
+  pole.promahi += 1;
+  if (pole.promahi >= 2) { podskazka(pole.cel[pole.nabrano.length]); }
+  else { skazat(TEKST.GOVORUN.uvernulsya); }
+}
+
+// memoslovo: мемослово клавиатуры, в котором прячется буква
+function memoslovo(b) {
+  var najdeno = TEKST.MEMOSLOVA[0];
+  TEKST.MEMOSLOVA.forEach(function (m) {
+    if (m.slovo.indexOf(b) >= 0) { najdeno = m; }
+  });
+  return najdeno;
+}
+
+// mercat: мерцать — клавиши мемослова мягко мерцают на экранной клавиатуре
+function mercat(slovo) {
+  document.querySelectorAll('.klavisha').forEach(function (k) {
+    k.classList.toggle('mercaet', slovo.indexOf(k.dataset.b) >= 0 && k.dataset.b !== ' ');
+  });
+}
+
+// podskazka: подсказка Говоруна — мемослово и мерцание его клавиш
+function podskazka(b) {
+  var m = memoslovo(b);
+  skazat(TEKST.GOVORUN.podskazka.replace('{slovo}', m.slovo).replace('{ryad}', m.ryad));
+  mercat(m.slovo);
+  vzmah();
 }
 
 // prinyat: принять — проверяет букву и кладёт её в поле
@@ -219,6 +245,8 @@ function prinyat(pole, b) {
   var nuzhna = pole.cel[pole.nabrano.length];
   if (b === nuzhna) {
     pole.nabrano += b;
+    pole.promahi = 0;
+    mercat('');
     var bukva = narisovatBukvu(pole, b);
     if (pole.posle) { pole.posle(pole, bukva); }
     if (pole.nabrano === pole.cel && pole.gotovo) { zhdat(450, pole.gotovo); }

@@ -87,6 +87,8 @@ main { max-width: 1100px; margin: 0 auto; padding: 18px; }
 .klavisha .k-ru { font-size: 15px; color: var(--tihij); text-transform: uppercase; }
 .klavisha .k-znak { font-size: 28px; color: var(--tekst); margin-top: 4px; }
 .klavisha.probel-klavisha { width: 360px; }
+.klavisha.mercaet { animation: mercaet 1.2s ease-in-out infinite; }
+@keyframes mercaet { 50% { background: #ffe3a8; border-color: var(--akcent); } }
 .klavisha.nazhata { background: var(--akcent); transform: translateY(3px); box-shadow: none; }
 
 /* Итог, полочка */
