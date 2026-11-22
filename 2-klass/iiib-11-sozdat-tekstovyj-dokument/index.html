@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="data:,">
 <title>Система острова — Как создать текстовый документ?</title>
-<link rel="stylesheet" href="ostrov.css">
+<link rel="stylesheet" href="ostrov.css?v=2026-11-22-5">
 </head>
 <body>
 
@@ -54,6 +54,7 @@
   <section class="ekran pauza" id="e-pauza" hidden>
     <div class="ekran-terminala">
       <span class="kursor-plyvet" id="kursor-plyvet"></span>
+      <div class="terminal-tekst tekst-pauzy" id="tekst-pauzy"></div>
     </div>
     <p class="pauza-nadpis">Механизм думает — не подглядывайте</p>
     <p class="pauza-dela">Отведи глаза от экрана. Посмотри в окно. Моргни 5 раз.</p>
@@ -126,6 +127,7 @@
       <p class="obrazec-frazy obrazec-otveta" id="obrazec-finikija"></p>
       <div class="pole" id="pole-finikija" aria-live="polite"></div>
     </div>
+    <p class="strazh" id="strazh" aria-live="polite" hidden></p>
     <div class="klaviatura" id="klav-kvesta" hidden></div>
   </section>
 
@@ -146,7 +148,7 @@
 </main>
 
 <script src="../../lib/menu-ekranov/menu-ekranov.js"></script>
-<script src="tekst.js"></script>
-<script src="ostrov.js"></script>
+<script src="tekst.js?v=2026-11-22-5"></script>
+<script src="ostrov.js?v=2026-11-22-5"></script>
 </body>
 </html>

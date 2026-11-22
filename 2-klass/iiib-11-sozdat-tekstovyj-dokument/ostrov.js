@@ -8,7 +8,8 @@
          fraza: -1, kv: 'hahaha', t1: '', t2: '' }
    Поле набора (живёт только на экране):
    POLE = { cel: 'СТРАЖ', nabrano: '', alf: 'anbur', vyvod: <div>, drevnee: true,
-            posle: функция после каждой буквы, gotovo: функция в конце }
+            posle: функция после каждой буквы, gotovo: функция в конце,
+            zametil: реплика стража на первую финикийскую букву }
 */
 'use strict';
 
@@ -141,6 +142,18 @@ function pechatatSnomera(uzel, stroki, i, gotovo) {
   var dalshe = function () { zhdat(400, function () { pechatatSnomera(uzel, stroki, i + 1, gotovo); }); };
   if (i < stroki.length) { pechatat(uzel, stroki[i] + '\n', dalshe); }
   else if (gotovo) { gotovo(); }
+}
+
+// strazh: страж — его реплика строкой над клавиатурой, чтобы ребёнок её видел
+function strazh(tekst) {
+  el('strazh').textContent = 'СТРАЖ: ' + tekst;
+  pokazat('strazh', true);
+}
+
+// strazhGovorit: страж говорит — строки в терминал и последняя над клавиатурой
+function strazhGovorit(stroki, gotovo) {
+  strazh(stroki[stroki.length - 1]);
+  pechatatStroki(el('tekst-kvesta'), stroki, gotovo);
 }
 
 /* ---------- средний слой: экранная клавиатура (только показывает нажатое) ---------- */
@@ -377,8 +390,15 @@ function polochka() {
 // tikPauzy: тик паузы — оставшееся время и кнопка в конце
 function tikPauzy(ostalos) {
   el('pauza-vremya').textContent = ostalos > 0 ? 'Осталось ' + ostalos + ' с' : '';
-  pokazat('k-k-redaktoru', ostalos <= 0);
   if (ostalos > 0) { zhdat(1000, function () { tikPauzy(ostalos - 1); }); }
+  else { vhodVSistemu(); }
+}
+
+// vhodVSistemu: вход в систему — терминал печатает подключение, как по SSH, потом кнопка
+function vhodVSistemu() {
+  pokazat('kursor-plyvet', false);
+  skazat(TEKST.GOVORUN.vhod);
+  pechatatStroki(el('tekst-pauzy'), TEKST.VHOD, function () { pokazat('k-k-redaktoru', true); vzmah(); });
 }
 
 // vojtiPauzu: войти в паузу — механизм думает, глаза отдыхают
@@ -386,6 +406,9 @@ function vojtiPauzu() {
   POLE = null;
   schet('');
   skazat(TEKST.GOVORUN.pauzaDela);
+  el('tekst-pauzy').textContent = '';
+  pokazat('kursor-plyvet', true);
+  pokazat('k-k-redaktoru', false);
   tikPauzy(PAUZA_SEKUND);
 }
 
@@ -553,7 +576,7 @@ function knopkiVybora(id, varianty, vybor) {
 function tochka1(bukva) {
   S.t1 = bukva;
   shagKvesta('nazlo');
-  pechatatStroki(el('tekst-kvesta'), [strokaNazlo()], function () { shagKvesta('poslanie'); nachatPoslanieKvesta(); });
+  strazhGovorit([strokaNazlo()], function () { shagKvesta('poslanie'); nachatPoslanieKvesta(); });
 }
 
 // nachatPoslanieKvesta: послание квеста — друг пишет другим алфавитом, первая буква уже открыта
@@ -563,9 +586,15 @@ function nachatPoslanieKvesta() {
   el('poslanie-kvesta').replaceChildren(sozdat('span', 'slovo tek'));
   el('poslanie-kvesta').firstChild.append(sozdat('span', 'znaki ' + TEKST.ALFAVITY[alf].klass, zapisat(alf, TEKST.KVEST.poslanie)));
   klaviatura('klav-kvesta', alf);
-  POLE = novoePole(TEKST.KVEST.poslanie, alf, 'pole-kvesta', { gotovo: function () { POLE = null; shagKvesta('tochka2'); skazat(TEKST.GOVORUN.tochka2); } });
+  POLE = novoePole(TEKST.KVEST.poslanie, alf, 'pole-kvesta', { gotovo: zhduNabrano });
   prinyat(POLE, TEKST.KVEST.poslanie[0]);
   skazat(TEKST.GOVORUN.kvestPoslanie);
+}
+
+// zhduNabrano: «ЖДУ» расшифровано — страж дразнится, потом точка 2
+function zhduNabrano() {
+  POLE = null;
+  strazhGovorit([TEKST.KVEST.zhdu], function () { shagKvesta('tochka2'); skazat(TEKST.GOVORUN.tochka2); });
 }
 
 // uletet: улететь — знак улетает к другу
@@ -605,7 +634,8 @@ function obrazecOtveta(pole) {
 // bukvaOtveta: буква ответа — образец растёт, при «по одной букве» знак улетает
 function bukvaOtveta(pole, bukva) {
   obrazecOtveta(pole);
-  if (S.t2 === 'b') { uletet(pole, bukva); }
+  if (S.t2 === 'b') { uletet(pole, bukva); strazh(TEKST.KVEST.lovlyu + pole.nabrano.split('').join('… ') + '…'); }
+  else if (pole.nabrano.length === 1) { strazh(TEKST.KVEST.pechataete); }
 }
 
 // otvetNabran: ответ набран — по букве сразу в финал, целиком — ждём кнопку
@@ -626,14 +656,27 @@ function otpravitOtvet() {
 // posleOtveta: после ответа — механизм читает «ЛЕТИМ», друг даёт финикийский шифр
 function posleOtveta() {
   shagKvesta('chitaet');
-  pechatatStroki(el('tekst-kvesta'), [TEKST.FINIKIJA.chitaetOtvet], nachatDrug);
+  strazhGovorit([strokaChitaet()], nachatDrug);
+}
+
+// strokaChitaet: строка «читаю» — как страж прочитал «ЛЕТИМ»: целиком или по букве
+function strokaChitaet() {
+  var stroka = TEKST.FINIKIJA.chitaetSrazu;
+  if (S.t2 === 'b') { stroka = TEKST.FINIKIJA.chitaetPoBukve; }
+  return stroka;
 }
 
 // finNabor: финикийский набор — слово финикийскими буквами с образцом
-function finNabor(slovo, gotovo) {
+function finNabor(slovo, zametil, gotovo) {
   klaviatura('klav-kvesta', 'finikija');
-  POLE = novoePole(slovo, 'finikija', 'pole-finikija', { posle: obrazecFinikija, gotovo: gotovo });
+  POLE = novoePole(slovo, 'finikija', 'pole-finikija', { posle: bukvaFinikija, gotovo: gotovo, zametil: zametil });
   obrazecFinikija(POLE);
+}
+
+// bukvaFinikija: финикийская буква — образец растёт, на первую букву страж настораживается
+function bukvaFinikija(pole) {
+  obrazecFinikija(pole);
+  if (pole.nabrano.length === 1) { strazh(pole.zametil); }
 }
 
 // obrazecFinikija: образец финикийского слова — набранное зелёным
@@ -646,7 +689,7 @@ function obrazecFinikija(pole) {
 function nachatDrug() {
   shagKvesta('fin-drug');
   el('finikija-drug').textContent = TEKST.FINIKIJA.drug;
-  finNabor(TEKST.FINIKIJA.slovo, drugNabran);
+  finNabor(TEKST.FINIKIJA.slovo, TEKST.FINIKIJA.zametilDrug, drugNabran);
   skazat(TEKST.GOVORUN.finDrug);
 }
 
@@ -654,14 +697,14 @@ function nachatDrug() {
 function drugNabran() {
   POLE = null;
   shagKvesta('vopros');
-  pechatatStroki(el('tekst-kvesta'), TEKST.FINIKIJA.vopros, nachatShlm);
+  strazhGovorit(TEKST.FINIKIJA.vopros, nachatShlm);
 }
 
 // nachatShlm: начать ШЛМ — подсказка Говоруна и набор главного слова
 function nachatShlm() {
   shagKvesta('fin-shlm');
   el('finikija-drug').textContent = TEKST.FINIKIJA.vopros[2];
-  finNabor(TEKST.FINIKIJA.glavnoe, function () { POLE = null; perejti('final'); });
+  finNabor(TEKST.FINIKIJA.glavnoe, TEKST.FINIKIJA.zametilShlm, function () { POLE = null; perejti('final'); });
   skazat(TEKST.GOVORUN.finShlm);
   vzmah();
 }
@@ -672,12 +715,13 @@ function vojtiKvest() {
   POLE = null;
   schet('');
   tekst.textContent = '';
+  pokazat('strazh', false);
   knopkiVybora('tochka1', TEKST.TOCHKA1, tochka1);
   knopkiVybora('tochka2', TEKST.TOCHKA2, tochka2);
   obnovitKvest();
   if (S.kv === 'chitaet') { S.kv = 'fin-drug'; }
   if (S.kv === 'vopros') { S.kv = 'fin-shlm'; }
-  if (S.kv === 'hahaha' || S.kv === 'nazlo') { S.kv = 'hahaha'; pechatatStroki(tekst, strokiHahaha(), function () { shagKvesta('tochka1'); skazat(TEKST.GOVORUN.tochka1); }); }
+  if (S.kv === 'hahaha' || S.kv === 'nazlo') { S.kv = 'hahaha'; strazhGovorit(strokiHahaha(), function () { shagKvesta('tochka1'); skazat(TEKST.GOVORUN.tochka1); }); }
   else { prodolzhitKvest(tekst); }
 }
 
@@ -694,7 +738,7 @@ function prodolzhitKvest(tekst) {
   var stroki = strokiHahaha();
   var fin = S.kv === 'fin-drug' || S.kv === 'fin-shlm';
   if (S.kv !== 'tochka1') { stroki.push(strokaNazlo()); }
-  if (fin) { stroki.push(TEKST.FINIKIJA.chitaetOtvet); }
+  if (fin) { stroki.push(strokaChitaet()); }
   if (S.kv === 'fin-shlm') { stroki = stroki.concat(TEKST.FINIKIJA.vopros); }
   tekst.textContent = stroki.join('\n') + '\n';
   if (S.kv === 'tochka1') { skazat(TEKST.GOVORUN.tochka1); }
