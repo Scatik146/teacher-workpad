@@ -22,7 +22,7 @@ h2 { font-size: 11.5pt; margin: 0; }
 #skhema { max-width: 100%; max-height: 112mm; display: block; margin: 0 auto; }
 p { margin: 0; }
 .niz { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; align-items: start; }
-#slova svg { width: 100%; height: auto; }
+#slova svg, #skhemy svg { width: 100%; height: auto; }
 .niz > div { display: flex; flex-direction: column; gap: 3mm; }
 #graf svg { width: 100%; height: auto; max-height: 115mm; }
 .zapis { display: grid; grid-template-columns: auto 1fr; gap: 2.5mm 3mm; align-items: end; }
@@ -52,16 +52,18 @@ p { margin: 0; }
     <div>
       <h2>2. Слова ДРАКОНа</h2>
       <div id="slova"></div>
+      <h2>3. Какая схема для чего</h2>
+      <div id="skhemy"></div>
     </div>
     <div>
-      <h2>3. ДРАКОН-ГРАФ урока <span class="tusk">(жёлтое — запомни)</span></h2>
+      <h2>4. ДРАКОН-ГРАФ урока <span class="tusk">(жёлтое — запомни)</span></h2>
       <div id="graf"></div>
     </div>
   </div>
   <p class="tusk">ДРАКОН и ДРАКОН-ГРАФ — авторская методика и инструментарий Веснина С. Н.</p>
 </article>
 
-<script src="tekst.js?v=202611221745"></script>
+<script src="tekst.js?v=202611221749"></script>
 <script src="../../lib/drakon-graf/drakon-graf.min.js"></script>
 <script src="../../lib/drakon-graf/konspekt.js"></script>
 <script>
@@ -71,6 +73,7 @@ p { margin: 0; }
 // risovatList: ДРАКОН-ГРАФ из общих текстов урока и кнопка печати
 function risovatList() {
   if (window.Konspekt) { Konspekt.draw(document.getElementById("slova"), TEKST.grafSlovaDrakona, { class: 9 }); }
+  if (window.Konspekt) { Konspekt.draw(document.getElementById("skhemy"), TEKST.grafSkhemyList, { class: 9 }); }
   if (window.Konspekt) { Konspekt.draw(document.getElementById("graf"), TEKST.grafKonveyer, { class: 9 }); }
   document.getElementById("pechat").addEventListener("click", function () { window.print(); });
   return true;
