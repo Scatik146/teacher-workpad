@@ -41,7 +41,10 @@ h1, h2, p { margin: 0; }
 .risunok { flex: 1; min-height: 0; overflow: hidden; display: flex; justify-content: center; }
 .risunok > div { width: 100%; }
 .graf { height: 100%; display: flex; justify-content: center; }
-.graf svg { height: 100%; width: auto; max-width: 100%; }
+.graf svg { height: auto; width: 100%; max-height: 100%; }
+.dva-graf { display: grid; grid-template-columns: 1.7fr 1fr; gap: 30px; align-items: center; }
+.pro-skhemu { display: flex; flex-direction: column; gap: 14px; font-size: 26px; }
+.pro-skhemu b { color: var(--sinij); }
 .formula { font-size: 34px; font-weight: 700; }
 ul { margin: 0; padding-left: 34px; }
 li { margin: 6px 0; }
@@ -84,20 +87,25 @@ li { margin: 6px 0; }
 
 <section class="slajd" data-etap="3–4. ДРАКОН-ГРАФ">
   <h2>Что такое граф</h2>
-  <p><b>Граф</b> — рисунок из блоков и стрелок: блок — понятие, стрелка — связь, подпись — какая связь. <span class="tusk">ДРАКОН-ГРАФ — граф для конспекта.</span></p>
+  <p><b>Граф</b> — рисунок из блоков и стрелок: блок — понятие, стрелка — связь, подпись — какая связь.</p>
+  <p><b>ДРАКОН-ГРАФ</b> — граф для конспекта. Каждая тема рисуется своей <b>схемой</b>; схема собирается из <b>конструкций</b> — строк особого вида.</p>
   <div class="legenda"><span class="zh">жёлтое — запомни</span><span>белое — разберись</span></div>
-  <div class="dva risunok"><div id="graf1" class="graf"></div><div id="graf2" class="graf"></div></div>
+  <p class="shchelchok">Сегодня в конспекте четыре схемы — смотрим по одной.</p>
 </section>
+
+<div id="graf-slajdy"></div>
 
 <section class="slajd" data-etap="3–4. ДРАКОН-схема">
   <h2>ДРАКОН-схема: слова</h2>
-  <ul>
-    <li><b>Икона</b> — блок схемы: заголовок, действие, вопрос, вывод, конец.</li>
-    <li class="shchelchok"><b>Примитив</b> — схема одной линией сверху вниз.</li>
-    <li class="shchelchok"><b>Силуэт</b> — схема из нескольких веток.</li>
-    <li class="shchelchok"><b>Ветка</b> — часть силуэта со своим именем; ветки читаем слева направо.</li>
-  </ul>
-  <p class="formula shchelchok">Чем ниже — тем позже. Чем правее — тем хуже.</p>
+  <div class="dva-graf risunok">
+    <div id="slova" class="graf"></div>
+    <div class="pro-skhemu">
+      <p><b>Схема ДРАКОН-ГРАФ:</b> батарея</p>
+      <p><b>Конструкция:</b> запоминатель «вопрос → ответ»</p>
+      <p><b>Зачем:</b> выучить слова; закрыл правую часть — проверил себя</p>
+      <p class="formula shchelchok">Чем ниже — тем позже. Чем правее — тем хуже.</p>
+    </div>
+  </div>
 </section>
 
 <section class="slajd" data-etap="3–4. ДРАКОН-схема">
@@ -187,7 +195,7 @@ li { margin: 6px 0; }
 <script>
 "use strict";
 /* N — номер слайда; SLAJDY — все слайды по порядку */
-var SLAJDY = document.querySelectorAll(".slajd");
+var SLAJDY = [];
 var N = 0;
 
 // skrytye: ещё не показанные по щелчку элементы слайда
@@ -240,11 +248,33 @@ function risovatKonveyer() {
   return k;
 }
 
+// slajdGrafa: слайд одной темы конспекта — рисунок и что за схема, из чего, зачем
+function slajdGrafa(n, chast, opis) {
+  var s = document.createElement("section");
+  s.className = "slajd";
+  s.dataset.etap = "3–4. ДРАКОН-ГРАФ: схема " + (n + 1) + " из 4";
+  s.innerHTML = '<h2></h2><div class="dva-graf risunok"><div class="graf"></div><div class="pro-skhemu">' +
+    '<p><b>Схема:</b> <span></span></p><p><b>Из чего:</b> <span></span></p><p class="shchelchok"><b>Зачем:</b> <span></span></p></div></div>';
+  s.querySelector("h2").textContent = "ДРАКОН-ГРАФ " + (n + 1) + "/4: " + opis.imya.toLowerCase();
+  var pola = s.querySelectorAll(".pro-skhemu span");
+  pola[0].textContent = opis.imya; pola[1].textContent = opis.iz; pola[2].textContent = opis.zachem;
+  if (window.Konspekt) { Konspekt.draw(s.querySelector(".graf"), chast, { class: 9 }); }
+  return s;
+}
+
+// risovatGrafSlajdy: четыре слайда — по одному на каждую тему конспекта
+function risovatGrafSlajdy() {
+  var mesto = document.getElementById("graf-slajdy");
+  var chasti = TEKST.grafKonveyer.split("\n---\n");
+  for (var i = 0; i < chasti.length; i++) { mesto.parentNode.insertBefore(slajdGrafa(i, chasti[i], TEKST.grafSkhemy[i]), mesto); }
+  mesto.remove();
+  return chasti.length;
+}
+
 // risovatSkhemy: ДРАКОН-ГРАФ и ДРАКОН-схема из общих текстов урока
 function risovatSkhemy() {
-  var chasti = TEKST.grafKonveyer.split("\n---\n");
-  if (window.Konspekt) { Konspekt.draw(document.getElementById("graf1"), chasti.slice(0, 2).join("\n---\n"), { class: 9 }); }
-  if (window.Konspekt) { Konspekt.draw(document.getElementById("graf2"), chasti.slice(2).join("\n---\n"), { class: 9 }); }
+  risovatGrafSlajdy();
+  if (window.Konspekt) { Konspekt.draw(document.getElementById("slova"), TEKST.grafSlovaDrakona, { class: 9 }); }
   if (window.DrakonShema) { DrakonShema.pokazat(document.getElementById("drakon"), TEKST.drakonPomoshnik); }
   return true;
 }
@@ -253,6 +283,7 @@ function risovatSkhemy() {
 function nachat() {
   risovatKonveyer();
   risovatSkhemy();
+  SLAJDY = document.querySelectorAll(".slajd");
   document.addEventListener("keydown", klavisha);
   document.getElementById("vpered").addEventListener("click", vpered);
   document.getElementById("nazad").addEventListener("click", nazad);
