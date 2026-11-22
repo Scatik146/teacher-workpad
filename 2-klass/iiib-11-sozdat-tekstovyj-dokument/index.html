@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Система острова — Как создать текстовый документ?</title>
+<link rel="stylesheet" href="ostrov.css">
+</head>
+<body>
+
+<header class="panel">
+  <div class="govorun" aria-hidden="true">
+    <span class="g-telo"></span><span class="g-krylo"></span><span class="g-glaz"></span><span class="g-klyuv"></span><span class="g-hoholok"></span>
+  </div>
+  <p class="g-rech" id="rech">Привет!</p>
+  <p class="g-schet" id="schet"></p>
+  <p class="status">Система острова</p>
+</header>
+
+<main>
+
+  <!-- 1. Рабочий стол -->
+  <section class="ekran stol" id="e-stol">
+    <h1>Система острова</h1>
+    <p class="podskazka">Какие буквы на твоём листе?</p>
+    <div class="vybor-alfavita">
+      <button type="button" class="karta-alfavita" id="v-anbur" data-alf="anbur">
+        <span class="obrazec pismo-anbur">𐍐𐍑𐍒𐍓</span><span class="imya">Анбур</span>
+      </button>
+      <button type="button" class="karta-alfavita" id="v-glagolica" data-alf="glagolica">
+        <span class="obrazec pismo-glagolica">ⰀⰁⰂⰃ</span><span class="imya">Глаголица</span>
+      </button>
+    </div>
+    <button type="button" class="glavnaya" id="k-otkryt-poslanie" disabled>Открыть послание друга</button>
+    <button type="button" class="tihaya" id="k-novaya-smena">Новая смена / начать заново</button>
+  </section>
+
+  <!-- 2. Расшифровка -->
+  <section class="ekran" id="e-rasshifrovka" hidden>
+    <h2>Послание друга</h2>
+    <div class="poslanie" id="poslanie"></div>
+    <div class="pole" id="pole-rasshifrovki" aria-live="polite"></div>
+    <div class="klaviatura" id="klav-rasshifrovki"></div>
+    <div class="itog" id="itog-rasshifrovki" hidden>
+      <p class="pismo-druga" id="pismo-druga"></p>
+      <button type="button" class="glavnaya" id="k-k-pauze">Дальше</button>
+      <button type="button" class="tihaya" id="k-polochka">Полочка для быстрых</button>
+      <div class="polochka" id="polochka" hidden></div>
+    </div>
+  </section>
+
+  <!-- 3. Микропауза -->
+  <section class="ekran pauza" id="e-pauza" hidden>
+    <div class="ekran-terminala">
+      <span class="kursor-plyvet" id="kursor-plyvet"></span>
+    </div>
+    <p class="pauza-nadpis">Механизм думает — не подглядывайте</p>
+    <p class="pauza-dela">Отведи глаза от экрана. Посмотри в окно. Моргни 5 раз.</p>
+    <p class="pauza-vremya" id="pauza-vremya"></p>
+    <button type="button" class="glavnaya" id="k-k-redaktoru" hidden>Механизм додумал. Дальше</button>
+  </section>
+
+  <!-- 4. Редактор -->
+  <section class="ekran" id="e-redaktor" hidden>
+    <div class="rabochij-stol" id="stol-redaktora">
+      <button type="button" class="znachok" id="k-znachok-redaktora">
+        <span class="znachok-list" aria-hidden="true"></span><span>Редактор</span>
+      </button>
+    </div>
+    <div class="okno" id="okno" hidden>
+      <div class="okno-shapka">
+        <span class="okno-nazvanie" id="okno-nazvanie">Текстовый редактор</span>
+        <span class="okno-knopki" aria-hidden="true"><i></i><i></i><i></i></span>
+      </div>
+      <nav class="okno-menyu">
+        <div class="menyu-fajl">
+          <button type="button" id="k-fajl">Файл</button>
+          <div class="menyu-spisok" id="spisok-fajl" hidden>
+            <button type="button" id="k-sozdat">Создать</button>
+            <button type="button" disabled>Открыть…</button>
+            <button type="button" disabled>Сохранить</button>
+          </div>
+        </div>
+        <div class="menyu-shrift" id="blok-shrifta" hidden>
+          <span>Шрифт:</span>
+          <button type="button" class="shrift-tekushchij" id="k-shrift">Arial ▾</button>
+          <div class="spisok-shriftov" id="spisok-shriftov" hidden></div>
+        </div>
+      </nav>
+      <div class="okno-pole" id="okno-pole">
+        <p class="pusto" id="pusto-okna">Нет открытых документов</p>
+        <div class="list-dokumenta" id="list-dokumenta" hidden>
+          <div class="frazy" id="frazy" hidden></div>
+          <p class="obrazec-frazy" id="obrazec-frazy" hidden></p>
+          <div class="nabor" id="nabor-redaktora" aria-live="polite"></div>
+        </div>
+      </div>
+      <div class="okno-niz">
+        <div class="klaviatura" id="klav-redaktora" hidden></div>
+        <button type="button" class="glavnaya" id="k-otpravit" hidden>Отправить через Говоруна</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Квест -->
+  <section class="ekran" id="e-kvest" hidden>
+    <div class="terminal" id="terminal-kvesta">
+      <div class="terminal-tekst" id="tekst-kvesta"></div><span class="kursor"></span>
+    </div>
+    <div class="knopki-vybora" id="tochka1" hidden></div>
+    <div class="kvest-poslanie" id="kvest-poslanie" hidden>
+      <p class="pismo-druga" id="kvest-drug"></p>
+      <div class="poslanie" id="poslanie-kvesta"></div>
+      <div class="pole" id="pole-kvesta" aria-live="polite"></div>
+    </div>
+    <div class="knopki-vybora" id="tochka2" hidden></div>
+    <div class="otvet-kvesta" id="otvet-kvesta" hidden>
+      <div class="pole" id="pole-otveta" aria-live="polite"></div>
+      <div class="polet" id="polet"></div>
+      <button type="button" class="glavnaya" id="k-otpravit-otvet" hidden>Отправить</button>
+    </div>
+    <div class="klaviatura" id="klav-kvesta" hidden></div>
+  </section>
+
+  <!-- 6. Финал -->
+  <section class="ekran" id="e-final" hidden>
+    <div class="terminal" id="terminal-finala">
+      <div class="terminal-tekst" id="tekst-finala"></div>
+      <p class="finikijskoe" id="finikijskoe" dir="rtl" lang="phn"></p>
+      <div class="terminal-tekst" id="tekst-finala-2"></div><span class="kursor"></span>
+    </div>
+    <svg class="samolet" id="samolet" viewBox="0 0 120 60" aria-hidden="true" hidden>
+      <path d="M4 34 L70 30 L96 6 L106 6 L90 30 L112 29 Q120 32 112 35 L90 35 L106 56 L96 56 L70 37 L4 36 Z M10 34 L4 22 L12 22 L24 32 Z"/>
+    </svg>
+    <p class="istoriya" id="istoriya" hidden></p>
+    <p class="put" id="put" hidden></p>
+  </section>
+
+</main>
+
+<script src="../../lib/menu-ekranov/menu-ekranov.js"></script>
+<script src="tekst.js"></script>
+<script src="ostrov.js"></script>
+</body>
+</html>
