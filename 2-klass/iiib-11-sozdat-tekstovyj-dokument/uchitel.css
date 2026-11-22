@@ -1,0 +1,51 @@
+/* Приложение учителя — оформление. Цвета и размеры — переменными. */
+@font-face { font-family: "Nunito"; src: url("../../lib/fonts/nunito/Nunito-VariableFont_wght.ttf"); font-weight: 200 1000; font-display: swap; }
+
+:root {
+  --fon: #0b2a36;
+  --more: #1f6f8b;
+  --akcent: #f2a541;
+  --svet: #ffffff;
+  --terminal: #050805;
+  --terminal-zelenyj: #9dff9d;
+  --terminal-drug: #d6ffd6;
+  --shrift: "Nunito", "Segoe UI", Arial, sans-serif;
+  --mono: "Courier New", "Lucida Console", monospace;
+  --kegl-terminala: clamp(26px, 3.3vw, 52px);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--fon); color: var(--svet); font: 22px/1.4 var(--shrift); overflow: hidden; }
+button { font: inherit; cursor: pointer; }
+[hidden] { display: none !important; }
+
+.scena { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 4vh 5vw; }
+
+/* Сцена 1. Титул */
+.titul { background: radial-gradient(circle at 50% 35%, #1f6f8b 0%, var(--fon) 70%); }
+.titul h1 { font-size: clamp(40px, 6vw, 96px); line-height: 1.1; margin: 0 0 3vh; }
+.titul .kurs { font-size: clamp(20px, 2.2vw, 36px); opacity: .85; margin: 0; }
+.titul .data { font-size: clamp(18px, 1.8vw, 30px); opacity: .7; margin: 1vh 0 5vh; }
+.nachat { background: var(--akcent); color: #2a1d05; border: none; border-radius: 18px; padding: 2vh 4vw; font-size: clamp(24px, 2.6vw, 44px); font-weight: 800; }
+
+/* Сцена 2. Сбой */
+.sboj { background: #000; overflow: hidden; }
+.sboj h2 { font: 800 clamp(48px, 8vw, 140px)/1 var(--mono); color: var(--terminal-zelenyj); margin: 0; animation: drozh .08s infinite; text-shadow: 6px 0 #ff2a6d, -6px 0 #05d9e8; }
+.polosa { position: absolute; left: 0; right: 0; height: 6vh; background: rgba(157, 255, 157, .35); animation: polosa .5s linear infinite; }
+.polosa.p2 { animation-duration: .33s; background: rgba(255, 42, 109, .3); }
+.polosa.p3 { animation-duration: .7s; background: rgba(5, 217, 232, .3); }
+@keyframes drozh { 25% { transform: translate(-8px, 4px); } 50% { transform: translate(6px, -6px) skewX(8deg); } 75% { transform: translate(-4px, -2px); } }
+@keyframes polosa { from { top: -10vh; } to { top: 110vh; } }
+
+/* Сцена 3. Терминал */
+.terminal { background: var(--terminal); align-items: stretch; justify-content: flex-start; text-align: left; padding: 4vh 5vw 14vh; }
+.vyvod { font: var(--kegl-terminala)/1.45 var(--mono); color: var(--terminal-zelenyj); white-space: pre-wrap; text-shadow: 0 0 10px rgba(157, 255, 157, .45); overflow: auto; }
+.vyvod div { margin-bottom: .35em; }
+.vyvod .drug { color: var(--terminal-drug); }
+.kursor { display: inline-block; width: .62em; height: 1em; vertical-align: -.12em; background: var(--terminal-zelenyj); animation: migat 1s steps(1) infinite; }
+@keyframes migat { 50% { opacity: 0; } }
+.pult { position: fixed; left: 0; right: 0; bottom: 0; display: flex; gap: 14px; justify-content: center; padding: 2vh; background: rgba(0, 0, 0, .7); }
+.pult button { background: #102010; color: var(--terminal-zelenyj); border: 2px solid var(--terminal-zelenyj); border-radius: 12px; padding: 1.2vh 2.4vw; font: 700 clamp(18px, 1.7vw, 30px) var(--mono); }
+.pult button:disabled { opacity: .4; cursor: default; }
+.pult .zvuk[aria-pressed="false"] { color: #888; border-color: #888; }
