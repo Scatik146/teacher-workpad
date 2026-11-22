@@ -7,7 +7,9 @@
 */
 window.Govorun = (function () {
 'use strict';
-var sostoyanie = { poslednee: '', golos: null };
+/* nomer — номер текущей реплики; zhdet — {nomer, posle}: что сделать, когда реплика договорена */
+var sostoyanie = { poslednee: '', golos: null, nomer: 0, zhdet: null, tajmer: null };
+var PAUZA_POSLE = 700;
 
 // golosRusskij: русский голос системы или null
 function golosRusskij() {
@@ -28,8 +30,24 @@ function zapomnitGolos() {
   }
 }
 
-// proiznesti: сказать текст голосом, если голос есть
-function proiznesti(tekst) {
+// dlitelnostChteniya: сколько мс нужно, чтобы реплику успели прочитать вслух
+function dlitelnostChteniya(tekst) {
+  var ms = Math.max(3000, String(tekst).length * 90);
+  return ms;
+}
+
+// zakonchit: реплика nomer договорена — через паузу выполнить отложенное
+function zakonchit(nomer) {
+  var zhdet = sostoyanie.zhdet;
+  if (zhdet && zhdet.nomer === nomer) {
+    sostoyanie.zhdet = null;
+    clearTimeout(sostoyanie.tajmer);
+    setTimeout(zhdet.posle, PAUZA_POSLE);
+  }
+}
+
+// proiznesti: сказать текст голосом, если голос есть; конец речи — zakonchit(nomer)
+function proiznesti(tekst, nomer) {
   var mozhno = !!(window.speechSynthesis && sostoyanie.golos);
   if (mozhno) try {
     window.speechSynthesis.cancel();
@@ -38,6 +56,7 @@ function proiznesti(tekst) {
     fraza.lang = sostoyanie.golos.lang;
     fraza.rate = 0.95;
     fraza.pitch = 1.25;
+    fraza.onend = function () { zakonchit(nomer); };
     window.speechSynthesis.speak(fraza);
   } catch (e) { /* без голоса урок идёт по тексту */ }
 }
@@ -54,16 +73,31 @@ function napisat(tekst) {
   }
 }
 
-// skazat: реплика Говоруна — текстом и голосом
-function skazat(tekst) {
+// zapasnojSrok: когда продолжить, если конца речи не дождались (голоса нет — время на чтение)
+function zapasnojSrok(tekst) {
+  var ms = dlitelnostChteniya(tekst);
+  if (sostoyanie.golos) ms = ms + 4000;
+  return ms;
+}
+
+// skazat: реплика Говоруна — текстом и голосом; posle — что сделать, когда договорит
+function skazat(tekst, posle) {
+  var nomer = sostoyanie.nomer + 1;
+  sostoyanie.nomer = nomer;
   sostoyanie.poslednee = tekst;
+  clearTimeout(sostoyanie.tajmer);
+  sostoyanie.zhdet = null;
+  if (posle) {
+    sostoyanie.zhdet = { nomer: nomer, posle: posle };
+    sostoyanie.tajmer = setTimeout(function () { zakonchit(nomer); }, zapasnojSrok(tekst));
+  }
   napisat(tekst);
-  proiznesti(tekst);
+  proiznesti(tekst, nomer);
 }
 
 // povtorit: повторить последнюю реплику голосом
 function povtorit() {
-  proiznesti(sostoyanie.poslednee);
+  proiznesti(sostoyanie.poslednee, sostoyanie.nomer);
 }
 
 // radost: птица подпрыгивает

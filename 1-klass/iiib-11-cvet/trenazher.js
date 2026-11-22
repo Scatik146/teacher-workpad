@@ -204,12 +204,11 @@ function nazhatLampu(id) {
   }
 }
 
-// uspehSveta: похвала и через паузу следующее задание
+// uspehSveta: похвала; когда Говорун договорит — следующее задание
 function uspehSveta() {
   R.zhdem = true;
   Govorun.radost();
-  Govorun.skazat(sluchajnoe(T.laboratoriya.uspeh));
-  setTimeout(sleduyushcheeSveta, 1800);
+  Govorun.skazat(sluchajnoe(T.laboratoriya.uspeh), sleduyushcheeSveta);
 }
 
 // sdvinutPerevodchik: следующий цвет переводчика
@@ -351,12 +350,11 @@ function oshibkaPechati(z) {
   else Govorun.skazat(T.ceh.neTo);
 }
 
-// uspehPechati: похвала и через паузу следующее задание
+// uspehPechati: похвала; когда Говорун договорит — следующее задание
 function uspehPechati(z) {
   R.zhdem = true;
   Govorun.radost();
-  Govorun.skazat(z.uspeh);
-  setTimeout(sleduyushcheePechati, 2600);
+  Govorun.skazat(z.uspeh, sleduyushcheePechati);
 }
 
 // proveritPechat: нужные краски — успех, лишние или не те — ошибка
