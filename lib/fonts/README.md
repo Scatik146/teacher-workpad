@@ -16,6 +16,11 @@
 | `pangolin/` | `Pangolin-Regular.ttf` | 400 | `2-klass/ya-avtor/` |
 | `nunito/` | `Nunito-VariableFont_wght.ttf` | 200–1000 (переменный) | `2-klass/ya-avtor/` |
 | `caveat/` | `Caveat-VariableFont_wght.ttf` | 400–700 (переменный) | `2-klass/ya-avtor/` |
+| `noto-sans-old-permic/` | `NotoSansOldPermic-Regular.ttf` | 400 | `2-klass/iiib-11-sozdat-tekstovyj-dokument/` (анбур; копия из komi-perm-game-calendar) |
+| `noto-sans-glagolitic/` | `NotoSansGlagolitic-Regular.ttf` | 400 | `2-klass/iiib-11-sozdat-tekstovyj-dokument/` (глаголица) |
+| `noto-sans-phoenician/` | `NotoSansPhoenician-Regular.ttf` | 400 | `2-klass/iiib-11-sozdat-tekstovyj-dokument/` (финикийское письмо) |
+
+Древние шрифты (22.11.2026) — без кириллицы, только свой блок Unicode; источник — google/fonts `ofl/notosans…/`.
 
 Подключение (так сделано в «Я автор»):
 
