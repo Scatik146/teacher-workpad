@@ -187,7 +187,7 @@ li { margin: 6px 0; }
   <button type="button" id="vpered">→</button>
 </footer>
 
-<script src="tekst.js"></script>
+<script src="tekst.js?v=202611221745"></script>
 <script src="../../lib/drakon-graf/drakon-graf.min.js"></script>
 <script src="../../lib/drakon-graf/konspekt.js"></script>
 <script src="../../lib/drakonwidget/drakonwidget.js"></script>
@@ -266,7 +266,8 @@ function slajdGrafa(n, chast, opis) {
 function risovatGrafSlajdy() {
   var mesto = document.getElementById("graf-slajdy");
   var chasti = TEKST.grafKonveyer.split("\n---\n");
-  for (var i = 0; i < chasti.length; i++) { mesto.parentNode.insertBefore(slajdGrafa(i, chasti[i], TEKST.grafSkhemy[i]), mesto); }
+  var opisanie = TEKST.grafSkhemy || [];
+  for (var i = 0; i < chasti.length; i++) { mesto.parentNode.insertBefore(slajdGrafa(i, chasti[i], opisanie[i] || { imya: "Схема " + (i + 1), iz: "", zachem: "" }), mesto); }
   mesto.remove();
   return chasti.length;
 }
@@ -281,8 +282,7 @@ function risovatSkhemy() {
 
 // nachat: подготовить слайды и кнопки
 function nachat() {
-  risovatKonveyer();
-  risovatSkhemy();
+  try { risovatKonveyer(); risovatSkhemy(); } catch (e) { console.error("Слайды: рисунки не построились", e); }
   SLAJDY = document.querySelectorAll(".slajd");
   document.addEventListener("keydown", klavisha);
   document.getElementById("vpered").addEventListener("click", vpered);
