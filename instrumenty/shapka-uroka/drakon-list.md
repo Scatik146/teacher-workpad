@@ -173,3 +173,8 @@
 | mestoIzPlana, vzyatIzPlana | верхний | урок плана → тема, место, до, после | urokiKursa, prochitatFormu, perestroit |
 | obnovitPlan, podklyuchitPlan | верхний | блок «Урок из плана» следит за предметом и классом | kursyPredmeta, spisokKursov, spisokUrokov |
 | dopolnenieSpiska | средний | после списка механик — отмеченные приёмы с адресами | tekstResursov |
+| prochitatSvoiPriemy / zapisatSvoiPriemy | нижний | свои приёмы учителя в localStorage, в try/catch | — |
+| variantyGalochek, svodkaGalochek | средний | варианты с своими приёмами; сводка «Выбрано: N — …» | prochitatSvoiPriemy |
+| knopka, okno, galochkiVOkne | средний | свёрнутый список: сводка, «Выбрать…», окно со столбиком | galochki, sozdat |
+| obnovitSvodki | верхний | сводки свёрнутых списков после правки | svodkaGalochek |
+| novyePriemy, vnestiMehaniki, dobavitPriem, otkrytOkno | верхний | механики учителя → новые приёмы (без повторов) | prochitatFormu, perestroit |

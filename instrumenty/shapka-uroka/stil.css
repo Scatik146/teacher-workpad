@@ -6,7 +6,7 @@
   --fon:#f6f1e6; --fon2:#ece4d2; --tyomnyj:#1f2329; --chernila:#1d2126; --seryj:#5b5346; --seryj2:#a9b2bc;
   --yantar:#f2a93b; --yantar2:#ffcf7a; --rama:#d9cfb9; --belyj:#fff; --zelenyj:#2e7d55; --krasnyj:#a8461e;
   --shrift:"Nunito",sans-serif; --mono:"PT Mono",monospace;
-  --radius:10px; --shirina-itoga:440px;
+  --radius:10px; --shirina-itoga:440px; --ten:rgba(31,35,41,.45);
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--fon);color:var(--chernila);font:15px/1.4 var(--shrift)}
@@ -75,3 +75,14 @@ button:hover{border-color:var(--yantar)}
 .plan .podpis { color: var(--yantar2); }
 .plan select { width: auto; max-width: 32em; }
 .plan small { flex-basis: 100%; color: var(--seryj2); }
+
+/* свёрнутые списки (приёмы, ресурсы): сводка + окно со столбиком и прокруткой */
+.vybor-okno { display: flex; flex-wrap: wrap; align-items: center; gap: .6em; }
+.svodka { color: var(--seryj); flex: 1 1 20em; }
+.okno { width: min(720px, 92vw); max-height: 82vh; overflow: auto; border: 1px solid var(--rama); border-radius: var(--radius); padding: 14px 18px; }
+.okno::backdrop { background: var(--ten); }
+.okno h3 { margin: 0 0 10px; font-size: 16px; }
+.galochki.stolbik { flex-direction: column; gap: 6px; margin-bottom: 12px; }
+.okno button { margin-right: .5em; }
+.pole > .malaya { align-self: flex-start; }
+.okno .glavnaya, .okno .malaya { position: sticky; bottom: 0; }

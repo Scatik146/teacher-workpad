@@ -23,6 +23,8 @@ const SHAPKA_DANNYE = {
   klyuch: 'twp-shapka-uroka',
   klyuchShablonov: 'twp-shapka-uroka-shablony',
   klyuchPredmetov: 'twp-shapka-uroka-predmety',
+  klyuchPriemov: 'twp-shapka-uroka-priemy',
+  noviyPriem: 'придумано учителем — Claude: обобщить и внести в каталог приёмов (razbor-vse-uroki) и в dannye.js',
   /* предмет → файл поурочного плана (plan/<файл>.md); у своих предметов курс выбирают в блоке «Урок из плана» */
   planKursy: { 'ТРУД-5-7': ['trud-5-9'], 'ИНФ-7-9Б': ['inf-7-9'], 'ИНФ-10-11П': ['inf-10-11'], 'ИИИБ-1-4': ['iiib-1-4'],
     'ИИИБ-5-11': ['iiib-5-9', 'iiib-10-11'], 'РПЗ-10-11': ['rpz-10'], 'ПРОГ-5-7': ['prog-5-7'] },
@@ -83,9 +85,9 @@ const SHAPKA_DANNYE = {
     ] },
     { nomer: 7, nazvanie: 'Механики Мозга', polya: [
       { id: 'mehaniki', podpis: 'Механики', vid: 'spisok', poUmolchaniyu: [], primer: ['нет'], shirokoe: true,
-        podskazka: 'одна механика — одна строка' },
+        podskazka: 'одна механика — одна строка', vPriemy: true },
       { id: 'priemy', podpis: 'Приёмы проведённых уроков (образец по адресу; каталог — ii-komanda komanda/chernoviki/teacher-workpad/razbor-vse-uroki/README.md)',
-        vid: 'resursy', shirokoe: true, poUmolchaniyu: {}, primer: { p11: true, p12: true },
+        vid: 'resursy', shirokoe: true, svoiPriemy: true, poUmolchaniyu: {}, primer: { p11: true, p12: true },
         varianty: [
           { id: 'p01', podpis: 'П-1 антикликер «действие в данных»', gde: 'teacher-workpad 7-klass/dataset-pomoshnik (scenariy.html, «Шаг А»)' },
           { id: 'p02', podpis: 'П-2 мастер-подсказчик (до 3 подсказок, лестница)', gde: 'teacher-workpad 7-klass/dataset-pomoshnik; 5-klass/ekho-uzel (пейджер)' },

@@ -63,6 +63,18 @@ function zapisatShablony(shablony) {
   try { localStorage.setItem(D.klyuchShablonov, JSON.stringify(shablony)); } catch (e) { /* хранилище закрыто */ }
 }
 
+// prochitatSvoiPriemy: приёмы, которые учитель внёс из своих механик [{id, podpis, gde}]
+function prochitatSvoiPriemy() {
+  let spisok = [];
+  try { spisok = JSON.parse(localStorage.getItem(D.klyuchPriemov)) || []; } catch (e) { spisok = []; }
+  return spisok;
+}
+
+// zapisatSvoiPriemy: сохранить свои приёмы
+function zapisatSvoiPriemy(spisok) {
+  try { localStorage.setItem(D.klyuchPriemov, JSON.stringify(spisok)); } catch (e) { /* хранилище закрыто */ }
+}
+
 // prochitatSvoiPredmety: свои предметы учителя (список строк)
 function prochitatSvoiPredmety() {
   let spisok = [];
@@ -196,7 +208,44 @@ function chisloRyadom(variant, v) {
 // galochki: все галочки артефактов
 function galochki(p, v) {
   const blok = sozdat('div', 'galochki');
-  p.varianty.forEach(variant => blok.append(galochka(variant, v)));
+  variantyGalochek(p).forEach(variant => blok.append(galochka(variant, v)));
+  return blok;
+}
+
+// variantyGalochek: варианты галочек; у приёмов — ещё свои приёмы учителя
+function variantyGalochek(p) {
+  return p.svoiPriemy ? p.varianty.concat(prochitatSvoiPriemy()) : p.varianty;
+}
+
+// svodkaGalochek: «Выбрано: 2 — П-1 …; П-11 …» для свёрнутого списка
+function svodkaGalochek(p, v) {
+  const otmecheny = variantyGalochek(p).filter(x => v && v[x.id]).map(x => x.podpis);
+  return otmecheny.length ? 'Выбрано: ' + otmecheny.length + ' — ' + otmecheny.join('; ') : 'Ничего не выбрано';
+}
+
+// knopka: кнопка type=button с текстом и меткой действия
+function knopka(tekst, klass, dejstvie, znachenie) {
+  const k = sozdat('button', klass, tekst);
+  k.type = 'button';
+  k.dataset[dejstvie] = znachenie;
+  return k;
+}
+
+// okno: экранное окно со списком галочек столбиком и прокруткой
+function okno(p, v) {
+  const d = sozdat('dialog', 'okno');
+  const spisok = galochki(p, v);
+  spisok.classList.add('stolbik');
+  d.append(sozdat('h3', '', p.podpis), spisok);
+  if (p.svoiPriemy) d.append(knopka('+ свой приём', 'malaya', 'svojPriem', p.id));
+  d.append(knopka('Готово', 'glavnaya', 'zakryt', p.id));
+  return d;
+}
+
+// galochkiVOkne: свёрнутый список — сводка, кнопка «Выбрать…» и окно
+function galochkiVOkne(p, v) {
+  const blok = sozdat('div', 'vybor-okno');
+  blok.append(sozdat('span', 'svodka', svodkaGalochek(p, v)), knopka('Выбрать…', 'malaya', 'okno', p.id), okno(p, v));
   return blok;
 }
 
@@ -211,7 +260,7 @@ const VIDY = {
   dlinnyj: (p, v) => abzac(p, v),
   spisok: (p, v) => nomerSpisok(p, v),
   galochki: (p, v) => galochki(p, v),
-  resursy: (p, v) => galochki(p, v)
+  resursy: (p, v) => galochkiVOkne(p, v)
 };
 
 // kartochkaPolya: подпись и поле ввода
@@ -224,6 +273,7 @@ function kartochkaPolya(p) {
   blok.append(podpis, vvod);
   if (p.svoiVarianty) blok.append(knopkiSvoih());
   if (p.svoiVarianty && p.podskazka) blok.append(sozdat('small', 'poyasnenie', p.podskazka));
+  if (p.vPriemy) blok.append(knopka('Внести мои механики в список приёмов', 'malaya', 'vPriemy', p.id));
   return blok;
 }
 
@@ -300,7 +350,7 @@ function tekstArtefakta(variant, v) {
 
 // tekstResursov: отмеченные ресурсы с адресами, каждый с новой строки
 function tekstResursov(p, v) {
-  const otmecheny = p.varianty.filter(x => v[x.id]);
+  const otmecheny = variantyGalochek(p).filter(x => v[x.id]);
   const tekst = otmecheny.map(x => '   - ' + x.podpis + ' — ' + x.gde).join('\n');
   return otmecheny.length ? '\n' + tekst : ' нет';
 }
@@ -379,10 +429,18 @@ function pokazatShapku() {
   document.getElementById('schetchik').className = n ? 'schetchik est' : 'schetchik net';
 }
 
+// obnovitSvodki: сводки свёрнутых списков по текущим значениям
+function obnovitSvodki() {
+  vsePolya().filter(p => p.vid === 'resursy').forEach(p => {
+    document.querySelector('[data-pole="' + p.id + '"] .svodka').textContent = svodkaGalochek(p, S.znacheniya[p.id]);
+  });
+}
+
 // obnovit: форма → состояние → хранилище → текст шапки
 function obnovit() {
   prochitatFormu();
   zapisatHranilishche();
+  obnovitSvodki();
   pokazatShapku();
 }
 
@@ -507,13 +565,51 @@ function ubratPredmet() {
   if (!svoi.includes(imya)) soobshchit('Убрать можно только свой предмет');
 }
 
-// nazhatie: кнопки внутри формы («+ механика», «×», «+ свой», «− убрать свой»)
+// novyePriemy: строки механик, которых ещё нет среди приёмов → новые приёмы учителя
+function novyePriemy(stroki, est) {
+  const imena = est.map(x => x.podpis.toLowerCase());
+  const novye = stroki.map(s => s.trim()).filter(s => s && s.toLowerCase() !== 'нет' && !imena.includes(s.toLowerCase()));
+  return novye.map((s, i) => ({ id: 's' + Date.now().toString(36) + i, podpis: s, gde: D.noviyPriem }));
+}
+
+// vnestiMehaniki: механики учителя → свои приёмы (отмечены в шапке, ждут обобщения Claude)
+function vnestiMehaniki() {
+  prochitatFormu();
+  const svoi = prochitatSvoiPriemy();
+  const novye = novyePriemy(S.znacheniya.mehaniki || [], svoi);
+  zapisatSvoiPriemy(svoi.concat(novye));
+  novye.forEach(x => { S.znacheniya.priemy[x.id] = true; });
+  perestroit();
+  soobshchit(novye.length ? 'В приёмы внесено: ' + novye.length : 'Новых механик нет');
+}
+
+// dobavitPriem: спросить и добавить свой приём
+function dobavitPriem() {
+  const imya = (prompt('Новый приём (коротко, как в списке):', '') || '').trim();
+  const novye = imya ? novyePriemy([imya], prochitatSvoiPriemy()) : [];
+  prochitatFormu();
+  zapisatSvoiPriemy(prochitatSvoiPriemy().concat(novye));
+  novye.forEach(x => { S.znacheniya.priemy[x.id] = true; });
+  if (novye.length) perestroit();
+  if (novye.length) otkrytOkno('priemy');
+}
+
+// otkrytOkno: показать окно со списком поля
+function otkrytOkno(id) {
+  document.querySelector('[data-pole="' + id + '"] dialog').showModal();
+}
+
+// nazhatie: кнопки внутри формы («+ механика», «×», «+ свой», «− убрать свой», окна списков)
 function nazhatie(e) {
   const k = e.target.closest('button');
   if (k && k.dataset.dobavit) dobavitStroku(k.dataset.dobavit);
   if (k && k.dataset.ubrat !== undefined) ubratStroku(k.dataset.ubrat);
   if (k && k.dataset.predmet === 'dobavit') dobavitPredmet();
   if (k && k.dataset.predmet === 'ubrat') ubratPredmet();
+  if (k && k.dataset.okno) otkrytOkno(k.dataset.okno);
+  if (k && k.dataset.zakryt) k.closest('dialog').close();
+  if (k && k.dataset.svojPriem) dobavitPriem();
+  if (k && k.dataset.vPriemy) vnestiMehaniki();
 }
 
 /* ---------- урок из плана (plan/plan-dannye.js, собран из plan/*.md) ---------- */
