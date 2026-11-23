@@ -212,6 +212,20 @@ const LESSONS = [
     ]
   },
   {
+    where:[{s:'rpz', g:10}],
+    title: 'Python: первая программа',
+    topic: 'Переменные, типы int и float, ввод и вывод, модуль math; ДРАКОН-ГРАФ и ДРАКОН',
+    about: 'Сегодня суперлуние — когда следующее? Описываем формулу и переменные в ДРАКОН-ГРАФ, строим ДРАКОН-схему, пишем первую программу на Python прямо в браузере и сверяем ответ с календарём.',
+    format: 'каждому свой ноутбук · 40 минут',
+    path: '10-klass/rpz-13-python-pervaya-programma/',
+    app: '../../instrumenty/python/index.html',
+    teacher: [
+      {label:'Слайды на доску', href:'slajdy.html', kind:'slides'},
+      {label:'ДРАКОН-лист и домашнее задание (A4, 2 стороны)', href:'list.html', kind:'print'},
+      {label:'ДРАКОН-лист: заполненный образец', href:'list.html#obrazec', kind:'guide'}
+    ]
+  },
+  {
     ready:false, where:[{s:'rpz', g:10}, {s:'mat', g:5}],
     title: 'Русские счёты',
     topic: 'Крестьянское умножение, быстрое возведение в степень, проверка девяткой',
