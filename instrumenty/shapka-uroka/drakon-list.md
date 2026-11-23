@@ -172,3 +172,4 @@
 | spisokKursov, strokaUroka, spisokUrokov, gotovnost | средний | списки курса и уроков с флагом | kursPoFajlu, urokiKursa |
 | mestoIzPlana, vzyatIzPlana | верхний | урок плана → тема, место, до, после | urokiKursa, prochitatFormu, perestroit |
 | obnovitPlan, podklyuchitPlan | верхний | блок «Урок из плана» следит за предметом и классом | kursyPredmeta, spisokKursov, spisokUrokov |
+| dopolnenieSpiska | средний | после списка механик — отмеченные приёмы с адресами | tekstResursov |

@@ -83,7 +83,33 @@ const SHAPKA_DANNYE = {
     ] },
     { nomer: 7, nazvanie: 'Механики Мозга', polya: [
       { id: 'mehaniki', podpis: 'Механики', vid: 'spisok', poUmolchaniyu: [], primer: ['нет'], shirokoe: true,
-        podskazka: 'одна механика — одна строка' }
+        podskazka: 'одна механика — одна строка' },
+      { id: 'priemy', podpis: 'Приёмы проведённых уроков (образец по адресу; каталог — ii-komanda komanda/chernoviki/teacher-workpad/razbor-vse-uroki/README.md)',
+        vid: 'resursy', shirokoe: true, poUmolchaniyu: {}, primer: { p11: true, p12: true },
+        varianty: [
+          { id: 'p01', podpis: 'П-1 антикликер «действие в данных»', gde: 'teacher-workpad 7-klass/dataset-pomoshnik (scenariy.html, «Шаг А»)' },
+          { id: 'p02', podpis: 'П-2 мастер-подсказчик (до 3 подсказок, лестница)', gde: 'teacher-workpad 7-klass/dataset-pomoshnik; 5-klass/ekho-uzel (пейджер)' },
+          { id: 'p03', podpis: 'П-3 «застрял?» — плашка через 90 с', gde: 'teacher-workpad 7-klass/dataset-pomoshnik' },
+          { id: 'p04', podpis: 'П-4 «сверься с соседом» 3 раза', gde: 'teacher-workpad 7-klass/dataset-pomoshnik' },
+          { id: 'p05', podpis: 'П-5 «своими словами» в итог', gde: 'teacher-workpad 7-klass/dataset-pomoshnik; 5-klass/ekho-uzel («Свой конспект»)' },
+          { id: 'p06', podpis: 'П-6 скрытый счётчик → тон финала', gde: 'teacher-workpad 7-klass/dataset-pomoshnik' },
+          { id: 'p07', podpis: 'П-7 учитель молчит, карточки красная/зелёная', gde: 'teacher-workpad 8-klass/snachala-obuchi; 9-klass/sleduyushchaya-nota' },
+          { id: 'p08', podpis: 'П-8 гипотеза → проверка → возврат', gde: 'teacher-workpad 9-klass/sleduyushchaya-nota; 8-klass/snachala-obuchi' },
+          { id: 'p09', podpis: 'П-9 слепой тест A/B', gde: 'teacher-workpad 9-klass/sleduyushchaya-nota; 5-klass/iiib-04-kompyuter-i-ii' },
+          { id: 'p10', podpis: 'П-10 ролевая рамка (смена, следствие, биржа, гонка…)', gde: 'ii-komanda komanda/chernoviki/teacher-workpad/razbor-vse-uroki/README.md, П-10 — список образцов' },
+          { id: 'p11', podpis: 'П-11 резерв для быстрых (★, оборот, бонус)', gde: 'teacher-workpad 9-klass/gran-pri; 8-klass/snachala-obuchi; 4-klass/ekspediciya' },
+          { id: 'p12', podpis: 'П-12 план Б по времени (что резать)', gde: 'teacher-workpad 8-klass/iiib-03-umnye-goroda/list-uchitelya.html; 5-klass/ekho-uzel' },
+          { id: 'p13', podpis: 'П-13 пульт учителя (табло, сводка)', gde: 'teacher-workpad 9-klass/gran-pri; 1-klass/iiib-05-znakomstvo-s-kompyuterom' },
+          { id: 'p14', podpis: 'П-14 сначала сам, ИИ — потом', gde: 'teacher-workpad 8-klass/iiib-03-umnye-goroda; 6-klass/iiib-02-etika-v-obuchenii' },
+          { id: 'p15', podpis: 'П-15 конструктор промпта → «Скопировать» → Алиса', gde: 'teacher-workpad 6-klass/gora-i-klyuch; 8-klass/tekst-birzha; 6-klass/ttk-restoran' },
+          { id: 'p16', podpis: 'П-16 найди ошибку/выдумку', gde: 'teacher-workpad 6-klass/gora-i-klyuch; 8-klass/iiib-05-cifrovye-dvojniki' },
+          { id: 'p17', podpis: 'П-17 таймер на доске', gde: 'teacher-workpad 9-klass/iiib-04-avtoenkoder; 6-klass/ttk-restoran' },
+          { id: 'p18', podpis: 'П-18 лист в тетрадь (вклейка, ДРАКОН-лист)', gde: 'teacher-workpad 5-klass/ekho-uzel/vkleyka.html; 7-klass/inf-11-alfavity-i-yazyki' },
+          { id: 'p19', podpis: 'П-19 новая смена для следующей пары', gde: 'любое приложение с localStorage' },
+          { id: 'p20', podpis: 'П-20 один инструмент на несколько уроков', gde: 'teacher-workpad 7-klass/iiib-09-princip-raboty-nejrona; obshchie/schety' },
+          { id: 'p21', podpis: 'П-21 клавиатурный тренажёр по главам', gde: 'teacher-workpad 4-klass/iiib-07-podmasterje-alhimika; 2-klass/iiib-11-sozdat-tekstovyj-dokument' },
+          { id: 'p22', podpis: 'П-22 сохранить ответы файлом', gde: 'teacher-workpad 9-klass/sleduyushchaya-nota; 6-klass/delo-6-ii' }
+        ] }
     ] },
     { nomer: 8, nazvanie: 'Артефакты (предварительно)', polya: [
       { id: 'artefakty', podpis: 'Артефакты', vid: 'galochki', shirokoe: true,

@@ -312,12 +312,17 @@ function tekstPolya(p, v) {
   return p.podpis + ': ' + t;
 }
 
+// dopolnenieSpiska: галочки после списка (приёмы в разделе механик) — отмеченные с адресами
+function dopolnenieSpiska(r) {
+  return r.polya.slice(1).map(pp => '\n   ' + pp.podpis + ':' + tekstResursov(pp, S.znacheniya[pp.id])).join('');
+}
+
 // strokaRazdela: одна строка шапки «N) Раздел. Поле: …; Поле: …»
 function strokaRazdela(r) {
   const p = r.polya[0];
   const v = S.znacheniya[p.id];
   let t = r.nomer + ') ' + r.nazvanie + '. ' + r.polya.map(pp => tekstPolya(pp, S.znacheniya[pp.id])).join('; ') + '.';
-  if (p.vid === 'spisok') t = r.nomer + ') ' + r.nazvanie + ' (нумерованный список):' + tekstSpiska(v);
+  if (p.vid === 'spisok') t = r.nomer + ') ' + r.nazvanie + ' (нумерованный список):' + tekstSpiska(v) + dopolnenieSpiska(r);
   if (p.vid === 'galochki') t = r.nomer + ') ' + r.nazvanie + ': ' + p.varianty.map(x => tekstArtefakta(x, v)).join('; ') + '.';
   if (p.vid === 'resursy') t = strokaResursov(r);
   return t;
