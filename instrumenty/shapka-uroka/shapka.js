@@ -477,6 +477,36 @@ function skopirovat() {
   bufer.then(() => soobshchit('Скопировано'), () => soobshchit(kopirovatZapasnoj()));
 }
 
+// kopirovatTekstZapasnoj: копировать текст через временное поле (file://, старые браузеры)
+function kopirovatTekstZapasnoj(tekst) {
+  const pole = document.createElement('textarea');
+  pole.value = tekst;
+  pole.className = 'za-ekranom';
+  document.body.append(pole);
+  pole.select();
+  let vyshlo = false;
+  try { vyshlo = document.execCommand('copy'); } catch (e) { vyshlo = false; }
+  pole.remove();
+  return vyshlo ? 'Промт скопирован — вставьте Алисе, потом шапку' : 'Не вышло — откройте промт по ссылке и скопируйте Ctrl+A, Ctrl+C';
+}
+
+// skopirovatPromt: промт Алисы в буфер обмена
+function skopirovatPromt() {
+  const tekst = window.PROMT_DANNYE.tekst;
+  const bufer = navigator.clipboard && window.isSecureContext ? navigator.clipboard.writeText(tekst) : Promise.reject();
+  bufer.then(() => soobshchit('Промт скопирован — вставьте Алисе, потом шапку'), () => soobshchit(kopirovatTekstZapasnoj(tekst)));
+}
+
+// podklyuchitPromt: кнопка промта, если промт собран (promt-dannye.js)
+function podklyuchitPromt() {
+  const knopka = document.getElementById('kopirovatPromt');
+  const est = !!window.PROMT_DANNYE;
+  knopka.hidden = !est;
+  if (est) knopka.textContent = '1. Скопировать ' + PROMT_DANNYE.korotko;
+  if (est) knopka.title = PROMT_DANNYE.istochnik + ', ' + PROMT_DANNYE.kommit;
+  if (est) knopka.addEventListener('click', skopirovatPromt);
+}
+
 // ochistit: спросить и сбросить форму
 function ochistit() {
   if (confirm('Очистить форму? Сохранённые ответы будут забыты.')) sbrosit();
@@ -660,25 +690,60 @@ function gotovnost(u) {
   return D.flagi[u.flag] + papka;
 }
 
-// mestoIzPlana: строка «урок N из M по плану …; готовность …»
+// mestoIzPlana: строка «урок N из M по плану …; в журнале …; готовность …»
 function mestoIzPlana(fajl, uroki, u) {
   const kogda = u.kogda ? ', неделя/дата ' + u.kogda : '';
+  const vPlane = u.zhurnal ? '' : '; в плане: ' + (u.tip || '—');
+  const zhurnal = u.zhurnal ? '; в журнале: ' + u.zhurnal : '';
+  const status = u.status ? '; статус: ' + u.status : '';
   return 'урок ' + u.n + ' из ' + uroki.length + ' по плану «' + kursPoFajlu(fajl).nazvanie + '», ' + S.znacheniya.klass +
-    ' кл.; в плане: ' + (u.tip || '—') + kogda + '; готовность: ' + gotovnost(u);
+    ' кл.' + vPlane + kogda + zhurnal + status + '; готовность: ' + gotovnost(u);
 }
 
-// vzyatIzPlana: выбранный урок плана → тема, место, что было до и после
+// bezKodov: текст опоры без кодов пунктов («B2 · типы данных» → «типы данных»)
+function bezKodov(tekst) {
+  return tekst.replace(/[0-9A-ZА-ЯЁ][0-9A-ZА-ЯЁ-]*\s·\s/g, '');
+}
+
+// dataIzPlana: «01.02» из плана → «2027-02-01» по учебному году (не дата — пусто)
+function dataIzPlana(kogda) {
+  const m = /^(\d\d)\.(\d\d)$/.exec((kogda || '').trim());
+  const god = m && Number(m[2]) >= 9 ? D.planGod.osen : D.planGod.vesna;
+  return m ? god + '-' + m[2] + '-' + m[1] : '';
+}
+
+// doIzPlana: тема прошлого урока и его итог, если записан
+function doIzPlana(proshlyj) {
+  const itog = proshlyj && proshlyj.itog ? ' — итог: ' + proshlyj.itog : '';
+  return proshlyj ? proshlyj.tema + itog : 'нет (первый урок плана)';
+}
+
+// obyazatelnoIzPlana: содержание урока и опора из плана «на деле» (нет их — прежнее значение)
+function obyazatelnoIzPlana(u, prezhnee) {
+  const opora = u.opora ? 'Опора: ' + bezKodov(u.opora) : '';
+  const chasti = [u.soderzhanie || '', opora].filter(Boolean);
+  return chasti.length ? chasti.join('\n') : prezhnee;
+}
+
+// znacheniyaIzPlana: поля шапки из урока плана номер i
+function znacheniyaIzPlana(fajl, uroki, i) {
+  const u = uroki[i];
+  const Z = S.znacheniya;
+  const znacheniya = { tema: u.tema, mesto: mestoIzPlana(fajl, uroki, u), do: doIzPlana(uroki[i - 1]),
+    posle: uroki[i + 1] ? uroki[i + 1].tema : 'нет (последний урок плана)',
+    obyazatelno: obyazatelnoIzPlana(u, Z.obyazatelno), data: dataIzPlana(u.kogda) || Z.data };
+  return znacheniya;
+}
+
+// vzyatIzPlana: выбранный урок плана → тема, место, до и после, обязательно, дата
 function vzyatIzPlana() {
   const fajl = document.getElementById('planKurs').value;
   const uroki = urokiKursa(fajl, S.znacheniya.klass);
   const i = Number(document.getElementById('planUrok').value);
-  const u = uroki[i];
   prochitatFormu();
-  if (u) Object.assign(S.znacheniya, { tema: u.tema, mesto: mestoIzPlana(fajl, uroki, u),
-    do: uroki[i - 1] ? uroki[i - 1].tema : 'нет (первый урок плана)',
-    posle: uroki[i + 1] ? uroki[i + 1].tema : 'нет (последний урок плана)' });
-  if (u) perestroit();
-  if (u) soobshchit('Взято из плана: тема, место, до и после');
+  if (uroki[i]) Object.assign(S.znacheniya, znacheniyaIzPlana(fajl, uroki, i));
+  if (uroki[i]) perestroit();
+  if (uroki[i]) soobshchit('Взято из плана: тема, место, до и после' + (uroki[i].zhurnal ? ', обязательно (опора)' : ''));
 }
 
 // obnovitPlan: курс по предмету и классу, список уроков (если план подключён)
@@ -759,6 +824,7 @@ function zapusk() {
   document.getElementById('ochistit').addEventListener('click', ochistit);
   podklyuchitShablony();
   podklyuchitPlan();
+  podklyuchitPromt();
   podklyuchitMenu();
 }
 

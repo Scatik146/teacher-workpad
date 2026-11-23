@@ -10,19 +10,22 @@
 <body>
 <header>
   <h1>Шапка урока</h1>
-  <p>Заполните один раз — и вставьте Алисе (промт v7.4) или Claude одним сообщением. Ответы запоминаются в этом браузере.</p>
+  <p>Заполните один раз. Алисе: сначала кнопка 1 — промт, вставьте в новый чат; потом кнопка 2 — шапка, вставьте вторым сообщением. Ответы запоминаются в этом браузере.</p>
   <div class="plan" id="plan" hidden>
     <label class="podpis" for="planKurs">Урок из плана</label>
     <select id="planKurs"></select>
     <select id="planUrok"></select>
-    <small>Сначала выберите предмет и класс. Урок из плана заполнит тему, место в блоке, «что было до» и «что после». Готовность (✅ ✏️ 📝) — из <code>plan/</code>.</small>
+    <small>Сначала выберите предмет и класс. Урок из плана заполнит тему, место в блоке, «что было до» и «что после»; план «на деле» — ещё журнальную тему, «обязательно на уроке» (содержание и опору) и дату. Готовность (✅ ✏️ 📝) — из <code>plan/</code>.</small>
   </div>
 </header>
 <main>
   <form id="forma" class="forma" autocomplete="off"></form>
   <aside class="itog">
     <div class="knopki">
-      <button type="button" id="kopirovat" class="glavnaya">Скопировать шапку</button>
+      <button type="button" id="kopirovatPromt" class="glavnaya" hidden>1. Скопировать промт</button>
+    </div>
+    <div class="knopki">
+      <button type="button" id="kopirovat" class="glavnaya">2. Скопировать шапку</button>
       <button type="button" id="ochistit">Очистить</button>
     </div>
     <div class="shablony">
@@ -40,6 +43,7 @@
 <script src="../../lib/menu-ekranov/menu-ekranov.js"></script>
 <script src="../../plan/plan-dannye.js"></script>
 <script src="dannye.js"></script>
+<script src="promt-dannye.js"></script>
 <script src="shapka.js"></script>
 </body>
 </html>
