@@ -10,7 +10,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-FAJL = 'algoritm/alisa-v7-4-B.md'
+FAJL = 'algoritm/alisa-v7-5-B.md'
 VYHOD = Path('instrumenty/shapka-uroka/promt-dannye.js')
 
 
