@@ -71,6 +71,21 @@ minuty = math.floor((ostatok - chasy) * 60)
 
 print("Через", dni, "суток после 24 ноября, в", chasy, "ч", minuty, "мин")`;
 
+/* Та же схема текстовой записью ДРАКОН (как в drakon-list.md) — для образца на листе */
+TEKST.DRAKON_ZAPIS = `название: Следующее полнолуние
+import math
+ввод: chas, minuta, k
+S = 29.530589
+t = chas + minuta / 60
+    + k * S * 24
+dni = math.floor(t / 24)
+ostatok = t - dni * 24
+chasy = math.floor(ostatok)
+minuty = math.floor(
+    (ostatok - chasy) * 60)
+вывод: dni, chasy, minuty
+конец`;
+
 /* Связка «икона → строка Python» */
 TEKST.SVYAZKA = [
   ['ввод', 'chas = int(input("Час полнолуния: "))'],

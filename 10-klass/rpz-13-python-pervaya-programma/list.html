@@ -25,7 +25,8 @@ body { background: #e9e4d8; height: auto; }
 .dve-kolonki .shema { flex: 0 0 72mm; overflow: hidden; }
 .dve-kolonki .kod-mesto { flex: 1; }
 .podpis { font-style: italic; color: var(--tekst-tusk); }
-.kod { font-family: var(--mono); font-size: 8.3pt; margin: 0; white-space: pre; }
+.kod { font-family: var(--mono); font-size: 8pt; margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.dve-kolonki .kod-mesto { min-width: 0; }
 .formula { font-family: var(--mono); font-size: 14pt; text-align: center; margin: 3mm 0; }
 .imya-peremennoj { font-family: var(--mono); font-weight: bold; width: 10mm; text-align: center; }
 .stranica .tusk { color: var(--tekst-tusk); font-size: 10pt; margin-top: 4mm; }
@@ -39,11 +40,11 @@ body { background: #e9e4d8; height: auto; }
 <body>
 <div class="panel"><button type="button" id="k-pechat">Печать (A4, две стороны)</button></div>
 <main id="list"></main>
-<script src="tekst.js?v=2026-11-24-1"></script>
+<script src="tekst.js?v=2026-11-24-2"></script>
 <script src="../../lib/drakon-graf/drakon-graf.min.js"></script>
 <script src="../../lib/drakon-graf/konspekt.js"></script>
 <script src="../../lib/drakonwidget/drakonwidget.js"></script>
 <script src="../../lib/drakon-shema/drakon-shema.js"></script>
-<script src="list.js?v=2026-11-24-1"></script>
+<script src="list.js?v=2026-11-24-4"></script>
 </body>
 </html>

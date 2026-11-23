@@ -79,8 +79,8 @@ function shemaIKod() {
   var kod = sozdat('div', 'kod-mesto');
   el.append(shema, kod);
   if (!obrazec()) { setTimeout(function () { if (window.DrakonShema) { window.DrakonShema.pokazat(shema, TEKST.SHEMY.zagotovka, { kod: true }); } }, 0); }
-  if (!obrazec()) { setTimeout(function () { vpisatPoVysote(shema, 360); }, 600); }
-  if (obrazec()) { shema.append(sozdat('p', 'podpis', 'Схема — на слайде 9 (силуэт); в тетради — примитив: ввод → 3 действия → вывод')); }
+  if (!obrazec()) { setTimeout(function () { vpisatPoVysote(shema, 380); }, 600); }
+  if (obrazec()) { shema.append(sozdat('p', 'podpis', 'Схема текстом (рисунок — слайд 9)'), sozdat('pre', 'kod', TEKST.DRAKON_ZAPIS)); }
   kod.append(sozdat('p', 'podpis', 'Python: строка к каждой иконе'));
   if (obrazec()) { kod.append(sozdat('pre', 'kod', TEKST.KOD)); }
   if (!obrazec()) { kod.append(pustyeStroki(11)); }
