@@ -65,3 +65,13 @@ button:hover{border-color:var(--yantar)}
   main{display:block;padding:0}
   #gotovo{border:none;background:none;height:auto}
 }
+
+/* свой предмет и урок из плана */
+.svoi { display: flex; gap: .4em; margin-top: .3em; }
+.malaya { font-size: .85em; padding: .2em .6em; }
+.poyasnenie { color: var(--seryj); display: block; margin-top: .2em; }
+.plan { display: flex; flex-wrap: wrap; align-items: center; gap: .5em; margin-top: .6em; }
+.plan[hidden] { display: none; }
+.plan .podpis { color: var(--yantar2); }
+.plan select { width: auto; max-width: 32em; }
+.plan small { flex-basis: 100%; color: var(--seryj2); }

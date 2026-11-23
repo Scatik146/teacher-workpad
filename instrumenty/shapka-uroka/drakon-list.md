@@ -119,6 +119,22 @@
 - контрпример: выбрать шаблон → тема заменилась темой из шаблона
 - контрпример: после «Очистить» и перезагрузки → предмет ИНФ-7-9Б остался
 
+## Действия: урок из плана (23.11)
+
+```дракон
+название: Выбрали урок из плана
+ввод: номер урока в списке
+вопрос: урок есть в плане курса для этого класса?
+  да:
+    тема = тема урока
+    место = «урок N из M по плану …; готовность …»
+    до = тема предыдущего урока
+    после = тема следующего урока
+    перестроить форму
+    вывод: «Взято из плана»
+  нет:
+```
+
 ## Пополнение словаря
 
 | слово | слой | что делает | из каких слов |
@@ -149,3 +165,10 @@
 | polyaShablona, snimokShablona, narisovatShablony | средний | что входит в шаблон, список шаблонов | vsePolya, kopiya, prochitatShablony |
 | vybratShablon, sohranitShablon, zapisatShablon, udalitShablon, podklyuchitShablony | верхний | выбрать, сохранить, удалить шаблон | snimokShablona, perestroit, narisovatShablony |
 | zapusk | верхний | загрузить, нарисовать, повесить кнопки | zagruzit, narisovatFormu, pokazatShapku, podklyuchitMenu |
+| prochitatSvoiPredmety / zapisatSvoiPredmety | нижний | свои предметы в localStorage, в try/catch | — |
+| variantyPolya, knopkiSvoih | средний | варианты списка со своими; кнопки «+ свой», «− убрать свой» | prochitatSvoiPredmety, sozdat |
+| dobavitPredmet, ubratPredmet | верхний | добавить и убрать свой предмет | prochitatFormu, perestroit, soobshchit |
+| kursPoFajlu, kursyPredmeta, urokiKursa | нижний | курс и уроки из PLAN_DANNYE | PLAN_DANNYE, SHAPKA_DANNYE.planKursy |
+| spisokKursov, strokaUroka, spisokUrokov, gotovnost | средний | списки курса и уроков с флагом | kursPoFajlu, urokiKursa |
+| mestoIzPlana, vzyatIzPlana | верхний | урок плана → тема, место, до, после | urokiKursa, prochitatFormu, perestroit |
+| obnovitPlan, podklyuchitPlan | верхний | блок «Урок из плана» следит за предметом и классом | kursyPredmeta, spisokKursov, spisokUrokov |

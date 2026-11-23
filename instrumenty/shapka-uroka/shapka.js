@@ -63,6 +63,18 @@ function zapisatShablony(shablony) {
   try { localStorage.setItem(D.klyuchShablonov, JSON.stringify(shablony)); } catch (e) { /* хранилище закрыто */ }
 }
 
+// prochitatSvoiPredmety: свои предметы учителя (список строк)
+function prochitatSvoiPredmety() {
+  let spisok = [];
+  try { spisok = JSON.parse(localStorage.getItem(D.klyuchPredmetov)) || []; } catch (e) { spisok = []; }
+  return spisok;
+}
+
+// zapisatSvoiPredmety: сохранить свои предметы
+function zapisatSvoiPredmety(spisok) {
+  try { localStorage.setItem(D.klyuchPredmetov, JSON.stringify(spisok)); } catch (e) { /* хранилище закрыто */ }
+}
+
 /* ---------- средний слой: значения ---------- */
 
 // nachalnye: значения по умолчанию для всех полей
@@ -82,13 +94,34 @@ function zagruzit() {
 
 /* ---------- средний слой: поля формы ---------- */
 
+// variantyPolya: варианты списка; у предмета — ещё свои предметы и сохранённое значение
+function variantyPolya(p, v) {
+  let varianty = p.varianty.slice();
+  if (p.svoiVarianty) varianty = varianty.concat(prochitatSvoiPredmety().filter(s => !varianty.includes(s)));
+  if (!pustoe(v) && !varianty.includes(v)) varianty.push(v);
+  return varianty;
+}
+
 // spisokVyborov: выпадающий список с пустым пунктом «—»
 function spisokVyborov(p, v) {
   const el = sozdat('select');
   el.append(new Option('—', ''));
-  p.varianty.forEach(t => el.append(new Option(t, t)));
+  variantyPolya(p, v).forEach(t => el.append(new Option(t, t)));
   el.value = v;
   return el;
+}
+
+// knopkiSvoih: «+ свой» и «− убрать свой» у списка со своими вариантами
+function knopkiSvoih() {
+  const blok = sozdat('span', 'svoi');
+  const dobavit = sozdat('button', 'malaya', '+ свой');
+  const ubrat = sozdat('button', 'malaya', '− убрать свой');
+  dobavit.type = 'button';
+  ubrat.type = 'button';
+  dobavit.dataset.predmet = 'dobavit';
+  ubrat.dataset.predmet = 'ubrat';
+  blok.append(dobavit, ubrat);
+  return blok;
 }
 
 // stroka: однострочное поле нужного типа
@@ -189,6 +222,8 @@ function kartochkaPolya(p) {
   vvod.dataset.pole = p.id;
   blok.dataset.id = p.id;
   blok.append(podpis, vvod);
+  if (p.svoiVarianty) blok.append(knopkiSvoih());
+  if (p.svoiVarianty && p.podskazka) blok.append(sozdat('small', 'poyasnenie', p.podskazka));
   return blok;
 }
 
@@ -444,11 +479,125 @@ function ubratStroku(nomer) {
   perestroit();
 }
 
-// nazhatie: кнопки внутри формы («+ механика», «×»)
+// dobavitPredmet: спросить новый предмет, добавить в свои и выбрать
+function dobavitPredmet() {
+  prochitatFormu();
+  const imya = (prompt('Новый предмет — сокращение и классы (например: РПЗ-10-11):', '') || '').trim();
+  const svoi = prochitatSvoiPredmety();
+  if (imya && !svoi.includes(imya)) zapisatSvoiPredmety(svoi.concat([imya]));
+  if (imya) S.znacheniya.predmet = imya;
+  if (imya) perestroit();
+  if (imya) soobshchit('Предмет «' + imya + '» добавлен в список');
+}
+
+// ubratPredmet: убрать выбранный свой предмет (готовые из формы не убираются)
+function ubratPredmet() {
+  prochitatFormu();
+  const imya = S.znacheniya.predmet;
+  const svoi = prochitatSvoiPredmety();
+  const da = svoi.includes(imya) && confirm('Убрать предмет «' + imya + '» из списка?');
+  if (da) zapisatSvoiPredmety(svoi.filter(s => s !== imya));
+  if (da) S.znacheniya.predmet = '';
+  if (da) perestroit();
+  if (!svoi.includes(imya)) soobshchit('Убрать можно только свой предмет');
+}
+
+// nazhatie: кнопки внутри формы («+ механика», «×», «+ свой», «− убрать свой»)
 function nazhatie(e) {
   const k = e.target.closest('button');
   if (k && k.dataset.dobavit) dobavitStroku(k.dataset.dobavit);
   if (k && k.dataset.ubrat !== undefined) ubratStroku(k.dataset.ubrat);
+  if (k && k.dataset.predmet === 'dobavit') dobavitPredmet();
+  if (k && k.dataset.predmet === 'ubrat') ubratPredmet();
+}
+
+/* ---------- урок из плана (plan/plan-dannye.js, собран из plan/*.md) ---------- */
+
+// kursPoFajlu: курс плана по имени файла или null
+function kursPoFajlu(fajl) {
+  const kursy = window.PLAN_DANNYE ? PLAN_DANNYE.kursy : [];
+  return kursy.find(k => k.fajl === fajl) || null;
+}
+
+// kursyPredmeta: файлы курсов для предмета и класса (нет связи — пусто)
+function kursyPredmeta(predmet, klass) {
+  const fajly = D.planKursy[predmet] || [];
+  return fajly.filter(f => kursPoFajlu(f) && kursPoFajlu(f).klassy[klass]);
+}
+
+// urokiKursa: уроки курса для класса (нет — пустой список)
+function urokiKursa(fajl, klass) {
+  const kurs = kursPoFajlu(fajl);
+  return kurs && kurs.klassy[klass] ? kurs.klassy[klass] : [];
+}
+
+// spisokKursov: список курсов плана, выбран — fajl
+function spisokKursov(fajl) {
+  const el = document.getElementById('planKurs');
+  el.replaceChildren(new Option('— курс —', ''));
+  PLAN_DANNYE.kursy.forEach(k => el.append(new Option(k.nazvanie, k.fajl)));
+  el.value = fajl;
+}
+
+// strokaUroka: текст пункта списка «✅ 11. Цвет»
+function strokaUroka(u) {
+  const znak = D.flagi[u.flag].split(' ')[0];
+  return znak + ' ' + u.n + '. ' + u.tema;
+}
+
+// spisokUrokov: уроки выбранного курса и класса
+function spisokUrokov() {
+  const el = document.getElementById('planUrok');
+  const uroki = urokiKursa(document.getElementById('planKurs').value, S.znacheniya.klass);
+  el.replaceChildren(new Option(uroki.length ? '— урок —' : '— нет уроков для этого класса —', ''));
+  uroki.forEach((u, i) => el.append(new Option(strokaUroka(u), String(i))));
+}
+
+// gotovnost: строка о готовности урока для поля «Место в блоке»
+function gotovnost(u) {
+  const papka = u.papka ? ', папка ' + u.papka : '';
+  return D.flagi[u.flag] + papka;
+}
+
+// mestoIzPlana: строка «урок N из M по плану …; готовность …»
+function mestoIzPlana(fajl, uroki, u) {
+  const kogda = u.kogda ? ', неделя/дата ' + u.kogda : '';
+  return 'урок ' + u.n + ' из ' + uroki.length + ' по плану «' + kursPoFajlu(fajl).nazvanie + '», ' + S.znacheniya.klass +
+    ' кл.; в плане: ' + (u.tip || '—') + kogda + '; готовность: ' + gotovnost(u);
+}
+
+// vzyatIzPlana: выбранный урок плана → тема, место, что было до и после
+function vzyatIzPlana() {
+  const fajl = document.getElementById('planKurs').value;
+  const uroki = urokiKursa(fajl, S.znacheniya.klass);
+  const i = Number(document.getElementById('planUrok').value);
+  const u = uroki[i];
+  prochitatFormu();
+  if (u) Object.assign(S.znacheniya, { tema: u.tema, mesto: mestoIzPlana(fajl, uroki, u),
+    do: uroki[i - 1] ? uroki[i - 1].tema : 'нет (первый урок плана)',
+    posle: uroki[i + 1] ? uroki[i + 1].tema : 'нет (последний урок плана)' });
+  if (u) perestroit();
+  if (u) soobshchit('Взято из плана: тема, место, до и после');
+}
+
+// obnovitPlan: курс по предмету и классу, список уроков (если план подключён)
+function obnovitPlan() {
+  const est = !!window.PLAN_DANNYE;
+  const kursy = est ? kursyPredmeta(S.znacheniya.predmet, S.znacheniya.klass) : [];
+  const vybran = est ? document.getElementById('planKurs').value : '';
+  document.getElementById('plan').hidden = !est;
+  if (est && (!vybran || kursy.length)) spisokKursov(kursy[0] || vybran);
+  if (est) spisokUrokov();
+}
+
+// podklyuchitPlan: блок «Урок из плана»
+function podklyuchitPlan() {
+  obnovitPlan();
+  document.getElementById('planKurs').addEventListener('change', spisokUrokov);
+  document.getElementById('planUrok').addEventListener('change', vzyatIzPlana);
+  document.getElementById('forma').addEventListener('change', e => {
+    if (['predmet', 'klass'].includes(e.target.dataset.pole)) obnovitPlan();
+  });
 }
 
 // pustoeZnachenie: поле ещё не заполнено (для меню Ctrl+Alt+M)
@@ -508,6 +657,7 @@ function zapusk() {
   document.getElementById('kopirovat').addEventListener('click', skopirovat);
   document.getElementById('ochistit').addEventListener('click', ochistit);
   podklyuchitShablony();
+  podklyuchitPlan();
   podklyuchitMenu();
 }
 

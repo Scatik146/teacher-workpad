@@ -11,6 +11,12 @@
 <header>
   <h1>Шапка урока</h1>
   <p>Заполните один раз — и вставьте Алисе (промт v7.4) или Claude одним сообщением. Ответы запоминаются в этом браузере.</p>
+  <div class="plan" id="plan" hidden>
+    <label class="podpis" for="planKurs">Урок из плана</label>
+    <select id="planKurs"></select>
+    <select id="planUrok"></select>
+    <small>Сначала выберите предмет и класс. Урок из плана заполнит тему, место в блоке, «что было до» и «что после». Готовность (✅ ✏️ 📝) — из <code>plan/</code>.</small>
+  </div>
 </header>
 <main>
   <form id="forma" class="forma" autocomplete="off"></form>
@@ -32,6 +38,7 @@
   </aside>
 </main>
 <script src="../../lib/menu-ekranov/menu-ekranov.js"></script>
+<script src="../../plan/plan-dannye.js"></script>
 <script src="dannye.js"></script>
 <script src="shapka.js"></script>
 </body>

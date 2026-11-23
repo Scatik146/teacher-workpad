@@ -22,6 +22,11 @@ const SHAPKA_DANNYE = {
   versiya: 'форма 1.0, по [3] промта v7.4',
   klyuch: 'twp-shapka-uroka',
   klyuchShablonov: 'twp-shapka-uroka-shablony',
+  klyuchPredmetov: 'twp-shapka-uroka-predmety',
+  /* предмет → файл поурочного плана (plan/<файл>.md); у своих предметов курс выбирают в блоке «Урок из плана» */
+  planKursy: { 'ТРУД-5-7': ['trud-5-9'], 'ИНФ-7-9Б': ['inf-7-9'], 'ИНФ-10-11П': ['inf-10-11'], 'ИИИБ-1-4': ['iiib-1-4'],
+    'ИИИБ-5-11': ['iiib-5-9', 'iiib-10-11'], 'РПЗ-10-11': ['rpz-10'], 'ПРОГ-5-7': ['prog-5-7'] },
+  flagi: { gotovo: '✅ готов', pravka: '✏️ править', chernovik: '📝 черновик', net: '— урока нет' },
   pusto: 'не заполнено',
   zagolovok: '=== ШАПКА УРОКА (форма «Шапка урока», по [3] промта v7.4) ===',
   konec: '=== КОНЕЦ ШАПКИ ===',
@@ -29,7 +34,8 @@ const SHAPKA_DANNYE = {
   razdely: [
     { nomer: 1, nazvanie: 'Класс и работа', polya: [
       { id: 'predmet', podpis: 'Предмет', vid: 'vybor', poUmolchaniyu: '', primer: 'ИНФ-7-9Б',
-        varianty: ['ТРУД-5-7', 'ИНФ-7-9Б', 'ИНФ-10-11П', 'ИИИБ-1-4', 'ИИИБ-5-11'] },
+        varianty: ['ТРУД-5-7', 'ИНФ-7-9Б', 'ИНФ-10-11П', 'ИИИБ-1-4', 'ИИИБ-5-11', 'РПЗ-10-11'], svoiVarianty: true,
+        podskazka: 'РПЗ — Информатика: решение практических задач, 10–11 кл., ИТ-профиль' },
       { id: 'klass', podpis: 'Класс', vid: 'vybor', poUmolchaniyu: '', primer: '7',
         varianty: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'] },
       { id: 'vozrast', podpis: 'Возраст', vid: 'tekst', poUmolchaniyu: '', primer: '13', podskazka: 'лет, например 13' },
