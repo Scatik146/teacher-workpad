@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:,">
+<title>Слайды — Python: первая программа (РПЗ, 10 кл.)</title>
+<link rel="stylesheet" href="urok.css?v=2026-11-24-1">
+<style>
+body { overflow: hidden; }
+.slajd { height: calc(100% - 56px); display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 18px; padding: 20px 50px; text-align: center; }
+.slajd h1 { font-size: 48px; margin: 0; color: var(--akcent); }
+.slajd p { font-size: 28px; margin: 0; max-width: 1150px; }
+.slajd .tusk { color: var(--tekst-tusk); }
+.vid-titul h1 { font-size: 68px; }
+.risunok { max-height: 66vh; }
+.risunok svg { width: min(900px, 78vw); height: auto; max-height: 62vh; }
+.risunok.shema { width: min(1250px, 92vw); overflow: hidden; max-height: none; }
+.kod { font-family: var(--mono); font-size: 21px; text-align: left; background: #f3efe4; border: 2px solid var(--liniya); border-radius: var(--radius); padding: 14px 22px; margin: 0; max-width: 1200px; white-space: pre; }
+.svyazka { border-collapse: collapse; font-size: 26px; }
+.svyazka td { border: 2px solid var(--akcent); padding: 10px 18px; text-align: left; }
+.svyazka .ikona { background: var(--zheltoe); }
+.svyazka .stroka { font-family: var(--mono); }
+.gde p { font-size: 34px; }
+.nizhnyaya-panel { height: 56px; display: flex; justify-content: center; align-items: center; gap: 20px; color: var(--tekst-tusk); }
+.nizhnyaya-panel button { background: transparent; border: 1px solid var(--liniya); min-width: 80px; }
+</style>
+</head>
+<body>
+<main class="slajd" id="slajd"></main>
+<nav class="nizhnyaya-panel"><button type="button" id="k-nazad">←</button><span id="nomer"></span><button type="button" id="k-vpered">→</button></nav>
+<script src="tekst.js?v=2026-11-24-1"></script>
+<script src="../../lib/drakon-graf/drakon-graf.min.js"></script>
+<script src="../../lib/drakon-graf/konspekt.js"></script>
+<script src="../../lib/drakonwidget/drakonwidget.js"></script>
+<script src="../../lib/drakon-shema/drakon-shema.js"></script>
+<script src="../../lib/menu-ekranov/menu-ekranov.js"></script>
+<script src="slajdy.js?v=2026-11-24-1"></script>
+</body>
+</html>

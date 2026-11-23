@@ -1,0 +1,12 @@
+/* РПЗ-13: общий вид слайдов и листа. Шрифты — из lib/drakon-graf/fonts (без CDN). */
+@font-face { font-family: "PT Serif"; src: url("../../lib/drakon-graf/fonts/PT_Serif-Web-Regular.ttf"); }
+@font-face { font-family: "PT Serif"; font-weight: bold; src: url("../../lib/drakon-graf/fonts/PT_Serif-Web-Bold.ttf"); }
+@font-face { font-family: "PT Mono"; src: url("../../lib/drakon-graf/fonts/PTM55FT.ttf"); }
+:root {
+  --fon: #fffdf7; --tekst: #1d1d1b; --tekst-tusk: #6b6458; --akcent: #993300; --akcent2: #1f5fa8;
+  --zheltoe: #ffff99; --liniya: #d9cfbf; --radius: 10px;
+  --shrift: "PT Serif", Georgia, serif; --mono: "PT Mono", Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--fon); color: var(--tekst); font-family: var(--shrift); }
+button { font: inherit; cursor: pointer; padding: 6px 14px; border-radius: var(--radius); }

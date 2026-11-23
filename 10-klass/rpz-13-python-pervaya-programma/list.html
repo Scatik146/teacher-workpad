@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:,">
+<title>ДРАКОН-лист и ДЗ — Python: первая программа (РПЗ, 10 кл.)</title>
+<link rel="stylesheet" href="urok.css?v=2026-11-24-1">
+<style>
+@page { size: A4 portrait; margin: 12mm; }
+body { background: #e9e4d8; height: auto; }
+.panel { padding: 10px; text-align: center; }
+.stranica { background: #fff; width: 186mm; min-height: 273mm; margin: 0 auto 10mm; padding: 6mm 8mm; font-size: 11pt; }
+.stranica h1 { font-size: 15pt; margin: 0 0 2mm; color: var(--akcent); }
+.stranica h2 { font-size: 12pt; margin: 3mm 0 1.5mm; }
+.stranica p { margin: 1mm 0; }
+.imya { color: var(--tekst-tusk); }
+.linejki .linejka { height: 7mm; border-bottom: 1px solid #bbb; }
+.graf svg { width: 150mm; height: auto; }
+.peremennye { width: 100%; border-collapse: collapse; }
+.peremennye th, .peremennye td { border: 1px solid #555; padding: 1mm 2mm; height: 6.5mm; text-align: left; font-size: 10.5pt; }
+.peremennye th { background: var(--zheltoe); }
+.dve-kolonki { display: flex; gap: 4mm; align-items: flex-start; }
+.dve-kolonki .shema { flex: 0 0 72mm; overflow: hidden; }
+.dve-kolonki .kod-mesto { flex: 1; }
+.podpis { font-style: italic; color: var(--tekst-tusk); }
+.kod { font-family: var(--mono); font-size: 8.3pt; margin: 0; white-space: pre; }
+.formula { font-family: var(--mono); font-size: 14pt; text-align: center; margin: 3mm 0; }
+.imya-peremennoj { font-family: var(--mono); font-weight: bold; width: 10mm; text-align: center; }
+.stranica .tusk { color: var(--tekst-tusk); font-size: 10pt; margin-top: 4mm; }
+@media print {
+  body { background: #fff; }
+  .panel { display: none; }
+  .stranica { margin: 0; padding: 0; width: auto; min-height: 0; page-break-after: always; }
+}
+</style>
+</head>
+<body>
+<div class="panel"><button type="button" id="k-pechat">Печать (A4, две стороны)</button></div>
+<main id="list"></main>
+<script src="tekst.js?v=2026-11-24-1"></script>
+<script src="../../lib/drakon-graf/drakon-graf.min.js"></script>
+<script src="../../lib/drakon-graf/konspekt.js"></script>
+<script src="../../lib/drakonwidget/drakonwidget.js"></script>
+<script src="../../lib/drakon-shema/drakon-shema.js"></script>
+<script src="list.js?v=2026-11-24-1"></script>
+</body>
+</html>

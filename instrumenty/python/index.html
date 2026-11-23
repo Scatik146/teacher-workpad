@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:,">
+<title>Python в браузере</title>
+<style>
+@font-face { font-family: "PT Serif"; src: url("../../lib/drakon-graf/fonts/PT_Serif-Web-Regular.ttf"); }
+@font-face { font-family: "PT Mono"; src: url("../../lib/drakon-graf/fonts/PTM55FT.ttf"); }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: #fffdf7; color: #1d1d1b; font-family: "PT Serif", Georgia, serif; }
+.verh { display: flex; align-items: center; gap: 12px; padding: 8px 14px; border-bottom: 2px solid #993300; }
+.verh h1 { font-size: 22px; margin: 0 auto 0 0; color: #993300; }
+button { font: inherit; padding: 6px 16px; border-radius: 8px; border: 1px solid #993300; background: #ffff99; cursor: pointer; }
+.rabota { display: flex; height: calc(100% - 56px); }
+#kod, #vyvod { flex: 1; margin: 0; padding: 12px; font-family: "PT Mono", Consolas, monospace; font-size: 17px; line-height: 1.4; border: 0; }
+#kod { resize: none; border-right: 2px solid #d9cfbf; outline: none; tab-size: 4; }
+#vyvod { background: #f3efe4; white-space: pre-wrap; overflow: auto; }
+.pole-vvoda { font: inherit; border: 0; border-bottom: 2px solid #1f5fa8; background: #fff; min-width: 120px; outline: none; }
+.oshibka { color: #b00020; }
+.tusk { color: #6b6458; }
+.podskazka { font-size: 14px; color: #6b6458; }
+</style>
+</head>
+<body>
+<div class="verh">
+  <h1>Python в браузере</h1>
+  <span class="podskazka">Ctrl+Enter — запустить · код сохраняется в этом браузере</span>
+  <button type="button" id="k-zanovo">Начать заново</button>
+  <button type="button" id="k-zapusk">▶ Запустить</button>
+</div>
+<div class="rabota">
+  <textarea id="kod" spellcheck="false" aria-label="Код на Python"></textarea>
+  <pre id="vyvod" aria-label="Вывод программы"></pre>
+</div>
+<script src="../../lib/skulpt/skulpt.min.js"></script>
+<script src="../../lib/skulpt/skulpt-stdlib.js"></script>
+<script src="../../lib/menu-ekranov/menu-ekranov.js"></script>
+<script src="python.js?v=2026-11-24-1"></script>
+</body>
+</html>
