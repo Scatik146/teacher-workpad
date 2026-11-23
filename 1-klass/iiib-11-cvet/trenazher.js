@@ -11,22 +11,24 @@ var EKRANY = [
   { id: 'perevodchik', nazvanie: 'Переводчик цвета' },
   { id: 'fizpauza', nazvanie: 'Физпауза' },
   { id: 'ceh', nazvanie: 'Печатный цех' },
+  { id: 'nazvaniya', nazvanie: 'Имена цветов' },
   { id: 'final', nazvanie: 'Финал' }
 ];
 
 /* Сохраняемое состояние, образец:
    {ekran:'privet', mesto:'laboratoriya', lab:0, per:0, bonus:0, bonusIdet:false,
-    faza:'proba'|'printer', ceh:0, projdeno:{laboratoriya:true, …}} */
+    zap:0, zapNado:false, zapDano:0,          — запасные цвета переводчика (если собрал наугад)
+    faza:'proba'|'printer'|'voda', ceh:0, voda:0, naz:0, projdeno:{laboratoriya:true, …}} */
 var S = null;
 /* Рабочее (не сохраняется): лампы {r,g,b} уровни 0–2, капли — id красок, счётчики */
-var R = { lampy: { r: 0, g: 0, b: 0 }, kapli: [], nazhatij: 0, oshibok: 0, zhdem: false };
+var R = { lampy: { r: 0, g: 0, b: 0 }, kapli: [], nazhatij: 0, minimum: 0, oshibok: 0, zhdem: false };
 
 /* ---------- нижние слова ---------- */
 
 // novoeSostoyanie: состояние урока с нуля
 function novoeSostoyanie() {
   var s = { ekran: 'privet', mesto: 'laboratoriya', lab: 0, per: 0, bonus: 0, bonusIdet: false,
-    faza: 'proba', ceh: 0, projdeno: {} };
+    zap: 0, zapNado: false, zapDano: 0, faza: 'proba', ceh: 0, voda: 0, naz: 0, projdeno: {} };
   return s;
 }
 
@@ -60,19 +62,28 @@ function cvetSveta(lampy) {
 
 // kraskaPoId: краска из обоих наборов по её id
 function kraskaPoId(id) {
-  var vse = T.kraskiLamp.concat(T.kraskiPrintera);
+  var vse = T.kraskiLamp.concat(T.kraskiPrintera, [T.voda]);
   var najdena = null;
   vse.forEach(function (k) { if (k.id === id) najdena = k; });
   return najdena;
 }
 
-// cvetBumagi: CSS-цвет бумаги под каплями (каждая краска забирает часть света)
+// dolyaSveta: какую долю света краска оставляет; с водой — корень из доли (светлее)
+function dolyaSveta(kraska, sVodoj, i) {
+  var dolya = kraska.rgb[i] / 255;
+  if (sVodoj) dolya = Math.sqrt(dolya);
+  return dolya;
+}
+
+// cvetBumagi: CSS-цвет бумаги под каплями (каждая краска забирает часть света, вода не красит)
 function cvetBumagi(kapli) {
   var c = [255, 255, 255];
+  var sVodoj = kapli.indexOf(T.voda.id) >= 0;
   kapli.forEach(function (id) {
     var k = kraskaPoId(id);
-    for (var i = 0; i < 3; i++) c[i] = Math.round(c[i] * k.rgb[i] / 255);
+    for (var i = 0; i < 3; i++) if (id !== T.voda.id) c[i] = c[i] * dolyaSveta(k, sVodoj, i);
   });
+  c = c.map(Math.round);
   var cvet = 'rgb(' + c.join(',') + ')';
   return cvet;
 }
@@ -146,11 +157,12 @@ function pokazatLampy() {
   }
 }
 
-// zadaniePerevodchika: текущий цвет переводчика (основной или трудный) или null
+// zadaniePerevodchika: текущий цвет переводчика (запасной, основной или трудный) или null
 function zadaniePerevodchika() {
   var p = T.perevodchik;
   var z = null;
-  if (S.per < p.zadaniya.length) z = p.zadaniya[S.per];
+  if (S.zapNado && S.zap < p.zapas.length) z = p.zapas[S.zap];
+  else if (S.per < p.zadaniya.length) z = p.zadaniya[S.per];
   else if (S.bonusIdet && S.bonus < p.bonus.length) z = p.bonus[S.bonus];
   return z;
 }
@@ -187,6 +199,21 @@ function podskazatLampu(z) {
   Govorun.skazat(frazaPodskazki(R.lampy[id], z.lampy[id]));
 }
 
+// nazhatijDo: сколько нажатий нужно, чтобы лампы стали как в цели (лампа идёт по кругу 0 → 1 → 2 → 0)
+function nazhatijDo(cel) {
+  var n = 0;
+  T.lampy.forEach(function (l) { n += (cel[l.id] - R.lampy[l.id] + 3) % 3; });
+  return n;
+}
+
+// naugad: цвет переводчика собран с лишними нажатиями — дать запасной цвет (не больше zapasMaks)
+function naugad() {
+  var p = T.perevodchik;
+  var da = S.ekran === 'perevodchik' && !S.zapNado && R.nazhatij - R.minimum > p.lishnihMaks &&
+    S.zapDano < p.zapasMaks && S.zap < p.zapas.length;
+  return da;
+}
+
 // proveritSvet: цвет собран — успех; долго не выходит — подсказка
 function proveritSvet() {
   var z = zadanieSveta();
@@ -206,13 +233,22 @@ function nazhatLampu(id) {
 
 // uspehSveta: похвала; когда Говорун договорит — следующее задание
 function uspehSveta() {
+  var fraza = sluchajnoe(T.laboratoriya.uspeh);
   R.zhdem = true;
+  if (naugad()) { S.zapNado = 'novyj'; fraza = T.perevodchik.naugad; }
   Govorun.radost();
-  Govorun.skazat(sluchajnoe(T.laboratoriya.uspeh), sleduyushcheeSveta);
+  Govorun.skazat(fraza, sleduyushcheeSveta);
 }
 
 // sdvinutPerevodchik: следующий цвет переводчика
 function sdvinutPerevodchik() {
+  if (S.zapNado === 'novyj') { S.zapNado = true; zasschitatOsnovnoj(); }
+  else if (S.zapNado) { S.zap++; S.zapDano++; S.zapNado = false; }
+  else zasschitatOsnovnoj();
+}
+
+// zasschitatOsnovnoj: основной или трудный цвет переводчика собран
+function zasschitatOsnovnoj() {
   if (S.per < T.perevodchik.zadaniya.length) S.per++;
   else {
     S.bonus++;
@@ -260,6 +296,7 @@ function zavershitSvet() {
 function nachatZadanieSveta(pristavka) {
   var z = zadanieSveta();
   R.nazhatij = 0;
+  R.minimum = z ? nazhatijDo(z.lampy) : 0;
   pokazatLampy();
   pokazatObrazec(z);
   if (z) Govorun.skazat((pristavka ? pristavka + ' ' : '') + z.skazat);
@@ -280,6 +317,7 @@ function nachatBonus() {
 function naborBanok() {
   var nabor = T.kraskiPrintera;
   if (S.faza === 'proba') nabor = T.kraskiLamp;
+  if (S.faza === 'voda') nabor = T.kraskiPrintera.concat([T.voda]);
   return nabor;
 }
 
@@ -303,7 +341,8 @@ function sdelatBanki() {
 function zadanieCeha() {
   var z = null;
   if (S.faza === 'proba') z = T.ceh.proba;
-  else if (S.ceh < T.ceh.zadaniya.length) z = T.ceh.zadaniya[S.ceh];
+  else if (S.faza === 'printer' && S.ceh < T.ceh.zadaniya.length) z = T.ceh.zadaniya[S.ceh];
+  else if (S.faza === 'voda' && S.voda < T.ceh.vodaZadaniya.length) z = T.ceh.vodaZadaniya[S.voda];
   return z;
 }
 
@@ -399,14 +438,28 @@ function zavershitCeh() {
 // sleduyushcheePechati: следующее задание цеха; последний цвет остаётся на бумаге
 function sleduyushcheePechati() {
   R.zhdem = false;
-  S.ceh++;
+  if (S.faza === 'voda') S.voda++;
+  else S.ceh++;
   sohranit();
   if (zadanieCeha()) {
     R.kapli = [];
     R.oshibok = 0;
     pokazatBumagu();
     Govorun.skazat(tekstZadaniyaCeha());
-  } else zavershitCeh();
+  } else if (S.faza === 'printer') perejtiKVode();
+  else zavershitCeh();
+}
+
+// perejtiKVode: к краскам принтера добавляется вода — краски светлее
+function perejtiKVode() {
+  S.faza = 'voda';
+  S.voda = 0;
+  R.kapli = [];
+  R.oshibok = 0;
+  sohranit();
+  sdelatBanki();
+  pokazatBumagu();
+  Govorun.skazat(T.ceh.vodaVvod + ' ' + tekstZadaniyaCeha());
 }
 
 // perejtiKPrinteru: банки как у лампочек меняются на краски принтера
@@ -473,6 +526,92 @@ function otkrytCeh() {
   Govorun.skazat(T.ceh.vvod + ' ' + tekstZadaniyaCeha());
 }
 
+/* ---------- имена цветов: имя → найти образец ---------- */
+
+// zadanieImeni: текущее имя цвета или null, если экран пройден
+function zadanieImeni() {
+  var spisok = T.nazvaniya.zadaniya;
+  var z = null;
+  if (S.naz < spisok.length) z = spisok[S.naz];
+  return z;
+}
+
+// sdelatObrazcy: три кнопки-образца текущего имени
+function sdelatObrazcy(z) {
+  var kontejner = el('obrazcy');
+  kontejner.textContent = '';
+  z.varianty.forEach(function (rgb, i) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'obrazec-knopka';
+    b.setAttribute('aria-label', 'Цвет ' + (i + 1));
+    b.style.setProperty('--cvet', 'rgb(' + rgb.join(',') + ')');
+    b.addEventListener('click', function () { vybratObrazec(i); });
+    kontejner.appendChild(b);
+  });
+}
+
+// zamorozitObrazcy: образцы не нажимаются (или снова нажимаются)
+function zamorozitObrazcy(da) {
+  el('obrazcy').querySelectorAll('button').forEach(function (b) { b.disabled = da; });
+}
+
+// oshibkaImeni: не тот образец — подсказка; образцы спят 2 секунды (наугад не прощёлкать)
+function oshibkaImeni(z, i) {
+  var b = el('obrazcy').children[i];
+  R.zhdem = true;
+  b.classList.add('obrazec-knopka--ne');
+  zamorozitObrazcy(true);
+  Govorun.skazat(T.nazvaniya.neTo + ' ' + z.podskazka);
+  setTimeout(function () { R.zhdem = false; zamorozitObrazcy(false); }, 2000);
+}
+
+// vybratObrazec: верный образец — пояснение и следующее имя
+function vybratObrazec(i) {
+  var z = zadanieImeni();
+  if (!R.zhdem && z && i === z.verno) {
+    R.zhdem = true;
+    zamorozitObrazcy(true);
+    Govorun.radost();
+    Govorun.skazat(z.poyasnenie, sleduyushcheeImya);
+  } else if (!R.zhdem && z) oshibkaImeni(z, i);
+}
+
+// sleduyushcheeImya: перейти к следующему имени
+function sleduyushcheeImya() {
+  R.zhdem = false;
+  S.naz++;
+  sohranit();
+  datImya('');
+}
+
+// datImya: показать имя и образцы (pristavka — слова перед заданием) или завершить экран
+function datImya(pristavka) {
+  var z = zadanieImeni();
+  if (z) {
+    el('imya-nazvaniya').textContent = z.imya;
+    sdelatObrazcy(z);
+    Govorun.skazat((pristavka ? pristavka + ' ' : '') + 'Найди: ' + z.imya + '!');
+  } else zavershitImena();
+}
+
+// zavershitImena: все имена найдены — кнопка «Дальше»
+function zavershitImena() {
+  S.projdeno.nazvaniya = true;
+  sohranit();
+  el('imya-nazvaniya').textContent = 'готово!';
+  el('obrazcy').textContent = '';
+  el('dalshe-nazvaniya').hidden = false;
+  Govorun.skazat(T.nazvaniya.final);
+}
+
+// otkrytImena: экран «Имена цветов»
+function otkrytImena() {
+  pokazatEkran('nazvaniya');
+  el('dalshe-nazvaniya').hidden = true;
+  datImya(T.nazvaniya.vvod);
+}
+
 // otkrytFinal: секрет разгадан
 function otkrytFinal() {
   pokazatEkran('final');
@@ -504,7 +643,7 @@ function salyut() {
 }
 
 var OTKRYT = { privet: otkrytPrivet, laboratoriya: otkrytLaboratoriyu, perevodchik: otkrytPerevodchik,
-  fizpauza: otkrytFizpauzu, ceh: otkrytCeh, final: otkrytFinal };
+  fizpauza: otkrytFizpauzu, ceh: otkrytCeh, nazvaniya: otkrytImena, final: otkrytFinal };
 
 // otkryt: открыть экран по id
 function otkryt(id) {
@@ -538,7 +677,8 @@ function zapolnitPropusk() {
     laboratoriya: function () { S.lab = T.laboratoriya.zadaniya.length; S.projdeno.laboratoriya = true; },
     perevodchik: function () { S.per = T.perevodchik.zadaniya.length; S.projdeno.perevodchik = true; },
     fizpauza: function () { S.projdeno.fizpauza = true; },
-    ceh: function () { S.faza = 'printer'; S.ceh = T.ceh.zadaniya.length; S.projdeno.ceh = true; }
+    ceh: function () { S.faza = 'voda'; S.ceh = T.ceh.zadaniya.length; S.voda = T.ceh.vodaZadaniya.length; S.projdeno.ceh = true; },
+    nazvaniya: function () { S.naz = T.nazvaniya.zadaniya.length; S.projdeno.nazvaniya = true; }
   };
   return z;
 }
@@ -576,7 +716,8 @@ function privyazatKnopki() {
     'dalshe-perevodchik': function () { otkryt('fizpauza'); },
     'dalshe-fizpauza': otdyhZakonchen,
     'knopka-smyt': smyt, 'knopka-printer': perejtiKPrinteru,
-    'dalshe-ceh': function () { otkryt('final'); },
+    'dalshe-ceh': function () { otkryt('nazvaniya'); },
+    'dalshe-nazvaniya': function () { otkryt('final'); },
     'knopka-ura': salyut
   };
   Object.keys(karta).forEach(function (id) { el(id).addEventListener('click', karta[id]); });

@@ -77,6 +77,17 @@
 }
 .kaplya--padaet { animation: padat .5s ease-in forwards; }
 
+/* имена цветов: три образца-капли */
+.obrazcy { display: flex; gap: 44px; }
+.obrazec-knopka {
+  --cvet: #888888;
+  width: 190px; height: 190px; border-radius: 50%; background: var(--cvet);
+  border: 8px solid var(--linia); box-shadow: 0 6px 0 var(--linia);
+}
+.obrazec-knopka:disabled { cursor: default; }
+.obrazec-knopka--ne { opacity: .35; }
+#imya-nazvaniya { color: var(--chernila); }
+
 /* финал */
 .itog { display: flex; gap: 60px; }
 .itog-stolb { display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: var(--tekst); }
@@ -93,3 +104,4 @@
 @keyframes migat { 0%, 100% { outline: 0 solid transparent; } 50% { outline: 8px solid #ffffff; } }
 @keyframes padat { 0% { opacity: 1; top: -60px; } 90% { opacity: 1; } 100% { opacity: 0; top: 140px; } }
 @keyframes iskra { from { transform: translate(0, 0); opacity: 1; } to { transform: translate(var(--dx), var(--dy)); opacity: 0; } }
+.banka[data-kraska="voda"] { color: var(--chernila); text-shadow: none; }
