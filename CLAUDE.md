@@ -8,6 +8,7 @@
 
 ## Код
 
+- **Перед новым кодом урока — `lib/slova/SLOVA.md`:** готовое слово берём, а не пишем заново (ОЧ-10 «одно знание — одно место»); шаблон запуска — `Slova.zapustitPrilozhenie`, Говорун — `lib/slova/govorun.js`. Новое слово — только если готовое не подходит, с объяснением в отчёте.
 - Весь новый и изменяемый код (JS, Python и другие языки, кроме Prolog) — «по-фортовски»: `ii-komanda/pravila/KOD-PO-FORTOVSKI.md`. В конце работы — «пополнение словаря».
 - Prolog — «по-прологовски» (как описать): `ii-komanda/pravila/KOD-PO-PROLOGOVSKI.md`, и «по-графовски» (как нарисовать: каждое отношение — в ДРАКОН-ГРАФ): `ii-komanda/pravila/KOD-PO-GRAFOVSKI.md`. HTML и CSS — раздел в `KOD-PO-PROLOGOVSKI.md`.
 - К коду сдаётся ДРАКОН-лист — Markdown с блоками ```` ```дракон ```` и ```` ```конспект ```` и тестом (`KOD-PO-GRAFOVSKI.md`, п. 4; образец — `ii-komanda/pravila/primery/drakon-list-evklid.md`); проверка: `node tools/drakon-list.mjs лист.md` (`--kod python` — код по блокам «дракон»). Всё вместе — навык `ii-komanda/rezerv/navyki/tri-stilya-koda/SKILL.md`.
