@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Экспертное многоборье — ИИИБ, 8 класс</title>
+<style>
+:root { --bg:#f3f5f9; --panel:#fff; --line:#cdd6e3; --ink:#18223a; --mut:#5b6884; --ok:#1f9e63; --err:#d23b4b; --akc:#2f6fd0; --zv:#c98a00; --r:12px; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:17px/1.45 system-ui, 'Segoe UI', Arial, sans-serif; }
+#status { position:sticky; top:0; z-index:5; display:flex; gap:18px; flex-wrap:wrap; align-items:center; padding:8px 18px; background:#18223a; color:#fff; font-size:15px; }
+#status b { color:#ffd65a; }
+main { max-width:1100px; margin:0 auto; padding:14px 18px 40px; }
+section[hidden] { display:none; }
+h1 { font-size:26px; margin:6px 0 10px; } h2 { font-size:21px; margin:14px 0 8px; }
+.karta { background:var(--panel); border:1px solid var(--line); border-radius:var(--r); padding:12px 16px; margin:10px 0; }
+.pravilo { background:#fffbe6; border-left:5px solid #f0c000; padding:8px 12px; border-radius:8px; margin:8px 0; }
+.chestno { background:#eef4ff; border-left:5px solid var(--akc); padding:8px 12px; border-radius:8px; }
+button { font:inherit; cursor:pointer; border:1px solid var(--line); background:#eef2f8; color:var(--ink); border-radius:9px; padding:7px 14px; }
+button.glav { background:var(--akc); color:#fff; border-color:var(--akc); }
+button:disabled { opacity:.45; cursor:default; }
+button.vybran { background:var(--ink); color:#fff; }
+.ryad { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:6px 0; }
+.dve { display:grid; grid-template-columns:auto 1fr; gap:18px; align-items:start; }
+table.setka { border-collapse:collapse; }
+table.setka td { width:38px; height:38px; border:1px solid #9aa6b8; text-align:center; padding:0; font-weight:700; }
+table.setka input { width:36px; height:36px; border:0; text-align:center; font:700 18px/1 system-ui, sans-serif; background:transparent; }
+table.setka input.ok { color:var(--ok); } table.setka input.err { background:#ffd9de; color:var(--err); }
+table.malaya td { width:30px; height:30px; }
+.podpis { color:var(--mut); font-size:14px; }
+.zv { color:var(--zv); font-weight:700; }
+.progon { display:grid; grid-template-columns:170px 1fr; gap:6px 12px; padding:8px 0; border-top:1px dashed var(--line); }
+.progon input[type=text] { font:inherit; padding:4px 8px; width:200px; }
+.fotki { display:flex; gap:12px; flex-wrap:wrap; } .fotki figure { margin:0; width:200px; } .fotki img { width:200px; border:1px solid var(--line); }
+textarea { width:100%; min-height:80px; font:inherit; padding:8px; }
+input.otvet { width:80px; font:inherit; padding:4px 6px; }
+.kod-bolshoj { font-size:64px; font-weight:800; color:var(--akc); }
+.shema { max-width:560px; } .shema-shirokaya { max-width:900px; }
+#vskrytie[hidden] { display:none; }
+</style>
+</head>
+<body>
+<div id="status">
+  <span>Код: <b id="stKod">—</b></span>
+  <span>Шаг схемы «Экспертиза»: <b id="stShag">гипотеза</b></span>
+  <span>С начала: <b id="stMin">—</b></span>
+  <span>Очки многоборья: <b id="stOchki">0</b></span>
+</div>
+<main>
+
+<section id="start">
+  <h1 id="nazvanie"></h1>
+  <div class="karta">
+    <p>Бюро экспертизы проводит многоборье из трёх испытаний: два алгоритма увеличивают картинку по формуле, третье испытание — нейросеть. После каждого шага — запись результата. Это и есть схема «Экспертиза».</p>
+    <div id="shemaEkspertiza" class="shema"></div>
+  </div>
+  <div class="karta">
+    <h2>1. Твой код эксперта (скажет учитель)</h2>
+    <div class="ryad" id="kody"></div>
+    <h2>2. Гипотеза до испытаний</h2>
+    <div id="gipotezy"></div>
+    <div class="ryad">Одно слово — почему ты так думаешь: <input type="text" id="gipSlovo" maxlength="30"></div>
+    <div class="ryad"><button class="glav" id="kStart" disabled>Начать испытание 1</button></div>
+  </div>
+  <p class="ryad"><button id="kNovaya">Новая смена / начать заново</button></p>
+</section>
+
+<section id="setka" hidden>
+  <h1>Испытания 1–2: увеличиваем по формуле</h1>
+  <div class="dve">
+    <div class="karta">
+      <h2>Исходник 4 × 4</h2>
+      <table class="setka malaya" id="tIshodnik"></table>
+      <p class="podpis">Число — яркость: 0 — чёрный, 8 — белый. Номера строк и столбцов — с нуля.</p>
+    </div>
+    <div class="karta" id="blokSosed">
+      <h2 id="zSosed"></h2>
+      <div class="pravilo" id="pSosed"></div>
+      <div class="ryad"><button id="hSosed">Подсказка (−1 очко)</button><span id="hSosedTekst" class="podpis"></span></div>
+      <table class="setka" id="tSosed"></table>
+      <p class="podpis" id="sSosed"></p>
+      <div id="shemaSosed" class="shema"></div>
+    </div>
+  </div>
+  <div class="karta" id="blokSerediny" hidden>
+    <h2 id="zSerediny"></h2>
+    <p id="serZvezda" class="zv" hidden>★ Для быстрых: время на порогах вышло — это испытание можно пропустить и перейти к нейросети.</p>
+    <div class="pravilo" id="pSerediny"></div>
+    <div class="ryad"><button id="hSerediny">Подсказка (−1 очко)</button><span id="hSeredinyTekst" class="podpis"></span></div>
+    <table class="setka" id="tSerediny"></table>
+    <p class="podpis" id="sSerediny"></p>
+    <div id="shemaSerediny" class="shema shema-shirokaya"></div>
+  </div>
+  <p class="ryad"><button class="glav" id="kKStudii" disabled>К испытанию 3: нейросеть</button></p>
+</section>
+
+<section id="studiya" hidden>
+  <h1>Испытание 3: нейросеть в «Студии»</h1>
+  <div class="karta">
+    <p class="chestno" id="chestno"></p>
+    <p>Выбери фото. Скачай файлы и открой <a href="https://alice.yandex.ru" target="_blank" rel="noopener">alice.yandex.ru</a> → «Студия» → «Изменить».</p>
+    <div class="fotki" id="fotki"></div>
+  </div>
+  <div class="karta">
+    <h2>Протокол экспертизы: прогон → вердикт → одно слово</h2>
+    <div id="progony"></div>
+    <p class="ryad"><button class="glav" id="kVskryt" disabled>Вскрыть подлинник</button></p>
+    <div id="vskrytie" hidden>
+      <div class="fotki"><figure><img id="imgStaroe" alt="Старое фото"><figcaption>Что дали ИИ</figcaption></figure><figure><img id="imgPodlinnik" alt="Подлинник"><figcaption>Подлинник</figcaption></figure></div>
+      <p>Сверь с подлинником: где ИИ угадал, а где выдумал? Поправь вердикты, если нужно.</p>
+    </div>
+  </div>
+  <div class="karta">
+    <h2>Обратная задача</h2>
+    <div id="obratnaya"></div>
+    <div class="ryad"><button id="hObratnoj">Подсказка</button><span id="hObratnojTekst" class="podpis"></span></div>
+    <p class="zv" id="zvezdaTekst"></p>
+    <textarea id="zvezdaOtvet" placeholder="★ Ответ своими словами"></textarea>
+  </div>
+  <div class="karta">
+    <h2>Вывод экспертизы</h2>
+    <p id="itogVopros"></p>
+    <textarea id="itog"></textarea>
+    <label class="ryad"><input type="checkbox" id="chPometka"> Подписал(а) свой результат: <b id="pometka"></b></label>
+    <label class="ryad"><input type="checkbox" id="chSohranil"> Скачал(а) результат из «Студии» к себе — он нужен на занятии 10</label>
+    <p class="ryad"><button class="glav" id="kGotovo" disabled>Протокол готов</button></p>
+    <div id="final" hidden><p>Протокол эксперта</p><div class="kod-bolshoj" id="finKod"></div><p id="finOchki"></p></div>
+  </div>
+</section>
+
+</main>
+<script src="../../lib/drakonwidget/drakonwidget.js"></script>
+<script src="../../lib/drakon-shema/drakon-shema.js"></script>
+<script src="../../lib/menu-ekranov/menu-ekranov.js"></script>
+<script src="../../lib/slova/slova.js"></script>
+<script src="tekst.js?v=2026-11-25b"></script>
+<script src="raschet.js?v=2026-11-25b"></script>
+<script>
+var EKRANY = [{ id: 'start', nazvanie: 'Старт и гипотеза' }, { id: 'setka', nazvanie: 'Испытания 1–2' }, { id: 'studiya', nazvanie: 'Испытание 3 и протокол' }];
+var ID_EKRANOV = ['start', 'setka', 'studiya'];
+var S;
+
+/* ---------- данные ---------- */
+
+// novoeSostoyanie: пустое состояние смены
+function novoeSostoyanie() {
+  var s = { ekran: 'start', kod: '', gip: -1, gipSlovo: '', start: 0, shag: 'гипотеза', zhurnal: [],
+    sosed: {}, serediny: {}, podsk: { sosed: 0, serediny: 0, obr: 0 }, sdano: {}, zvezdaSer: false,
+    foto: 1, progony: {}, obr: {}, zvezda: '', itog: '', pometka: false, sohranil: false, gotovo: false };
+  return s;
+}
+
+/* ---------- время и чекер ---------- */
+
+// minutOtStarta: целых минут от начала испытания 1 (до старта — 0)
+function minutOtStarta() {
+  var m = S.start ? Math.floor((Date.now() - S.start) / 60000) : 0;
+  return m;
+}
+
+// zapisatShag: шаг схемы «Экспертиза» → в журнал с минутой и в строку статуса
+function zapisatShag(shag) {
+  S.shag = shag;
+  S.zhurnal.push({ shag: shag, minuta: minutOtStarta() });
+  sohranit();
+  return shag;
+}
+
+// ochki: очки многоборья по сданным испытаниям, прогонам и задачам
+function ochki() {
+  var o = 0;
+  ['sosed', 'serediny'].forEach(function (k) { if (S.sdano[k] !== undefined) { o += Math.max(1, 3 - S.podsk[k]); } });
+  T.studiya.forEach(function (p) { if (progonGotov(p.id)) { o += 1; } });
+  T.obratnaya.forEach(function (z) { if (Number(S.obr[z.id]) === z.otvet) { o += z.zvezda ? 2 : 1; } });
+  return o;
+}
+
+// proveritPorog: прошло porogSerediny минут, «Середины» не сданы — они становятся ★ (решение автора 5)
+function proveritPorog() {
+  var pozdno = S.start && minutOtStarta() >= T.porogSerediny && S.sdano.serediny === undefined;
+  if (pozdno && !S.zvezdaSer) { S.zvezdaSer = true; pokazatSetku(); }
+  return !!pozdno;
+}
+
+// obnovitStatus: строка статуса сверху
+function obnovitStatus() {
+  Slova.el('stKod').textContent = S.kod || '—';
+  Slova.el('stShag').textContent = S.shag;
+  Slova.el('stMin').textContent = S.start ? minutOtStarta() + ' мин' : '—';
+  Slova.el('stOchki').textContent = ochki();
+  return S.shag;
+}
+
+// sohranit: состояние в память браузера и статус
+function sohranit() {
+  Slova.sohranit(T.klyuch, S);
+  return obnovitStatus();
+}
+
+/* ---------- экран «Старт» ---------- */
+
+// postroitKody: кнопки кодов экспертов
+function postroitKody() {
+  T.kody.forEach(function (k) {
+    var b = Slova.sozdat('button', S.kod === k ? 'vybran' : '', k);
+    b.addEventListener('click', function () { S.kod = k; sohranit(); postroitStart(); });
+    Slova.el('kody').appendChild(b);
+  });
+  return T.kody.length;
+}
+
+// postroitGipotezy: кнопки гипотез
+function postroitGipotezy() {
+  T.gipotezy.forEach(function (g, i) {
+    var b = Slova.sozdat('button', S.gip === i ? 'vybran' : '', g);
+    b.addEventListener('click', function () { S.gip = i; sohranit(); postroitStart(); });
+    Slova.el('gipotezy').appendChild(Slova.sozdat('div', 'ryad', '')).appendChild(b);
+  });
+  return T.gipotezy.length;
+}
+
+// postroitStart: экран старта заново по состоянию
+function postroitStart() {
+  Slova.el('kody').replaceChildren();
+  Slova.el('gipotezy').replaceChildren();
+  postroitKody();
+  postroitGipotezy();
+  Slova.el('gipSlovo').value = S.gipSlovo;
+  Slova.el('kStart').disabled = !(S.kod && S.gip >= 0 && S.gipSlovo.trim());
+  return S.kod;
+}
+
+// nachatIspytaniya: старт часов и переход к сетке
+function nachatIspytaniya() {
+  if (!S.start) { S.start = Date.now(); }
+  zapisatShag('испытание 1 «Сосед»');
+  perejtiNa('setka');
+  return S.start;
+}
+
+/* ---------- экран «Сетка» ---------- */
+
+// narisovatIshodnik: таблица 4 × 4 с цветом по яркости
+function narisovatIshodnik() {
+  T.ishodnik.forEach(function (stroka) {
+    var tr = Slova.el('tIshodnik').insertRow();
+    stroka.forEach(function (v) { var td = tr.insertCell(); td.textContent = v; td.style.background = cvet(v); td.style.color = v > 4 ? '#000' : '#fff'; });
+  });
+  return T.ishodnik.length;
+}
+
+// cvet: яркость 0–8 → серый цвет
+function cvet(v) {
+  var c = Math.round(v * 255 / 8);
+  return 'rgb(' + c + ',' + c + ',' + c + ')';
+}
+
+// proveritKletku: поле ввода → отметка верно/неверно, цвет, запись в состояние
+function proveritKletku(vvod, kak, i, j) {
+  var est = vvod.value.trim();
+  var verno = est !== '' && Number(est) === ISP[kak].etalon(i, j);
+  vvod.className = est === '' ? '' : (verno ? 'ok' : 'err');
+  vvod.parentNode.style.background = verno ? cvet(Number(est)) : '';
+  vvod.style.color = verno && Number(est) <= 4 ? '#fff' : '';
+  S[kak][i + ',' + j] = est;
+  return verno;
+}
+
+// sleduyushcheePole: после цифры — фокус на следующую клетку
+function sleduyushcheePole(vvod) {
+  var vse = Array.prototype.slice.call(vvod.closest('table').querySelectorAll('input'));
+  var sled = vse[vse.indexOf(vvod) + 1];
+  if (sled && vvod.value.trim() !== '') { sled.focus(); }
+  return !!sled;
+}
+
+// kletkaVvoda: клетка таблицы с полем ввода
+function kletkaVvoda(tr, kak, i, j) {
+  var vvod = document.createElement('input');
+  vvod.inputMode = 'numeric'; vvod.maxLength = 1; vvod.value = S[kak][i + ',' + j] || '';
+  vvod.addEventListener('input', function () { proveritKletku(vvod, kak, i, j); proveritSetku(kak); sleduyushcheePole(vvod); });
+  tr.insertCell().appendChild(vvod);
+  proveritKletku(vvod, kak, i, j);
+  return vvod;
+}
+
+// narisovatSetku: пустая сетка испытания kak
+function narisovatSetku(kak, idTablicy) {
+  var n = ISP[kak].n;
+  for (var i = 0; i < n; i++) {
+    var tr = Slova.el(idTablicy).insertRow();
+    for (var j = 0; j < n; j++) { kletkaVvoda(tr, kak, i, j); }
+  }
+  return n;
+}
+
+// kletkaVerna: в клетке (i, j) испытания стоит верное число
+function kletkaVerna(kak, i, j) {
+  var v = S[kak][i + ',' + j];
+  return v !== undefined && v !== '' && Number(v) === ISP[kak].etalon(i, j);
+}
+
+// skolkoVerno: число верных клеток испытания
+function skolkoVerno(kak) {
+  var n = ISP[kak].n, verno = 0;
+  for (var k = 0; k < n * n; k++) { verno += kletkaVerna(kak, Math.floor(k / n), k % n) ? 1 : 0; }
+  return verno;
+}
+
+// proveritSetku: все клетки верны → испытание сдано (минута в журнал)
+function proveritSetku(kak) {
+  var n = ISP[kak].n, verno = skolkoVerno(kak);
+  Slova.el(kak === 'sosed' ? 'sSosed' : 'sSerediny').textContent = 'Верно ' + verno + ' из ' + n * n;
+  if (verno === n * n && S.sdano[kak] === undefined) { sdatIspytanie(kak); }
+  sohranit();
+  return verno;
+}
+
+// sdatIspytanie: отметить сдачу, решить про «Середины» по порогу
+function sdatIspytanie(kak) {
+  S.sdano[kak] = minutOtStarta();
+  if (kak === 'sosed') { S.zvezdaSer = S.sdano.sosed > T.porogSosed; }
+  zapisatShag(kak === 'sosed' ? 'испытание 2 «Середины»' : 'испытание 3 «Нейросеть»');
+  pokazatSetku();
+  return S.sdano[kak];
+}
+
+// pokazatPodskazku: следующая подсказка испытания (−1 очко)
+function pokazatPodskazku(kak, idTeksta) {
+  var spisok = T.ispytaniya[kak].podskazki;
+  S.podsk[kak] = Math.min(spisok.length, S.podsk[kak] + 1);
+  Slova.el(idTeksta).textContent = spisok[S.podsk[kak] - 1];
+  sohranit();
+  return S.podsk[kak];
+}
+
+// pokazatSetku: видимость «Середин» и кнопки к Студии
+function pokazatSetku() {
+  var sosedSdan = S.sdano.sosed !== undefined;
+  Slova.el('blokSerediny').hidden = !sosedSdan;
+  Slova.el('serZvezda').hidden = !S.zvezdaSer;
+  Slova.el('kKStudii').disabled = !(sosedSdan && (S.zvezdaSer || S.sdano.serediny !== undefined));
+  return sosedSdan;
+}
+
+/* ---------- экран «Студия» ---------- */
+
+// postroitFoto: выбор фото и ссылки на файлы
+function postroitFoto() {
+  Slova.el('fotki').replaceChildren();
+  T.foto.forEach(function (f) {
+    var fig = Slova.sozdat('figure', '', '');
+    fig.innerHTML = '<img src="foto/foto-' + f.n + '-staroe.jpg" alt="' + f.nazvanie + '"><figcaption></figcaption>';
+    var b = Slova.sozdat('button', S.foto === f.n ? 'vybran' : '', f.n + '. ' + f.nazvanie);
+    b.addEventListener('click', function () { S.foto = f.n; sohranit(); postroitFoto(); });
+    fig.querySelector('figcaption').append(b, ssylkaFajla(f.n, 'staroe', 'старое фото'), ssylkaFajla(f.n, 'melkoe', 'маленькое фото'));
+    Slova.el('fotki').appendChild(fig);
+  });
+  return S.foto;
+}
+
+// ssylkaFajla: ссылка «скачать» на файл фото
+function ssylkaFajla(n, vid, tekst) {
+  var a = Slova.sozdat('a', '', ' ⬇ ' + tekst);
+  a.href = 'foto/foto-' + n + '-' + vid + (vid === 'melkoe' ? '.png' : '.jpg');
+  a.download = '';
+  a.style.display = 'block';
+  return a;
+}
+
+// progonGotov: у прогона есть вердикт и слово
+function progonGotov(id) {
+  var p = S.progony[id] || {};
+  return !!(p.verdikt && (p.slovo || '').trim());
+}
+
+// knopkaVerdikta: одна кнопка вердикта v у прогона id
+function knopkaVerdikta(id, v) {
+  var b = Slova.sozdat('button', (S.progony[id] || {}).verdikt === v ? 'vybran' : '', v);
+  b.addEventListener('click', function () { S.progony[id] = S.progony[id] || {}; S.progony[id].verdikt = v; sohranit(); postroitProgony(); });
+  return b;
+}
+
+// knopkiVerdikta: кнопки вердиктов прогона
+function knopkiVerdikta(id) {
+  var ryad = Slova.sozdat('div', 'ryad', '');
+  T.verdikty.forEach(function (v) { ryad.appendChild(knopkaVerdikta(id, v)); });
+  return ryad;
+}
+
+// vseProgony: все прогоны протокола заполнены
+function vseProgony() {
+  var vse = true;
+  T.studiya.forEach(function (p) { vse = vse && progonGotov(p.id); });
+  return vse;
+}
+
+// poleSlova: одно слово к прогону
+function poleSlova(id) {
+  var vvod = document.createElement('input');
+  vvod.type = 'text'; vvod.maxLength = 30; vvod.placeholder = 'одно слово';
+  vvod.value = (S.progony[id] || {}).slovo || '';
+  vvod.addEventListener('change', function () { S.progony[id] = S.progony[id] || {}; S.progony[id].slovo = vvod.value; sohranit(); postroitProgony(); });
+  return vvod;
+}
+
+// postroitProgony: строки протокола и кнопка «Вскрыть подлинник»
+function postroitProgony() {
+  Slova.el('progony').replaceChildren();
+  T.studiya.forEach(function (p) {
+    var blok = Slova.sozdat('div', 'progon', '');
+    blok.append(Slova.sozdat('b', '', (progonGotov(p.id) ? '✔ ' : '') + p.nazvanie), Slova.sozdat('div', '', 'Файл: ' + (p.fajl === 'melkoe' ? 'маленькое фото' : 'старое фото') + '. Запрос: «' + p.zapros + '»'));
+    blok.append(Slova.sozdat('span', 'podpis', 'Вердикт и слово'), knopkiVerdikta(p.id));
+    blok.append(Slova.sozdat('span', '', ''), poleSlova(p.id));
+    Slova.el('progony').appendChild(blok);
+  });
+  Slova.el('kVskryt').disabled = !vseProgony();
+  return T.studiya.length;
+}
+
+// vskryt: показать подлинник выбранного фото
+function vskryt() {
+  Slova.el('imgStaroe').src = 'foto/foto-' + S.foto + '-staroe.jpg';
+  Slova.el('imgPodlinnik').src = 'foto/foto-' + S.foto + '-podlinnik.jpg';
+  Slova.el('vskrytie').hidden = false;
+  zapisatShag('сверка с подлинником');
+  return S.foto;
+}
+
+// postroitObratnuyu: поля обратной задачи с проверкой
+function postroitObratnuyu() {
+  Slova.el('obratnaya').replaceChildren();
+  T.obratnaya.forEach(function (z) {
+    var ryad = Slova.sozdat('div', 'ryad' + (z.zvezda ? ' zv' : ''), z.vopros + ' ');
+    var vvod = document.createElement('input');
+    vvod.className = 'otvet'; vvod.inputMode = 'numeric'; vvod.value = S.obr[z.id] || '';
+    var znak = Slova.sozdat('span', '', '');
+    vvod.addEventListener('input', function () { S.obr[z.id] = vvod.value.trim(); znak.textContent = otmetka(z); sohranit(); });
+    znak.textContent = otmetka(z);
+    ryad.append(vvod, znak);
+    Slova.el('obratnaya').appendChild(ryad);
+  });
+  return T.obratnaya.length;
+}
+
+// otmetka: ✔ / ✘ / пусто для ответа задачи
+function otmetka(z) {
+  var v = S.obr[z.id];
+  var znak = !v ? '' : (Number(v) === z.otvet ? ' ✔' : ' ✘');
+  return znak;
+}
+
+// podskazkaObratnoj: следующая ступень лестницы подсказок
+function podskazkaObratnoj() {
+  S.podsk.obr = Math.min(T.podskazkiObratnoj.length, S.podsk.obr + 1);
+  Slova.el('hObratnojTekst').textContent = T.podskazkiObratnoj[S.podsk.obr - 1];
+  sohranit();
+  return S.podsk.obr;
+}
+
+// mozhnoZakonchit: протокол, вывод (≥ 6 слов) и обе галочки
+function mozhnoZakonchit() {
+  var slov = S.itog.trim().split(/\s+/).filter(Boolean).length;
+  var mozhno = vseProgony() && slov >= 6 && S.pometka && S.sohranil;
+  Slova.el('kGotovo').disabled = !mozhno;
+  return mozhno;
+}
+
+// zakonchit: протокол готов — крупный код для разбора на доске
+function zakonchit() {
+  S.gotovo = true;
+  zapisatShag('вывод в протокол');
+  pokazatFinal();
+  return S.gotovo;
+}
+
+// pokazatFinal: блок «Протокол эксперта»
+function pokazatFinal() {
+  Slova.el('final').hidden = !S.gotovo;
+  Slova.el('finKod').textContent = S.kod;
+  Slova.el('finOchki').textContent = 'Очки многоборья: ' + ochki() + '. Время: ' + minutOtStarta() + ' мин.';
+  return S.gotovo;
+}
+
+/* ---------- верхний слой ---------- */
+
+// perejtiNa: показать экран, сохранить
+function perejtiNa(id) {
+  S.ekran = id;
+  Slova.pokazatOdin(ID_EKRANOV, id);
+  if (id === 'studiya') { postroitFoto(); postroitProgony(); postroitObratnuyu(); pokazatFinal(); mozhnoZakonchit(); }
+  sohranit();
+  window.scrollTo(0, 0);
+  return id;
+}
+
+// postroitVse: тексты, схемы, сетки
+function postroitVse() {
+  Slova.el('nazvanie').textContent = T.nazvanie;
+  ['Sosed', 'Serediny'].forEach(function (k) { var i = T.ispytaniya[k.toLowerCase()]; Slova.el('z' + k).textContent = i.nazvanie; Slova.el('p' + k).textContent = i.pravilo; });
+  Slova.el('chestno').textContent = T.chestno; Slova.el('itogVopros').textContent = T.itogVopros;
+  Slova.el('pometka').textContent = '«' + T.pometka + '»'; Slova.el('zvezdaTekst').textContent = T.zvezdaTekst;
+  DrakonShema.pokazat(Slova.el('shemaEkspertiza'), T.shemy.ekspertiza);
+  DrakonShema.pokazat(Slova.el('shemaSosed'), T.shemy.sosed);
+  DrakonShema.pokazat(Slova.el('shemaSerediny'), T.shemy.serediny);
+  narisovatIshodnik(); narisovatSetku('sosed', 'tSosed'); narisovatSetku('serediny', 'tSerediny');
+  return true;
+}
+
+// privyazatKnopki: обработчики кнопок и полей
+function privyazatKnopki() {
+  Slova.el('gipSlovo').addEventListener('input', function () { S.gipSlovo = this.value; sohranit(); Slova.el('kStart').disabled = !(S.kod && S.gip >= 0 && S.gipSlovo.trim()); });
+  Slova.el('kStart').addEventListener('click', nachatIspytaniya);
+  Slova.el('kNovaya').addEventListener('click', novayaSmena);
+  Slova.el('hSosed').addEventListener('click', function () { pokazatPodskazku('sosed', 'hSosedTekst'); });
+  Slova.el('hSerediny').addEventListener('click', function () { pokazatPodskazku('serediny', 'hSeredinyTekst'); });
+  Slova.el('kKStudii').addEventListener('click', function () { perejtiNa('studiya'); });
+  Slova.el('kVskryt').addEventListener('click', vskryt);
+  Slova.el('hObratnoj').addEventListener('click', podskazkaObratnoj);
+  privyazatItog();
+  return true;
+}
+
+// privyazatItog: поля вывода, галочки, кнопка «Протокол готов»
+function privyazatItog() {
+  Slova.el('zvezdaOtvet').addEventListener('input', function () { S.zvezda = this.value; sohranit(); });
+  Slova.el('itog').addEventListener('input', function () { S.itog = this.value; sohranit(); mozhnoZakonchit(); });
+  Slova.el('chPometka').addEventListener('change', function () { S.pometka = this.checked; sohranit(); mozhnoZakonchit(); });
+  Slova.el('chSohranil').addEventListener('change', function () { S.sohranil = this.checked; sohranit(); mozhnoZakonchit(); });
+  Slova.el('kGotovo').addEventListener('click', zakonchit);
+  return true;
+}
+
+// vosstanovitPolya: значения полей из состояния
+function vosstanovitPolya() {
+  Slova.el('zvezdaOtvet').value = S.zvezda; Slova.el('itog').value = S.itog;
+  Slova.el('chPometka').checked = S.pometka; Slova.el('chSohranil').checked = S.sohranil;
+  ['sosed', 'serediny'].forEach(function (k) { if (S.podsk[k]) { Slova.el(k === 'sosed' ? 'hSosedTekst' : 'hSeredinyTekst').textContent = T.ispytaniya[k].podskazki[S.podsk[k] - 1]; } });
+  proveritSetku('sosed'); proveritSetku('serediny');
+  return true;
+}
+
+// novayaSmena: чистое состояние для следующей пары
+function novayaSmena() {
+  Slova.sohranit(T.klyuch, novoeSostoyanie());
+  location.reload();
+  return true;
+}
+
+// zapolnitStart: код, гипотеза и старт часов по умолчанию (служебное меню)
+function zapolnitStart() {
+  S.kod = S.kod || 'А'; S.gip = S.gip >= 0 ? S.gip : 2; S.gipSlovo = S.gipSlovo || 'проверю';
+  S.start = S.start || Date.now();
+  return S.kod;
+}
+
+// zapolnitSetki: эталон в обе сетки (служебное меню)
+function zapolnitSetki() {
+  ['sosed', 'serediny'].forEach(zapolnitSetku);
+  return true;
+}
+
+// zapolnenie: данные по умолчанию для пропущенных экранов (меню Ctrl+Alt+M)
+function zapolnenie() {
+  return { start: zapolnitStart, setka: zapolnitSetki };
+}
+
+// zapolnitSetku: эталон во все клетки испытания (служебное меню)
+function zapolnitSetku(kak) {
+  var n = ISP[kak].n;
+  for (var i = 0; i < n; i++) { for (var j = 0; j < n; j++) { S[kak][i + ',' + j] = String(ISP[kak].etalon(i, j)); } }
+  if (S.sdano[kak] === undefined) { S.sdano[kak] = minutOtStarta(); }
+  return n;
+}
+
+S = Slova.zapustitPrilozhenie({
+  klyuch: T.klyuch, nachalnoe: novoeSostoyanie, goditsya: function (s) { return !!s.ekran && !!s.podsk; },
+  postroit: function (s) { S = s; postroitVse(); vosstanovitPolya(); postroitStart(); pokazatSetku(); },
+  knopki: privyazatKnopki,
+  menu: function () { return { ekrany: EKRANY, perejti: function (id) { perejtiNa(id); location.reload(); }, tekushchij: function () { return S.ekran; },
+    gotov: function (id) { return id === 'start' ? !!S.start : (id === 'setka' ? S.sdano.sosed !== undefined : false); },
+    zapolnit: zapolnenie(), sluzhebnoe: [{ nazvanie: 'Новая смена', dejstvie: novayaSmena }, { nazvanie: '«Середины» — сделать ★ (пропустить)', dejstvie: function () { S.zvezdaSer = true; sohranit(); pokazatSetku(); } }] }; },
+  pokazat: function (s) { S = s; perejtiNa(s.ekran); }
+});
+setInterval(function () { proveritPorog(); obnovitStatus(); }, 20000);
+</script>
+</body>
+</html>

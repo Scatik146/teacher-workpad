@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Экспертное многоборье: ДРАКОН-лист в тетрадь (A4)</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#eee;font:13px/1.35 "Segoe UI",Arial,sans-serif;color:#222}
+  .bar{padding:10px 16px;background:#1f2329;color:#eef1f4;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .bar button{font:inherit;font-weight:700;background:#f2a93b;border:0;border-radius:16px;padding:6px 14px;cursor:pointer}
+  .sheet{width:210mm;height:297mm;margin:12px auto;background:#fff;padding:10mm 12mm;overflow:hidden}
+  h1{font-size:17px;margin:0 0 1mm}
+  .cap{font-size:11.5px;color:#555;margin:0 0 1.5mm}
+  .cut{border-top:1.5px dashed #888;margin:2.5mm 0 2mm;position:relative}
+  .cut span{position:absolute;top:-8px;left:0;background:#fff;padding-right:6px;font-size:11px;color:#666}
+  .dve{display:grid;grid-template-columns:41fr 59fr;gap:4mm;align-items:start}
+  .dve img{width:100%;height:auto;display:block}
+  .konspekt{text-align:center} .konspekt svg{max-width:100%;height:auto;max-height:122mm}
+  .ramka{border:1px solid #bbb;border-radius:6px;height:16mm;margin-top:1.5mm;color:#999;font-size:11px;padding:1.5mm}
+  .avtory{font-size:9.5px;color:#666;margin-top:1.5mm}
+  @media print{ body{background:#fff} .bar{display:none} .sheet{margin:0;width:auto;height:296mm} @page{size:A4;margin:0} }
+</style>
+</head>
+<body>
+<div class="bar"><b>ДРАКОН-лист в тетрадь: A4, одна сторона</b><span>Вырезать по линиям и вклеить. Протокол и задачи — в приложении.</span><button id="pechat">Печать</button></div>
+
+<div class="sheet">
+  <h1>Экспертное многоборье: что угадал, а что выдумал</h1>
+  <p class="cap">ДРАКОН-схема — <b>как действовать</b>: главная «Экспертиза» и вставка «Апскейл». Конспект ДРАКОН-ГРАФ — <b>что запомнить</b>: жёлтое — запомни, белое — разберись.</p>
+  <div class="cut"><span>✂ вклеить в тетрадь</span></div>
+  <div class="dve">
+    <div><p class="cap">Главная схема · по ней идёт весь урок</p><img src="kartinki/shema-ekspertiza.png" alt="ДРАКОН-схема «Экспертиза»"></div>
+    <div><p class="cap">Вставка · испытание 2: 4 × 4 → 7 × 7</p><img src="kartinki/shema-serediny.png" alt="ДРАКОН-схема «Апскейл «Середины»»"></div>
+  </div>
+  <div class="cut"><span>✂</span></div>
+  <div class="konspekt" id="konspekt"></div>
+  <div class="ramka">Мой вывод экспертизы (одной фразой):</div>
+  <p class="avtory">ДРАКОН — В. Д. Паронджанов; виджет схем — С. Митькин. ДРАКОН-ГРАФ: язык ГРАФ — В. Д. Паронджанов, Г. А. Гуленков; расширенная версия — С. Н. Веснин.</p>
+</div>
+
+<script src="../../lib/drakon-graf/drakon-graf.min.js"></script>
+<script src="../../lib/drakon-graf/konspekt.js"></script>
+<script src="../../lib/slova/slova.js"></script>
+<script src="tekst.js?v=2026-11-25b"></script>
+<script>
+// zapolnitList: конспект ДРАКОН-ГРАФ для печати (схемы — картинками из kartinki/, их снимает shemy_png.py по tekst.js)
+function zapolnitList() {
+  var rez = Konspekt.draw(Slova.el('konspekt'), T.konspekt, { class: 8, theme: 'bw', width: 680 });
+  return rez;
+}
+
+zapolnitList();
+Slova.knopkaPechati('pechat');
+</script>
+</body>
+</html>
