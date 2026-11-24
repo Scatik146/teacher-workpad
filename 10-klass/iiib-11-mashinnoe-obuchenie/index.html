@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Как нейрон учится — ИИИБ, 10 класс</title>
+<style>
+  :root{--fon:#f3f5f9;--list:#fff;--tekst:#1d2738;--sin:#2f6fd0;--zel:#1f9d55;--kras:#d64545;--zhel:#f2b134;--seryj:#7b8798;--ramka:#d5dce6}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--fon);color:var(--tekst);font:16px/1.4 "Segoe UI",Arial,sans-serif}
+  header{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 14px;background:#1d2738;color:#fff}
+  header h1{font-size:18px;margin:0 12px 0 0}
+  header button{font:inherit;font-size:15px;border:0;border-radius:18px;padding:6px 14px;cursor:pointer;background:#33425a;color:#fff}
+  header button.tek{background:var(--sin)}
+  header .sprava{margin-left:auto;display:flex;gap:8px}
+  header .sprava button{background:#4a5568}
+  main{max-width:1320px;margin:0 auto;padding:10px 14px}
+  section[hidden]{display:none}
+  .ryad{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start}
+  .blok{background:var(--list);border:1px solid var(--ramka);border-radius:10px;padding:10px 14px}
+  .blok h2{font-size:16px;margin:0 0 6px}
+  .podpis{color:var(--seryj);font-size:14px;margin:4px 0}
+  table.setka{border-collapse:collapse;margin:4px 0}
+  table.setka td{width:46px;height:46px;border:2px solid #333;text-align:center;font-size:20px;font-weight:700}
+  table.setka td.on{background:#2c3e50;color:#fff}
+  table.setka td.off{background:#fff;color:#bbb}
+  table.setka td.nazhat{cursor:pointer}
+  table.setka.mal td{width:22px;height:22px;font-size:0;border-width:1px}
+  table.vesa td{padding:2px}
+  table.vesa input{width:58px;font:inherit;font-size:18px;text-align:center;padding:4px}
+  table.vesa input:disabled{color:var(--tekst);background:#eef2f7;border:1px solid var(--ramka)}
+  .knopki{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+  button.k{font:inherit;border:1px solid var(--ramka);background:#eef3fb;border-radius:8px;padding:6px 12px;cursor:pointer}
+  button.k.glav{background:var(--sin);border-color:var(--sin);color:#fff;font-weight:600}
+  button.k:disabled{opacity:.45;cursor:default}
+  input.chislo{width:80px;font:inherit;font-size:18px;text-align:center;padding:4px}
+  .itog{font-size:22px;margin:6px 0}
+  .itog b{font-size:30px}
+  .vyhod1{color:var(--zel)} .vyhod0{color:var(--kras)}
+  table.zhurnal{border-collapse:collapse;font-size:14px;width:100%}
+  table.zhurnal th,table.zhurnal td{border:1px solid var(--ramka);padding:3px 6px;text-align:center}
+  table.zhurnal th{background:#eef2f7}
+  .da{color:var(--zel);font-weight:700} .net{color:var(--kras);font-weight:700}
+  .soobshchenie{min-height:24px;font-weight:600}
+  .soobshchenie.net{color:var(--kras)} .soobshchenie.da{color:var(--zel)}
+  .zhurnal-okno{max-height:240px;overflow:auto}
+  .bukvy-bez{display:flex;gap:12px;flex-wrap:wrap}
+  .bukvy-bez .kartochka{border:1px solid var(--ramka);border-radius:8px;padding:6px;text-align:center;background:#fff}
+  .kuchka-knopki button{font:inherit;font-size:14px;border:1px solid var(--ramka);background:#fff;border-radius:6px;padding:2px 8px;margin:1px;cursor:pointer}
+  .kuchka-knopki button.vybrano{background:var(--zhel);border-color:var(--zhel);font-weight:700}
+  .kuchki{display:flex;gap:12px;flex-wrap:wrap}
+  .kuchki .kuchka{border:2px dashed var(--seryj);border-radius:10px;padding:6px 10px;display:flex;gap:8px;align-items:center;background:#fff}
+  .rekord{font-size:18px}
+  .vverh{margin-top:12px}
+  .shir{flex:1;min-width:400px}
+</style>
+</head>
+<body>
+<header>
+  <h1>🧠 Как нейрон учится</h1>
+  <nav id="nav"></nav>
+  <div class="sprava"><button id="kKarkas" title="Скопировать каркас конспекта и открыть генератор">Каркас конспекта</button><button id="kZanovo">Начать заново</button></div>
+</header>
+<main>
+
+<section id="nejron">
+  <div class="ryad">
+    <div class="blok">
+      <h2>Входы — признаки</h2>
+      <p class="podpis">Щёлкни клетку или возьми букву</p>
+      <table class="setka" id="n-vhod"></table>
+      <div class="knopki" id="n-bukvy"></div>
+    </div>
+    <div class="blok">
+      <h2>Веса</h2>
+      <p class="podpis">Целые числа от −10 до 10</p>
+      <table class="vesa" id="n-vesa"></table>
+      <p>Порог: <input class="chislo" type="number" id="n-porog" value="0"></p>
+    </div>
+    <div class="blok">
+      <h2>Ответ нейрона</h2>
+      <p class="itog">S = <b id="n-S">0</b></p>
+      <p class="itog">выход: <b id="n-vyhod">1</b></p>
+      <p class="podpis">S — сумма весов закрашенных клеток.<br>S не меньше порога → 1, иначе 0.</p>
+    </div>
+  </div>
+  <div class="blok vverh">
+    <h2>Рекорд</h2>
+    <p id="r-zadanie"></p>
+    <div class="knopki"><button class="k glav" id="r-proverit">Проверить на всех 7 буквах</button><button class="k" id="r-mashina">Взять веса машины (экран 2)</button></div>
+    <table class="zhurnal" id="r-tablica"></table>
+    <p class="rekord" id="r-schet"></p>
+  </div>
+</section>
+
+<section id="obuchenie" hidden>
+  <div class="ryad">
+    <div class="blok">
+      <h2>Пример из выборки</h2>
+      <p class="podpis" id="o-kto"></p>
+      <table class="setka" id="o-primer"></table>
+      <p class="podpis" id="o-krug"></p>
+    </div>
+    <div class="blok">
+      <h2>Веса нейрона сейчас</h2>
+      <table class="vesa" id="o-vesa"></table>
+      <p>Порог: <b id="o-porog">0</b></p>
+    </div>
+    <div class="blok shir">
+      <h2>Твой ход</h2>
+      <div id="o-hod"></div>
+      <p class="soobshchenie" id="o-soobshchenie"></p>
+      <div class="knopki"><button class="k" id="o-doschitat">Досчитать машиной</button></div>
+    </div>
+  </div>
+  <div class="ryad vverh">
+    <div class="blok shir">
+      <h2>Журнал шагов</h2>
+      <div class="zhurnal-okno"><table class="zhurnal" id="o-zhurnal"></table></div>
+    </div>
+    <div class="blok shir" id="o-posle">
+      <h2>После обучения</h2>
+      <div class="knopki"><button class="k glav" id="o-test">Проверить на новых буквах</button><button class="k" id="o-vse">Учить на всех 7</button></div>
+      <table class="zhurnal" id="o-rezultat"></table>
+      <p class="podpis" id="o-vyvod"></p>
+    </div>
+  </div>
+</section>
+
+<section id="kuchki" hidden>
+  <div class="blok">
+    <h2>Разложи буквы на кучки — без подсказок, какая где</h2>
+    <p class="podpis">Под каждой буквой выбери кучку: А, Б, В или Г. Названий и правильных ответов нет — это обучение без учителя.</p>
+    <div class="bukvy-bez" id="k-bukvy"></div>
+    <div class="knopki vverh"><button class="k glav" id="k-mashina">Как разложит машина</button></div>
+  </div>
+  <div class="blok vverh" id="k-otvet" hidden>
+    <h2>Машина: похожи, если отличаются не больше чем на <span id="k-porog-chislo"></span> клетки</h2>
+    <p>Сходство: <input type="range" id="k-porog" min="1" max="4" step="1"> <span class="podpis">меньше — строже, больше — мягче</span></p>
+    <div class="kuchki" id="k-mashinnye"></div>
+    <p class="podpis">Сравни со своими кучками. Машина не знает, что такое «буква C»: она видит только клетки.</p>
+  </div>
+</section>
+
+</main>
+<script src="../../lib/menu-ekranov/menu-ekranov.js"></script>
+<script src="../../lib/slova/slova.js"></script>
+<script src="../../lib/nejron/nejron.js"></script>
+<script src="tekst.js?v=2026-11-25-0200"></script>
+<script src="prilozhenie.js?v=2026-11-25-0200"></script>
+</body>
+</html>

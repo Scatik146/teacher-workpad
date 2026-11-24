@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Как нейрон учится: конспект учителя</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#f3f5f9;font:15px/1.45 "Segoe UI",Arial,sans-serif;color:#1d2738}
+  main{max-width:980px;margin:0 auto;padding:14px 18px;background:#fff}
+  h1{font-size:22px;margin:0 0 4px}
+  h2{font-size:17px;margin:18px 0 6px;border-bottom:2px solid #2f6fd0;padding-bottom:3px}
+  .cap{color:#5b6677;font-size:13.5px;margin:2px 0}
+  table{border-collapse:collapse;width:100%;font-size:14px}
+  th,td{border:1px solid #c9d2de;padding:5px 7px;vertical-align:top;text-align:left}
+  th{background:#eef2f7}
+  td.min{white-space:nowrap;text-align:center}
+  .ssylki a{display:inline-block;margin:2px 10px 2px 0}
+  .konspekt{background:#fffdf7;border:1px solid #e8d36a;border-radius:8px;padding:6px;margin:6px 0}
+  ul{margin:4px 0;padding-left:20px}
+  .avtory{font-size:12px;color:#666;margin-top:12px}
+  @media print{ body{background:#fff} main{max-width:none;padding:0} @page{size:A4;margin:12mm} }
+</style>
+</head>
+<body>
+<main>
+  <h1>Как нейрон учится — конспект учителя</h1>
+  <p class="cap">ИИИБ · 10 класс · урок 11 · 25.11.2026, 14:40 · 40 минут · открытие нового знания · 3 ученика, каждый сам, ноутбук у каждого</p>
+  <p class="cap">Тема: что такое машинное обучение и данные для него — обучение с учителем и без, признаки, разметка, выборки. Формальный нейрон (схема Розенблатта). Схема «Дерево» в ДРАКОН-ГРАФ.</p>
+  <p class="ssylki"><a href="index.html">Приложение (3 экрана)</a><a href="list.html">Лист ученика, A4, 2 стороны</a><a id="generator" href="#">Генератор ДРАКОН-ГРАФ</a></p>
+
+  <h2>Ход урока</h2>
+  <table id="etapy"></table>
+  <p class="cap" id="summa"></p>
+
+  <h2>Если не успеваем</h2>
+  <ul>
+    <li>Первым убираем самостоятельную раскладку на экране 3: учитель показывает кучки машины на доске, ученики только сравнивают.</li>
+    <li>Вторым: «Рекорд» (этап 7) уходит в домашнее задание, на уроке — одна попытка.</li>
+    <li>Не убираем: обучение на экране 2 руками (хотя бы один круг; остаток — «Досчитать машиной») и каркас конспекта.</li>
+  </ul>
+
+  <h2>Как подать ошибку нейрона</h2>
+  <ul>
+    <li>До экрана 1: «Нейрон не обучен, он почти наверняка ошибётся — так мы узнаём, чего ему не хватает».</li>
+    <li>Ошибка — это данные: сразу говорить, какой вес поправить.</li>
+    <li>Если ученик замолчал или говорит «не получается» — он диктует, учитель нажимает.</li>
+  </ul>
+
+  <h2>Ключ к выдумкам (лист 1)</h2>
+  <table id="vydumki"></table>
+
+  <h2>Конспект ДРАКОН-ГРАФ — образец</h2>
+  <p class="cap">Этап 4 — каркас (кнопка «Каркас конспекта» в приложении копирует текст и открывает генератор). Этап 8 — ветви. Вторая схема (нейрон) — для доски и для тех, кто успел.</p>
+  <div class="konspekt" id="obrazec"></div>
+  <div class="konspekt" id="obrazecNejron"></div>
+
+  <h2>Что видно в приложении (проверено программой)</h2>
+  <ul>
+    <li>Экран 2: обучение на C₁ → 1, T → 0 заканчивается на 3-м круге (6 шагов).</li>
+    <li>Тестовая выборка после этого: верно 2 из 5 — П₁, П₂ и + нейрон принимает за C.</li>
+    <li>«Учить на всех 7»: машина учится за 11 кругов, после этого 7 из 7.</li>
+    <li>Экран 3, сходство «не больше 2 клеток»: C₁, C₂, П₁, П₂ — вместе; C₃ и T — вместе; + — один.</li>
+  </ul>
+  <p class="avtory">ДРАКОН-ГРАФ: язык ГРАФ — В. Д. Паронджанов; инициатор и участник разработки — Г. А. Гуленков; расширенная версия и программа — С. Н. Веснин.</p>
+</main>
+<script src="../../lib/slova/slova.js"></script>
+<script src="../../lib/drakon-graf/drakon-graf.min.js"></script>
+<script src="../../lib/drakon-graf/konspekt.js"></script>
+<script src="tekst.js?v=2026-11-25-0200"></script>
+<script src="kanva.js?v=2026-11-25-0200"></script>
+</body>
+</html>

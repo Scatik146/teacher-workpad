@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Как нейрон учится: лист ученика (A4, 2 стороны)</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#eee;font:14px/1.45 "Segoe UI",Arial,sans-serif;color:#222}
+  .bar{padding:10px 16px;background:#1f2329;color:#eef1f4;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .bar button{font:inherit;font-weight:700;background:#f2a93b;border:0;border-radius:16px;padding:6px 14px;cursor:pointer}
+  .sheet{width:210mm;height:297mm;margin:12px auto;background:#fff;padding:12mm 16mm;overflow:hidden}
+  h1{font-size:19px;margin:0 0 2mm}
+  h2{font-size:15px;margin:4mm 0 2mm}
+  .cap{font-size:12px;color:#555;margin:0 0 2mm}
+  ol.tekst{padding-left:7mm;margin:2mm 0}
+  ol.tekst li{margin:0 0 2.2mm;font-size:14.5px;line-height:1.5}
+  .zadanie{border:1.5px solid #333;border-radius:6px;padding:2mm 3mm;font-weight:600;margin-top:3mm}
+  .polya{font-size:12px;color:#777;margin-top:2mm}
+  pre{font:12.5px/1.35 "PT Mono",Consolas,monospace;background:#fffdf0;border:1px solid #e8d36a;border-radius:6px;padding:2mm 3mm;margin:0;white-space:pre-wrap}
+  .dva{display:flex;gap:6mm}
+  .dva>div{flex:1}
+  .ramka{border:1px solid #bbb;border-radius:6px;color:#999;font-size:12px;padding:2mm}
+  .ramka.vys{height:62mm}
+  .bukvy{display:flex;gap:3mm;flex-wrap:wrap}
+  .bukva{text-align:center;font-size:12px}
+  table.setka{border-collapse:collapse;margin:1mm auto}
+  table.setka td{width:6mm;height:6mm;border:1px solid #333;font-size:0}
+  table.setka td.on{background:#333;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  table.pusto{border-collapse:collapse}
+  table.pusto td{width:9mm;height:9mm;border:1px solid #333}
+  .kuchka{display:inline-block;border-bottom:1px solid #333;width:10mm}
+  ol.dz{padding-left:6mm;margin:1mm 0}
+  .avtory{font-size:10.5px;color:#666;margin-top:3mm}
+  @media print{ body{background:#fff} .bar{display:none} .sheet{margin:0;width:auto;height:296mm;break-after:page} @page{size:A4;margin:0} }
+</style>
+</head>
+<body>
+<div class="bar"><b>Лист ученика: A4, две стороны</b><span>Сторона 1 — текст для чтения с выдумками. Сторона 2 — конспект, кучки, рекорд, домашнее задание.</span><button id="pechat">Печать</button></div>
+
+<div class="sheet">
+  <h1 id="zagolovok"></h1>
+  <p class="cap">ИИИБ · 10 класс · Машинное обучение и данные. Формальный нейрон. Пиши на полях: «?» — непонятно, «!» — новое, «✗» — выдумка.</p>
+  <ol class="tekst" id="tekst"></ol>
+  <div class="zadanie" id="zadanie"></div>
+  <p class="polya">Выдумка № __ : абзац __ → как на самом деле: ______________________________________________</p>
+  <p class="polya">Выдумка № __ : абзац __ → как на самом деле: ______________________________________________</p>
+  <p class="polya">Выдумка № __ : абзац __ → как на самом деле: ______________________________________________</p>
+</div>
+
+<div class="sheet">
+  <h1>Конспект в ДРАКОН-ГРАФ</h1>
+  <p class="cap">Каркас — в генератор (кнопка «Каркас конспекта» в приложении). Вместо «?» впиши ответы из текста. Схему из генератора перерисуй в рамку или в тетрадь.</p>
+  <div class="dva">
+    <div><pre id="karkas"></pre></div>
+    <div class="ramka vys">Схема конспекта</div>
+  </div>
+  <h2>Кучки без разметки (экран 3)</h2>
+  <p class="cap">Сначала разложи сам: под буквой впиши кучку А, Б, В или Г. Потом сравни с машиной.</p>
+  <div class="bukvy" id="bukvy"></div>
+  <p>Машина положила вместе: ____________________________ . Почему? ____________________________________</p>
+  <h2>Рекорд (экран 1)</h2>
+  <p>Мой нейрон верно узнал ___ из 7 букв. Признак, на который я поставил самый большой вес: клетка № ___ , потому что ____________________</p>
+  <h2>Домашнее задание</h2>
+  <ol class="dz" id="dz"></ol>
+  <div class="dva">
+    <div><p class="cap">Мои веса с урока и порог ___</p><table class="pusto" id="vesaPusto"></table></div>
+    <div><p class="cap">Моя буква (закрась клетки)</p><table class="pusto" id="bukvaPusto"></table></div>
+    <div><p class="cap">S = ______ , выход = ___</p></div>
+  </div>
+  <p class="avtory">ДРАКОН-ГРАФ: язык ГРАФ — В. Д. Паронджанов; инициатор и участник разработки — Г. А. Гуленков; расширенная версия и программа — С. Н. Веснин.</p>
+</div>
+
+<script src="../../lib/slova/slova.js"></script>
+<script src="../../lib/nejron/nejron.js"></script>
+<script src="tekst.js?v=2026-11-25-0200"></script>
+<script src="list.js?v=2026-11-25-0200"></script>
+</body>
+</html>
