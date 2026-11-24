@@ -126,10 +126,11 @@ function vopros(R, sh, x, y) {
   var bx = x + GX;
   prostoj(R, sh, x, y);
   var nizVetki = ryad(R, sh.net || [], bx, y + H);
-  var styk = nizVetki + GY;
+  var nizDa = ryad(R, sh.da || [], x, y + H);
+  var styk = Math.max(nizVetki, nizDa) + GY;
   R.linii.push([[x + W / 2, y + H / 2], [bx, y + H / 2], [bx, y + H + GY]]);
   R.linii.push([[bx, nizVetki], [bx, styk], [x, styk]]);
-  R.linii.push([[x, y + H], [x, styk]]);
+  R.linii.push([[x, nizDa], [x, styk]]);
   R.metki.push(metka('Да', x - 26, y + H + 16), metka('Нет', x + W / 2 + 6, y + H / 2 - 6));
   return styk;
 }

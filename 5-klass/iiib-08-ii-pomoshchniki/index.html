@@ -666,7 +666,7 @@ function ekran6(sek) {
   sek.appendChild(sozdat('h2', '', 'Новая икона: «Выбор»'));
   sek.appendChild(abzac(T.e6.vvod, 'master'));
   var dve = abzac('', 'dve'), mesto = abzac('', 'shema-mesto'), bok = abzac('', 'bok');
-  Shema.narisovat(mesto, T.e6.shema, { najat: nazhatVariant });
+  Shema.narisovat(mesto, T.e6.shema, { najat: nazhatVariant, klassy: klassyVybora() });
   dve.appendChild(mesto);
   bok.appendChild(rasskazVybora());
   bok.appendChild(gotovo ? abzac(T.e6.gotovo, 'otvet ok') : zadanieVybora());
@@ -683,6 +683,13 @@ function rasskazVybora() {
   return ol;
 }
 
+// klassyVybora: последний нажатый флажок и его команда — зелёные (верно) или красные (неверно)
+function klassyVybora() {
+  var k = {}, id = S.e6.posl;
+  if (id) { k[id] = S.e6.oshibka ? 'oshibka' : 'projden'; k[id + 'a'] = k[id]; }
+  return k;
+}
+
 // zadanieVybora: просьба — нажать вариант на схеме
 function zadanieVybora() {
   var karta = abzac(T.e6.zadanie, 'karta');
@@ -694,7 +701,8 @@ function zadanieVybora() {
 // nazhatVariant: флажок совпал с просьбой — следующая просьба
 function nazhatVariant(id) {
   var p = T.e6.prosby[S.e6.i];
-  var verno = !!p && p.ok === id;
+  var verno = !!p && (p.ok === id || p.ok + 'a' === id);
+  S.e6.posl = verno ? p.ok : id;
   S.e6.i += verno ? 1 : 0;
   S.e6.oshibka = !!p && !verno;
   if (S.e6.oshibka) { oshibka(T.e6.neVerno); }
@@ -866,14 +874,22 @@ function strokaVida(pole, pNe, v) {
   return r;
 }
 
-// postavitModel: модель подходит виду — поставить, иначе — её отказ
+// postavitModel: модель подходит виду и не проверяет сама себя — поставить, иначе — её отказ
 function postavitModel(pole, pNe, vid, m) {
-  var podhodit = m.vidy.indexOf(vid) >= 0;
-  if (podhodit) { S.e9[pole][vid] = m.id; }
-  S.e9[pNe][vid] = podhodit ? '' : podstavit(T.e9.neMoe, { model: m.imya, delo: m.delo });
-  if (!podhodit) { S.oshibok += 1; }
+  var otkaz = m.vidy.indexOf(vid) < 0 ? podstavit(T.e9.neMoe, { model: m.imya, delo: m.delo }) : samaSebya(pole, vid, m);
+  if (!otkaz) { S.e9[pole][vid] = m.id; }
+  if (!otkaz && vid === 'kod' && S.e9[pole].proverka === m.id) { S.e9[pole].proverka = ''; }
+  S.e9[pNe][vid] = otkaz;
+  if (otkaz) { S.oshibok += 1; }
   sohranit();
-  return podhodit;
+  return !otkaz;
+}
+
+// samaSebya: на проверку нельзя ставить ту же модель, что пишет программы
+function samaSebya(pole, vid, m) {
+  var sama = vid === 'proverka' && S.e9[pole].kod === m.id;
+  if (sama) { dobavitPravilo('chuzhie'); }
+  return sama ? podstavit(T.e9.sebya, { model: m.imya }) : '';
 }
 
 // sobrano: у всех видов задач есть модель
@@ -1245,14 +1261,14 @@ function zap8() {
 
 // zap9: Светляк собран из первых подходящих моделей
 function zap9() {
-  T.e9.vidy.forEach(function (v) { S.e9.sborka[v.id] = pervayaModel(v.id); });
+  T.e9.vidy.forEach(function (v) { S.e9.sborka[v.id] = pervayaModel(v.id, v.id === 'proverka' ? S.e9.sborka.kod : ''); });
   return raznyhModelej(S.e9.sborka);
 }
 
-// pervayaModel: первая модель, которая подходит виду задач
-function pervayaModel(vid) {
+// pervayaModel: первая модель, которая подходит виду задач (кроме krome)
+function pervayaModel(vid, krome) {
   var id = '';
-  T.modeli.forEach(function (m) { if (!id && m.vidy.indexOf(vid) >= 0) { id = m.id; } });
+  T.modeli.forEach(function (m) { if (!id && m.id !== krome && m.vidy.indexOf(vid) >= 0) { id = m.id; } });
   return id;
 }
 
