@@ -656,6 +656,14 @@ function kursyPredmeta(predmet, klass) {
   return fajly.filter(f => kursPoFajlu(f) && kursPoFajlu(f).klassy[klass]);
 }
 
+// klassKursa: класс для уроков курса — выбранный в форме, а если у курса его нет и класс в курсе один — этот один
+function klassKursa(fajl) {
+  const kurs = kursPoFajlu(fajl);
+  const klassy = kurs ? Object.keys(kurs.klassy) : [];
+  const svoj = klassy.length === 1 && !klassy.includes(S.znacheniya.klass);
+  return svoj ? klassy[0] : S.znacheniya.klass;
+}
+
 // urokiKursa: уроки курса для класса (нет — пустой список)
 function urokiKursa(fajl, klass) {
   const kurs = kursPoFajlu(fajl);
@@ -679,7 +687,8 @@ function strokaUroka(u) {
 // spisokUrokov: уроки выбранного курса и класса
 function spisokUrokov() {
   const el = document.getElementById('planUrok');
-  const uroki = urokiKursa(document.getElementById('planKurs').value, S.znacheniya.klass);
+  const fajl = document.getElementById('planKurs').value;
+  const uroki = urokiKursa(fajl, klassKursa(fajl));
   el.replaceChildren(new Option(uroki.length ? '— урок —' : '— нет уроков для этого класса —', ''));
   uroki.forEach((u, i) => el.append(new Option(strokaUroka(u), String(i))));
 }
@@ -696,7 +705,7 @@ function mestoIzPlana(fajl, uroki, u) {
   const vPlane = u.zhurnal ? '' : '; в плане: ' + (u.tip || '—');
   const zhurnal = u.zhurnal ? '; в журнале: ' + u.zhurnal : '';
   const status = u.status ? '; статус: ' + u.status : '';
-  return 'урок ' + u.n + ' из ' + uroki.length + ' по плану «' + kursPoFajlu(fajl).nazvanie + '», ' + S.znacheniya.klass +
+  return 'урок ' + u.n + ' из ' + uroki.length + ' по плану «' + kursPoFajlu(fajl).nazvanie + '», ' + klassKursa(fajl) +
     ' кл.' + vPlane + kogda + zhurnal + status + '; готовность: ' + gotovnost(u);
 }
 
@@ -729,7 +738,7 @@ function obyazatelnoIzPlana(u, prezhnee) {
 function znacheniyaIzPlana(fajl, uroki, i) {
   const u = uroki[i];
   const Z = S.znacheniya;
-  const znacheniya = { tema: u.tema, mesto: mestoIzPlana(fajl, uroki, u), do: doIzPlana(uroki[i - 1]),
+  const znacheniya = { klass: klassKursa(fajl), tema: u.tema, mesto: mestoIzPlana(fajl, uroki, u), do: doIzPlana(uroki[i - 1]),
     posle: uroki[i + 1] ? uroki[i + 1].tema : 'нет (последний урок плана)',
     obyazatelno: obyazatelnoIzPlana(u, Z.obyazatelno), data: dataIzPlana(u.kogda) || Z.data };
   return znacheniya;
@@ -738,7 +747,7 @@ function znacheniyaIzPlana(fajl, uroki, i) {
 // vzyatIzPlana: выбранный урок плана → тема, место, до и после, обязательно, дата
 function vzyatIzPlana() {
   const fajl = document.getElementById('planKurs').value;
-  const uroki = urokiKursa(fajl, S.znacheniya.klass);
+  const uroki = urokiKursa(fajl, klassKursa(fajl));
   const i = Number(document.getElementById('planUrok').value);
   prochitatFormu();
   if (uroki[i]) Object.assign(S.znacheniya, znacheniyaIzPlana(fajl, uroki, i));
