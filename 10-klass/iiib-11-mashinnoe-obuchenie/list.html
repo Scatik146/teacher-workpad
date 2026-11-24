@@ -4,77 +4,140 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Как нейрон учится: лист ученика (A4, 2 стороны)</title>
+<title>Как нейрон учится: тетрадь урока (A4)</title>
 <style>
   *{box-sizing:border-box}
   body{margin:0;background:#eee;font:14px/1.45 "Segoe UI",Arial,sans-serif;color:#222}
   .bar{padding:10px 16px;background:#1f2329;color:#eef1f4;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
   .bar button{font:inherit;font-weight:700;background:#f2a93b;border:0;border-radius:16px;padding:6px 14px;cursor:pointer}
-  .sheet{width:210mm;height:297mm;margin:12px auto;background:#fff;padding:12mm 16mm;overflow:hidden}
-  h1{font-size:19px;margin:0 0 2mm}
-  h2{font-size:15px;margin:4mm 0 2mm}
+  .dok{width:210mm;margin:12px auto;background:#fff;padding:12mm 15mm}
+  h1{font-size:21px;margin:0 0 2mm}
   .cap{font-size:12px;color:#555;margin:0 0 2mm}
-  ol.tekst{padding-left:7mm;margin:2mm 0}
-  ol.tekst li{margin:0 0 2.2mm;font-size:14.5px;line-height:1.5}
-  .zadanie{border:1.5px solid #333;border-radius:6px;padding:2mm 3mm;font-weight:600;margin-top:3mm}
-  .polya{font-size:12px;color:#777;margin-top:2mm}
-  pre{font:12.5px/1.35 "PT Mono",Consolas,monospace;background:#fffdf0;border:1px solid #e8d36a;border-radius:6px;padding:2mm 3mm;margin:0;white-space:pre-wrap}
-  .dva{display:flex;gap:6mm}
-  .dva>div{flex:1}
-  .ramka{border:1px solid #bbb;border-radius:6px;color:#999;font-size:12px;padding:2mm}
-  .ramka.vys{height:62mm}
+  p{margin:1.4mm 0}
+  .cel{border:2px solid #333;border-radius:6px;padding:2mm 3mm;margin:2mm 0;font-size:14.5px}
+  .bloktitul{font-weight:700;font-size:15px;margin:3mm 0 1mm}
+  table{border-collapse:collapse;width:100%}
+  th,td{border:1px solid #999;padding:1.2mm 1.6mm;vertical-align:top;text-align:left}
+  th{background:#f0f3f8;font-size:12px}
+  table.marshrut td{font-size:12.5px}
+  table.marshrut td.chasy{font-weight:700;font-size:14px;white-space:nowrap;text-align:center}
+  table.marshrut td.pusto{width:16mm}
+  ul.vremya{margin:1mm 0;padding-left:5mm}
+  section.shag{margin-top:6mm}
+  .shapka{display:flex;justify-content:space-between;align-items:baseline;gap:4mm;border-bottom:3px solid #2f6fd0;padding-bottom:1mm;break-after:avoid}
+  .shapka h2{font-size:17px;margin:0}
+  .shapka .vremya{font-size:13px;white-space:nowrap}
+  .shapka .vremya b{font-size:15px}
+  .delaj{background:#eef4ff;border-radius:6px;padding:2mm 3mm;margin:2mm 0}
+  .delaj .gde{font-size:12px;color:#456}
+  .vstavka{border-left:5px solid #c9a227;background:#fffbea;padding:2mm 4mm;margin:2.5mm 0;break-inside:avoid}
+  .vstavka .metka{font-size:11.5px;font-weight:700;color:#8a6d10;text-transform:uppercase;letter-spacing:.5px}
+  .vstavka p.abzac{font-size:15px;line-height:1.55;margin:1.5mm 0}
+  .vstavka .vydumka{font-size:12.5px;color:#444}
+  .dumaj{border:1.5px dashed #888;border-radius:6px;padding:2mm 3mm;margin:2mm 0;break-inside:avoid}
+  .dumaj b{margin-right:2mm}
+  .liniya{border-bottom:1px solid #888;height:7mm}
+  .zapishi{margin:2mm 0}
+  .zapishi table,.ryad{break-inside:avoid}
+  .ryad{display:flex;gap:6mm;align-items:flex-start}
+  .ryad .shir{flex:1}
+  table.setka3{border-collapse:collapse;width:auto}
+  table.setka3 td{width:9mm;height:9mm;border:1px solid #333;padding:0}
+  table.zhurnal td{height:6.5mm}
+  table.malaya{width:auto}
   .bukvy{display:flex;gap:3mm;flex-wrap:wrap}
   .bukva{text-align:center;font-size:12px}
-  table.setka{border-collapse:collapse;margin:1mm auto}
-  table.setka td{width:6mm;height:6mm;border:1px solid #333;font-size:0}
+  table.setka{border-collapse:collapse;margin:1mm auto;width:auto}
+  table.setka td{width:5.5mm;height:5.5mm;border:1px solid #333;font-size:0;padding:0}
   table.setka td.on{background:#333;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  table.pusto{border-collapse:collapse}
-  table.pusto td{width:9mm;height:9mm;border:1px solid #333}
   .kuchka{display:inline-block;border-bottom:1px solid #333;width:10mm}
+  .zvezda{color:#b7791f;font-weight:700}
+  .kontrol{margin-top:1.5mm;font-size:12.5px;color:#333}
   ol.dz{padding-left:6mm;margin:1mm 0}
-  .avtory{font-size:10.5px;color:#666;margin-top:3mm}
-  @media print{ body{background:#fff} .bar{display:none} .sheet{margin:0;width:auto;height:296mm;break-after:page} @page{size:A4;margin:0} }
+  .avtory{font-size:10px;color:#666;margin-top:4mm}
+  .razryv{break-before:page}
+  @media print{ body{background:#fff} .bar{display:none} .dok{margin:0;width:auto;padding:0} @page{size:A4;margin:12mm 14mm} }
 </style>
 </head>
 <body>
-<div class="bar"><b>Лист ученика: A4, две стороны</b><span>Сторона 1 — текст для чтения с выдумками. Сторона 2 — конспект, кучки, рекорд, домашнее задание.</span><button id="pechat">Печать</button></div>
+<div class="bar"><b>Тетрадь урока: A4, печать с двух сторон</b><span>Маршрут и время → 9 шагов: делай, читай вставку, думай, записывай</span><button id="pechat">Печать</button></div>
 
-<div class="sheet">
-  <h1 id="zagolovok"></h1>
-  <p class="cap">ИИИБ · 10 класс · Машинное обучение и данные. Формальный нейрон. Пиши на полях: «?» — непонятно, «!» — новое, «✗» — выдумка.</p>
-  <ol class="tekst" id="tekst"></ol>
-  <div class="zadanie" id="zadanie"></div>
-  <p class="polya">Выдумка № __ : абзац __ → как на самом деле: ______________________________________________</p>
-  <p class="polya">Выдумка № __ : абзац __ → как на самом деле: ______________________________________________</p>
-  <p class="polya">Выдумка № __ : абзац __ → как на самом деле: ______________________________________________</p>
-</div>
+<main class="dok">
+  <h1>Как машина учится · тетрадь урока</h1>
+  <p class="cap">ИИИБ · 10 класс · самостоятельная работа на весь урок. Идёшь шаг за шагом: делаешь в приложении, читаешь вставку, думаешь, записываешь. Учитель рядом — спрашивай, если застрял.</p>
+  <div class="cel"><b>Задача урока.</b> Понять, как машина учится на данных: что такое признаки, разметка, обучающая и тестовая выборка, обучение с учителем и без. Самому обучить формальный нейрон по правилу Розенблатта и построить конспект-дерево в ДРАКОН-ГРАФ.</div>
+  <p><b>Сдаёшь в конце:</b> <span id="sdat"></span></p>
+  <p id="zadanieChteniya"></p>
+  <p class="bloktitul">Как работать со временем</p>
+  <ul class="vremya" id="pravila"></ul>
+  <p class="bloktitul">Маршрут · начало урока — <span id="nachalo"></span></p>
+  <table class="marshrut">
+    <thead><tr><th>шаг</th><th>закончить к</th><th>мин</th><th>что делаешь</th><th>на деле</th></tr></thead>
+    <tbody id="marshrut"></tbody>
+  </table>
+  <p class="cap">★ — для тех, кто успевает. Отстаёшь — пропускай.</p>
 
-<div class="sheet">
-  <h1>Конспект в ДРАКОН-ГРАФ</h1>
-  <p class="cap">Каркас — в генератор (кнопка «Каркас конспекта» в приложении). Вместо «?» впиши ответы из текста. Схему из генератора перерисуй в рамку или в тетрадь.</p>
-  <div class="dva">
-    <div><pre id="karkas"></pre></div>
-    <div class="ramka vys">Схема конспекта</div>
-  </div>
-  <h2>Кучки без разметки (экран 3)</h2>
-  <p class="cap">Сначала разложи сам: под буквой впиши кучку А, Б, В или Г. Потом сравни с машиной.</p>
-  <div class="bukvy" id="bukvy"></div>
-  <p>Машина положила вместе: ____________________________ . Почему? ____________________________________</p>
-  <h2>Рекорд (экран 1)</h2>
-  <p>Мой нейрон верно узнал ___ из 7 букв. Признак, на который я поставил самый большой вес: клетка № ___ , потому что ____________________</p>
-  <h2>Домашнее задание</h2>
-  <ol class="dz" id="dz"></ol>
-  <div class="dva">
-    <div><p class="cap">Мои веса с урока и порог ___</p><table class="pusto" id="vesaPusto"></table></div>
-    <div><p class="cap">Моя буква (закрась клетки)</p><table class="pusto" id="bukvaPusto"></table></div>
-    <div><p class="cap">S = ______ , выход = ___</p></div>
-  </div>
+  <section class="shag" data-n="2"><div class="zapishi">
+    <div class="ryad">
+      <div><p>Мои веса для C₁:</p><table class="setka3 pustaya" data-strok="3" data-stolbcov="3"></table><p>Порог: ____</p></div>
+      <div class="shir"><table class="malaya"><thead><tr><th>буква</th><th>S</th><th>выход</th><th>верно?</th></tr></thead>
+        <tbody><tr><td>C₁</td><td></td><td></td><td></td></tr><tr><td>T</td><td></td><td></td><td></td></tr><tr><td>П₁</td><td></td><td></td><td></td></tr></tbody></table>
+        <p>Где нейрон ошибся и почему:</p><div class="liniya"></div></div>
+    </div></div>
+  </section>
+
+  <section class="shag" data-n="3"><div class="zapishi">
+    <p>Подбор весов руками — ещё не машинное обучение, потому что</p><div class="liniya"></div>
+    <p>Чтобы нейрон учился сам, ему нужны: признаки, ______________ и ______________ .</p></div>
+  </section>
+
+  <section class="shag" data-n="4"><div class="zapishi">
+    <p>Ветви моего дерева: 1) ______________ 2) ______________ 3) ______________ . Каркас — в тетради.</p></div>
+  </section>
+
+  <section class="shag" data-n="5"><div class="zapishi">
+    <p class="cap">Переписывай каждую строку журнала из приложения. Поправка: «0», «+1, порог −1» или «−1, порог +1».</p>
+    <table class="zhurnal"><thead><tr><th>круг</th><th>пример</th><th>нужно</th><th>S</th><th>порог</th><th>выход</th><th>поправка</th></tr></thead><tbody class="pustaya" data-strok="8" data-stolbcov="7"></tbody></table>
+    <p>Нейрон обучен на круге № ___ . Проверка на новых буквах: верно ___ из 5. Ошибся на: ____________________</p>
+    <p>Почему ошибся, хотя «обучен»?</p><div class="liniya"></div>
+    <p><span class="zvezda">★</span> «Учить на всех 7»: кругов ___ , верно ___ из 7. Вывод: ___________________________________</p></div>
+  </section>
+
+  <section class="shag" data-n="6"><div class="zapishi">
+    <p>Строку журнала № ___ я рассказал учителю: ☐ входы ☐ веса ☐ S ☐ порог ☐ выход ☐ поправка</p>
+    <p>Выдумок найдено и проверено: ___ из 3.</p></div>
+  </section>
+
+  <section class="shag" data-n="7"><div class="zapishi">
+    <div class="ryad">
+      <div><p>Веса рекорда:</p><table class="setka3 pustaya" data-strok="3" data-stolbcov="3"></table><p>Порог: ____</p></div>
+      <div class="shir"><p>Все C → 1, а T, П₁, П₂, + → 0. Мой счёт: ___ из 7.</p>
+        <p>Самый большой вес — на клетке № ___ , потому что</p><div class="liniya"></div>
+        <p><span class="zvezda">★</span> Сколько весов можно оставить нулями, чтобы счёт не упал? ___</p></div>
+    </div></div>
+  </section>
+
+  <section class="shag" data-n="8"><div class="zapishi">
+    <p class="cap">Сначала разложи сам: под буквой впиши кучку А, Б, В или Г. Потом нажми «Как разложит машина».</p>
+    <div class="bukvy" id="bukvy"></div>
+    <p>Машина положила вместе № ________ и № ________ . Она смотрит на ____________________ , а не на смысл буквы.</p></div>
+  </section>
+
+  <section class="shag" data-n="9"><div class="zapishi">
+    <p class="cap">Перепиши начала фраз в тетрадь и допиши.</p>
+    <ol id="vyvody"></ol>
+    <p class="bloktitul">Проверь себя перед сдачей</p>
+    <p>☐ поля шагов 2–8 заполнены · ☐ три выдумки найдены и исправлены · ☐ дерево в тетради · ☐ три вывода в тетради · ☐ «на деле» в маршруте заполнено</p>
+    <p class="bloktitul">Домашнее задание</p>
+    <ol class="dz" id="dz"></ol></div>
+  </section>
+
   <p class="avtory">ДРАКОН-ГРАФ: язык ГРАФ — В. Д. Паронджанов; инициатор и участник разработки — Г. А. Гуленков; расширенная версия и программа — С. Н. Веснин.</p>
-</div>
+</main>
 
 <script src="../../lib/slova/slova.js"></script>
 <script src="../../lib/nejron/nejron.js"></script>
-<script src="tekst.js?v=2026-11-25-0205"></script>
-<script src="list.js?v=2026-11-25-0205"></script>
+<script src="tekst.js?v=2026-11-25-0230"></script>
+<script src="list.js?v=2026-11-25-0230"></script>
 </body>
 </html>

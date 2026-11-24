@@ -17,7 +17,8 @@
   th{background:#eef2f7}
   td.min{white-space:nowrap;text-align:center}
   .ssylki a{display:inline-block;margin:2px 10px 2px 0}
-  .konspekt{background:#fffdf7;border:1px solid #e8d36a;border-radius:8px;padding:6px;margin:6px 0}
+  .konspekt{background:#fffdf7;border:1px solid #e8d36a;border-radius:8px;padding:6px;margin:6px 0;overflow:hidden}
+  .konspekt svg{max-width:100%;height:auto;display:block;margin:0 auto}
   ul{margin:4px 0;padding-left:20px}
   .avtory{font-size:12px;color:#666;margin-top:12px}
   @media print{ body{background:#fff} main{max-width:none;padding:0} @page{size:A4;margin:12mm} }
@@ -28,7 +29,7 @@
   <h1>Как нейрон учится — конспект учителя</h1>
   <p class="cap">ИИИБ · 10 класс · урок 11 · 25.11.2026, 14:40 · 40 минут · открытие нового знания · 3 ученика, каждый сам, ноутбук у каждого</p>
   <p class="cap">Тема: что такое машинное обучение и данные для него — обучение с учителем и без, признаки, разметка, выборки. Формальный нейрон (схема Розенблатта). Схема «Дерево» в ДРАКОН-ГРАФ.</p>
-  <p class="ssylki"><a href="index.html">Приложение (3 экрана)</a><a href="list.html">Лист ученика, A4, 2 стороны</a><a id="generator" href="#">Генератор ДРАКОН-ГРАФ</a></p>
+  <p class="ssylki"><a href="index.html">Приложение (3 экрана)</a><a href="list.html">Тетрадь урока ученика (A4)</a><a id="generator" href="#">Генератор ДРАКОН-ГРАФ</a></p>
 
   <h2>Ход урока</h2>
   <table id="etapy"></table>
@@ -48,7 +49,7 @@
     <li>Если ученик замолчал или говорит «не получается» — он диктует, учитель нажимает.</li>
   </ul>
 
-  <h2>Ключ к выдумкам (лист 1)</h2>
+  <h2>Ключ к выдумкам (вставки тетради урока)</h2>
   <table id="vydumki"></table>
 
   <h2>Конспект ДРАКОН-ГРАФ — образец</h2>
@@ -68,7 +69,7 @@
 <script src="../../lib/slova/slova.js"></script>
 <script src="../../lib/drakon-graf/drakon-graf.min.js"></script>
 <script src="../../lib/drakon-graf/konspekt.js"></script>
-<script src="tekst.js?v=2026-11-25-0205"></script>
-<script src="kanva.js?v=2026-11-25-0205"></script>
+<script src="tekst.js?v=2026-11-25-0230"></script>
+<script src="kanva.js?v=2026-11-25-0230"></script>
 </body>
 </html>

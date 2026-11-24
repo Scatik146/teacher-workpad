@@ -27,17 +27,25 @@ function tablicaEtapov() {
 // tablicaVydumok: ключ — где выдумка, как на самом деле, чем проверить
 function tablicaVydumok() {
   var t = el('vydumki');
-  t.appendChild(stroka(['№', 'абзац', 'о чём', 'как на самом деле', 'чем проверить в приложении'], true));
+  t.appendChild(stroka(['№', 'вставка шага', 'о чём', 'как на самом деле', 'чем проверить в приложении'], true));
   T.klyuchVydumok.forEach(function (v) {
-    t.appendChild(stroka([String(v.nomer), String(nomerAbzaca(v.nomer)), v.gde, v.pravda, v.proverka]));
+    t.appendChild(stroka([String(v.nomer), String(nomerShaga(v.nomer)), v.gde, v.pravda, v.proverka]));
   });
   return t;
 }
 
-// nomerAbzaca: номер абзаца листа 1, где стоит выдумка
-function nomerAbzaca(nomer) {
+// idVydumki: id абзаца, где стоит выдумка с этим номером
+function idVydumki(nomer) {
+  var id = '';
+  T.abzacy.forEach(function (a) { if (a.vydumka === nomer) { id = a.id; } });
+  return id;
+}
+
+// nomerShaga: шаг тетради урока, во вставке которого стоит выдумка
+function nomerShaga(nomer) {
+  var id = idVydumki(nomer);
   var n = 0;
-  T.abzacy.forEach(function (a, i) { if (a.vydumka === nomer) { n = i + 1; } });
+  T.etapy.forEach(function (e) { if (e.chtenie.indexOf(id) >= 0) { n = e.n; } });
   return n;
 }
 
