@@ -45,7 +45,7 @@ var S = Slova.zapustitPrilozhenie({
 
 `Govorun.podklyuchit()`, `Govorun.skazat(tekst, posle)`, `Govorun.povtorit()`, `Govorun.radost()`. Разметка строки — в шапке `govorun.js`. Голос — синтез браузера ru-RU; голоса нет — только текст.
 
-## `lib/nejron/` — объект `Nejron` (формальный нейрон, атомы 9439–9454)
+## `lib/nejron/` — объект `Nejron` (формальный нейрон, атомы 9439–9460)
 
 Буквы 3×3, сумма S, порог, правило Розенблатта, обучение по кругам, кучки без разметки, сетка и веса на экране. Список — `lib/nejron/README.md`. Разобрано из «Нейрон-калькулятора» (7 и 9 кл.), первый урок — 10 кл. `iiib-11-mashinnoe-obuchenie`.
 
