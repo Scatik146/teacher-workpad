@@ -6,16 +6,32 @@ function os(i) {
   return rez;
 }
 
+// sosedIz: картинка, клетка (i, j) увеличенной вдвое → яркость родителя
+function sosedIz(kart, i, j) {
+  return kart[Math.floor(i / 2)][Math.floor(j / 2)];
+}
+
+// seredinyIz: картинка, клетка (i, j) сетки «Середины» → среднее соседей
+function seredinyIz(kart, i, j) {
+  var summa = 0, chislo = 0;
+  os(i).forEach(function (a) { os(j).forEach(function (b) { summa += kart[a][b]; chislo++; }); });
+  return summa / chislo;
+}
+
+// vidKletki: клетка (i, j) «Середин» → 'kopiya', 'sr2' или 'sr4'
+function vidKletki(i, j) {
+  var chetnyh = (i % 2 === 0 ? 1 : 0) + (j % 2 === 0 ? 1 : 0);
+  return ['sr4', 'sr2', 'kopiya'][chetnyh];
+}
+
 // etalonSosed: клетка (i, j) сетки 8 × 8 — яркость родителя
 function etalonSosed(i, j) {
-  return T.ishodnik[Math.floor(i / 2)][Math.floor(j / 2)];
+  return sosedIz(T.ishodnik, i, j);
 }
 
 // etalonSerediny: клетка (i, j) сетки 7 × 7 — среднее соседей
 function etalonSerediny(i, j) {
-  var summa = 0, chislo = 0;
-  os(i).forEach(function (a) { os(j).forEach(function (b) { summa += T.ishodnik[a][b]; chislo++; }); });
-  return summa / chislo;
+  return seredinyIz(T.ishodnik, i, j);
 }
 
 // ISP: испытания по формуле — размер и эталон

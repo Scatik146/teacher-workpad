@@ -7,7 +7,7 @@
 <style>
 :root { --bg:#f3f5f9; --panel:#fff; --line:#cdd6e3; --ink:#18223a; --mut:#5b6884; --ok:#1f9e63; --err:#d23b4b; --akc:#2f6fd0; --zv:#c98a00; --r:12px; }
 * { box-sizing:border-box; }
-body { margin:0; background:var(--bg); color:var(--ink); font:17px/1.45 system-ui, 'Segoe UI', Arial, sans-serif; }
+body { margin:0; background:var(--bg); color:var(--ink); font:18px/1.45 system-ui, 'Segoe UI', Arial, sans-serif; }
 #status { position:sticky; top:0; z-index:5; display:flex; gap:18px; flex-wrap:wrap; align-items:center; padding:8px 18px; background:#18223a; color:#fff; font-size:15px; }
 #status b { color:#ffd65a; }
 main { max-width:1100px; margin:0 auto; padding:14px 18px 40px; }
@@ -21,12 +21,23 @@ button.glav { background:var(--akc); color:#fff; border-color:var(--akc); }
 button:disabled { opacity:.45; cursor:default; }
 button.vybran { background:var(--ink); color:#fff; }
 .ryad { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:6px 0; }
-.dve { display:grid; grid-template-columns:auto 1fr; gap:18px; align-items:start; }
+.dve { display:grid; grid-template-columns:auto 1fr; gap:16px; align-items:start; }
+.dve > div > .karta:first-child, .dve > .karta { margin-top:0; }
+.dve-ravno { display:grid; grid-template-columns:5fr 6fr; gap:16px; align-items:start; }
+.dve-ravno > .karta { margin-top:0; }
+input.bolshoe { font:22px/1.2 system-ui, sans-serif; padding:8px 12px; width:100%; max-width:420px; border:2px solid var(--line); border-radius:9px; }
+button.bolshaya { font-size:21px; padding:10px 22px; }
+#gipotezy button, #kody button { font-size:19px; }
+#kody button { min-width:48px; }
+.primer { display:flex; gap:16px; flex-wrap:wrap; align-items:flex-start; margin-top:6px; }
+.primer table td { width:34px; height:34px; }
+.primer ul { margin:0; padding-left:18px; font-size:16px; }
+td.kopiya { outline:3px solid #1f9e63; outline-offset:-3px; } td.sr2 { outline:3px dashed #2f6fd0; outline-offset:-3px; } td.sr4 { outline:3px double #c2329f; outline-offset:-4px; }
 table.setka { border-collapse:collapse; }
-table.setka td { width:38px; height:38px; border:1px solid #9aa6b8; text-align:center; padding:0; font-weight:700; }
-table.setka input { width:36px; height:36px; border:0; text-align:center; font:700 18px/1 system-ui, sans-serif; background:transparent; }
+table.setka td { width:48px; height:48px; border:1px solid #9aa6b8; text-align:center; padding:0; font-weight:700; }
+table.setka input { width:46px; height:46px; border:0; text-align:center; font:700 23px/1 system-ui, sans-serif; background:transparent; }
 table.setka input.ok { color:var(--ok); } table.setka input.err { background:#ffd9de; color:var(--err); }
-table.malaya td { width:30px; height:30px; }
+table.setka.malaya td { width:32px; height:32px; }
 .podpis { color:var(--mut); font-size:14px; }
 .zv { color:var(--zv); font-weight:700; }
 .progon { display:grid; grid-template-columns:170px 1fr; gap:6px 12px; padding:8px 0; border-top:1px dashed var(--line); }
@@ -35,7 +46,7 @@ table.malaya td { width:30px; height:30px; }
 textarea { width:100%; min-height:80px; font:inherit; padding:8px; }
 input.otvet { width:80px; font:inherit; padding:4px 6px; }
 .kod-bolshoj { font-size:64px; font-weight:800; color:var(--akc); }
-.shema { max-width:560px; } .shema-shirokaya { max-width:900px; }
+.shema { max-width:100%; }
 #vskrytie[hidden] { display:none; }
 </style>
 </head>
@@ -50,48 +61,65 @@ input.otvet { width:80px; font:inherit; padding:4px 6px; }
 
 <section id="start">
   <h1 id="nazvanie"></h1>
-  <div class="karta">
-    <p>Бюро экспертизы проводит многоборье из трёх испытаний: два алгоритма увеличивают картинку по формуле, третье испытание — нейросеть. После каждого шага — запись результата. Это и есть схема «Экспертиза».</p>
-    <div id="shemaEkspertiza" class="shema"></div>
+  <div class="dve-ravno">
+    <div class="karta">
+      <p>Бюро экспертизы проводит многоборье из трёх испытаний: два алгоритма увеличивают картинку по формуле, третье — нейросеть. После каждого шага — запись результата. Это и есть схема «Экспертиза».</p>
+      <div id="shemaEkspertiza" class="shema"></div>
+    </div>
+    <div class="karta">
+      <h2>1. Твой код эксперта (скажет учитель)</h2>
+      <div class="ryad" id="kody"></div>
+      <h2>2. Гипотеза до испытаний</h2>
+      <div id="gipotezy"></div>
+      <h2>3. Одно слово — почему ты так думаешь</h2>
+      <input type="text" id="gipSlovo" class="bolshoe" maxlength="30" placeholder="например: пиксели">
+      <p class="ryad"><button class="glav bolshaya" id="kStart" disabled>Начать испытание 1</button></p>
+      <p class="ryad"><button id="kNovaya">Новая смена / начать заново</button></p>
+    </div>
   </div>
-  <div class="karta">
-    <h2>1. Твой код эксперта (скажет учитель)</h2>
-    <div class="ryad" id="kody"></div>
-    <h2>2. Гипотеза до испытаний</h2>
-    <div id="gipotezy"></div>
-    <div class="ryad">Одно слово — почему ты так думаешь: <input type="text" id="gipSlovo" maxlength="30"></div>
-    <div class="ryad"><button class="glav" id="kStart" disabled>Начать испытание 1</button></div>
-  </div>
-  <p class="ryad"><button id="kNovaya">Новая смена / начать заново</button></p>
 </section>
 
-<section id="setka" hidden>
-  <h1>Испытания 1–2: увеличиваем по формуле</h1>
+<section id="sosed" hidden>
+  <h1 id="zSosed"></h1>
   <div class="dve">
     <div class="karta">
-      <h2>Исходник 4 × 4</h2>
-      <table class="setka malaya" id="tIshodnik"></table>
-      <p class="podpis">Число — яркость: 0 — чёрный, 8 — белый. Номера строк и столбцов — с нуля.</p>
-    </div>
-    <div class="karta" id="blokSosed">
-      <h2 id="zSosed"></h2>
-      <div class="pravilo" id="pSosed"></div>
-      <div class="ryad"><button id="hSosed">Подсказка (−1 очко)</button><span id="hSosedTekst" class="podpis"></span></div>
       <table class="setka" id="tSosed"></table>
       <p class="podpis" id="sSosed"></p>
-      <div id="shemaSosed" class="shema"></div>
+      <p class="ryad"><button class="glav" id="kKSeredinam" disabled>К испытанию 2</button> <button id="kSosedKStudii" hidden>★ Пропустить испытание 2 → нейросеть</button></p>
+    </div>
+    <div>
+      <div class="karta">
+        <div class="ryad"><b>Исходник 4 × 4</b><span class="podpis">число — яркость: 0 — чёрный, 8 — белый; номера с нуля</span></div>
+        <table class="setka malaya" id="tIshodnik1"></table>
+        <div class="pravilo" id="pSosed"></div>
+        <div class="ryad"><button id="hSosed">Подсказка (−1 очко)</button><span id="hSosedTekst" class="podpis"></span></div>
+      </div>
+      <div class="karta"><b>Пример: 2 × 2 → 4 × 4</b><div class="primer" id="prSosed"></div></div>
+      <div class="karta"><div id="shemaSosed" class="shema"></div></div>
     </div>
   </div>
-  <div class="karta" id="blokSerediny" hidden>
-    <h2 id="zSerediny"></h2>
-    <p id="serZvezda" class="zv" hidden>★ Для быстрых: время на порогах вышло — это испытание можно пропустить и перейти к нейросети.</p>
-    <div class="pravilo" id="pSerediny"></div>
-    <div class="ryad"><button id="hSerediny">Подсказка (−1 очко)</button><span id="hSeredinyTekst" class="podpis"></span></div>
-    <table class="setka" id="tSerediny"></table>
-    <p class="podpis" id="sSerediny"></p>
-    <div id="shemaSerediny" class="shema shema-shirokaya"></div>
+</section>
+
+<section id="serediny" hidden>
+  <h1 id="zSerediny"></h1>
+  <p id="serZvezda" class="zv" hidden>★ Время на порогах вышло — это испытание можно пропустить и перейти к нейросети.</p>
+  <div class="dve">
+    <div class="karta">
+      <table class="setka" id="tSerediny"></table>
+      <p class="podpis" id="sSerediny"></p>
+      <p class="ryad"><button class="glav" id="kKStudii" disabled>К испытанию 3: нейросеть</button></p>
+    </div>
+    <div>
+      <div class="karta">
+        <div class="ryad"><b>Исходник 4 × 4</b><span class="podpis">номера строк и столбцов — с нуля</span></div>
+        <table class="setka malaya" id="tIshodnik2"></table>
+        <div class="pravilo" id="pSerediny"></div>
+        <div class="ryad"><button id="hSerediny">Подсказка (−1 очко)</button><span id="hSeredinyTekst" class="podpis"></span></div>
+      </div>
+      <div class="karta"><b>Пример: 2 × 2 → 3 × 3</b><div class="primer" id="prSerediny"></div></div>
+      <div class="karta"><div id="shemaSerediny" class="shema"></div></div>
+    </div>
   </div>
-  <p class="ryad"><button class="glav" id="kKStudii" disabled>К испытанию 3: нейросеть</button></p>
 </section>
 
 <section id="studiya" hidden>
@@ -133,11 +161,11 @@ input.otvet { width:80px; font:inherit; padding:4px 6px; }
 <script src="../../lib/drakon-shema/drakon-shema.js"></script>
 <script src="../../lib/menu-ekranov/menu-ekranov.js"></script>
 <script src="../../lib/slova/slova.js"></script>
-<script src="tekst.js?v=2026-11-25b"></script>
-<script src="raschet.js?v=2026-11-25b"></script>
+<script src="tekst.js?v=2026-11-25c"></script>
+<script src="raschet.js?v=2026-11-25c"></script>
 <script>
-var EKRANY = [{ id: 'start', nazvanie: 'Старт и гипотеза' }, { id: 'setka', nazvanie: 'Испытания 1–2' }, { id: 'studiya', nazvanie: 'Испытание 3 и протокол' }];
-var ID_EKRANOV = ['start', 'setka', 'studiya'];
+var EKRANY = [{ id: 'start', nazvanie: 'Старт и гипотеза' }, { id: 'sosed', nazvanie: 'Испытание 1 «Сосед»' }, { id: 'serediny', nazvanie: 'Испытание 2 «Середины»' }, { id: 'studiya', nazvanie: 'Испытание 3 и протокол' }];
+var ID_EKRANOV = ['start', 'sosed', 'serediny', 'studiya'];
 var S;
 
 /* ---------- данные ---------- */
@@ -234,19 +262,56 @@ function postroitStart() {
 function nachatIspytaniya() {
   if (!S.start) { S.start = Date.now(); }
   zapisatShag('испытание 1 «Сосед»');
-  perejtiNa('setka');
+  perejtiNa('sosed');
   return S.start;
 }
 
 /* ---------- экран «Сетка» ---------- */
 
-// narisovatIshodnik: таблица 4 × 4 с цветом по яркости
-function narisovatIshodnik() {
-  T.ishodnik.forEach(function (stroka) {
-    var tr = Slova.el('tIshodnik').insertRow();
-    stroka.forEach(function (v) { var td = tr.insertCell(); td.textContent = v; td.style.background = cvet(v); td.style.color = v > 4 ? '#000' : '#fff'; });
-  });
-  return T.ishodnik.length;
+// kletkaYarkosti: ячейка таблицы с числом и серым цветом
+function kletkaYarkosti(tr, v, klass) {
+  var td = tr.insertCell();
+  td.textContent = v; td.className = klass || '';
+  td.style.background = cvet(v); td.style.color = v > 4 ? '#000' : '#fff';
+  return td;
+}
+
+// tablicaYarkosti: картинка (или функция клетки и размер) → таблица с серыми клетками
+function tablicaYarkosti(tablica, n, znachenie, vid) {
+  for (var i = 0; i < n; i++) {
+    var tr = tablica.insertRow();
+    for (var j = 0; j < n; j++) { kletkaYarkosti(tr, znachenie(i, j), vid ? vid(i, j) : ''); }
+  }
+  return tablica;
+}
+
+// znachIshodnika: яркость клетки (i, j) исходника
+function znachIshodnika(i, j) { return T.ishodnik[i][j]; }
+
+// znachPrimera: яркость клетки (i, j) картинки примера 2 × 2
+function znachPrimera(i, j) { return T.primer[i][j]; }
+
+// sosedPrimera: клетка (i, j) примера, увеличенного «Соседом»
+function sosedPrimera(i, j) { return sosedIz(T.primer, i, j); }
+
+// seredinyPrimera: клетка (i, j) примера, увеличенного «Серединами»
+function seredinyPrimera(i, j) { return seredinyIz(T.primer, i, j); }
+
+// narisovatIshodnik: исходник 4 × 4 в таблицу id
+function narisovatIshodnik(id) {
+  tablicaYarkosti(Slova.el(id), 4, znachIshodnika);
+  return id;
+}
+
+// narisovatPrimer: разобранный пример — картинка 2 × 2, результат и пояснения
+function narisovatPrimer(id, n, znachenie, vid, poyasneniya) {
+  var mesto = Slova.el(id);
+  var ishod = tablicaYarkosti(Slova.sozdat('table', 'setka malaya', ''), 2, znachPrimera);
+  var rez = tablicaYarkosti(Slova.sozdat('table', 'setka malaya', ''), n, znachenie, vid);
+  var spisok = Slova.sozdat('ul', '', '');
+  poyasneniya.forEach(function (t) { spisok.appendChild(Slova.sozdat('li', '', t)); });
+  mesto.append(ishod, Slova.sozdat('span', '', '→'), rez, spisok);
+  return mesto;
 }
 
 // cvet: яркость 0–8 → серый цвет
@@ -334,12 +399,13 @@ function pokazatPodskazku(kak, idTeksta) {
   return S.podsk[kak];
 }
 
-// pokazatSetku: видимость «Середин» и кнопки к Студии
+// pokazatSetku: кнопки перехода с испытаний 1 и 2, пометки ★
 function pokazatSetku() {
   var sosedSdan = S.sdano.sosed !== undefined;
-  Slova.el('blokSerediny').hidden = !sosedSdan;
+  Slova.el('kKSeredinam').disabled = !sosedSdan;
+  Slova.el('kSosedKStudii').hidden = !(sosedSdan && S.zvezdaSer);
   Slova.el('serZvezda').hidden = !S.zvezdaSer;
-  Slova.el('kKStudii').disabled = !(sosedSdan && (S.zvezdaSer || S.sdano.serediny !== undefined));
+  Slova.el('kKStudii').disabled = !(S.zvezdaSer || S.sdano.serediny !== undefined);
   return sosedSdan;
 }
 
@@ -494,16 +560,26 @@ function perejtiNa(id) {
   return id;
 }
 
+// zapolnitZagolovok: название и правило испытания k ('Sosed' / 'Serediny')
+function zapolnitZagolovok(k) {
+  var isp = T.ispytaniya[k.toLowerCase()];
+  Slova.el('z' + k).textContent = isp.nazvanie;
+  Slova.el('p' + k).textContent = isp.pravilo;
+  return k;
+}
+
 // postroitVse: тексты, схемы, сетки
 function postroitVse() {
   Slova.el('nazvanie').textContent = T.nazvanie;
-  ['Sosed', 'Serediny'].forEach(function (k) { var i = T.ispytaniya[k.toLowerCase()]; Slova.el('z' + k).textContent = i.nazvanie; Slova.el('p' + k).textContent = i.pravilo; });
+  ['Sosed', 'Serediny'].forEach(zapolnitZagolovok);
   Slova.el('chestno').textContent = T.chestno; Slova.el('itogVopros').textContent = T.itogVopros;
   Slova.el('pometka').textContent = '«' + T.pometka + '»'; Slova.el('zvezdaTekst').textContent = T.zvezdaTekst;
   DrakonShema.pokazat(Slova.el('shemaEkspertiza'), T.shemy.ekspertiza);
   DrakonShema.pokazat(Slova.el('shemaSosed'), T.shemy.sosed);
   DrakonShema.pokazat(Slova.el('shemaSerediny'), T.shemy.serediny);
-  narisovatIshodnik(); narisovatSetku('sosed', 'tSosed'); narisovatSetku('serediny', 'tSerediny');
+  narisovatIshodnik('tIshodnik1'); narisovatIshodnik('tIshodnik2'); narisovatSetku('sosed', 'tSosed'); narisovatSetku('serediny', 'tSerediny');
+  narisovatPrimer('prSosed', 4, sosedPrimera, null, T.primerSosed);
+  narisovatPrimer('prSerediny', 3, seredinyPrimera, vidKletki, T.primerSerediny);
   return true;
 }
 
@@ -515,6 +591,8 @@ function privyazatKnopki() {
   Slova.el('hSosed').addEventListener('click', function () { pokazatPodskazku('sosed', 'hSosedTekst'); });
   Slova.el('hSerediny').addEventListener('click', function () { pokazatPodskazku('serediny', 'hSeredinyTekst'); });
   Slova.el('kKStudii').addEventListener('click', function () { perejtiNa('studiya'); });
+  Slova.el('kSosedKStudii').addEventListener('click', function () { perejtiNa('studiya'); });
+  Slova.el('kKSeredinam').addEventListener('click', function () { perejtiNa('serediny'); });
   Slova.el('kVskryt').addEventListener('click', vskryt);
   Slova.el('hObratnoj').addEventListener('click', podskazkaObratnoj);
   privyazatItog();
@@ -554,15 +632,9 @@ function zapolnitStart() {
   return S.kod;
 }
 
-// zapolnitSetki: эталон в обе сетки (служебное меню)
-function zapolnitSetki() {
-  ['sosed', 'serediny'].forEach(zapolnitSetku);
-  return true;
-}
-
 // zapolnenie: данные по умолчанию для пропущенных экранов (меню Ctrl+Alt+M)
 function zapolnenie() {
-  return { start: zapolnitStart, setka: zapolnitSetki };
+  return { start: zapolnitStart, sosed: function () { zapolnitSetku('sosed'); }, serediny: function () { zapolnitSetku('serediny'); } };
 }
 
 // zapolnitSetku: эталон во все клетки испытания (служебное меню)
@@ -578,7 +650,7 @@ S = Slova.zapustitPrilozhenie({
   postroit: function (s) { S = s; postroitVse(); vosstanovitPolya(); postroitStart(); pokazatSetku(); },
   knopki: privyazatKnopki,
   menu: function () { return { ekrany: EKRANY, perejti: function (id) { perejtiNa(id); location.reload(); }, tekushchij: function () { return S.ekran; },
-    gotov: function (id) { return id === 'start' ? !!S.start : (id === 'setka' ? S.sdano.sosed !== undefined : false); },
+    gotov: function (id) { return id === 'start' ? !!S.start : (S.sdano[id] !== undefined); },
     zapolnit: zapolnenie(), sluzhebnoe: [{ nazvanie: 'Новая смена', dejstvie: novayaSmena }, { nazvanie: '«Середины» — сделать ★ (пропустить)', dejstvie: function () { S.zvezdaSer = true; sohranit(); pokazatSetku(); } }] }; },
   pokazat: function (s) { S = s; perejtiNa(s.ekran); }
 });
