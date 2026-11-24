@@ -27,7 +27,7 @@ const SHAPKA_DANNYE = {
   noviyPriem: 'придумано учителем — Claude: обобщить и внести в каталог приёмов (razbor-vse-uroki) и в dannye.js',
   /* предмет → файл поурочного плана (plan/<файл>.md); у своих предметов курс выбирают в блоке «Урок из плана» */
   /* план «на деле» (na-dele/…) — первым: в нём журнальная тема, тема «на деле», содержание и опора */
-  planKursy: { 'ТРУД-5-7': ['trud-5-9'], 'ИНФ-7-9Б': ['inf-7-9'], 'ИНФ-10-11П': ['inf-10-11'], 'ИИИБ-1-4': ['na-dele/iiib-1-4', 'iiib-1-4'],
+  planKursy: { 'ТРУД-5-7': ['trud-5-9'], 'ИНФ-7-9Б': ['inf-7-9'], 'ИНФ-10-11П': ['inf-10-11'], 'ИИИБ-1-4': ['na-dele/iiib-1', 'na-dele/iiib-2', 'na-dele/iiib-3', 'na-dele/iiib-4', 'iiib-1-4'],
     'ИИИБ-5-11': ['na-dele/iiib-5', 'na-dele/iiib-6', 'na-dele/iiib-7', 'na-dele/iiib-8', 'na-dele/iiib-9', 'iiib-5-9', 'na-dele/iiib-10', 'na-dele/iiib-11', 'iiib-10-11'], 'РПЗ-10-11': ['na-dele/rpz-10-11', 'rpz-10'], 'ПРОГ-5-7': ['prog-5-7'] },
   /* учебный год плана: даты «дд.мм» с сентября — osen, с января — vesna */
   planGod: { osen: '2026', vesna: '2027' },
