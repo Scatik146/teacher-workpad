@@ -172,17 +172,19 @@ function hodS(mesto) {
   pole.type = 'number'; pole.id = 'o-S';
   var b = Slova.sozdat('button', 'k glav', 'Проверить S');
   b.addEventListener('click', function () { proveritS(parseInt(pole.value, 10)); });
-  mesto.appendChild(pole); mesto.appendChild(b);
+  var ryad = mesto.appendChild(Slova.sozdat('div', 'knopki ryadom'));
+  ryad.appendChild(pole); ryad.appendChild(b);
   return mesto;
 }
 
 // hodVyhod: ученик выбирает выход 1 или 0
 function hodVyhod(mesto) {
   mesto.appendChild(Slova.sozdat('p', '', 'S = ' + N.summaS(tekushchijPrimer().setka, S.o.vesa) + ', порог ' + S.o.porog + '. Что выдаст нейрон?'));
+  var ryad = mesto.appendChild(Slova.sozdat('div', 'knopki ryadom'));
   [1, 0].forEach(function (y) {
     var b = Slova.sozdat('button', 'k glav', 'выход ' + y);
     b.addEventListener('click', function () { proveritVyhod(y); });
-    mesto.appendChild(b);
+    ryad.appendChild(b);
   });
   return mesto;
 }
@@ -190,11 +192,12 @@ function hodVyhod(mesto) {
 // hodVetka: ученик выбирает поправку (порядок кнопок перемешан)
 function hodVetka(mesto) {
   var p = tekushchijPrimer();
-  mesto.appendChild(Slova.sozdat('p', '', 'Нужен ответ ' + p.nuzhno + '. Что делаем с весами?'));
+  mesto.appendChild(Slova.sozdat('p', '', 'Нейрон выдал ' + N.vyhod(N.summaS(p.setka, S.o.vesa), S.o.porog) + ', а нужен ответ ' + p.nuzhno + '. Что делаем с весами?'));
+  var stolbec = mesto.appendChild(Slova.sozdat('div', 'knopki'));
   S.o.poryadok.forEach(function (id) {
     var b = Slova.sozdat('button', 'k', chtoMenyaem(id));
     b.addEventListener('click', function () { proveritVetku(id); });
-    mesto.appendChild(b);
+    stolbec.appendChild(b);
   });
   return mesto;
 }
@@ -453,10 +456,20 @@ function kopirovatKarkas() {
   return ok;
 }
 
+// pokazatZadachu: строка «Задача» вверху экрана
+function pokazatZadachu(e) {
+  var p = el('zadacha-' + e.id);
+  p.textContent = '';
+  p.appendChild(Slova.sozdat('b', '', 'Задача:'));
+  p.appendChild(document.createTextNode(e.zadacha));
+  return p;
+}
+
 // postroitVse: нарисовать все три экрана из состояния
 function postroitVse(s) {
   S = s;
   el('r-zadanie').textContent = T.zadanieRekord.tekst;
+  T.ekrany.forEach(pokazatZadachu);
   risovatVhod();
   risovatVesa1();
   risovat2();
@@ -513,7 +526,9 @@ S = Slova.zapustitPrilozhenie({
   menu: function () { return { ekrany: T.ekrany.map(function (e) { return { id: e.id, nazvanie: e.nazvanie }; }),
     perejti: pokazatEkran, tekushchij: function () { return S.ekran; },
     gotov: function (id) { return id !== 'obuchenie' || S.o.gotov; },
-    zapolnit: zapolnenie(), sluzhebnoe: [{ nazvanie: 'Новая смена', dejstvie: novayaSmena }] }; },
+    zapolnit: zapolnenie(), sluzhebnoe: [{ nazvanie: 'Новая смена', dejstvie: novayaSmena },
+      { nazvanie: 'Лист ученика', dejstvie: function () { window.open('list.html', '_blank'); } },
+      { nazvanie: 'Конспект учителя', dejstvie: function () { window.open('kanva.html', '_blank'); } }] }; },
   pokazat: function (s) { pokazatEkran(s.ekran); }
 });
 })();

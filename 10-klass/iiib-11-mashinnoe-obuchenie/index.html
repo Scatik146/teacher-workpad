@@ -51,6 +51,12 @@
   .kuchki{display:flex;gap:12px;flex-wrap:wrap}
   .kuchki .kuchka{border:2px dashed var(--seryj);border-radius:10px;padding:6px 10px;display:flex;gap:8px;align-items:center;background:#fff}
   .rekord{font-size:18px}
+  .zadacha{background:#fff7d6;border:2px solid var(--zhel);border-radius:10px;padding:8px 14px;margin:0 0 12px;font-size:17px}
+  .zadacha b{margin-right:6px}
+  #o-hod .knopki{flex-direction:column;align-items:stretch}
+  #o-hod .knopki.ryadom{flex-direction:row}
+  #o-hod button.k{text-align:left;font-size:16px;padding:8px 14px}
+  #o-hod input.chislo{margin-right:8px}
   .vverh{margin-top:12px}
   .shir{flex:1;min-width:400px}
 </style>
@@ -64,6 +70,7 @@
 <main>
 
 <section id="nejron">
+  <p class="zadacha" id="zadacha-nejron"></p>
   <div class="ryad">
     <div class="blok">
       <h2>Входы — признаки</h2>
@@ -94,6 +101,7 @@
 </section>
 
 <section id="obuchenie" hidden>
+  <p class="zadacha" id="zadacha-obuchenie"></p>
   <div class="ryad">
     <div class="blok">
       <h2>Пример из выборки</h2>
@@ -128,6 +136,7 @@
 </section>
 
 <section id="kuchki" hidden>
+  <p class="zadacha" id="zadacha-kuchki"></p>
   <div class="blok">
     <h2>Разложи буквы на кучки — без подсказок, какая где</h2>
     <p class="podpis">Под каждой буквой выбери кучку: А, Б, В или Г. Названий и правильных ответов нет — это обучение без учителя.</p>
@@ -146,7 +155,7 @@
 <script src="../../lib/menu-ekranov/menu-ekranov.js"></script>
 <script src="../../lib/slova/slova.js"></script>
 <script src="../../lib/nejron/nejron.js"></script>
-<script src="tekst.js?v=2026-11-25-0200"></script>
-<script src="prilozhenie.js?v=2026-11-25-0200"></script>
+<script src="tekst.js?v=2026-11-25-0205"></script>
+<script src="prilozhenie.js?v=2026-11-25-0205"></script>
 </body>
 </html>
