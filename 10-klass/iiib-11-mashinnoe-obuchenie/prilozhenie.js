@@ -527,7 +527,7 @@ S = Slova.zapustitPrilozhenie({
     perejti: pokazatEkran, tekushchij: function () { return S.ekran; },
     gotov: function (id) { return id !== 'obuchenie' || S.o.gotov; },
     zapolnit: zapolnenie(), sluzhebnoe: [{ nazvanie: 'Новая смена', dejstvie: novayaSmena },
-      { nazvanie: 'Лист ученика', dejstvie: function () { window.open('list.html', '_blank'); } },
+      { nazvanie: 'Тетрадь урока', dejstvie: function () { window.open('list.html', '_blank'); } },
       { nazvanie: 'Конспект учителя', dejstvie: function () { window.open('kanva.html', '_blank'); } }] }; },
   pokazat: function (s) { pokazatEkran(s.ekran); }
 });
