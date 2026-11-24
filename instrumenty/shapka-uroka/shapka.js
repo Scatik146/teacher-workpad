@@ -727,21 +727,27 @@ function doIzPlana(proshlyj) {
   return proshlyj ? proshlyj.tema + itog : 'нет (первый урок плана)';
 }
 
-// obyazatelnoIzPlana: содержание урока и опора из плана «на деле» (нет их — прежнее значение)
+// obyazatelnoIzPlana: содержание урока и опора из плана «на деле» (нет их — значение prezhnee)
 function obyazatelnoIzPlana(u, prezhnee) {
   const opora = u.opora ? 'Опора: ' + bezKodov(u.opora) : '';
   const chasti = [u.soderzhanie || '', opora].filter(Boolean);
   return chasti.length ? chasti.join('\n') : prezhnee;
 }
 
-// znacheniyaIzPlana: поля шапки из урока плана номер i
+// pustyeUroka: поля урока (свои у урока и «Обязательно») — значения по умолчанию
+function pustyeUroka() {
+  const z = {};
+  vsePolya().filter(p => p.svoyo || p.id === 'obyazatelno').forEach(p => { z[p.id] = kopiya(p.poUmolchaniyu); });
+  return z;
+}
+
+// znacheniyaIzPlana: поля урока очищены, затем заполнены из урока плана номер i
 function znacheniyaIzPlana(fajl, uroki, i) {
   const u = uroki[i];
-  const Z = S.znacheniya;
-  const znacheniya = { klass: klassKursa(fajl), tema: u.tema, mesto: mestoIzPlana(fajl, uroki, u), do: doIzPlana(uroki[i - 1]),
+  const izPlana = { klass: klassKursa(fajl), tema: u.tema, mesto: mestoIzPlana(fajl, uroki, u), do: doIzPlana(uroki[i - 1]),
     posle: uroki[i + 1] ? uroki[i + 1].tema : 'нет (последний урок плана)',
-    obyazatelno: obyazatelnoIzPlana(u, Z.obyazatelno), data: dataIzPlana(u.kogda) || Z.data };
-  return znacheniya;
+    obyazatelno: obyazatelnoIzPlana(u, ''), data: dataIzPlana(u.kogda) };
+  return Object.assign(pustyeUroka(), izPlana);
 }
 
 // vzyatIzPlana: выбранный урок плана → тема, место, до и после, обязательно, дата
