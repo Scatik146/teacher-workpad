@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Светляк и его команда: лист ученика (A4, 2 стороны)</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#eee;font:14px/1.4 "Segoe UI",Arial,sans-serif;color:#222}
+  .bar{padding:10px 16px;background:#1f2329;color:#eef1f4;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .bar button{font:inherit;font-weight:700;background:#f2a93b;border:0;border-radius:16px;padding:6px 14px;cursor:pointer}
+  .sheet{width:210mm;height:297mm;margin:12px auto;background:#fff;padding:12mm 16mm;overflow:hidden}
+  h1{font-size:19px;margin:0 0 2mm}
+  h2{font-size:15px;margin:4mm 0 2mm}
+  .cap{font-size:12px;color:#555;margin:0 0 2mm}
+  .cut{border-top:1.5px dashed #888;margin:4mm 0 3mm;position:relative}
+  .cut span{position:absolute;top:-9px;left:0;background:#fff;padding-right:6px;font-size:12px;color:#666}
+  .shema *{scrollbar-width:none}
+  .shema *::-webkit-scrollbar{display:none}
+  pre{font:12.5px/1.35 "PT Mono",Consolas,monospace;background:#fffdf0;border:1px solid #e8d36a;border-radius:6px;padding:2mm 3mm;margin:0;white-space:pre-wrap}
+  .ramka{border:1px solid #bbb;border-radius:6px;height:22mm;margin-top:2mm;color:#999;font-size:12px;padding:2mm}
+  table{width:100%;border-collapse:collapse;font-size:12.5px}
+  th,td{border:1px solid #999;padding:1.5mm 2mm;vertical-align:top;text-align:left}
+  th{background:#f0f3f8}
+  td.pusto{width:30mm}
+  .avtory{font-size:10.5px;color:#666;margin-top:3mm}
+  @media print{ body{background:#fff} .bar{display:none} .sheet{margin:0;width:auto;height:296mm;break-after:page} @page{size:A4;margin:0} }
+</style>
+</head>
+<body>
+<div class="bar"><b>Лист ученика: A4, две стороны</b><span>Сторона 1 — ДРАКОН-лист (эталон вырезать и вклеить в тетрадь). Сторона 2 — раздатка и домашнее задание.</span><button id="pechat">Печать</button></div>
+
+<div class="sheet">
+  <h1>Светляк и его команда · ДРАКОН-лист</h1>
+  <p class="cap">ДРАКОН-схема — <b>как действовать</b> (порядок действий). ДРАКОН-ГРАФ-схема в тетради — <b>что запомнить</b>.</p>
+  <div class="cut"><span>✂ вклеить в тетрадь</span></div>
+  <p class="cap">Эталон · как голосовой помощник выполняет просьбу</p>
+  <div class="shema" id="etalon"></div>
+</div>
+
+<div class="sheet">
+  <h1>Кто под капотом · раздатка</h1>
+  <p class="cap">Помощник — то, с чем говорит человек (Алиса, Салют). Модель — то, что работает «под капотом». Карточки — со слов создателей и из опыта нашей команды.</p>
+  <table>
+    <thead><tr><th>Кто это в мире</th><th>Кто сделал</th><th>На что делали упор</th><th>Роль в нашей мастерской</th></tr></thead>
+    <tbody id="tablica"></tbody>
+  </table>
+  <h2>Конспект ДРАКОН-ГРАФ (перепиши в тетрадь и нарисуй схему в генераторе)</h2>
+  <pre id="konspekt"></pre>
+  <div class="ramka">Генератор: scatik146.github.io/drakon-graf/generator — вставь текст, перерисуй схему в тетрадь рядом с текстом.</div>
+  <h2>Домашнее задание</h2>
+  <p id="dz"></p>
+  <p>1. Прочитай таблицу. 2. Перепиши в тетрадь текст ниже и вместо «…» впиши модель. 3. Нарисуй схему в генераторе и перерисуй её рядом.</p>
+  <pre id="dzKonspekt"></pre>
+  <p class="avtory">ДРАКОН-ГРАФ: язык ГРАФ — В. Д. Паронджанов; инициатор и участник разработки — Г. А. Гуленков; расширенная версия и программа — С. Н. Веснин. ДРАКОН-схемы — виджет С. Митькина.</p>
+</div>
+
+<script src="../../lib/drakonwidget/drakonwidget.js"></script>
+<script src="../../lib/drakon-shema/drakon-shema.js"></script>
+<script src="../../lib/slova/slova.js"></script>
+<script src="tekst.js"></script>
+<script>
+var DZ_KONSPEKT = /*конспект*/`тема: Кого я возьму под капот?
+класс: 5
+Голос и умный дом? -> …
+Тексты и ответы? -> …
+Программы? -> …
+Картинки? -> …
+Проверка работы? -> …`;
+
+// strokaModeli: строка таблицы — модель, кто сделал, упор, роль у нас
+function strokaModeli(m) {
+  var tr = document.createElement('tr');
+  [m.imya, m.kto, m.delo, m.komanda].forEach(function (t) { tr.appendChild(Slova.sozdat('td', '', t)); });
+  return tr;
+}
+
+// zapolnitList: схема-эталон, тексты конспектов, таблица моделей
+function zapolnitList() {
+  DrakonShema.pokazat(Slova.el('etalon'), T.shemaEtalon);
+  Slova.el('konspekt').textContent = T.konspekt;
+  Slova.el('dzKonspekt').textContent = DZ_KONSPEKT;
+  Slova.el('dz').textContent = T.dz.replace('на обороте листа: ', '');
+  T.modeli.forEach(function (m) { Slova.el('tablica').appendChild(strokaModeli(m)); });
+  return T.modeli.length;
+}
+
+zapolnitList();
+Slova.knopkaPechati('pechat');
+</script>
+</body>
+</html>

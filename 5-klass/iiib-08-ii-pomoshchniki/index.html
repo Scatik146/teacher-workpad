@@ -1,0 +1,722 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Светляк и его команда — ИИИБ, 5 класс</title>
+<style>
+:root {
+  --bg:#f4f7fc; --panel:#ffffff; --panel2:#eaf0fa; --line:#c9d5ea;
+  --ink:#16213a; --mut:#5a6a88; --cy:#0a8fb0; --mg:#c2329f; --ye:#f5c400; --gr:#1f9e63; --rd:#d23b4b;
+  --r:14px;
+}
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:18px/1.45 system-ui, 'Segoe UI', Arial, sans-serif; }
+header { display:flex; align-items:center; gap:12px; padding:10px 18px; background:var(--panel); border-bottom:1px solid var(--line); }
+header h1 { font-size:20px; margin:0; flex:1; }
+.zvezdy { font-size:22px; letter-spacing:2px; color:var(--ye); text-shadow:0 0 1px #a07c00; }
+main { max-width:1040px; margin:0 auto; padding:16px 18px 40px; }
+section[hidden] { display:none; }
+h2 { margin:6px 0 12px; font-size:24px; }
+.master { background:var(--panel2); border-left:5px solid var(--cy); border-radius:var(--r); padding:12px 16px; margin:10px 0; }
+.master b { color:var(--cy); }
+.karta { background:var(--panel); border:1px solid var(--line); border-radius:var(--r); padding:12px 16px; margin:10px 0; }
+.ryad { display:flex; flex-wrap:wrap; gap:10px; margin:8px 0; }
+button { font:inherit; border:1px solid var(--line); background:var(--panel); color:var(--ink); border-radius:10px; padding:9px 14px; cursor:pointer; }
+button:hover { border-color:var(--cy); }
+button.glav { background:var(--cy); color:#fff; border-color:var(--cy); }
+button.da { background:#e3f6ec; border-color:var(--gr); }
+button.net { background:#fde7ea; border-color:var(--rd); }
+button:disabled { opacity:.45; cursor:default; }
+.otvet { margin:8px 0; padding:8px 12px; border-radius:10px; }
+.otvet.ok { background:#e3f6ec; }
+.otvet.ne { background:#fde7ea; }
+.prosba { display:flex; justify-content:space-between; gap:12px; }
+.prosba .chto { flex:1; }
+.znak { font-weight:bold; }
+.blok-doski { background:#fff7d6; border:2px dashed var(--ye); border-radius:var(--r); padding:12px 16px; margin:12px 0; font-weight:600; }
+.modeli { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:10px; }
+.model { background:var(--panel); border:1px solid var(--line); border-radius:var(--r); padding:10px 12px; font-size:15px; }
+.model b { font-size:17px; }
+.model .kto { color:var(--mut); }
+.vid { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:6px 0; }
+.vid .imya { width:200px; font-weight:600; }
+.vid button.vybran { background:var(--cy); color:#fff; }
+.fajl { font-family:'PT Mono', Consolas, monospace; background:#1e2433; color:#d8f5e0; border-radius:10px; padding:10px 14px; min-height:120px; font-size:15px; white-space:pre-wrap; }
+.fajl .imya { color:#ffd84a; }
+.dve { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.shema { background:#fff; border:1px solid var(--line); border-radius:var(--r); padding:6px; }
+pre.konspekt { background:#fffdf0; border:1px solid var(--ye); border-radius:10px; padding:10px 14px; font-size:16px; white-space:pre-wrap; }
+textarea { width:100%; min-height:80px; font:inherit; border:1px solid var(--line); border-radius:10px; padding:8px; }
+select { font:inherit; padding:6px; border-radius:8px; }
+.dalshe { margin-top:18px; text-align:right; }
+ol.vyvody li { margin:4px 0; }
+.malo { color:var(--mut); font-size:15px; }
+</style>
+</head>
+<body>
+<header>
+  <h1 id="zagolovok"></h1>
+  <span class="malo" id="brigada"></span>
+  <span class="zvezdy" id="zvezdy"></span>
+</header>
+<main>
+  <section id="e1"></section>
+  <section id="e2" hidden></section>
+  <section id="e3" hidden></section>
+  <section id="e4" hidden></section>
+  <section id="e5" hidden></section>
+  <section id="e6" hidden></section>
+  <section id="e7" hidden></section>
+</main>
+
+<script src="../../lib/menu-ekranov/menu-ekranov.js"></script>
+<script src="../../lib/slova/slova.js"></script>
+<script src="../../lib/drakonwidget/drakonwidget.js"></script>
+<script src="../../lib/drakon-shema/drakon-shema.js"></script>
+<script src="tekst.js"></script>
+<script>
+/* ===== Данные: состояние стажёра ===== */
+var EKRANY = T.ekrany.map(punktMenu);
+var ID_EKRANOV = T.ekrany.map(idEkrana);
+
+// punktMenu: экран урока → пункт меню учителя
+function punktMenu(e) {
+  return { id: e.id, nazvanie: e.imya };
+}
+
+// idEkrana: id экрана урока
+function idEkrana(e) {
+  return e.id;
+}
+
+// novoeSostoyanie: состояние новой смены
+function novoeSostoyanie() {
+  var S = { ekran: 'e1', nomer: 0, sluh: 0, prosby: -1, vtoroj: 0, vtorojOtvet: -1,
+    kapot: 0, kapotOtvet: -1, konspekt: false, sborka: {}, dubler: {}, dublerOk: false, vsluh: false,
+    zakaz: 0, shag: 0, fajl: [], stolOtvet: '', remont: 0, remontOtvet: -1, refl: '', bloki: [] };
+  return S;
+}
+
+/* ===== Нижний слой: разметка ===== */
+var el = Slova.el, sozdat = Slova.sozdat;
+
+// knopka: кнопка с текстом и действием
+function knopka(tekst, dejstvie, klass) {
+  var b = sozdat('button', klass || '', tekst);
+  b.addEventListener('click', dejstvie);
+  return b;
+}
+
+// abzac: блок с текстом и классом
+function abzac(tekst, klass) {
+  var p = sozdat('div', klass || '', tekst);
+  return p;
+}
+
+// podstavit: заменить {ключ} в шаблоне на значения
+function podstavit(shablon, znacheniya) {
+  var t = shablon;
+  Object.keys(znacheniya).forEach(function (k) { t = t.split('{' + k + '}').join(znacheniya[k]); });
+  return t;
+}
+
+// poryadok: номера вариантов со сдвигом по длине вопроса (верный не всегда первый, порядок не прыгает)
+function poryadok(q, n) {
+  var sdvig = q.length % n;
+  var nomera = [];
+  for (var i = 0; i < n; i++) { nomera.push((i + sdvig) % n); }
+  return nomera;
+}
+
+// smeshat: тот же список в случайном порядке (для блоков слуха)
+function smeshat(spisok) {
+  var kopiya = spisok.slice();
+  kopiya.sort(sluchajno);
+  return kopiya;
+}
+
+// sluchajno: случайный знак для сортировки
+function sluchajno() {
+  return Math.random() - 0.5;
+}
+
+/* ===== Средний слой: смена ===== */
+var S;
+
+// sohranit: записать смену и перерисовать открытый экран
+function sohranit() {
+  Slova.sohranit(T.klyuch, S);
+  pokazatEkran(S.ekran);
+  return S;
+}
+
+// zakrytBlok: отметить блок для доски (один раз)
+function zakrytBlok(n) {
+  if (S.bloki.indexOf(n) < 0) { S.bloki.push(n); Slova.sohranit(T.klyuch, S); }
+  return S.bloki.length;
+}
+
+// blokDoski: плашка «иди к доске», если блок закрыт
+function blokDoski(n) {
+  var p = S.bloki.indexOf(n) >= 0 ? abzac(podstavit(T.doskaBlok, { n: n }), 'blok-doski') : null;
+  return p;
+}
+
+// knopkaDalshe: кнопка перехода на следующий экран; активна, когда экран пройден
+function knopkaDalshe(sled, mozhno) {
+  var d = abzac('', 'dalshe');
+  var b = knopka('Дальше →', function () { S.ekran = sled; sohranit(); }, 'glav');
+  b.disabled = !mozhno;
+  d.appendChild(b);
+  return d;
+}
+
+// vopros: вопрос с вариантами; выбранный ответ хранится в S[pole]; верный — открывает дальше
+function vopros(v, pole, pochemu) {
+  var karta = abzac('', 'karta');
+  karta.appendChild(abzac(v.q, ''));
+  var ryad = abzac('', 'ryad');
+  poryadok(v.q, v.opts.length).forEach(function (i) {
+    var klass = S[pole] === i ? (i === v.ok ? 'da' : 'net') : '';
+    ryad.appendChild(knopka(v.opts[i], function () { S[pole] = i; sohranit(); }, klass));
+  });
+  karta.appendChild(ryad);
+  if (S[pole] >= 0 && pochemu) { karta.appendChild(abzac(pochemu[S[pole]], S[pole] === v.ok ? 'otvet ok' : 'otvet ne')); }
+  return karta;
+}
+
+/* ===== Экран 1. Мастерская ===== */
+// ekran1: мастер рассказывает, стажёр выбирает номер бригады
+function ekran1(sek) {
+  sek.appendChild(sozdat('h2', '', 'Мастерская Эхо-Узла'));
+  T.rasskaz.forEach(function (t) { sek.appendChild(abzac(t, 'master')); });
+  var karta = abzac('', 'karta');
+  karta.appendChild(abzac(T.nomerVopros, ''));
+  var ryad = abzac('', 'ryad');
+  for (var n = 1; n <= T.doska.brigad; n++) { ryad.appendChild(knopkaNomera(n)); }
+  karta.appendChild(ryad);
+  sek.appendChild(karta);
+  sek.appendChild(knopkaDalshe('e2', S.nomer > 0));
+  sek.appendChild(knopka('Новая смена / начать заново', novayaSmena));
+  return sek;
+}
+
+// knopkaNomera: кнопка номера бригады
+function knopkaNomera(n) {
+  var b = knopka(String(n), function () { S.nomer = n; sohranit(); }, S.nomer === n ? 'vybran glav' : '');
+  return b;
+}
+
+/* ===== Экран 2. Слух Светляка ===== */
+var poryadokSluha = null;
+
+// ekran2: задание «слух как в Эхо-Узле» и четыре просьбы жителей
+function ekran2(sek) {
+  sek.appendChild(sozdat('h2', '', 'Слух Светляка'));
+  sek.appendChild(abzac(T.sluhVvod, 'master'));
+  sek.appendChild(zadanieSluh());
+  if (S.sluh >= T.sluhBloki.length) { sek.appendChild(prosbySvetlyaku()); }
+  if (S.prosby === T.prosbyVopros.ok) { zakrytBlok(1); sek.appendChild(blokDoski(1)); }
+  sek.appendChild(knopkaDalshe('e3', S.prosby === T.prosbyVopros.ok));
+  return sek;
+}
+
+// zadanieSluh: блоки слуха — нажимать по порядку; S.sluh — сколько верно подряд
+function zadanieSluh() {
+  var karta = abzac('', 'karta');
+  if (!poryadokSluha) { poryadokSluha = smeshat(T.sluhBloki); }
+  var ryad = abzac('', 'ryad');
+  poryadokSluha.forEach(function (b) { ryad.appendChild(knopkaSluha(b)); });
+  karta.appendChild(ryad);
+  karta.appendChild(abzac(cepochkaSluha(), 'malo'));
+  if (S.sluhOshibka) { karta.appendChild(abzac(T.sluhOshibka, 'otvet ne')); }
+  if (S.sluh >= T.sluhBloki.length) { karta.appendChild(abzac(T.sluhGotovo, 'otvet ok')); }
+  return karta;
+}
+
+// knopkaSluha: блок слуха; верный следующий — засчитать, иначе — подсказка
+function knopkaSluha(b) {
+  var nomer = T.sluhBloki.indexOf(b);
+  var proiden = nomer < S.sluh;
+  var k = knopka(b.imya, function () { nazhatSluh(nomer); }, proiden ? 'da' : '');
+  k.disabled = proiden;
+  return k;
+}
+
+// nazhatSluh: проверить, тот ли блок следующий
+function nazhatSluh(nomer) {
+  var verno = nomer === S.sluh;
+  if (verno) { S.sluh += 1; }
+  S.sluhOshibka = !verno;
+  sohranit();
+  return verno;
+}
+
+// cepochkaSluha: уже собранная часть цепочки «звук → …»
+function cepochkaSluha() {
+  var chast = T.sluhBloki.slice(0, S.sluh).map(opisanieBloka);
+  var t = chast.length ? 'Цепочка: ' + chast.join(' → ') : 'Цепочка пока пустая.';
+  return t;
+}
+
+// opisanieBloka: «Микрофон (звук)»
+function opisanieBloka(b) {
+  return b.imya + ' (' + b.chto + ')';
+}
+
+// prosbySvetlyaku: четыре просьбы жителей и вопрос «почему две не выполнены»
+function prosbySvetlyaku() {
+  var d = abzac('', '');
+  T.prosby.forEach(function (p) { d.appendChild(strokaProsby(p.tekst, p.ok, p.otvet)); });
+  d.appendChild(vopros(T.prosbyVopros, 'prosby', T.prosbyVopros.pochemu));
+  return d;
+}
+
+// strokaProsby: просьба жителя и ответ помощника с отметкой
+function strokaProsby(tekst, ok, otvet) {
+  var k = abzac('', 'karta prosba');
+  k.appendChild(abzac('🗣 ' + tekst + '\n💬 ' + otvet, 'chto'));
+  k.firstChild.style.whiteSpace = 'pre-line';
+  k.appendChild(abzac(ok ? '✔ выполнено' : '✘ не выполнено', 'znak'));
+  return k;
+}
+
+/* ===== Экран 3. Второй ИИ ===== */
+// ekran3: Писарь подключён, разминка, вопрос «кто умнее»
+function ekran3(sek) {
+  var v = T.vtoroj;
+  sek.appendChild(sozdat('h2', '', 'Второй ИИ'));
+  sek.appendChild(abzac(v.master, 'master'));
+  if (!S.vtoroj) { sek.appendChild(knopka(v.knopka, function () { S.vtoroj = 1; sohranit(); }, 'glav')); }
+  if (S.vtoroj) { vtorojPodklyuchen(sek, v); }
+  sek.appendChild(knopkaDalshe('e4', S.vtorojOtvet === v.ok));
+  return sek;
+}
+
+// vtorojPodklyuchen: что сделал Писарь, разминка и вопрос «кто умнее»
+function vtorojPodklyuchen(sek, v) {
+  v.itog.forEach(function (p) { sek.appendChild(strokaProsby(p.tekst, p.ok, p.otvet)); });
+  sek.appendChild(abzac('🧍 ' + v.razminka, 'blok-doski'));
+  sek.appendChild(vopros(v, 'vtorojOtvet', v.pochemu));
+  if (S.vtorojOtvet === v.ok) { sek.appendChild(abzac(v.otkrytie, 'master')); }
+  return sek;
+}
+
+/* ===== Экран 4. Под капотом ===== */
+// ekran4: ДРАКОН-схема помощника, вопросы по ней, конспект в тетрадь
+function ekran4(sek) {
+  sek.appendChild(sozdat('h2', '', 'Под капотом'));
+  sek.appendChild(abzac(T.kapotVvod, 'master'));
+  var mesto = abzac('', 'shema');
+  sek.appendChild(mesto);
+  DrakonShema.pokazat(mesto, T.shemaEtalon);
+  if (S.kapot < T.kapotVoprosy.length) { sek.appendChild(voprosKapota()); }
+  if (S.kapot >= T.kapotVoprosy.length) { sek.appendChild(konspektVTetrad()); }
+  if (S.konspekt) { zakrytBlok(2); sek.appendChild(blokDoski(2)); }
+  sek.appendChild(knopkaDalshe('e5', S.konspekt));
+  return sek;
+}
+
+// voprosKapota: очередной вопрос по схеме; верный — следующий вопрос
+function voprosKapota() {
+  var v = T.kapotVoprosy[S.kapot];
+  var karta = abzac('', 'karta');
+  karta.appendChild(abzac('Вопрос ' + (S.kapot + 1) + ' из ' + T.kapotVoprosy.length + ': ' + v.q, ''));
+  var ryad = abzac('', 'ryad');
+  poryadok(v.q, v.opts.length).forEach(function (i) { ryad.appendChild(knopka(v.opts[i], function () { otvetKapota(i, v.ok); })); });
+  karta.appendChild(ryad);
+  if (S.kapotOtvet >= 0) { karta.appendChild(abzac(T.kapotNeVerno, 'otvet ne')); }
+  return karta;
+}
+
+// otvetKapota: верно — следующий вопрос, неверно — подсказка
+function otvetKapota(i, ok) {
+  var verno = i === ok;
+  S.kapot += verno ? 1 : 0;
+  S.kapotOtvet = verno ? -1 : i;
+  sohranit();
+  return verno;
+}
+
+// konspektVTetrad: текст конспекта, кнопки «Скопировать» и «Открыть генератор», галочка «сделал»
+function konspektVTetrad() {
+  var karta = abzac('', 'karta');
+  karta.appendChild(sozdat('b', '', 'Графический конспект ДРАКОН-ГРАФ — в тетрадь'));
+  var ol = sozdat('ol', '', '');
+  T.konspektShagi.forEach(function (t) { ol.appendChild(sozdat('li', '', t)); });
+  karta.appendChild(ol);
+  karta.appendChild(sozdat('pre', 'konspekt', T.konspekt));
+  var ryad = abzac('', 'ryad');
+  ryad.appendChild(knopka('Скопировать текст', skopirovatKonspekt));
+  ryad.appendChild(knopka('Открыть генератор', function () { window.open(T.generator, '_blank'); }, 'glav'));
+  ryad.appendChild(knopka('✔ ' + T.konspektSdelal, function () { S.konspekt = true; sohranit(); }, S.konspekt ? 'da' : ''));
+  karta.appendChild(ryad);
+  return karta;
+}
+
+// skopirovatKonspekt: текст конспекта — в буфер обмена (нет буфера — ничего)
+function skopirovatKonspekt() {
+  var est = !!(navigator.clipboard && navigator.clipboard.writeText);
+  if (est) { navigator.clipboard.writeText(T.konspekt).catch(function () {}); }
+  return est;
+}
+
+/* ===== Экран 5. Сборка Светляка ===== */
+// ekran5: карточки моделей, сборка Светляка, вслух, дублёр
+function ekran5(sek) {
+  sek.appendChild(sozdat('h2', '', 'Сборка Светляка'));
+  sek.appendChild(abzac(T.sborkaVvod, 'master'));
+  sek.appendChild(kartochkiModelej());
+  sek.appendChild(sborka('sborka', 'Твой Светляк'));
+  if (sobrano(S.sborka)) { sek.appendChild(posleSborki()); }
+  if (S.vsluh) { zakrytBlok(3); sek.appendChild(blokDoski(3)); }
+  sek.appendChild(knopkaDalshe('e6', sobrano(S.sborka) && S.vsluh));
+  return sek;
+}
+
+// kartochkiModelej: карточки семи моделей «кто сделал, для чего, как у нас»
+function kartochkiModelej() {
+  var d = abzac('', 'modeli');
+  T.modeli.forEach(function (m) {
+    var k = abzac('', 'model');
+    k.appendChild(sozdat('b', '', m.imya));
+    k.appendChild(abzac(m.kto, 'kto'));
+    k.appendChild(abzac(m.delo, ''));
+    k.appendChild(abzac(m.komanda, 'kto'));
+    d.appendChild(k);
+  });
+  return d;
+}
+
+// sborka: для каждого вида задач — выбор модели; pole — S.sborka или S.dubler
+function sborka(pole, nazvanie) {
+  var karta = abzac('', 'karta');
+  karta.appendChild(sozdat('b', '', nazvanie));
+  T.vidy.forEach(function (v) { karta.appendChild(strokaVida(pole, v)); });
+  return karta;
+}
+
+// strokaVida: вид задачи и кнопки моделей; чужая модель — отказ «не моё дело»
+function strokaVida(pole, v) {
+  var r = abzac('', 'vid');
+  r.appendChild(abzac(v.imya, 'imya'));
+  T.modeli.forEach(function (m) {
+    var klass = S[pole][v.id] === m.id ? 'vybran' : '';
+    r.appendChild(knopka(m.imya, function () { postavitModel(pole, v.id, m); }, klass));
+  });
+  var otkaz = S[pole]['ne_' + v.id];
+  if (otkaz) { r.appendChild(abzac(otkaz, 'otvet ne')); }
+  return r;
+}
+
+// postavitModel: модель подходит виду — поставить, иначе — её отказ
+function postavitModel(pole, vid, m) {
+  var podhodit = m.vidy.indexOf(vid) >= 0;
+  S[pole][vid] = podhodit ? m.id : S[pole][vid];
+  S[pole]['ne_' + vid] = podhodit ? '' : podstavit(T.neMoe, { model: m.imya, delo: m.delo });
+  sohranit();
+  return podhodit;
+}
+
+// sobrano: у всех видов задач есть модель
+function sobrano(nabor) {
+  var vse = true;
+  T.vidy.forEach(function (v) { vse = vse && !!nabor[v.id]; });
+  return vse;
+}
+
+// raznyhModelej: сколько разных моделей под капотом
+function raznyhModelej(nabor) {
+  var spisok = [];
+  T.vidy.forEach(function (v) { if (nabor[v.id] && spisok.indexOf(nabor[v.id]) < 0) { spisok.push(nabor[v.id]); } });
+  return spisok.length;
+}
+
+// otlichij: сколько видов задач у дублёра закрыто другой моделью
+function otlichij() {
+  var n = 0;
+  T.vidy.forEach(function (v) { if (S.dubler[v.id] && S.dubler[v.id] !== S.sborka[v.id]) { n += 1; } });
+  return n;
+}
+
+// posleSborki: «собран», объяснение вслух, ★ дублёр
+function posleSborki() {
+  var d = abzac('', '');
+  d.appendChild(abzac(podstavit(T.sobran, { n: raznyhModelej(S.sborka) }), 'blok-doski'));
+  var k = abzac(T.vsluh, 'karta');
+  k.appendChild(abzac('', 'ryad')).appendChild(knopka(T.vsluhKnopka, function () { S.vsluh = true; sohranit(); }, S.vsluh ? 'da' : ''));
+  d.appendChild(k);
+  d.appendChild(abzac(T.dubler, 'master'));
+  d.appendChild(sborka('dubler', 'Дублёр'));
+  if (sobrano(S.dubler)) { d.appendChild(abzac(otlichij() >= 2 ? T.dublerGotov : T.dublerMalo, otlichij() >= 2 ? 'blok-doski' : 'otvet ne')); }
+  return d;
+}
+
+/* ===== Экран 6. Стол заказов ===== */
+// ekran6: два заказа через общий файл и посредника
+function ekran6(sek) {
+  sek.appendChild(sozdat('h2', '', 'Стол заказов'));
+  sek.appendChild(abzac(T.stolVvod, 'master'));
+  var gotovo = S.zakaz >= T.zakazy.length;
+  if (!gotovo) { sek.appendChild(tekushchijZakaz()); }
+  sek.appendChild(okoshkoFajla());
+  if (gotovo) { sek.appendChild(abzac(T.stolGotovo, 'otvet ok')); zakrytBlok(4); sek.appendChild(blokDoski(4)); }
+  sek.appendChild(knopkaDalshe('e7', gotovo));
+  return sek;
+}
+
+// tekushchijZakaz: заказ, его шаг и варианты действий
+function tekushchijZakaz() {
+  var z = T.zakazy[S.zakaz];
+  var sh = z.shagi[S.shag];
+  var karta = abzac('', 'karta');
+  karta.appendChild(abzac('Заказ ' + (S.zakaz + 1) + ' из ' + T.zakazy.length + ': ' + z.zakaz, 'master'));
+  karta.appendChild(abzac('Шаг ' + (S.shag + 1) + ' из ' + z.shagi.length + '. ' + sh.chto, ''));
+  var ryad = abzac('', 'ryad');
+  variantyShaga(sh).forEach(function (o) { ryad.appendChild(knopka(o.t, function () { vypolnitShag(o); })); });
+  karta.appendChild(ryad);
+  if (S.stolOtvet) { karta.appendChild(abzac(S.stolOtvet, 'otvet ne')); }
+  return karta;
+}
+
+// variantyShaga: готовые варианты шага или «действие → каждая модель твоего Светляка и чужая»
+function variantyShaga(sh) {
+  var spisok = sh.opts || variantyModelej(sh);
+  return spisok;
+}
+
+// variantyModelej: действие шага с моделью из сборки (верно) и двумя моделями, которых этому не учили (неверно)
+function variantyModelej(sh) {
+  var svoya = modelPoId(S.sborka[sh.vid]);
+  var spisok = [{ t: sh.dejstvie + ' → ' + svoya.imya, ok: true, fajl: podstavit(sh.fajl, { model: svoya.imya }) }];
+  var kandidaty = T.vidy.map(modelSborki).concat(T.modeli);
+  kandidaty.forEach(function (m) { dobavitChuzhuyu(spisok, sh, m); });
+  spisok.sort(poAlfavitu);
+  return spisok;
+}
+
+// modelSborki: модель, которую стажёр поставил на этот вид задач
+function modelSborki(v) {
+  return modelPoId(S.sborka[v.id]);
+}
+
+// poAlfavitu: порядок вариантов по тексту (верный не всегда первый)
+function poAlfavitu(a, b) {
+  return a.t < b.t ? -1 : 1;
+}
+
+// estModel: есть ли в списке вариант с этой моделью
+function estModel(spisok, id) {
+  var est = false;
+  spisok.forEach(function (o) { est = est || o.model === id; });
+  return est;
+}
+
+// chuzhojVariant: неверный вариант — модель, которую этому не учили, и её отказ
+function chuzhojVariant(sh, m) {
+  var o = { t: sh.dejstvie + ' → ' + m.imya, ok: false, model: m.id,
+    pochemu: podstavit(T.stolNeTot, { model: m.imya, vid: imyaVida(sh.vid) }) };
+  return o;
+}
+
+// dobavitChuzhuyu: модель, которую этому шагу не учили, — неверный вариант (всего вариантов не больше трёх)
+function dobavitChuzhuyu(spisok, sh, m) {
+  var chuzhaya = !!m.id && m.vidy.indexOf(sh.vid) < 0;
+  var mozhno = chuzhaya && !estModel(spisok, m.id) && spisok.length < 3;
+  if (mozhno) { spisok.push(chuzhojVariant(sh, m)); }
+  return spisok.length;
+}
+
+// modelPoId: карточка модели по id (нет — карточка-заглушка)
+function modelPoId(id) {
+  var m = { id: '', imya: '—', vidy: [] };
+  T.modeli.forEach(function (x) { if (x.id === id) { m = x; } });
+  return m;
+}
+
+// imyaVida: название вида задач по id
+function imyaVida(id) {
+  var imya = id;
+  T.vidy.forEach(function (x) { if (x.id === id) { imya = x.imya.toLowerCase(); } });
+  return imya;
+}
+
+// vypolnitShag: верно — строка в общий файл и следующий шаг, неверно — объяснение
+function vypolnitShag(o) {
+  S.stolOtvet = o.ok ? '' : o.pochemu;
+  if (o.ok) { S.fajl.push(o.fajl); sledShag(); }
+  sohranit();
+  return o.ok;
+}
+
+// sledShag: следующий шаг заказа или следующий заказ
+function sledShag() {
+  var z = T.zakazy[S.zakaz];
+  S.shag += 1;
+  if (S.shag >= z.shagi.length) { S.zakaz += 1; S.shag = 0; S.fajl.push('—'); }
+  return S.zakaz;
+}
+
+// okoshkoFajla: общий файл — строки «кто: что»
+function okoshkoFajla() {
+  var d = abzac('', '');
+  d.appendChild(abzac('📄 ' + T.stolFajl, 'malo'));
+  var f = abzac('', 'fajl');
+  f.textContent = S.fajl.length ? S.fajl.join('\n') : '(пока пусто)';
+  d.appendChild(f);
+  return d;
+}
+
+/* ===== Экран 7. Ремонт схемы и итог ===== */
+// ekran7: ремонт сломанной схемы, выводы, своими словами, ДЗ
+function ekran7(sek) {
+  sek.appendChild(sozdat('h2', '', 'Ремонт схемы и итог'));
+  sek.appendChild(abzac(T.remontVvod, 'master'));
+  sek.appendChild(dveShemy());
+  if (S.remont < 2) { sek.appendChild(voprosRemonta()); }
+  if (S.remont >= 2) { sek.appendChild(abzac(T.remontGotovo, 'otvet ok')); sek.appendChild(itogSmeny()); }
+  return sek;
+}
+
+// dveShemy: сломанная схема; после ремонта рядом — эталон для самопроверки
+function dveShemy() {
+  var d = abzac('', S.remont >= 2 ? 'dve' : '');
+  var a = abzac('', 'shema');
+  d.appendChild(a);
+  DrakonShema.pokazat(a, T.shemaSlomana);
+  if (S.remont >= 2) { var b = abzac('', 'shema'); d.appendChild(b); DrakonShema.pokazat(b, T.shemaEtalon); }
+  return d;
+}
+
+// voprosRemonta: два вопроса подряд — где поломка и почему так нельзя
+function voprosRemonta() {
+  var v = S.remont === 0 ? T.remontQ1 : T.remontQ2;
+  var karta = abzac('', 'karta');
+  karta.appendChild(abzac(v.q, ''));
+  var ryad = abzac('', 'ryad');
+  poryadok(v.q, v.opts.length).forEach(function (i) { ryad.appendChild(knopka(v.opts[i], function () { otvetRemonta(i, v.ok); })); });
+  karta.appendChild(ryad);
+  if (S.remontOtvet >= 0) { karta.appendChild(abzac(T.remontNeVerno, 'otvet ne')); }
+  return karta;
+}
+
+// otvetRemonta: верно — следующий вопрос, неверно — подсказка
+function otvetRemonta(i, ok) {
+  var verno = i === ok;
+  S.remont += verno ? 1 : 0;
+  S.remontOtvet = verno ? -1 : i;
+  sohranit();
+  return verno;
+}
+
+// itogSmeny: выводы урока, мост, «своими словами», ДЗ, финал
+function itogSmeny() {
+  var d = abzac('', 'karta');
+  d.appendChild(sozdat('b', '', 'Что открыла сегодня мастерская'));
+  var ol = sozdat('ol', 'vyvody', '');
+  T.vyvody.forEach(function (t) { ol.appendChild(sozdat('li', '', t)); });
+  d.appendChild(ol);
+  d.appendChild(abzac(T.most, 'master'));
+  d.appendChild(abzac(T.refleksiya, ''));
+  var pole = sozdat('textarea', '', S.refl);
+  pole.addEventListener('change', function () { S.refl = pole.value; Slova.sohranit(T.klyuch, S); });
+  d.appendChild(pole);
+  d.appendChild(abzac(T.dz, 'blok-doski'));
+  d.appendChild(abzac(T.final, 'master'));
+  return d;
+}
+
+/* ===== Верхний слой: экраны и запуск ===== */
+var STROITELI = { e1: ekran1, e2: ekran2, e3: ekran3, e4: ekran4, e5: ekran5, e6: ekran6, e7: ekran7 };
+
+// pokazatEkran: построить экран заново по состоянию и показать только его
+function pokazatEkran(id) {
+  var sek = el(id);
+  S.ekran = id;
+  sek.innerHTML = '';
+  STROITELI[id](sek);
+  Slova.pokazatOdin(ID_EKRANOV, id);
+  shapka();
+  return id;
+}
+
+// shapka: название урока, номер бригады и звёзды за блоки
+function shapka() {
+  el('zagolovok').textContent = T.nazvanie;
+  el('brigada').textContent = S.nomer ? 'Бригада № ' + S.nomer : '';
+  el('zvezdy').textContent = '★'.repeat(S.bloki.length) + '☆'.repeat(T.doska.blokov - S.bloki.length);
+  return S.bloki.length;
+}
+
+// zapolnenie: данные по умолчанию для пропущенных экранов (меню учителя)
+function zapolnenie() {
+  var z = { e1: zapolnit1, e2: zapolnit2, e3: zapolnit3, e4: zapolnit4, e5: zapolnit5, e6: zapolnit6 };
+  return z;
+}
+
+// zapolnit1: номер бригады по умолчанию
+function zapolnit1() {
+  S.nomer = S.nomer || 1;
+  return S.nomer;
+}
+
+// zapolnit2: слух пройден, на вопрос отвечено верно
+function zapolnit2() {
+  S.sluh = T.sluhBloki.length;
+  S.prosby = T.prosbyVopros.ok;
+  return zakrytBlok(1);
+}
+
+// zapolnit3: Писарь подключён, ответ «кто умнее» верный
+function zapolnit3() {
+  S.vtoroj = 1;
+  S.vtorojOtvet = T.vtoroj.ok;
+  return S.vtoroj;
+}
+
+// zapolnit4: вопросы по схеме пройдены, конспект в тетради
+function zapolnit4() {
+  S.kapot = T.kapotVoprosy.length;
+  S.konspekt = true;
+  return zakrytBlok(2);
+}
+
+// zapolnit5: Светляк собран из первых подходящих моделей, объяснено вслух
+function zapolnit5() {
+  T.vidy.forEach(function (v) { S.sborka[v.id] = pervayaModel(v.id); });
+  S.vsluh = true;
+  return zakrytBlok(3);
+}
+
+// zapolnit6: оба заказа выполнены
+function zapolnit6() {
+  S.zakaz = T.zakazy.length;
+  return zakrytBlok(4);
+}
+
+// pervayaModel: первая модель, которая подходит виду задач
+function pervayaModel(vid) {
+  var id = '';
+  T.modeli.forEach(function (m) { if (!id && m.vidy.indexOf(vid) >= 0) { id = m.id; } });
+  return id;
+}
+
+// novayaSmena: начать заново для следующей пары (кнопка в меню учителя и на экране 1)
+function novayaSmena() {
+  S = novoeSostoyanie();
+  poryadokSluha = null;
+  sohranit();
+  return S;
+}
+
+S = Slova.zapustitPrilozhenie({
+  klyuch: T.klyuch, nachalnoe: novoeSostoyanie, goditsya: function (s) { return !!s.ekran && !!s.sborka; },
+  menu: function () { return { ekrany: EKRANY, perejti: function (id) { S.ekran = id; sohranit(); },
+    tekushchij: function () { return S.ekran; }, zapolnit: zapolnenie(),
+    sluzhebnoe: [{ nazvanie: 'Новая смена', dejstvie: novayaSmena }] }; },
+  pokazat: function (s) { S = s; pokazatEkran(s.ekran); }
+});
+</script>
+</body>
+</html>

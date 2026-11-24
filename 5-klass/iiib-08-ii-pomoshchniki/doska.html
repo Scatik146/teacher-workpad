@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Готовность мастерской — доска</title>
+<style>
+:root { --bg:#f4f7fc; --panel:#fff; --line:#c9d5ea; --ink:#16213a; --mut:#5a6a88; --cy:#0a8fb0; --ye:#f5c400; --gr:#1f9e63; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:22px/1.4 system-ui, 'Segoe UI', Arial, sans-serif; }
+header { padding:14px 24px; background:var(--panel); border-bottom:1px solid var(--line); }
+h1 { margin:0; font-size:32px; }
+.pod { color:var(--mut); font-size:20px; }
+main { padding:18px 24px; display:grid; grid-template-columns:2fr 1fr; gap:20px; }
+.brigady { display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; }
+.brigada { background:var(--panel); border:2px solid var(--line); border-radius:16px; padding:10px; text-align:center; cursor:pointer; font:inherit; }
+.brigada.vybrana { border-color:var(--cy); box-shadow:0 0 0 4px #0a8fb033; }
+.nomer { font-size:34px; font-weight:700; }
+.segmenty { display:flex; justify-content:center; gap:6px; margin:6px 0; }
+.seg { width:26px; height:26px; border-radius:50%; background:#e3e8f2; }
+.seg.gorit { background:var(--ye); box-shadow:0 0 10px var(--ye); }
+.svetlyaki { font-size:18px; color:var(--mut); min-height:26px; }
+.panel { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:14px; }
+.shkala { height:34px; background:#e3e8f2; border-radius:17px; overflow:hidden; margin:8px 0; }
+.shkala div { height:100%; background:linear-gradient(90deg, var(--cy), var(--gr)); }
+.chislo { font-size:46px; font-weight:700; }
+.pole { display:grid; grid-template-columns:repeat(5, 1fr); gap:6px; margin-top:8px; }
+.kletka { height:16px; border-radius:5px; background:#e3e8f2; }
+.kletka.gorit { background:var(--gr); }
+.dejstviya { display:flex; flex-wrap:wrap; gap:10px; margin-top:12px; }
+.dejstviya button { font:inherit; font-size:24px; padding:12px 18px; border-radius:12px; border:1px solid var(--line); background:#fff; cursor:pointer; }
+.dejstviya button.glav { background:var(--cy); color:#fff; border-color:var(--cy); }
+.malo { color:var(--mut); font-size:18px; }
+</style>
+</head>
+<body>
+<header>
+  <h1 id="zagolovok"></h1>
+  <div class="pod" id="pod"></div>
+</header>
+<main>
+  <div>
+    <div class="brigady" id="brigady"></div>
+    <div class="panel" id="dejstviya" style="margin-top:14px"></div>
+  </div>
+  <div class="panel">
+    <b>Готовность мастерской</b>
+    <div class="chislo" id="procent"></div>
+    <div class="shkala"><div id="shkala"></div></div>
+    <div id="svetlyakov"></div>
+    <div style="margin-top:12px"><b id="poleZag"></b></div>
+    <div class="pole" id="pole"></div>
+    <p class="malo">Каждый собранный Светляк и дублёр закрывают ещё один ряд задач.</p>
+    <button id="novaya" style="font:inherit;font-size:16px">Новая смена / начать заново</button>
+  </div>
+</main>
+
+<script src="../../lib/menu-ekranov/menu-ekranov.js"></script>
+<script src="../../lib/slova/slova.js"></script>
+<script src="tekst.js"></script>
+<script>
+var D = T.doska;
+var el = Slova.el, sozdat = Slova.sozdat;
+var B;
+
+// novayaDoska: табло новой смены — у каждой бригады пустые блоки, нет Светляков
+function novayaDoska() {
+  var b = { vybrana: 0, brigady: [] };
+  for (var n = 0; n < D.brigad; n++) { b.brigady.push({ bloki: [], sobran: false, dublery: 0 }); }
+  return b;
+}
+
+// knopka: кнопка с текстом и действием
+function knopka(tekst, dejstvie, klass) {
+  var k = sozdat('button', klass || '', tekst);
+  k.addEventListener('click', dejstvie);
+  return k;
+}
+
+// zapisat: сохранить табло и перерисовать
+function zapisat() {
+  Slova.sohranit(T.klyuchDoski, B);
+  narisovat();
+  return B;
+}
+
+// plitkaBrigady: номер, огоньки блоков, Светляки бригады
+function plitkaBrigady(br, i) {
+  var p = knopka('', function () { B.vybrana = i + 1; zapisat(); }, 'brigada' + (B.vybrana === i + 1 ? ' vybrana' : ''));
+  p.appendChild(sozdat('div', 'nomer', String(i + 1)));
+  var seg = sozdat('div', 'segmenty', '');
+  for (var k = 1; k <= D.blokov; k++) { seg.appendChild(sozdat('span', 'seg' + (br.bloki.indexOf(k) >= 0 ? ' gorit' : ''), '')); }
+  p.appendChild(seg);
+  p.appendChild(sozdat('div', 'svetlyaki', '🔆'.repeat(svetlyakovBrigady(br))));
+  return p;
+}
+
+// svetlyakovBrigady: собранный Светляк и его дублёры
+function svetlyakovBrigady(br) {
+  var n = (br.sobran ? 1 : 0) + br.dublery;
+  return n;
+}
+
+// panelDejstvij: что отметить выбранной бригаде
+function panelDejstvij() {
+  var p = el('dejstviya');
+  p.innerHTML = '';
+  if (!B.vybrana) { p.appendChild(sozdat('div', 'malo', D.vybratNomer)); }
+  if (B.vybrana) { knopkiBrigady(p, B.brigady[B.vybrana - 1]); }
+  return p;
+}
+
+// knopkiBrigady: блоки 1–4, «Светляк собран», «+ дублёр», «Готово»
+function knopkiBrigady(p, br) {
+  p.appendChild(sozdat('b', '', 'Бригада № ' + B.vybrana));
+  var r = sozdat('div', 'dejstviya', '');
+  for (var k = 1; k <= D.blokov; k++) { r.appendChild(knopkaBloka(br, k)); }
+  r.appendChild(knopka(D.sobran, function () { br.sobran = true; zapisat(); }, br.sobran ? '' : 'glav'));
+  r.appendChild(knopka(D.dubler, function () { br.dublery += 1; zapisat(); }));
+  r.appendChild(knopka('Готово', function () { B.vybrana = 0; zapisat(); }));
+  p.appendChild(r);
+  return r;
+}
+
+// knopkaBloka: отметить блок k (повторное нажатие ничего не меняет)
+function knopkaBloka(br, k) {
+  var est = br.bloki.indexOf(k) >= 0;
+  var b = knopka('Блок ' + k + (est ? ' ✔' : ''), function () { if (!est) { br.bloki.push(k); } zapisat(); }, est ? '' : 'glav');
+  return b;
+}
+
+// gotovnost: доля готовности — блоки, Светляки и дублёры всех бригад вместе
+function gotovnost() {
+  var est = 0;
+  B.brigady.forEach(function (br) { est += br.bloki.length + svetlyakovBrigady(br); });
+  var vsego = D.brigad * (D.blokov + 2);
+  return Math.min(100, Math.round(100 * est / vsego));
+}
+
+// vsegoSvetlyakov: сколько Светляков и дублёров в работе
+function vsegoSvetlyakov() {
+  var n = 0;
+  B.brigady.forEach(function (br) { n += svetlyakovBrigady(br); });
+  return n;
+}
+
+// poleZadach: ряды видов задач; горит по ряду на каждого Светляка
+function poleZadach() {
+  var pole = el('pole');
+  var gorit = vsegoSvetlyakov();
+  pole.innerHTML = '';
+  for (var r = 0; r < D.brigad * 2; r++) { T.vidy.forEach(function (v) { pole.appendChild(sozdat('div', 'kletka' + (r < gorit ? ' gorit' : ''), '')); }); }
+  return gorit;
+}
+
+// narisovat: всё табло по состоянию
+function narisovat() {
+  var g = gotovnost();
+  el('brigady').innerHTML = '';
+  B.brigady.forEach(function (br, i) { el('brigady').appendChild(plitkaBrigady(br, i)); });
+  panelDejstvij();
+  el('procent').textContent = g + ' %';
+  el('shkala').style.width = g + '%';
+  el('svetlyakov').textContent = 'Светляков в работе: ' + vsegoSvetlyakov();
+  poleZadach();
+  return g;
+}
+
+// novayaSmena: чистое табло для следующего класса
+function novayaSmena() {
+  B = novayaDoska();
+  zapisat();
+  return B;
+}
+
+el('zagolovok').textContent = D.zagolovok;
+el('pod').textContent = D.podzagolovok;
+el('poleZag').textContent = D.pole + ': ' + T.vidy.map(function (v) { return v.imya; }).join(' · ');
+B = Slova.zagruzit(T.klyuchDoski, novayaDoska, function (s) { return !!s.brigady; });
+narisovat();
+el('novaya').addEventListener('click', novayaSmena);
+Slova.podklyuchitMenu({ ekrany: [{ id: 'doska', nazvanie: 'Табло' }], perejti: narisovat,
+  sluzhebnoe: [{ nazvanie: 'Новая смена (очистить табло)', dejstvie: novayaSmena }] });
+</script>
+</body>
+</html>
