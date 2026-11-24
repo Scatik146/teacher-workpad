@@ -16,8 +16,7 @@
   .cap{font-size:12px;color:#555;margin:0 0 2mm}
   .cut{border-top:1.5px dashed #888;margin:4mm 0 3mm;position:relative}
   .cut span{position:absolute;top:-9px;left:0;background:#fff;padding-right:6px;font-size:12px;color:#666}
-  .shema *{scrollbar-width:none}
-  .shema *::-webkit-scrollbar{display:none}
+  .shema .shema-svg{max-height:165mm;width:auto;margin:0 auto}
   pre{font:12.5px/1.35 "PT Mono",Consolas,monospace;background:#fffdf0;border:1px solid #e8d36a;border-radius:6px;padding:2mm 3mm;margin:0;white-space:pre-wrap}
   .ramka{border:1px solid #bbb;border-radius:6px;height:22mm;margin-top:2mm;color:#999;font-size:12px;padding:2mm}
   table{width:100%;border-collapse:collapse;font-size:12.5px}
@@ -37,18 +36,19 @@
   <div class="cut"><span>✂ вклеить в тетрадь</span></div>
   <p class="cap">Эталон · как голосовой помощник выполняет просьбу</p>
   <div class="shema" id="etalon"></div>
+  <div class="cut"><span>✂</span></div>
+  <h2>Конспект ДРАКОН-ГРАФ (перепиши в тетрадь и нарисуй схему в генераторе)</h2>
+  <pre id="konspekt"></pre>
+  <div class="ramka">Генератор: scatik146.github.io/drakon-graf/generator — сначала сотри старый текст слева, вставь свой, перерисуй схему в тетрадь рядом с текстом.</div>
 </div>
 
 <div class="sheet">
   <h1>Кто под капотом · раздатка</h1>
-  <p class="cap">Помощник — то, с чем говорит человек (Алиса, Салют). Модель — то, что работает «под капотом». Карточки — со слов создателей и из опыта нашей команды.</p>
+  <p class="cap">Помощник — то, с чем говорит человек (Алиса, Салют). Модель — то, что работает «под капотом». Карточки — со слов создателей моделей.</p>
   <table>
-    <thead><tr><th>Кто это в мире</th><th>Кто сделал</th><th>На что делали упор</th><th>Роль в нашей мастерской</th></tr></thead>
+    <thead><tr><th>Кто это в мире</th><th>Кто сделал</th><th>На что делали упор</th><th>Чем силён</th></tr></thead>
     <tbody id="tablica"></tbody>
   </table>
-  <h2>Конспект ДРАКОН-ГРАФ (перепиши в тетрадь и нарисуй схему в генераторе)</h2>
-  <pre id="konspekt"></pre>
-  <div class="ramka">Генератор: scatik146.github.io/drakon-graf/generator — вставь текст, перерисуй схему в тетрадь рядом с текстом.</div>
   <h2>Домашнее задание</h2>
   <p id="dz"></p>
   <p>1. Прочитай таблицу. 2. Перепиши в тетрадь текст ниже и вместо «…» впиши модель. 3. Нарисуй схему в генераторе и перерисуй её рядом.</p>
@@ -56,10 +56,9 @@
   <p class="avtory">ДРАКОН-ГРАФ: язык ГРАФ — В. Д. Паронджанов; инициатор и участник разработки — Г. А. Гуленков; расширенная версия и программа — С. Н. Веснин. ДРАКОН-схемы — виджет С. Митькина.</p>
 </div>
 
-<script src="../../lib/drakonwidget/drakonwidget.js"></script>
-<script src="../../lib/drakon-shema/drakon-shema.js"></script>
 <script src="../../lib/slova/slova.js"></script>
 <script src="tekst.js"></script>
+<script src="shema.js"></script>
 <script>
 var DZ_KONSPEKT = /*конспект*/`тема: Кого я возьму под капот?
 класс: 5
@@ -72,16 +71,16 @@ var DZ_KONSPEKT = /*конспект*/`тема: Кого я возьму под
 // strokaModeli: строка таблицы — модель, кто сделал, упор, роль у нас
 function strokaModeli(m) {
   var tr = document.createElement('tr');
-  [m.imya, m.kto, m.delo, m.komanda].forEach(function (t) { tr.appendChild(Slova.sozdat('td', '', t)); });
+  [m.imya, m.kto, m.delo, m.rol].forEach(function (t) { tr.appendChild(Slova.sozdat('td', '', t)); });
   return tr;
 }
 
 // zapolnitList: схема-эталон, тексты конспектов, таблица моделей
 function zapolnitList() {
-  DrakonShema.pokazat(Slova.el('etalon'), T.shemaEtalon);
+  Shema.narisovat(Slova.el('etalon'), T.e7.shema, {});
   Slova.el('konspekt').textContent = T.konspekt;
   Slova.el('dzKonspekt').textContent = DZ_KONSPEKT;
-  Slova.el('dz').textContent = T.dz.replace('на обороте листа: ', '');
+  Slova.el('dz').textContent = T.e12.dz.replace('на обороте листа: ', '');
   T.modeli.forEach(function (m) { Slova.el('tablica').appendChild(strokaModeli(m)); });
   return T.modeli.length;
 }
