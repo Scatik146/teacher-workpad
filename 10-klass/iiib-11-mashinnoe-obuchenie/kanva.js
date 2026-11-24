@@ -34,6 +34,14 @@ function tablicaVydumok() {
   return t;
 }
 
+// tablicaSootvetstviya: ключ к таблице введения «живой → формальный»
+function tablicaSootvetstviya() {
+  var t = el('sootvetstvie');
+  t.appendChild(stroka(['в живом нейроне', 'в формальном нейроне'], true));
+  T.sootvetstvie.forEach(function (para) { t.appendChild(stroka(para)); });
+  return t;
+}
+
 // idVydumki: id абзаца, где стоит выдумка с этим номером
 function idVydumki(nomer) {
   var id = '';
@@ -51,6 +59,7 @@ function nomerShaga(nomer) {
 
 tablicaEtapov();
 tablicaVydumok();
+tablicaSootvetstviya();
 el('generator').href = T.generator;
 Slova.narisovatKonspekt('obrazec', T.obrazec, 10, 760);
 Slova.narisovatKonspekt('obrazecNejron', T.obrazecNejron, 10, 760);

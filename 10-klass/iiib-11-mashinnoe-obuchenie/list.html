@@ -56,6 +56,9 @@
   ol.dz{padding-left:6mm;margin:1mm 0}
   .avtory{font-size:10px;color:#666;margin-top:4mm}
   .razryv{break-before:page}
+  table.sootvetstvie td{height:8mm;width:50%}
+  .risunok{break-inside:avoid;margin:2mm 0}
+  .risunok svg{max-width:100%;height:auto;display:block;margin:0 auto}
   @media print{ body{background:#fff} .bar{display:none} .dok{margin:0;width:auto;padding:0} @page{size:A4;margin:12mm 14mm} }
 </style>
 </head>
@@ -76,6 +79,14 @@
     <tbody id="marshrut"></tbody>
   </table>
   <p class="cap">★ — для тех, кто успевает. Отстаёшь — пропускай.</p>
+  <p class="avtory">ДРАКОН-ГРАФ: язык ГРАФ — В. Д. Паронджанов; инициатор и участник разработки — Г. А. Гуленков; расширенная версия и программа — С. Н. Веснин.</p>
+
+  <section class="shag" data-n="1"><div class="zapishi">
+    <p class="cap">Заполни правый столбец по вставке. Подсказка — последний абзац.</p>
+    <table class="sootvetstvie"><thead><tr><th>в живом нейроне</th><th>в формальном нейроне</th></tr></thead><tbody id="sootvetstvie"></tbody></table>
+    <p class="bloktitul">Так формальный нейрон рисуют в ДРАКОН-ГРАФ</p>
+    <div class="risunok" id="risunokNejrona"></div></div>
+  </section>
 
   <section class="shag" data-n="2"><div class="zapishi">
     <div class="ryad">
@@ -132,12 +143,13 @@
     <ol class="dz" id="dz"></ol></div>
   </section>
 
-  <p class="avtory">ДРАКОН-ГРАФ: язык ГРАФ — В. Д. Паронджанов; инициатор и участник разработки — Г. А. Гуленков; расширенная версия и программа — С. Н. Веснин.</p>
 </main>
 
 <script src="../../lib/slova/slova.js"></script>
 <script src="../../lib/nejron/nejron.js"></script>
-<script src="tekst.js?v=2026-11-25-0230"></script>
-<script src="list.js?v=2026-11-25-0230"></script>
+<script src="../../lib/drakon-graf/drakon-graf.min.js"></script>
+<script src="../../lib/drakon-graf/konspekt.js"></script>
+<script src="tekst.js?v=2026-11-25-0225"></script>
+<script src="list.js?v=2026-11-25-0225"></script>
 </body>
 </html>

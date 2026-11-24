@@ -50,7 +50,7 @@ function vstavka(ids) {
 // shapkaShaga: номер и название шага, минуты и «закончить к»
 function shapkaShaga(e, konec) {
   var d = Slova.sozdat('div', 'shapka');
-  d.appendChild(Slova.sozdat('h2', '', 'Шаг ' + e.n + ' · ' + e.nazvanie));
+  d.appendChild(Slova.sozdat('h2', '', 'Шаг ' + e.n + ' · ' + (e.uchenik.nazvanie || e.nazvanie)));
   var v = Slova.sozdat('span', 'vremya', e.min + ' мин · закончить к ');
   v.appendChild(Slova.sozdat('b', '', plyusMinuty(T.nachalo, konec)));
   d.appendChild(v);
@@ -119,16 +119,26 @@ function bukvaBezImeni(k, nomer) {
   return d;
 }
 
+// strokaSootvetstviya: строка «живой → формальный»: левая ячейка с текстом, правая пустая — ученику
+function strokaSootvetstviya(zhivoj) {
+  var tr = Slova.sozdat('tr');
+  tr.appendChild(yachejka(zhivoj));
+  tr.appendChild(yachejka(''));
+  return tr;
+}
+
 // zapolnitPolya: пустые сетки и таблицы, буквы без имён, выводы, ДЗ
 function zapolnitPolya() {
   Array.prototype.forEach.call(document.querySelectorAll('.pustaya'), zapolnitPustuyu);
   T.bezRazmetki.forEach(function (k, i) { el('bukvy').appendChild(bukvaBezImeni(k, i + 1)); });
   T.vyvody.forEach(function (t) { el('vyvody').appendChild(Slova.sozdat('li', '', t)); });
   T.dz.forEach(function (t) { el('dz').appendChild(Slova.sozdat('li', '', t)); });
+  T.sootvetstvie.forEach(function (para) { el('sootvetstvie').appendChild(strokaSootvetstviya(para[0])); });
   return true;
 }
 
 zapolnitMarshrut();
 zapolnitPolya();
+if (window.Konspekt) { window.Konspekt.draw(el('risunokNejrona'), T.obrazecNejron, { class: 10, width: 640, theme: 'bw' }); }
 Slova.knopkaPechati('pechat');
 })();
