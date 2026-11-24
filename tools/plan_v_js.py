@@ -56,13 +56,20 @@ def urok_iz_stroki(shapka, stroka):
     return urok
 
 
+# tema_na_dele: тема «на деле»; пусто или «то же, что в журнале» — тема из журнала
+def tema_na_dele(z):
+    na_dele = z.get('На деле (тема)', '')
+    tema = z.get('В журнале (по РП)', '') if na_dele in ('', 'то же, что в журнале') else na_dele
+    return tema
+
+
 # urok_na_dele: строка таблицы «на деле» → урок с темой «на деле» и полями журнала, опоры, итога
 def urok_na_dele(shapka, stroka):
     z = dict(zip(shapka, yachejki(stroka)))
     yachejka = z.get('урок', '')
     flag = flag_uroka(yachejka) if 'урок' in shapka else 'neizv'
     urok = {'n': z.get('№', ''), 'kogda': z.get('Дата', ''),
-            'tema': z.get('На деле (тема)') or z.get('В журнале (по РП)', ''), 'tip': '',
+            'tema': tema_na_dele(z), 'tip': '',
             'flag': flag, 'papka': papka_uroka(yachejka),
             'zhurnal': z.get('В журнале (по РП)', ''), 'status': z.get('Статус', ''),
             'soderzhanie': z.get('Содержание урока', ''), 'opora': z.get('Углубление (опорные пункты)', ''),
