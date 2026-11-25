@@ -32,11 +32,7 @@ p { margin: 3px 0; }
 <p class="tusk">ИИИБ, урок 13 · открытие нового знания · 40 минут · 8 человек, пары · сюжет «Комикс»: дело Тима</p>
 
 <h2>Перед уроком</h2>
-<div class="trevoga">
-  <p><b>До выдачи детям — сверить глазами</b> PDF «Лаборатории Касперского» (kids.kaspersky.ru/files/2025_02_Kaspersky_kids.pdf):</p>
-  <ul id="proverit"></ul>
-  <p>Не совпало — карточку «дети или взрослые» на уроке говорить без чисел: «взрослых — не реже, чем детей», и сказать мне — поправлю в <code>tekst.js</code>.</p>
-</div>
+<p><b>PDF Касперского сверен учителем 25.11</b> (стр. 22 — 20 % родителей и 5 % детей; стр. 30 — правила пароля).</p>
 <ul>
   <li>Печать: ДРАКОН-лист — 7 обычных + 1 «с подсказкой» (кнопка на листе) для ребёнка с низким навыком.</li>
   <li>На ноутбуках открыть <b>досье</b> (dosye.html). На доске — слайды (стрелки, пробел; элементы — по щелчку).</li>
@@ -70,7 +66,7 @@ p { margin: 3px 0; }
   <tr><td>Можно ли перехватить одноразовый код</td><td>этап 5, карточка 3; комикс кадр 4</td></tr>
   <tr><td>Что делать, если взломали</td><td>этап 7, схема 3 (пять шагов)</td></tr>
   <tr><td>Почему одних взламывают, а других нет</td><td>этап 3, «взламывают не человека, а дверь»</td></tr>
-  <tr><td>Дети или взрослые — у кого чаще</td><td>этап 5, карточка 4 (сверить стр. 22)</td></tr>
+  <tr><td>Дети или взрослые — у кого чаще</td><td>этап 5, карточка 4</td></tr>
   <tr><td>Советы и рекомендации</td><td>этап 7, чек-лист; ДЗ</td></tr>
 </table>
 
@@ -99,7 +95,7 @@ p { margin: 3px 0; }
 
 <h2>Источники</h2>
 <ul class="tusk">
-  <li>«Лаборатория Касперского», исследование для детей и родителей, 2024 — kids.kaspersky.ru/files/2025_02_Kaspersky_kids.pdf (стр. 22, 30 — сверить).</li>
+  <li>«Лаборатория Касперского», исследование для детей и родителей, 2024 — kids.kaspersky.ru/files/2025_02_Kaspersky_kids.pdf (стр. 22, 30 — сверено учителем 25.11).</li>
   <li>NIST SP 800-63B-4 (2025) — pages.nist.gov/800-63-4: пароль единственным ключом — от 15 символов.</li>
   <li>По IP — страна, город, провайдер: reg.ru Geo IP; Клуб API Яндекс.Карт.</li>
   <li>Касперский: детям не сообщать никому данные аккаунтов и одноразовые коды — Лента.ру, 01.06.2026.</li>
@@ -123,8 +119,6 @@ function postroitShpargalku() {
   Slova.el("otvetDosye").textContent = TEKST.otvetDosye;
   Slova.el("vyvod").textContent = TEKST.paroli.vyvod;
   TEKST.mify.forEach(function (m) { Slova.el("mify").appendChild(punktMifa(m)); });
-  TEKST.mify.forEach(function (m) { if (m.proverit) { Slova.el("proverit").appendChild(Slova.sozdat("li", "", m.proverit)); } });
-  Slova.el("proverit").appendChild(Slova.sozdat("li", "", TEKST.paroli.kasperskij.proverit));
   Slova.knopkaPechati("pechat");
   return true;
 }
