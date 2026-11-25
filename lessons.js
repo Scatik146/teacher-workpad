@@ -149,6 +149,16 @@ const LESSONS = [
     teacher: [{label:'Канва урока', href:'kanva.html', kind:'guide'}, {label:'Лист для вклейки', href:'vkleyka.html', kind:'print'}]
   },
   {
+    where:[{s:'iiib', g:6}],
+    title: 'Дело Тима',
+    topic: 'Дополнительная защита аккаунтов',
+    about: 'Комикс-расследование: у Тима взломали все аккаунты. Пары ищут следы в досье, проверяют мифы «правда или выдумка» и рисуют карту своих треков — у каждого своя почта и своя защита.',
+    format: 'в парах, досье на ноутбуке · 40 минут',
+    path: '6-klass/iiib-13-zashchita-akkauntov/',
+    app: 'dosye.html',
+    teacher: [{label:'Слайды', href:'slajdy.html', kind:'slides'}, {label:'ДРАКОН-лист А4', href:'drakon-list.html', kind:'print'}, {label:'ДРАКОН-лист с подсказкой', href:'drakon-list.html#prostoj', kind:'print'}, {label:'Шпаргалка и конспект', href:'shpargalka.html', kind:'guide'}]
+  },
+  {
     where:[{s:'iiib', g:7}],
     title: 'Помощник сломался',
     topic: 'Что такое данные. Датасет. Виды датасетов',
