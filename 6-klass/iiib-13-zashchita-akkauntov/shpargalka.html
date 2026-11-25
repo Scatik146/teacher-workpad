@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Шпаргалка и конспект учителя — защита аккаунтов, 6 класс</title>
+<style>
+:root { --ink: #1d2126; --ink2: #5b5346; --line: #d9cfb9; --paper: #f6f1e6; --accent: #f2a93b; --alarm: #a4372a; --alarm-bg: #f8e6dd; }
+@page { size: A4 portrait; margin: 12mm; }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--paper); color: var(--ink); font: 15px/1.45 "Segoe UI", Roboto, Arial, sans-serif; }
+.bar { position: sticky; top: 0; z-index: 5; display: flex; gap: 10px; align-items: center; padding: 8px 16px; background: #1f2329; color: #eef1f4; border-bottom: 3px solid var(--accent); }
+.bar button { font: inherit; background: var(--accent); border: 0; border-radius: 16px; padding: 5px 14px; font-weight: 700; cursor: pointer; }
+.bar a { color: #eef1f4; }
+main { max-width: 190mm; margin: 12px auto; background: #fff; padding: 8mm 10mm; }
+h1 { font-size: 20px; margin: 0 0 4px; }
+h2 { font-size: 16px; margin: 14px 0 4px; border-bottom: 2px solid var(--accent); }
+.novaya { break-before: page; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid var(--line); padding: 3px 6px; text-align: left; vertical-align: top; }
+th { background: #f4efe2; }
+.trevoga { background: var(--alarm-bg); border-left: 6px solid var(--alarm); padding: 6px 10px; }
+.tusk { color: var(--ink2); font-size: 13px; }
+ul, ol { margin: 2px 0; padding-left: 22px; }
+p { margin: 3px 0; }
+@media print { html, body { background: #fff; } .bar { display: none; } main { margin: 0; padding: 0; max-width: none; } * { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+</style>
+</head>
+<body>
+<div class="bar"><button type="button" id="pechat">Печать</button><a href="slajdy.html">Слайды</a><a href="dosye.html">Досье</a><a href="drakon-list.html">ДРАКОН-лист</a></div>
+<main>
+<h1>Дополнительная защита аккаунтов · 6 класс · 26.11, 12:30</h1>
+<p class="tusk">ИИИБ, урок 13 · открытие нового знания · 40 минут · 8 человек, пары · сюжет «Комикс»: дело Тима</p>
+
+<h2>Перед уроком</h2>
+<div class="trevoga">
+  <p><b>До выдачи детям — сверить глазами</b> PDF «Лаборатории Касперского» (kids.kaspersky.ru/files/2025_02_Kaspersky_kids.pdf):</p>
+  <ul id="proverit"></ul>
+  <p>Не совпало — карточку «дети или взрослые» на уроке говорить без чисел: «взрослых — не реже, чем детей», и сказать мне — поправлю в <code>tekst.js</code>.</p>
+</div>
+<ul>
+  <li>Печать: ДРАКОН-лист — 7 обычных + 1 «с подсказкой» (кнопка на листе) для ребёнка с низким навыком.</li>
+  <li>На ноутбуках открыть <b>досье</b> (dosye.html). На доске — слайды (стрелки, пробел; элементы — по щелчку).</li>
+  <li>Пары: ребёнок с низким навыком — с сильным; он отмечает следы пальцем, сосед читает.</li>
+</ul>
+
+<h2>Ход урока по минутам (3+4+3+4+14+3+5+2+2 = 40)</h2>
+<table>
+  <tr><th>Этап, мин</th><th>Слайды</th><th>Что делаю</th></tr>
+  <tr><td>1. Мотивация, 3</td><td>Комикс 1–2</td><td>Читаю кадры. «Как это могло случиться?» — 2–3 версии, не оцениваю.</td></tr>
+  <tr><td>2. Актуализация, 4</td><td>Почта — главный ключ</td><td>Идентификатор, цифровой след. Пробное действие: досье, три следа за 2 минуты.</td></tr>
+  <tr><td>3. Затруднение, 3</td><td>Комикс 3–5, «дверь»</td><td>«Почему одних взламывают, а других нет?» → ответ слайда. Моя история — одна минута.</td></tr>
+  <tr><td>4. Проект, 4</td><td>Треки, ДРАКОН-ГРАФ, схема 1</td><td>Треки; «некоторые никогда не пересекаются». Что такое ДРАКОН-ГРАФ, схема 1 — та же на листе.</td></tr>
+  <tr><td>5. Реализация, 14</td><td>Досье · Мифы · Карта</td><td>6 мин досье (3 вопроса) → 4 мин «правда или выдумка» (пары решают в досье, на доске — по щелчку) → 4 мин карта треков на листе.</td></tr>
+  <tr><td>6. Закрепление, 3</td><td>Что нашли сыщики</td><td>Одна пара — одна ветка карты; класс: «Какой риск?» Ответ досье — по щелчку.</td></tr>
+  <tr><td>7. Самостоятельная, 5</td><td>Пароль 2026, второй ключ, схемы 2–3, чек-лист</td><td>Касперский и NIST: правила меняются, главное — нет. Чек-лист и батарейка — каждый сам; скорость — не критерий.</td></tr>
+  <tr><td>8. Система, 2</td><td>Единые ID</td><td>Таблица: что открывает каждый ID. «Какой лучше?» — тот, который ты защитил.</td></tr>
+  <tr><td>9. Рефлексия, 2</td><td>Финал комикса</td><td>Фраза-якорь вслух. ДЗ. Лист — в тетрадь.</td></tr>
+</table>
+
+<h2>12 обязательных пунктов — где на уроке</h2>
+<table>
+  <tr><th>Пункт</th><th>Где</th></tr>
+  <tr><td>Почта как главный идентификатор</td><td>этап 2, комикс кадр 5, схема 1</td></tr>
+  <tr><td>Цифровой след и способы отслеживания</td><td>этап 2, досье (ник, геотег, утечка, IP)</td></tr>
+  <tr><td>Треки, некоторые никогда не пересекаются</td><td>этап 4, карта на листе</td></tr>
+  <tr><td>Пароль и никнейм в 2026</td><td>этап 7 (Касперский / NIST, ник)</td></tr>
+  <tr><td>Apple ID, Google, Яндекс ID, VK ID, Сбер ID — зачем так много, какой лучше</td><td>этап 8, таблица</td></tr>
+  <tr><td>Виды защиты кроме пароля</td><td>этап 7, таблица «второй ключ»</td></tr>
+  <tr><td>Правда ли, что Apple ID невозможно взломать</td><td>этап 5, карточка 1</td></tr>
+  <tr><td>Можно ли перехватить одноразовый код</td><td>этап 5, карточка 3; комикс кадр 4</td></tr>
+  <tr><td>Что делать, если взломали</td><td>этап 7, схема 3 (пять шагов)</td></tr>
+  <tr><td>Почему одних взламывают, а других нет</td><td>этап 3, «взламывают не человека, а дверь»</td></tr>
+  <tr><td>Дети или взрослые — у кого чаще</td><td>этап 5, карточка 4 (сверить стр. 22)</td></tr>
+  <tr><td>Советы и рекомендации</td><td>этап 7, чек-лист; ДЗ</td></tr>
+</table>
+
+<h2 class="novaya">Конспект: что говорю</h2>
+<p><b>Фраза-якорь</b> (начало и конец): <span id="yakor"></span></p>
+<p><b>Если ребёнок рассказывает, что его уже взламывали</b> — «Спасибо, это ценный опыт. Что помогло вернуть?» Без разбора при классе; шаги — схема 3.</p>
+<p><b>Не пугаем:</b> «нет угрозы без двери» — каждую дверь можно закрыть; ученик — защитник, а не жертва.</p>
+<p><b>ДРАКОН-ГРАФ</b> (этап 4): «Это рисунок-конспект. Тема — в овале. Жёлтое — запомни, белое — разберись. Закрыл правую часть запоминателя — проверил себя».</p>
+
+<h2>Ключи</h2>
+<p><b>Досье:</b> <span id="otvetDosye"></span></p>
+<ol id="mify"></ol>
+<p><b>Пароль:</b> <span id="vyvod"></span></p>
+
+<h2>Если…</h2>
+<ul>
+  <li><b>Не успеваем к этапу 7</b> — схемы 2–3 показать одним слайдом каждую без обсуждения; чек-лист — дома.</li>
+  <li><b>Пара закончила досье раньше</b> — ★ на слайде; ещё ★ — шаблон генератора ДРАКОН-ГРАФ внизу досье.</li>
+  <li><b>Нет интернета на ноутбуках</b> — следы досье читаю вслух со своего экрана (открыть заранее); генератор — дома.</li>
+  <li><b>Спрашивают «какой ID лучший?»</b> — не называю компанию: «Лучший — тот, где включён второй ключ и свежая почта».</li>
+  <li><b>Хотят записать настоящий пароль или почту</b> — нет: на листе только тип («отдельная почта»).</li>
+</ul>
+
+<h2>Минимум, если всё пошло не так</h2>
+<p>Комикс 1–5 → досье (три следа) → карточка «код из СМС» → схема 3 → якорь. Карта треков и чек-лист — в ДЗ.</p>
+
+<h2>Источники</h2>
+<ul class="tusk">
+  <li>«Лаборатория Касперского», исследование для детей и родителей, 2024 — kids.kaspersky.ru/files/2025_02_Kaspersky_kids.pdf (стр. 22, 30 — сверить).</li>
+  <li>NIST SP 800-63B-4 (2025) — pages.nist.gov/800-63-4: пароль единственным ключом — от 15 символов.</li>
+  <li>По IP — страна, город, провайдер: reg.ru Geo IP; Клуб API Яндекс.Карт.</li>
+  <li>Касперский: детям не сообщать никому данные аккаунтов и одноразовые коды — Лента.ру, 01.06.2026.</li>
+  <li>Готовое с сайта: 4-klass/iiib-02-paroli (ключ на все замки, 2FA «знаешь + имеешь»).</li>
+  <li>Книга Э. Кудинова «Выжить в цифровом мире» (иллюстрированные советы «Лаборатории Касперского») — по слову учителя; текст книги в сети не нашла, советы из неё в урок не взяты.</li>
+</ul>
+</main>
+<script src="tekst.js?v=202611252330"></script>
+<script src="../../lib/slova/slova.js"></script>
+<script>
+"use strict";
+// punktMifa: ключ к карточке «правда или выдумка»
+function punktMifa(m) {
+  var li = Slova.sozdat("li", "", m.utv + " — " + m.vyvod + ". " + m.pochemu);
+  return li;
+}
+
+// postroitShpargalku: ключи и сверка из общих текстов урока
+function postroitShpargalku() {
+  Slova.el("yakor").textContent = TEKST.yakor;
+  Slova.el("otvetDosye").textContent = TEKST.otvetDosye;
+  Slova.el("vyvod").textContent = TEKST.paroli.vyvod;
+  TEKST.mify.forEach(function (m) { Slova.el("mify").appendChild(punktMifa(m)); });
+  TEKST.mify.forEach(function (m) { if (m.proverit) { Slova.el("proverit").appendChild(Slova.sozdat("li", "", m.proverit)); } });
+  Slova.el("proverit").appendChild(Slova.sozdat("li", "", TEKST.paroli.kasperskij.proverit));
+  Slova.knopkaPechati("pechat");
+  return true;
+}
+postroitShpargalku();
+</script>
+</body>
+</html>

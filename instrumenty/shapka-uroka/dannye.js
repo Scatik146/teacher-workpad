@@ -113,7 +113,8 @@ const SHAPKA_DANNYE = {
           { id: 'p19', podpis: 'П-19 новая смена для следующей пары', gde: 'любое приложение с localStorage' },
           { id: 'p20', podpis: 'П-20 один инструмент на несколько уроков', gde: 'teacher-workpad 7-klass/iiib-09-princip-raboty-nejrona; obshchie/schety' },
           { id: 'p21', podpis: 'П-21 клавиатурный тренажёр по главам', gde: 'teacher-workpad 4-klass/iiib-07-podmasterje-alhimika; 2-klass/iiib-11-sozdat-tekstovyj-dokument' },
-          { id: 'p22', podpis: 'П-22 сохранить ответы файлом', gde: 'teacher-workpad 9-klass/sleduyushchaya-nota; 6-klass/delo-6-ii' }
+          { id: 'p22', podpis: 'П-22 сохранить ответы файлом', gde: 'teacher-workpad 9-klass/sleduyushchaya-nota; 6-klass/delo-6-ii' },
+          { id: 'p23', podpis: 'П-23 генератор ДРАКОН-ГРАФ: ученик сам рисует схему по шаблону', gde: 'teacher-workpad 6-klass/iiib-13-zashchita-akkauntov/dosye.html (впервые, 26.11); ссылка — 8-klass/iiib-09-restavraciya' }
         ] }
     ] },
     { nomer: 8, nazvanie: 'Артефакты (предварительно)', polya: [

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>ДРАКОН-лист «Защита аккаунтов» — 6 класс, А4</title>
+<style>
+:root { --chernila: #1d2126; --chernila2: #5b5346; --liniya: #d9cfb9; --akcent: #f2a93b; --zheltoe: #ffff99; --drakon: #993300; --shrift: "Segoe UI", Roboto, Arial, sans-serif; }
+@page { size: A4 portrait; margin: 10mm; }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: #e9e4d8; color: var(--chernila); font: 10pt/1.25 var(--shrift); }
+.bar { position: sticky; top: 0; z-index: 5; display: flex; gap: 10px; align-items: center; padding: 8px 16px; background: #1f2329; color: #eef1f4; border-bottom: 3px solid var(--akcent); }
+.bar button { font: inherit; background: var(--akcent); border: 0; border-radius: 16px; padding: 5px 14px; font-weight: 700; cursor: pointer; }
+.list { width: 190mm; margin: 12px auto; background: #fff; padding: 6mm; display: flex; flex-direction: column; gap: 2mm; }
+h1 { font-size: 14pt; margin: 0; }
+h2 { font-size: 11pt; margin: 0 0 1mm; }
+p { margin: 0; }
+.shapka { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid var(--akcent); padding-bottom: 2mm; }
+.fio { color: var(--chernila2); }
+.legenda { display: flex; gap: 3mm; font-size: 9pt; }
+.legenda span { border: 1.5px solid var(--drakon); border-radius: 4px; padding: 0.3mm 2mm; font-family: Georgia, serif; }
+.legenda .zh { background: var(--zheltoe); }
+.kolonki { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; align-items: start; }
+.kolonki > div { display: flex; flex-direction: column; gap: 2mm; }
+.graf svg { width: 100%; height: auto; }
+.cheklist { margin: 0; padding-left: 5mm; }
+.cheklist li { margin: 0.8mm 0; }
+.cheklist li::marker { content: "☐ "; }
+.batarejka { display: flex; align-items: center; gap: 1mm; }
+.batarejka span { width: 12mm; height: 7mm; border: 1.5px solid var(--chernila); border-radius: 1mm; }
+.batarejka .plyus { width: 2mm; height: 4mm; background: var(--chernila); border: 0; }
+.treki { border-collapse: collapse; width: 100%; table-layout: fixed; }
+.treki th, .treki td { border: 1px solid #777; padding: 0.8mm 2mm; font-size: 9.5pt; text-align: left; vertical-align: top; height: 8.5mm; }
+.treki th { height: auto; background: #f4efe2; }
+.tusk { color: var(--chernila2); font-size: 9pt; }
+.dz { margin: 0; padding-left: 5mm; }
+@media print {
+  html, body { background: #fff; }
+  .bar { display: none; }
+  .list { margin: 0; width: auto; padding: 0; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+</style>
+</head>
+<body>
+<div class="bar">
+  <button type="button" id="pechat">Печать (А4, книжная, цвет)</button>
+  <button type="button" id="pechatProstoj">Печать: лист с подсказкой</button>
+  <span id="rezhim">ДРАКОН-лист в тетрадь</span>
+</div>
+
+<article class="list">
+  <div class="shapka">
+    <h1>Защита аккаунтов · ДРАКОН-лист</h1>
+    <span class="fio">Имя ________________ Дата 26.11</span>
+  </div>
+  <div class="legenda"><span class="zh">жёлтое — запомни</span><span>белое — разберись</span></div>
+
+  <div class="kolonki">
+    <div>
+      <h2>1. ДРАКОН-ГРАФ: главное</h2>
+      <div class="graf" id="graf-1"></div>
+      <h2>4. Чек-лист: галочка — деление батарейки</h2>
+      <ol class="cheklist" id="cheklist"></ol>
+      <div class="batarejka" id="batarejka"></div>
+    </div>
+    <div>
+      <h2>2. Слои защиты</h2>
+      <div class="graf" id="graf-2"></div>
+      <h2>3. Взломали — что делать</h2>
+      <div class="graf" id="graf-3"></div>
+    </div>
+  </div>
+
+  <h2>5. Карта моих треков <span class="tusk">— тип почты и защиты, не адрес и не пароль</span></h2>
+  <table class="treki" id="treki"></table>
+
+  <h2>Дома</h2>
+  <ol class="dz" id="dz"></ol>
+  <p class="tusk">ДРАКОН и ДРАКОН-ГРАФ — авторская методика и инструментарий Веснина С. Н.</p>
+</article>
+
+<script src="tekst.js?v=202611252330"></script>
+<script src="../../lib/slova/slova.js"></script>
+<script src="../../lib/drakon-graf/drakon-graf.min.js"></script>
+<script src="../../lib/drakon-graf/konspekt.js"></script>
+<script>
+"use strict";
+/* Обычный лист — карта треков пустая. Лист с подсказкой (адрес #prostoj) — заполнены «трек» и «сервис»:
+   для ученика с низким пользовательским навыком (сверка, решение учителя 25.11). */
+
+/* SHIRINA — ширина рисунка схемы в точках: шире — строки длиннее, схема ниже на листе */
+var SHIRINA = 420;
+
+// prostoj: открыт ли лист с подсказкой
+function prostoj() {
+  var da = location.hash === "#prostoj";
+  return da;
+}
+
+// strokaTreka: строка карты; в простом листе — трек и сервис заполнены
+function strokaTreka(t, podskazka) {
+  var tr = Slova.sozdat("tr", "");
+  tr.appendChild(Slova.sozdat("td", "", podskazka ? t.trek : ""));
+  tr.appendChild(Slova.sozdat("td", "", podskazka ? t.servis : ""));
+  tr.appendChild(Slova.sozdat("td", "", ""));
+  tr.appendChild(Slova.sozdat("td", "", ""));
+  return tr;
+}
+
+// risovatTreki: шапка «трек → сервис → защита → риск» и три строки
+function risovatTreki() {
+  var t = Slova.el("treki");
+  var shapka = Slova.sozdat("tr", "");
+  ["Трек", "Сервис", "Защита", "Риск"].forEach(function (s) { shapka.appendChild(Slova.sozdat("th", "", s)); });
+  t.appendChild(shapka);
+  TEKST.treki.forEach(function (x) { t.appendChild(strokaTreka(x, prostoj())); });
+  return t;
+}
+
+// risovatBatarejku: пять пустых делений и плюс
+function risovatBatarejku() {
+  var b = Slova.el("batarejka");
+  TEKST.cheklist.forEach(function () { b.appendChild(Slova.sozdat("span", "", "")); });
+  b.appendChild(Slova.sozdat("span", "plyus", ""));
+  return b;
+}
+
+// risovatSpiski: чек-лист и задания домой
+function risovatSpiski() {
+  TEKST.cheklist.forEach(function (s) { Slova.el("cheklist").appendChild(Slova.sozdat("li", "", s)); });
+  TEKST.dz.forEach(function (s) { Slova.el("dz").appendChild(Slova.sozdat("li", "", s)); });
+  return true;
+}
+
+// risovatGraf: три схемы конспекта — по своим местам
+function risovatGraf() {
+  var chasti = TEKST.konspekt.split("\n---\n");
+  chasti.forEach(function (c, i) { Slova.narisovatKonspekt("graf-" + (i + 1), c, 6, SHIRINA); });
+  return chasti.length;
+}
+
+// pechatProstogo: открыть лист с подсказкой и напечатать
+function pechatProstogo() {
+  if (!prostoj()) { location.hash = "prostoj"; location.reload(); }
+  if (prostoj()) { window.print(); }
+  return true;
+}
+
+// risovatList: всё на листе и кнопки печати
+function risovatList() {
+  risovatGraf(); risovatSpiski(); risovatBatarejku(); risovatTreki();
+  if (prostoj()) { Slova.el("rezhim").textContent = "Лист с подсказкой: трек и сервис заполнены"; }
+  Slova.knopkaPechati("pechat");
+  Slova.el("pechatProstoj").addEventListener("click", pechatProstogo);
+  return true;
+}
+risovatList();
+</script>
+</body>
+</html>

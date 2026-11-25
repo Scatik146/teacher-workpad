@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Дополнительная защита аккаунтов — слайды, 6 класс</title>
+<style>
+:root {
+  --bumaga: #f6f1e6; --list: #ffffff; --chernila: #1d2126; --chernila2: #5b5346; --liniya: #d9cfb9;
+  --akcent: #f2a93b; --akcent-fon: #fbf1dc; --sinij: #1f5fa8; --verno: #1e7a4a; --verno-fon: #e3f3e9;
+  --neverno: #a4372a; --neverno-fon: #f8e6dd; --zheltoe: #ffff99; --drakon: #993300; --temnyj: #1f2329;
+  --shrift: "Segoe UI", Roboto, Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bumaga); color: var(--chernila); font: 28px/1.35 var(--shrift); }
+h1, h2, p { margin: 0; }
+.slajd { display: none; position: absolute; inset: 0 0 54px 0; padding: 32px 64px; flex-direction: column; gap: 20px; }
+.slajd.seychas { display: flex; }
+.slajd h2 { font-size: 42px; border-bottom: 4px solid var(--akcent); padding-bottom: 8px; }
+.titul { justify-content: center; align-items: flex-start; background: var(--temnyj); color: #eef1f4; }
+.titul h1 { font-size: 62px; }
+.titul .pod { font-size: 36px; color: var(--akcent); }
+.titul .tusk { color: #a9b2bc; }
+.tusk { color: var(--chernila2); font-size: 22px; }
+.shchelchok { visibility: hidden; }
+.shchelchok.vidno { visibility: visible; }
+.kartochka { background: var(--list); border: 1px solid var(--liniya); border-radius: 14px; padding: 14px 20px; }
+.replika { background: var(--akcent-fon); border: 3px solid var(--akcent); border-radius: 16px; padding: 12px 20px; font-size: 30px; }
+.dva { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.kadry { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.kadr { background: var(--list); border: 4px solid var(--chernila); border-radius: 6px; padding: 14px 16px; font-size: 25px; box-shadow: 6px 6px 0 var(--akcent); }
+.kadr .nomer { font-weight: 800; color: var(--drakon); }
+.kadr .kartinka { font-size: 56px; text-align: center; }
+.mify { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.mif { background: var(--list); border: 2px solid var(--liniya); border-radius: 14px; padding: 12px 16px; font-size: 23px; }
+.mif b { display: block; font-size: 26px; }
+.mif .vyvod { color: var(--neverno); font-weight: 800; }
+.otvet { background: var(--verno-fon); border-left: 8px solid var(--verno); border-radius: 10px; padding: 12px 18px; }
+.pravilo { font-size: 46px; font-weight: 800; color: var(--verno); }
+.tablica { border-collapse: collapse; width: 100%; font-size: 25px; background: var(--list); }
+.tablica th, .tablica td { border: 1px solid var(--liniya); padding: 8px 14px; text-align: left; vertical-align: top; }
+.tablica th { background: var(--akcent-fon); }
+.legenda { display: flex; gap: 16px; flex-wrap: wrap; font-size: 24px; }
+.legenda span { border: 2px solid var(--drakon); border-radius: 8px; padding: 4px 12px; font-family: Georgia, serif; }
+.legenda .zh { background: var(--zheltoe); }
+.dva-graf { display: grid; grid-template-columns: 1.6fr 1fr; gap: 30px; align-items: center; flex: 1; min-height: 0; }
+.graf { height: 100%; min-height: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+.pro-skhemu { display: flex; flex-direction: column; gap: 14px; font-size: 25px; }
+.pro-skhemu b { color: var(--sinij); }
+ul, ol { margin: 0; padding-left: 34px; }
+li { margin: 5px 0; }
+.niz { position: fixed; left: 0; right: 0; bottom: 0; height: 54px; display: flex; align-items: center; gap: 14px; padding: 0 20px; background: var(--temnyj); color: #a9b2bc; font-size: 18px; }
+.niz button { font: inherit; background: #272c33; color: #eef1f4; border: 1px solid #3a414a; border-radius: 16px; padding: 4px 14px; cursor: pointer; }
+.niz .etap { flex: 1; }
+</style>
+</head>
+<body>
+
+<section class="slajd titul" data-etap="">
+  <h1 data-t="tema"></h1>
+  <p class="pod" data-t="nazvanie"></p>
+  <p class="tusk">ИИ и информационная безопасность · 6 класс · урок 13</p>
+</section>
+
+<section class="slajd" data-etap="1. Мотивация">
+  <h2>Комикс: утро Тима</h2>
+  <div class="kadry" data-kadry="1,2"></div>
+  <p class="shchelchok replika">Как это могло случиться? Ваши версии.</p>
+  <p class="tusk" data-t="skazka"></p>
+</section>
+
+<section class="slajd" data-etap="2. Актуализация">
+  <h2>Почта — главный ключ</h2>
+  <p>Почта, телефон, ID — по ним сервис узнаёт тебя. Это <b>идентификатор</b>.</p>
+  <p class="shchelchok replika">На почту приходит «Забыли пароль?» от всех остальных аккаунтов. Почта — ключ от всех ключей.</p>
+  <p class="shchelchok"><b>Цифровой след</b> — ники, фото, геотеги, входы «через…». По следу тебя находят.</p>
+  <p class="shchelchok kartochka">Откройте <b>досье Тима</b> на ноутбуке. За 2 минуты подчеркните пальцем три следа, которые его выдают.</p>
+</section>
+
+<section class="slajd" data-etap="3. Затруднение">
+  <h2>Комикс: что было раньше</h2>
+  <div class="kadry" data-kadry="3,4,5"></div>
+  <p class="shchelchok replika">У многих пароль простой. Почему одних взламывают, а других нет?</p>
+</section>
+
+<section class="slajd" data-etap="3. Затруднение">
+  <h2>Взламывают не человека, а дверь</h2>
+  <p class="otvet" data-t="pochemu"></p>
+  <div class="kartochka shchelchok">
+    <p><b>История учителя</b></p>
+    <ul data-spisok="istoriyaUchitelya"></ul>
+  </div>
+</section>
+
+<section class="slajd" data-etap="4. Проект: треки">
+  <h2>Треки: жизнь в сети по частям</h2>
+  <p><b>Трек</b> — часть жизни в сети со своей почтой и своей защитой.</p>
+  <div class="dva">
+    <div class="kartochka shchelchok"><b>Школа</b><p class="tusk">школьная почта, дневник</p></div>
+    <div class="kartochka shchelchok"><b>Игры</b><p class="tusk">свой ник, отдельная почта</p></div>
+    <div class="kartochka shchelchok"><b>Семья и деньги</b><p class="tusk">только со взрослым, второй ключ</p></div>
+    <div class="kartochka shchelchok"><b>Некоторые треки никогда не пересекаются</b><p class="tusk">утёк игровой пароль — школа и деньги целы</p></div>
+  </div>
+  <p class="shchelchok"><b>План:</b> найти следы → проверить мифы → нарисовать карту треков → поставить защиту.</p>
+</section>
+
+<section class="slajd" data-etap="4. ДРАКОН-ГРАФ">
+  <h2>Конспект урока — ДРАКОН-ГРАФ</h2>
+  <p><b>ДРАКОН-ГРАФ</b> — рисунок-конспект: тема в овале, ниже — блоки. Каждая тема — своя <b>схема</b>; схема собирается из строк-<b>конструкций</b>.</p>
+  <div class="legenda"><span class="zh">жёлтое — запомни</span><span>белое — разберись</span></div>
+  <p class="shchelchok">Сегодня три схемы. Они же — на вашем ДРАКОН-листе.</p>
+</section>
+
+<div id="graf-1"></div>
+
+<section class="slajd" data-etap="5. Реализация: досье">
+  <h2>Работа в парах: досье Тима</h2>
+  <ol data-spisok="voprosyDosye"></ol>
+  <p class="kartochka">6 минут · один читает, второй отмечает · потом меняетесь</p>
+  <p class="tusk">Быстрые ★: найдите ещё один след и придумайте, как Тим мог его спрятать.</p>
+</section>
+
+<section class="slajd" data-etap="5. Реализация: правда или выдумка">
+  <h2>Правда или выдумка?</h2>
+  <div class="mify" id="mify"></div>
+</section>
+
+<section class="slajd" data-etap="5. Реализация: карта треков">
+  <h2>Карта треков на ДРАКОН-листе</h2>
+  <p>Три строки: <b>трек → сервис → защита → риск</b>. Пишем тип почты, не адрес. Настоящие пароли не пишем.</p>
+  <table class="tablica" id="obrazec"></table>
+  <p class="kartochka">4 минуты · образец — строка «Игры»</p>
+</section>
+
+<section class="slajd" data-etap="6. Закрепление">
+  <h2>Что нашли сыщики</h2>
+  <p>Одна пара — одна ветка карты. Остальные: «Какой риск ты видишь?»</p>
+  <p class="otvet shchelchok" data-t="otvetDosye"></p>
+</section>
+
+<section class="slajd" data-etap="7. Пароль и ник в 2026">
+  <h2>Правила пароля меняются</h2>
+  <div class="dva">
+    <div class="kartochka"><b id="kto-k"></b><ul id="pr-k"></ul></div>
+    <div class="kartochka shchelchok"><b id="kto-n"></b><ul id="pr-n"></ul></div>
+  </div>
+  <p class="shchelchok otvet" data-t="paroli.vyvod"></p>
+  <p class="shchelchok" data-t="paroli.nik"></p>
+</section>
+
+<section class="slajd" data-etap="7. Защита кроме пароля">
+  <h2>Второй ключ: что бывает</h2>
+  <table class="tablica" id="zashchita"></table>
+  <p class="shchelchok pravilo">Код из СМС — никому.</p>
+</section>
+
+<div id="graf-2"></div>
+<div id="graf-3"></div>
+
+<section class="slajd" data-etap="7. Самопроверка">
+  <h2>Чек-лист и батарейка защиты</h2>
+  <ol data-spisok="cheklist"></ol>
+  <p class="kartochka">Галочка — одно деление батарейки на листе. Скорость — не важна.</p>
+</section>
+
+<section class="slajd" data-etap="8. Система: единые ID">
+  <h2>Зачем так много ID? Какой лучше?</h2>
+  <table class="tablica" id="idy"></table>
+  <p class="shchelchok" data-t="idyZachem"></p>
+  <p class="shchelchok otvet" data-t="idyLuchshe"></p>
+</section>
+
+<section class="slajd" data-etap="9. Рефлексия">
+  <h2>Финал комикса</h2>
+  <div class="kadry" data-kadry="6"></div>
+  <p class="replika" data-t="yakor"></p>
+  <div class="shchelchok"><b>Дома:</b><ol data-spisok="dz"></ol></div>
+</section>
+
+<footer class="niz">
+  <button type="button" id="nazad">←</button>
+  <span id="nomer"></span>
+  <span id="etap" class="etap"></span>
+  <button type="button" id="vpered">→</button>
+</footer>
+
+<script src="tekst.js?v=202611252330"></script>
+<script src="../../lib/slova/slova.js"></script>
+<script src="../../lib/drakon-graf/drakon-graf.min.js"></script>
+<script src="../../lib/drakon-graf/konspekt.js"></script>
+<script>
+"use strict";
+/* N — номер слайда; SLAJDY — все слайды по порядку. Колода — как в 9-klass/iiib-10-rech. */
+var SLAJDY = [];
+var N = 0;
+
+// znachenie: текст из TEKST по пути «paroli.vyvod»
+function znachenie(put) {
+  var v = TEKST;
+  put.split(".").forEach(function (k) { v = v ? v[k] : ""; });
+  return v || "";
+}
+
+// podstavitTeksty: элементы с data-t получают текст урока
+function podstavitTeksty() {
+  var spisok = document.querySelectorAll("[data-t]");
+  spisok.forEach(function (el) { el.textContent = znachenie(el.dataset.t); });
+  return spisok.length;
+}
+
+// zapolnitSpisok: пункты списка из массива строк
+function zapolnitSpisok(el, stroki) {
+  stroki.forEach(function (s) { el.appendChild(Slova.sozdat("li", "", s)); });
+  return el;
+}
+
+// podstavitSpiski: элементы с data-spisok получают пункты
+function podstavitSpiski() {
+  var spisok = document.querySelectorAll("[data-spisok]");
+  spisok.forEach(function (el) { zapolnitSpisok(el, znachenie(el.dataset.spisok)); });
+  return spisok.length;
+}
+
+// kadr: один кадр комикса
+function kadr(k) {
+  var d = Slova.sozdat("div", "kadr shchelchok");
+  d.appendChild(Slova.sozdat("p", "nomer", "Кадр " + k.nomer));
+  d.appendChild(Slova.sozdat("p", "kartinka", k.kartinka));
+  d.appendChild(Slova.sozdat("p", "", k.tekst));
+  return d;
+}
+
+// risovatKadry: кадры комикса по номерам из data-kadry
+function risovatKadry() {
+  var mesta = document.querySelectorAll("[data-kadry]");
+  mesta.forEach(function (m) {
+    m.dataset.kadry.split(",").forEach(function (n) { m.appendChild(kadr(TEKST.komiks[Number(n) - 1])); });
+  });
+  return mesta.length;
+}
+
+// karta: карточка «правда или выдумка»; ответ — по щелчку
+function karta(m) {
+  var d = Slova.sozdat("div", "mif");
+  var o = Slova.sozdat("p", "shchelchok");
+  d.appendChild(Slova.sozdat("b", "", m.utv));
+  o.appendChild(Slova.sozdat("span", "vyvod", m.vyvod + ". "));
+  o.appendChild(Slova.sozdat("span", "", m.pochemu));
+  d.appendChild(o);
+  return d;
+}
+
+// risovatMify: четыре карточки П-16
+function risovatMify() {
+  var m = Slova.el("mify");
+  TEKST.mify.forEach(function (x) { m.appendChild(karta(x)); });
+  return m;
+}
+
+// stroka: строка таблицы из ячеек (th — для шапки)
+function stroka(yachejki, teg) {
+  var tr = Slova.sozdat("tr", "");
+  yachejki.forEach(function (t) { tr.appendChild(Slova.sozdat(teg, "", t)); });
+  return tr;
+}
+
+// tablica: шапка и строки в таблицу id
+function tablica(id, shapka, stroki) {
+  var t = Slova.el(id);
+  t.appendChild(stroka(shapka, "th"));
+  stroki.forEach(function (s) { t.appendChild(stroka(s, "td")); });
+  return t;
+}
+
+// pary: из списка записей — строки из двух полей
+function pary(zapisi, a, b) {
+  var stroki = [];
+  zapisi.forEach(function (z) { stroki.push([z[a], z[b]]); });
+  return stroki;
+}
+
+// risovatTablicy: образец треков, защита, единые ID, правила пароля
+function risovatTablicy() {
+  var o = TEKST.trekiObrazec;
+  tablica("obrazec", ["Трек", "Сервис", "Защита", "Риск"], [[o.trek, o.servis, o.zashchita, o.risk]]);
+  tablica("zashchita", ["Что", "Как работает"], pary(TEKST.zashchita, "imya", "chto"));
+  tablica("idy", ["ID", "Что открывает"], pary(TEKST.idy, "imya", "otkryvaet"));
+  Slova.el("kto-k").textContent = TEKST.paroli.kasperskij.kto;
+  Slova.el("kto-n").textContent = TEKST.paroli.nist.kto;
+  zapolnitSpisok(Slova.el("pr-k"), TEKST.paroli.kasperskij.pravila);
+  zapolnitSpisok(Slova.el("pr-n"), TEKST.paroli.nist.pravila);
+  return true;
+}
+
+// vpisat: высокая схема вписывается в слайд по высоте
+function vpisat(r, mesto) {
+  var svg = mesto.querySelector("svg");
+  if (svg) { svg.style.height = "100%"; svg.style.width = "auto"; svg.style.maxWidth = "100%"; }
+  return r;
+}
+
+// slajdGrafa: слайд одной схемы конспекта — рисунок и что за схема, из чего, зачем
+function slajdGrafa(n, chast, opis) {
+  var s = Slova.sozdat("section", "slajd");
+  s.dataset.etap = "ДРАКОН-ГРАФ: схема " + (n + 1) + " из 3";
+  s.innerHTML = '<h2></h2><div class="dva-graf"><div class="graf"></div><div class="pro-skhemu">' +
+    '<p><b>Схема:</b> <span></span></p><p><b>Из чего:</b> <span></span></p><p class="shchelchok"><b>Зачем:</b> <span></span></p></div></div>';
+  s.querySelector("h2").textContent = "ДРАКОН-ГРАФ " + (n + 1) + "/3";
+  var pola = s.querySelectorAll(".pro-skhemu span");
+  pola[0].textContent = opis.imya; pola[1].textContent = opis.iz; pola[2].textContent = opis.zachem;
+  if (window.Konspekt) { vpisat(Konspekt.draw(s.querySelector(".graf"), chast, { class: 6 }), s.querySelector(".graf")); }
+  return s;
+}
+
+// risovatGrafSlajdy: каждая схема конспекта — на своё место graf-1…graf-3
+function risovatGrafSlajdy() {
+  var chasti = TEKST.konspekt.split("\n---\n");
+  chasti.forEach(function (c, i) {
+    var mesto = Slova.el("graf-" + (i + 1));
+    mesto.parentNode.insertBefore(slajdGrafa(i, c, TEKST.skhemy[i]), mesto);
+    mesto.remove();
+  });
+  return chasti.length;
+}
+
+// skrytye: ещё не показанные по щелчку элементы слайда
+function skrytye(s) {
+  var spisok = s.querySelectorAll(".shchelchok:not(.vidno)");
+  return spisok;
+}
+
+// pokazat: показывает слайд n
+function pokazat(n) {
+  N = Math.max(0, Math.min(SLAJDY.length - 1, n));
+  for (var i = 0; i < SLAJDY.length; i++) { SLAJDY[i].classList.toggle("seychas", i === N); }
+  Slova.el("nomer").textContent = (N + 1) + " / " + SLAJDY.length;
+  Slova.el("etap").textContent = SLAJDY[N].dataset.etap;
+  return N;
+}
+
+// vpered: следующий щелчок слайда или следующий слайд
+function vpered() {
+  var s = skrytye(SLAJDY[N]);
+  if (s.length > 0) { s[0].classList.add("vidno"); }
+  if (s.length === 0) { pokazat(N + 1); }
+  return N;
+}
+
+// nazad: предыдущий слайд
+function nazad() {
+  var n = pokazat(N - 1);
+  return n;
+}
+
+// klavisha: стрелки, пробел, PageUp/PageDown
+function klavisha(e) {
+  if (["ArrowRight", "Space", "PageDown"].indexOf(e.code) >= 0) { e.preventDefault(); vpered(); }
+  if (["ArrowLeft", "PageUp"].indexOf(e.code) >= 0) { e.preventDefault(); nazad(); }
+  return e;
+}
+
+// postroit: все тексты, кадры, карточки, таблицы и схемы
+function postroit() {
+  podstavitTeksty(); podstavitSpiski(); risovatKadry(); risovatMify(); risovatTablicy(); risovatGrafSlajdy();
+  return true;
+}
+
+// nachat: подготовить слайды и кнопки
+function nachat() {
+  try { postroit(); } catch (e) { console.error("Слайды: не всё построилось", e); }
+  SLAJDY = document.querySelectorAll(".slajd");
+  document.addEventListener("keydown", klavisha);
+  Slova.el("vpered").addEventListener("click", vpered);
+  Slova.el("nazad").addEventListener("click", nazad);
+  pokazat(0);
+  return N;
+}
+
+nachat();
+</script>
+</body>
+</html>

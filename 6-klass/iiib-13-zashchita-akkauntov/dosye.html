@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Досье Тима — защита аккаунтов, 6 класс</title>
+<style>
+:root { --bumaga: #f6f1e6; --list: #fff; --chernila: #1d2126; --chernila2: #5b5346; --liniya: #d9cfb9; --akcent: #f2a93b; --akcent-fon: #fbf1dc; --verno: #1e7a4a; --verno-fon: #e3f3e9; --neverno: #a4372a; --temnyj: #1f2329; --shrift: "Segoe UI", Roboto, Arial, sans-serif; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bumaga); color: var(--chernila); font: 20px/1.45 var(--shrift); }
+header { background: var(--temnyj); color: #eef1f4; padding: 14px 28px; border-bottom: 4px solid var(--akcent); }
+header h1 { margin: 0; font-size: 30px; }
+main { max-width: 1100px; margin: 0 auto; padding: 18px 28px 40px; display: flex; flex-direction: column; gap: 18px; }
+h2 { margin: 6px 0 0; font-size: 24px; }
+.sledy { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.sled { background: var(--list); border: 2px solid var(--liniya); border-radius: 12px; padding: 12px 14px; }
+.sled b { display: block; color: #1f5fa8; }
+.zapiska { background: #fffbe0; border-style: dashed; }
+ol { margin: 0; padding-left: 28px; }
+.mify { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+details { background: var(--list); border: 2px solid var(--liniya); border-radius: 12px; padding: 12px 14px; }
+summary { cursor: pointer; font-weight: 700; }
+details p { margin: 8px 0 0; }
+.vyvod { color: var(--neverno); font-weight: 800; }
+.istochnik { color: var(--chernila2); font-size: 15px; }
+.generator { background: var(--akcent-fon); border: 2px solid var(--akcent); border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+textarea { font: 17px/1.4 Consolas, "PT Mono", monospace; width: 100%; min-height: 130px; }
+a.knopka { align-self: flex-start; background: var(--akcent); color: var(--chernila); font-weight: 700; text-decoration: none; border-radius: 18px; padding: 6px 18px; }
+.tusk { color: var(--chernila2); font-size: 16px; }
+</style>
+</head>
+<body>
+<header><h1>Досье Тима</h1><span id="tema"></span> · <span id="skazka"></span></header>
+<main>
+  <h2>Следы Тима</h2>
+  <div class="sledy" id="sledy"></div>
+
+  <h2>Вопросы паре</h2>
+  <ol id="voprosy"></ol>
+
+  <h2>Правда или выдумка? Сначала решите вдвоём, потом нажмите</h2>
+  <div class="mify" id="mify"></div>
+
+  <h2>★ Моя карта треков в генераторе ДРАКОН-ГРАФ</h2>
+  <div class="generator">
+    <p>Выделите текст (Ctrl+A внутри поля), скопируйте (Ctrl+C), откройте генератор и вставьте (Ctrl+V). Поменяйте строки на свои — генератор нарисует схему.</p>
+    <textarea id="shablon" readonly></textarea>
+    <a class="knopka" id="generator" target="_blank" rel="noopener">Открыть генератор ДРАКОН-ГРАФ</a>
+    <p class="tusk">Пишите тип почты и защиты, а не адреса и не настоящие пароли.</p>
+  </div>
+  <p class="tusk">ДРАКОН и ДРАКОН-ГРАФ — авторская методика и инструментарий Веснина С. Н.</p>
+</main>
+
+<script src="tekst.js?v=202611252330"></script>
+<script src="../../lib/slova/slova.js"></script>
+<script>
+"use strict";
+// kartochkaSleda: один след из досье; ложный след — записка
+function kartochkaSleda(s) {
+  var d = Slova.sozdat("div", s.lozh ? "sled zapiska" : "sled");
+  d.appendChild(Slova.sozdat("b", "", s.chto));
+  d.appendChild(Slova.sozdat("span", "", s.sled));
+  return d;
+}
+
+// kartochkaMifa: утверждение, ответ раскрывается щелчком
+function kartochkaMifa(m) {
+  var d = Slova.sozdat("details", "");
+  var p = Slova.sozdat("p", "");
+  d.appendChild(Slova.sozdat("summary", "", m.utv));
+  p.appendChild(Slova.sozdat("span", "vyvod", m.vyvod + ". "));
+  p.appendChild(Slova.sozdat("span", "", m.pochemu));
+  d.appendChild(p);
+  d.appendChild(Slova.sozdat("p", "istochnik", "Источник: " + m.istochnik));
+  return d;
+}
+
+// postroitDosye: следы, вопросы, мифы и шаблон генератора
+function postroitDosye() {
+  Slova.el("tema").textContent = TEKST.tema;
+  Slova.el("skazka").textContent = TEKST.skazka;
+  TEKST.dosye.forEach(function (s) { Slova.el("sledy").appendChild(kartochkaSleda(s)); });
+  TEKST.voprosyDosye.forEach(function (v) { Slova.el("voprosy").appendChild(Slova.sozdat("li", "", v)); });
+  TEKST.mify.forEach(function (m) { Slova.el("mify").appendChild(kartochkaMifa(m)); });
+  Slova.el("shablon").value = TEKST.shablonGeneratora;
+  Slova.el("generator").href = TEKST.generator;
+  return true;
+}
+
+postroitDosye();
+</script>
+</body>
+</html>
